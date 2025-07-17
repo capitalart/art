@@ -6,6 +6,12 @@
     <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
     <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
     <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
+    <div class="user-links">
+      {% if session.get('logged_in') %}
+        <span class="user-name">{{ session.get('username') }}</span>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+      {% endif %}
+    </div>
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
       <svg id="icon-sun" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
         <path d="M128 40v-24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>

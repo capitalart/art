@@ -3,6 +3,7 @@ import os
 import shutil
 from pathlib import Path
 import sys
+from PIL import Image
 os.environ.setdefault("OPENAI_API_KEY", "test")
 os.environ.setdefault("SKU_TRACKER_PATH", str(Path("/tmp/sku_tracker_default.json")))
 root_dir = Path(__file__).resolve().parents[1]
@@ -52,7 +53,12 @@ def test_sequential_sku_assignment(tmp_path):
     for folder in ('first-artwork', 'second-artwork'):
         shutil.rmtree(ARTWORKS_PROCESSED_DIR / folder, ignore_errors=True)
 
-    img_src = next(ARTWORKS_INPUT_DIR.rglob('*.jpg'))
+    img_iter = ARTWORKS_INPUT_DIR.rglob('*.jpg')
+    img_src = next(img_iter, None)
+    if img_src is None:
+        ARTWORKS_INPUT_DIR.mkdir(parents=True, exist_ok=True)
+        img_src = ARTWORKS_INPUT_DIR / 'sample.jpg'
+        Image.new('RGB', (10, 10), 'red').save(img_src)
     img1 = tmp_path / 'a.jpg'
     img2 = tmp_path / 'b.jpg'
     shutil.copy2(img_src, img1)
