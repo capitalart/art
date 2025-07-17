@@ -6,6 +6,9 @@
     <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
     <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
     <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
+    {% if session.get('username') == 'robbie' %}
+      <a href="{{ url_for('admin.security_page') }}">Security</a>
+    {% endif %}
     <div class="user-links">
       {% if session.get('logged_in') %}
         <span class="user-name">{{ session.get('username') }}</span>

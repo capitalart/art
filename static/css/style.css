@@ -470,12 +470,12 @@ input:focus, textarea:focus { border-color: var(--accent); }
 @media (max-width: 1200px) {
   .review-artwork-grid { max-width: 98vw; }
 }
-@media (max-width: 900px) {
+@media (max-width: 800px) {
   .review-artwork-grid { flex-direction: column; gap: 2em; }
   .mockup-col, .desc-col { max-width: 100%; min-width: 0; }
   .mockup-preview-grid { grid-template-columns: repeat(2,1fr); }
 }
-@media (max-width: 800px) {
+@media (max-width: 700px) {
   .mockup-preview-grid { grid-template-columns: 1fr; }
   .edit-actions-col button,
   .edit-actions-col form { width: 100%; }
