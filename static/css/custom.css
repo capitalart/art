@@ -130,6 +130,13 @@
 }
 
 /* --------- [ C2. Header Overrides ] --------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 .site-header,
 .topnav {
   width: 100%;
@@ -159,6 +166,7 @@
 
 .theme-toggle {
   margin-left: auto;
+  margin-right: 10px;
   background: none;
   border: none;
   cursor: pointer;
@@ -179,18 +187,31 @@
   color: var(--color-accent);
 }
 
+.user-links {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: monospace;
+}
+
+.user-links a {
+  color: var(--color-header-icon);
+  text-decoration: none;
+}
+
+.user-links a:hover { color: var(--color-accent); }
+
 /* --- Footer Styling --- */
 .site-footer {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  width: 100vw;
+  width: 100%;
   min-height: 150px;
   background: var(--color-footer-bg, #000);
   color: var(--color-footer-text, #fff);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  z-index: 999;
+  margin-top: auto;
 }
 
 .footer-menu-bar {
@@ -274,3 +295,49 @@
 
 
 .workflow-btn.disabled{background:#ccc;color:#666;pointer-events:none;}
+
+/* --------- [ Login Form ] --------- */
+.login-container {
+  max-width: 420px;
+  margin: 3em auto;
+  padding: 2em;
+  background: var(--color-card-bg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.login-form label {
+  font-weight: bold;
+  text-align: left;
+}
+
+.login-form input {
+  padding: 0.6em;
+  font-family: monospace;
+  font-size: 1em;
+  border: 1px solid var(--color-border);
+}
+
+/* --- Admin Security Panel --- */
+.security-panel { max-width: 420px; margin: 2em auto; padding: 1.5em; background: var(--color-card-bg); box-shadow: 0 2px 6px rgba(0,0,0,0.15); text-align:center; }
+.security-panel form { margin-top:1em; display:flex; flex-direction:column; gap:1em; }
+.security-panel select{ padding:0.4em; }
+
+
+body { display:flex; flex-direction:column; min-height:100vh; }
+main { flex:1 0 auto; }
+
+.footer-inner{max-width:1200px;margin:0 auto;padding:1em;display:flex;flex-direction:column;}
+.footer-nav{display:flex;gap:2em;flex-wrap:wrap;}
+.footer-nav a{color:#fff;text-decoration:none;}
+.footer-nav a:hover{color:#e76a25;}
+.footer-copy{text-align:left;margin-top:auto;color:#fff;}
+@media(max-width:600px){.footer-nav{flex-direction:column;gap:1em;}}
+

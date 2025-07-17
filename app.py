@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import logging
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
+from utils import security
 from werkzeug.routing import BuildError
 from dotenv import load_dotenv
 from datetime import datetime
@@ -15,6 +16,8 @@ from config import LOGS_DIR
 from routes.artwork_routes import bp as artwork_bp  # <-- Blueprint import
 from routes.sellbrite_service import bp as sellbrite_bp
 from routes.export_routes import bp as exports_bp
+from routes.auth_routes import bp as auth_bp
+from routes.admin_security import bp as admin_bp
 
 # ---- Load .env Configuration ----
 load_dotenv()
@@ -22,6 +25,16 @@ load_dotenv()
 # ---- Initialize Flask App ----
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "mockup-secret-key")
+
+
+@app.before_request
+def require_login() -> None:
+    """Enforce login for all routes except the login page and static files."""
+    allowed = {"auth.login", "static"}
+    if request.endpoint in allowed or request.endpoint is None:
+        return
+    if security.login_required_enabled() and not session.get("logged_in"):
+        return redirect(url_for("auth.login", next=request.path))
 
 # ---- Logging Setup ----
 logging.basicConfig(
@@ -52,9 +65,11 @@ def dynamic_page(url):
     return f'You requested the URL: {url}'
 
 # ---- Register Blueprints ----
+app.register_blueprint(auth_bp)
 app.register_blueprint(artwork_bp)
 app.register_blueprint(sellbrite_bp)
 app.register_blueprint(exports_bp)
+app.register_blueprint(admin_bp)
 
 # ---- Error Handlers ----
 @app.errorhandler(BuildError)

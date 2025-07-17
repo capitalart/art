@@ -33,6 +33,7 @@ def test_template_endpoints_valid():
 
 def test_routes_and_navigation():
     client = app.test_client()
+    client.post('/login', data={'username': 'robbie', 'password': 'kangaroo123'}, follow_redirects=True)
     to_visit = ['/']
     visited = set()
     while to_visit:
@@ -40,6 +41,8 @@ def test_routes_and_navigation():
         if url in visited:
             continue
         resp = client.get(url)
+        if url == '/logout' and resp.status_code == 302:
+            continue
         assert resp.status_code == 200, f"Failed loading {url}"
         visited.add(url)
         parser = LinkParser()
@@ -49,7 +52,7 @@ def test_routes_and_navigation():
                 continue
             if link.startswith('/static') or '//' in link[1:]:
                 continue
-            if link == '#' or link.startswith('#'):
+            if link == '#' or link.startswith('#') or link == '/logout':
                 continue
             link = link.split('?')[0]
             if link not in visited:

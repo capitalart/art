@@ -127,6 +127,10 @@ MIDJOURNEY_METADATA_CSV = Path(
     os.getenv("MIDJOURNEY_METADATA_CSV", MIDJOURNEY_OUTPUT_DIR / "artnarrator_image_metadata.csv")
 )
 
+# --- Authentication ----------------------------------------------------------
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "robbie")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "kangaroo123")
+
 # --- Ensure Critical Folders Exist -----------------------------------------
 for folder in [
     ARTWORKS_INPUT_DIR,
