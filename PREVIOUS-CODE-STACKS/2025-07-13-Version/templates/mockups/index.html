@@ -1,0 +1,11 @@
+{% extends "main.html" %}
+{% block title %}Mockup Categoriser | ART Narrator{% endblock %}
+{% block content %}
+<h2>Select Aspect Ratio</h2>
+<ul class="aspect-list">
+  {% for a in aspects %}
+    <li><a href="{{ url_for('mockups.gallery', aspect=a) }}">{{ a }}</a></li>
+  {% endfor %}
+</ul>
+<a href="{{ url_for('mockups.upload') }}" class="btn btn-primary">Upload Mockups</a>
+{% endblock %}

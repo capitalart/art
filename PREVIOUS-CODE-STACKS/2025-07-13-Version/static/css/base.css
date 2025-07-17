@@ -1,0 +1,53 @@
+/* ==============================
+   ART Narrator Base Styles
+   Scope: core resets, typography, body styles
+   ============================== */
+
+body {
+  font-family: serif;
+  background: var(--main-bg);
+  color: var(--main-txt);
+  margin: 0;
+  padding: 0;
+}
+
+.brand, .footer-brand, .brand-logo {
+  font-family: serif;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+h1, h2, h3 {
+  font-family: serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+h1 { font-size: 2em; line-height: 1.3; text-align: center; margin-bottom: 0.9em; }
+
+label { display: inline-block; margin-bottom: 0.2em; font-weight: 500; }
+input, textarea {
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.3em 0.55em;
+  font-size: 1em;
+  background: var(--input-bg);
+  color: var(--input-text);
+}
+input:focus, textarea:focus { border-color: var(--accent-dark); }
+
+::-webkit-scrollbar { width: 9px; background: #eee; border-radius: 0px; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: #aaa; }
+
+
+a {
+  color: var(--footer-link);
+  text-decoration: none;
+  transition: color 0.2s, font-weight 0.2s;
+}
+a:hover,
+a:focus {
+  color: var(--footer-link-hover);
+  font-weight: 400;
+}
+

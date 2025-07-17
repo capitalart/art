@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+{% block title %}System Status{% endblock %}
+{% block content %}
+<h1>Debug: System Status</h1>
+<ul>
+  <li>OpenAI Key Configured: {{ info.openai_key }}</li>
+  <li>Processed Folder Exists: {{ info.processed_dir }}</li>
+  <li>Finalised Folder Exists: {{ info.finalised_dir }}</li>
+  <li>Parse Failures: {{ info.parse_failures|length }}</li>
+</ul>
+{% if info.parse_failures %}
+<h2>Failed Parses</h2>
+<ul>
+  {% for f in info.parse_failures %}
+  <li>{{ f }} - <a href="{{ url_for('admin.parse_ai', file=f) }}">retry parse</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

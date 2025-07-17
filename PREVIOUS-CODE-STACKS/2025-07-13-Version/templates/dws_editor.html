@@ -1,0 +1,654 @@
+{% extends "main.html" %}
+{% block title %}Generic Description Writing System (GDWS) Editor{% endblock %}
+
+{% block content %}
+<!-- SortableJS for Drag-and-Drop functionality -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+<!-- Custom Styles for the GDWS Editor Page, inheriting from your style.css -->
+<style>
+    .dws-container {
+        display: flex;
+        gap: 2em;
+        align-items: flex-start;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .dws-sidebar {
+        width: 300px;
+        flex-shrink: 0;
+        background-color: var(--card-bg);
+        padding: 1.5em;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+    }
+    .dws-main-content {
+        flex-grow: 1;
+    }
+    .dws-sidebar h1, .dws-sidebar h2 {
+        text-align: left;
+        margin-bottom: 0.5em;
+    }
+    .dws-sidebar h1 {
+        font-size: 1.5em;
+        margin-bottom: 1em;
+    }
+    .dws-sidebar h2 {
+        font-size: 1.2em;
+        margin-top: 1.5em;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.3em;
+    }
+    .dws-sidebar .btn-black {
+        width: 100%;
+        margin-bottom: 0.75em;
+    }
+    .dws-rules-box {
+        background-color: #f7f7f7;
+        padding: 1em;
+        margin-top: 1em;
+        border-radius: var(--radius);
+    }
+    .dws-rules-box label {
+        font-weight: 500;
+        font-size: 0.9em;
+    }
+    .dws-rules-box input, .dws-rules-box select {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 0.2em;
+        margin-bottom: 0.8em;
+    }
+
+    .paragraph-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        padding: 1.5em;
+        margin-bottom: 1em;
+        box-shadow: var(--shadow);
+        transition: box-shadow 0.2s ease-in-out;
+        border-radius: var(--radius);
+    }
+    .paragraph-card:hover {
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    .paragraph-card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1em;
+        gap: 0.8em;
+    }
+    .drag-handle {
+        cursor: grab;
+        font-size: 1.5em;
+        color: #999;
+    }
+    .pinned-placeholder {
+        width: 1.5em;
+    }
+    .paragraph-card-header input[type="text"] {
+        font-size: 1.2em;
+        font-weight: bold;
+        border: none;
+        background: transparent;
+        padding: 0.2em;
+        width: 100%;
+    }
+    .paragraph-card-header input[type="text"]:focus {
+        background: #f0f0f0;
+    }
+    .paragraph-card textarea {
+        width: 100%;
+        box-sizing: border-box;
+        height: 150px;
+        resize: vertical;
+        padding: 0.8em;
+        font-size: 1em;
+        line-height: 1.6;
+    }
+    .ai-instruction-input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 0.8em;
+        padding: 0.5em;
+        font-size: 0.9em;
+        border: 1px solid #ddd;
+    }
+    .paragraph-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1em;
+        font-size: 0.9em;
+    }
+    .word-count-display.error {
+        color: #c00;
+        font-weight: bold;
+    }
+    .count-separator {
+        margin: 0 0.5em;
+    }
+    .paragraph-card-actions .btn-card-action {
+        margin-left: 0.5em;
+        font-size: 0.9em;
+        padding: 0.4em 0.8em;
+        background: #f0f0f0;
+        border: none;
+        color: #333;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-weight: 500;
+        border-radius: var(--radius);
+        position: relative;
+    }
+    .paragraph-card-actions .btn-card-action:hover {
+        background: #dcdcdc;
+    }
+    .paragraph-card-actions .delete-btn:hover {
+        background: #a60000;
+        color: #fff;
+    }
+
+    .sortable-ghost {
+        opacity: 0.4;
+        background: #eef;
+        border: 1px dashed var(--accent);
+    }
+    .sortable-chosen {
+        cursor: grabbing;
+    }
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    .modal-box {
+        background: white;
+        padding: 2em;
+        max-width: 500px;
+        width: 90%;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        border-radius: var(--radius);
+    }
+    .modal-box .btn {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        color: #333;
+    }
+    #confirm-delete-btn:hover {
+        background-color: #a60000 !important;
+    }
+    .spinner-overlay {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.8);
+        align-items: center;
+        justify-content: center;
+    }
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #3498db;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .version-status {
+        font-size: 0.85em;
+        margin-bottom: 0.5em;
+    }
+    .version-status .status-match {
+        color: #28a745;
+        font-weight: bold;
+    }
+    .version-status .status-mismatch {
+        color: #dc3545;
+        font-weight: bold;
+    }
+</style>
+
+
+<div class="dws-container">
+    <!-- Sidebar for Master Controls -->
+    <aside class="dws-sidebar">
+        <h1>GDWS Controls</h1>
+        
+        <div class="dws-rules-box">
+            <label for="aspect-ratio-selector">Select Aspect Ratio Template</label>
+            <select id="aspect-ratio-selector" name="aspect-ratio-selector">
+                <option value="4x5">4x5</option>
+                <option value="16x9">16x9</option>
+                <option value="1x1">1x1</option>
+                <option value="A-Series-Verical">A-Series-Verical</option>
+            </select>
+        </div>
+
+        <!-- Master Actions -->
+        <div>
+            <h2>Master Actions</h2>
+            <button id="save-all-btn" class="btn-black">
+                <img class="icon-inline" src="{{ url_for_static('static', filename='icons/svg/light/floppy-disk-light.svg') }}" alt="" />
+                Save All Changes
+            </button>
+            <button id="add-paragraph-btn" class="btn-black">
+                <img class="icon-inline" src="{{ url_for_static('static', filename='icons/svg/light/plus-circle-light.svg') }}" alt="" />
+                Add New Paragraph
+            </button>
+            <button id="regenerate-all-btn" class="btn-black">
+                <img class="icon-inline" src="{{ url_for_static('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" alt="" />
+                Regenerate All
+            </button>
+            <button id="shuffle-btn" class="btn-black">
+                <img class="icon-inline" src="{{ url_for_static('static', filename='icons/svg/light/shuffle-light.svg') }}" alt="" />
+                Shuffle Paragraphs
+            </button>
+        </div>
+
+        <!-- AI & Content Rules -->
+        <div class="dws-rules-box">
+            <h2>AI & Content Rules</h2>
+            <div>
+                <label for="ai-provider">AI Provider</label>
+                <select id="ai-provider" name="ai-provider">
+                    <option value="openai">OpenAI</option>
+                    <option value="gemini">Gemini</option>
+                    <option value="random">Random</option>
+                    <option value="combined">Combined</option>
+                </select>
+            </div>
+            <div>
+                <label for="min-words">Min Words per Block</label>
+                <input type="number" id="min-words" value="20">
+            </div>
+            <div>
+                <label for="max-words">Max Words per Block</label>
+                <input type="number" id="max-words" value="150">
+            </div>
+            <button id="save-rules-btn" class="btn-black">Save Rules</button>
+        </div>
+
+        <!-- System Version Check -->
+        <div class="dws-rules-box">
+            <h2>System Versions</h2>
+            <div id="version-checker">
+                <p>Loading version status...</p>
+            </div>
+            <div>
+                <label for="new-version-key">Update Version For:</label>
+                <select id="new-version-key">
+                    <option value="app_version">App Version</option>
+                    <option value="config_version">Config.py Version</option>
+                    <option value="env_version">.env Version</option>
+                    <option value="openai_primary_model">OpenAI Primary Model</option>
+                    <option value="openai_fallback_model">OpenAI Fallback Model</option>
+                    <option value="gemini_primary_model">Gemini Primary Model</option>
+                </select>
+                <label for="new-version-value">New Version #:</label>
+                <input type="text" id="new-version-value" placeholder="e.g., 1.2.1 or gpt-4o">
+                <button id="save-new-version-btn" class="btn-black">Save New Version</button>
+            </div>
+        </div>
+        <p style="text-align:center; font-size:0.8em; color:#999; margin-top:2em;">ART Narrator GDWS v1.5</p>
+    </aside>
+
+    <!-- Main Content Area for Paragraph Cards -->
+    <main class="dws-main-content">
+        <div id="header-blocks"></div>
+        <div id="draggable-blocks"></div>
+        <div id="footer-blocks"></div>
+    </main>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>Confirm Deletion</h3>
+        <p>Are you sure you want to delete this paragraph block? This cannot be undone.</p>
+        <div style="margin-top: 1.5em; text-align: right;">
+            <button id="cancel-delete-btn" class="btn">Cancel</button>
+            <button id="confirm-delete-btn" class="btn-black">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for all interactivity -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let currentBlockToDelete = null;
+        let currentCardToDelete = null;
+        let minWords = 20;
+        let maxWords = 150;
+
+        const headerContainer = document.getElementById('header-blocks');
+        const draggableContainer = document.getElementById('draggable-blocks');
+        const footerContainer = document.getElementById('footer-blocks');
+        const deleteModal = document.getElementById('delete-modal');
+        const aspectRatioSelector = document.getElementById('aspect-ratio-selector');
+        const slugify = (text) => text.toString().toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '_');
+
+        const renderBlocks = (blocks) => {
+            headerContainer.innerHTML = '';
+            draggableContainer.innerHTML = '';
+            footerContainer.innerHTML = '';
+
+            blocks.forEach(block => {
+                const card = document.createElement('div');
+                card.className = 'paragraph-card';
+                card.dataset.id = block.id;
+                card.dataset.isNew = block.isNew ? 'true' : 'false';
+                card.dataset.baseText = block.base_text || '';
+                card.dataset.baseInstructions = block.base_instructions || '';
+
+                const content = block.current_text || '';
+                const words = content.split(/\s+/).filter(Boolean).length;
+                const chars = content.length;
+                const wordCountErrorClass = (words < minWords || words > maxWords) ? 'error' : '';
+
+                card.innerHTML = `
+                    <div class="paragraph-card-header">
+                        ${!block.pinned ? '<div class="drag-handle">☰</div>' : '<div class="pinned-placeholder"></div>'}
+                        <input type="text" value="${block.title}">
+                    </div>
+                    <textarea>${content}</textarea>
+                    <input type="text" class="ai-instruction-input" placeholder="AI Instructions" value="${block.base_instructions || ''}">
+                    <div class="paragraph-card-footer">
+                        <div class="count-container">
+                            <span class="word-count-display ${wordCountErrorClass}">${words} words</span>
+                            <span class="count-separator">/</span>
+                            <span class="char-count-display">${chars} chars</span>
+                        </div>
+                        <div class="paragraph-card-actions">
+                            <button class="regenerate-btn btn-card-action">
+                                <img class="icon-inline" src="{{ url_for_static("static", filename="icons/svg/light/arrows-clockwise-light.svg") }}" alt="" />
+                                <span class="btn-text">Regenerate</span>
+                                <div class="spinner-overlay"><div class="spinner"></div></div>
+                            </button>
+                            ${block.deletable ? '<button class="delete-btn btn-card-action"><img class="icon-inline" src="{{ url_for_static("static", filename="icons/svg/light/trash-light.svg") }}" alt="" />Delete</button>' : ''}
+                            <button class="save-btn btn-card-action">
+                                <img class="icon-inline" src="{{ url_for_static("static", filename="icons/svg/light/floppy-disk-light.svg") }}" alt="" />
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                const container = block.pinned === 'top' ? headerContainer : block.pinned === 'bottom' ? footerContainer : draggableContainer;
+                container.appendChild(card);
+            });
+
+            attachAllListeners();
+        };
+
+        const loadTemplate = async (aspectRatio) => {
+            const res = await fetch(`/admin/gdws/template/${aspectRatio}`);
+            const data = await res.json();
+            minWords = data.settings?.minWords || 20;
+            maxWords = data.settings?.maxWords || 150;
+            document.getElementById('min-words').value = minWords;
+            document.getElementById('max-words').value = maxWords;
+            renderBlocks(data.blocks);
+        };
+
+        new Sortable(draggableContainer, {
+            animation: 150,
+            handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+        });
+        
+        const updateCounts = (textarea) => {
+            const card = textarea.closest('.paragraph-card');
+            const wordDisplay = card.querySelector('.word-count-display');
+            const charDisplay = card.querySelector('.char-count-display');
+            
+            const content = textarea.value;
+            const words = content.split(/\s+/).filter(Boolean).length;
+            const chars = content.length;
+
+            wordDisplay.textContent = `${words} words`;
+            charDisplay.textContent = `${chars} chars`;
+            
+            wordDisplay.classList.toggle('error', words < minWords || words > maxWords);
+        };
+        
+        const attachCardListeners = (card) => {
+            const id = card.dataset.id;
+            const deleteBtn = card.querySelector('.delete-btn');
+            const regenerateBtn = card.querySelector('.regenerate-btn');
+            const saveBtn = card.querySelector('.save-btn');
+            const textarea = card.querySelector('textarea');
+            const instructionInput = card.querySelector('.ai-instruction-input');
+            instructionInput.value = card.dataset.baseInstructions || '';
+            const titleInput = card.querySelector('.paragraph-card-header input[type="text"]');
+            let originalTitle = titleInput.value;
+
+            if (deleteBtn) {
+                deleteBtn.onclick = () => {
+                    currentBlockToDelete = id;
+                    currentCardToDelete = card;
+                    deleteModal.style.display = 'flex';
+                };
+            }
+            
+            if (regenerateBtn) {
+                regenerateBtn.onclick = async () => {
+                    const btnText = regenerateBtn.querySelector('.btn-text');
+                    const spinner = regenerateBtn.querySelector('.spinner-overlay');
+
+                    btnText.style.visibility = 'hidden';
+                    spinner.style.display = 'flex';
+                    regenerateBtn.disabled = true;
+
+                    const aiProvider = document.getElementById('ai-provider').value;
+                    const instructions = instructionInput.value;
+                    const res = await fetch('/admin/gdws/regenerate-paragraph', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            base_text: card.dataset.baseText,
+                            current_text: textarea.value,
+                            instructions,
+                            ai_provider: aiProvider
+                        })
+                    });
+                    const data = await res.json();
+                    textarea.value = data.new_content;
+                    updateCounts(textarea);
+
+                    btnText.style.visibility = 'visible';
+                    spinner.style.display = 'none';
+                    regenerateBtn.disabled = false;
+                };
+            }
+
+            if (saveBtn) {
+                saveBtn.onclick = () => {
+                    const isNew = card.dataset.isNew === 'true';
+                    const payload = {
+                        id: isNew ? `var_${Date.now()}` : id,
+                        title: titleInput.value,
+                        content: textarea.value,
+                        type: slugify(titleInput.value)
+                    };
+
+                    if (!isNew && originalTitle !== titleInput.value) {
+                        fetch('/admin/gdws/rename-paragraph-type', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ old_title: originalTitle, new_title: titleInput.value })
+                        });
+                        originalTitle = titleInput.value;
+                    }
+
+                    fetch('/admin/gdws/save-paragraph', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }).then(res => res.json()).then(data => {
+                        if (data.status === 'success') {
+                            alert('Paragraph saved!');
+                            card.dataset.id = data.new_id;
+                            card.dataset.isNew = 'false';
+                        } else {
+                            alert(`Error: ${data.message}`);
+                        }
+                    });
+                };
+            }
+
+            if (textarea) {
+                textarea.addEventListener('input', () => updateCounts(textarea));
+                updateCounts(textarea);
+            }
+        };
+        
+        const attachAllListeners = () => {
+            document.querySelectorAll('.paragraph-card').forEach(attachCardListeners);
+        };
+
+        aspectRatioSelector.addEventListener('change', (e) => {
+            loadTemplate(e.target.value);
+        });
+
+        const versionCheckerContainer = document.getElementById('version-checker');
+        const fetchVersionStatus = async () => {
+            const mockStatus = {
+                expected: { 
+                    app_version: "2.5.1",
+                    config_version: "1.2.0", 
+                    env_version: "1.1.0", 
+                    openai_primary_model: "gpt-4o",
+                    openai_fallback_model: "gpt-4-turbo"
+                },
+                loaded: { 
+                    app_version: "2.5.1",
+                    config_version: "1.2.0", 
+                    env_version: "1.0.0", // Mismatch example
+                    openai_primary_model: "gpt-4.1", // Mismatch example
+                    openai_fallback_model: "gpt-4-turbo"
+                }
+            };
+            
+            let html = '';
+            for (const key in mockStatus.expected) {
+                const expected = mockStatus.expected[key];
+                const loaded = mockStatus.loaded[key] || 'Not Set';
+                const isMatch = expected === loaded;
+                const statusClass = isMatch ? 'status-match' : 'status-mismatch';
+                const statusIcon = isMatch ? '✅' : '❌';
+                
+                html += `
+                    <div class="version-status">
+                        <strong>${key.replace(/_/g, ' ').replace(/(?:^|\s)\S/g, a => a.toUpperCase())}:</strong>
+                        <span class="${statusClass}">${statusIcon} ${isMatch ? 'Match' : 'Mismatch'}</span><br>
+                        <small>Expected: ${expected} | Loaded: ${loaded}</small>
+                    </div>
+                `;
+            }
+            versionCheckerContainer.innerHTML = html;
+        };
+        fetchVersionStatus();
+
+        document.getElementById('save-new-version-btn').addEventListener('click', () => {
+            const key = document.getElementById('new-version-key').value;
+            const value = document.getElementById('new-version-value').value;
+            if (!value) {
+                alert('Please enter a new version number.');
+                return;
+            }
+            console.log(`Saving new version: { "${key}": "${value}" }`);
+            alert('New version saved to console!');
+        });
+
+
+        // --- OTHER EVENT LISTENERS ---
+        document.getElementById('add-paragraph-btn').addEventListener('click', () => {
+            const newId = `block_${Date.now()}`;
+            const newBlock = { id: newId, title: "New Paragraph", content: "", pinned: false, deletable: true, isNew: true };
+            renderBlocks([...getCurrentBlocks(), newBlock]);
+        });
+
+        document.getElementById('shuffle-btn').addEventListener('click', () => {
+            const cards = Array.from(draggableContainer.children);
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            cards.forEach(card => draggableContainer.appendChild(card));
+        });
+
+        document.getElementById('save-rules-btn').addEventListener('click', () => {
+            minWords = parseInt(document.getElementById('min-words').value, 10);
+            maxWords = parseInt(document.getElementById('max-words').value, 10);
+            console.log('Saving rules:', { minWords, maxWords });
+            alert('Content rules saved!');
+            document.querySelectorAll('textarea').forEach(updateCounts);
+        });
+
+        document.getElementById('cancel-delete-btn').addEventListener('click', () => {
+            deleteModal.style.display = 'none';
+        });
+
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+            if (currentCardToDelete) {
+                currentCardToDelete.remove();
+            }
+            deleteModal.style.display = 'none';
+            console.log(`Deleted block ${currentBlockToDelete}`);
+        });
+        
+        document.getElementById('save-all-btn').addEventListener('click', () => {
+            const allBlocks = [];
+            const containers = [headerContainer, draggableContainer, footerContainer];
+            containers.forEach(container => {
+                container.querySelectorAll('.paragraph-card').forEach(card => {
+                    allBlocks.push({
+                        id: card.dataset.id,
+                        title: card.querySelector('input[type="text"]').value,
+                        content: card.querySelector('textarea').value,
+                        pinned: card.closest('#header-blocks') ? 'top' : (card.closest('#footer-blocks') ? 'bottom' : false)
+                    });
+                });
+            });
+
+            console.log("Saving all data:", JSON.stringify(allBlocks, null, 2));
+            alert("All changes saved to console! Check the developer tools.");
+        });
+
+        document.getElementById('regenerate-all-btn').addEventListener('click', () => {
+            document.querySelectorAll('.regenerate-btn').forEach(btn => btn.click());
+        });
+        
+        const getCurrentBlocks = () => {
+             const allBlocks = [];
+            const containers = [headerContainer, draggableContainer, footerContainer];
+            containers.forEach(container => {
+                container.querySelectorAll('.paragraph-card').forEach(card => {
+                    allBlocks.push({
+                        id: card.dataset.id,
+                        title: card.querySelector('input[type="text"]').value,
+                        content: card.querySelector('textarea').value,
+                        pinned: card.closest('#header-blocks') ? 'top' : (card.closest('#footer-blocks') ? 'bottom' : false),
+                        deletable: !!card.querySelector('.delete-btn')
+                    });
+                });
+            });
+            return allBlocks;
+        };
+
+        // Initial load
+        loadTemplate(aspectRatioSelector.value);
+    });
+</script>
+{% endblock %}

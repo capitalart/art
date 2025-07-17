@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+{% block title %}Active Sessions{% endblock %}
+{% block content %}
+<h1>Active Sessions</h1>
+<table class="session-table">
+  <thead>
+    <tr><th>User</th><th>Session ID</th><th>Timestamp</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+  {% for user, sessions in sessions.items() %}
+    {% for s in sessions %}
+    <tr>
+      <td>{{ user }}</td>
+      <td>{{ s.session_id[:6] }}</td>
+      <td>{{ s.timestamp }}</td>
+      <td>
+        <form method="post" style="display:inline">
+          <input type="hidden" name="username" value="{{ user }}">
+          <input type="hidden" name="session_id" value="{{ s.session_id }}">
+          <button type="submit" class="btn btn-danger">Revoke</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

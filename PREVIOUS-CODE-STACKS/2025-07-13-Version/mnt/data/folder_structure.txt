@@ -1,0 +1,768 @@
+capitalart
+├── .env
+├── .env.example
+├── .gitignore
+├── CHANGELOG.md
+├── LICENSE
+├── README.md
+├── app.py
+├── assets
+│   └── style.css
+├── backups
+│   └── older-scripts
+├── capitalart-total-rundown.py
+├── capitalart.py
+├── config.py
+├── csv_product_template.csv
+├── descriptions
+│   ├── artworks.json
+│   ├── autojourney_downloader_export_26_06_2025_15_02_55.csv
+│   └── autojourney_downloader_export_26_06_2025_15_03_12.json
+├── dev-logs
+│   ├── snapshot-2025-07-06-194227.log
+│   ├── snapshot-2025-07-06-200956.log
+│   ├── snapshot-2025-07-06-201619.log
+│   ├── snapshot-2025-07-06-204434.log
+│   ├── snapshot-2025-07-07-163003.log
+│   └── snapshot-2025-07-08-223513.log
+├── docs
+├── folder_structure.txt
+├── gdws_content
+│   ├── about_art_style
+│   │   └── variation_01.json
+│   ├── about_artist
+│   │   ├── variation_01.json
+│   │   └── variation_02.json
+│   ├── artwork_benefits
+│   │   └── variation_01.json
+│   ├── aspect_ratio_intro
+│   │   └── variation_01.json
+│   ├── call_to_action
+│   │   └── variation_01.json
+│   ├── closing_statement
+│   │   └── variation_01.json
+│   ├── faq
+│   │   ├── variation_01.json
+│   │   └── variation_02.json
+│   ├── file_details
+│   │   └── variation_01.json
+│   ├── gelato_pod_service
+│   │   └── var_1751915996089.json
+│   ├── ideal_uses
+│   │   └── variation_01.json
+│   ├── important_notes
+│   │   └── variation_01.json
+│   ├── max_print_size
+│   │   └── variation_01.json
+│   ├── pod_services
+│   │   └── variation_01.json
+│   ├── printing_tips
+│   │   ├── variation_01.json
+│   │   └── variation_02.json
+│   └── thank_you
+│       └── variation_01.json
+├── generate_folder_tree.py
+├── generic_texts
+│   ├── 16x9.txt
+│   ├── 1x1.txt
+│   ├── 2x3.txt
+│   ├── 3x2.txt
+│   ├── 3x4.txt
+│   ├── 4x3.txt
+│   ├── 4x5.txt
+│   ├── 5x4.txt
+│   ├── 5x7.txt
+│   ├── 7x5.txt
+│   ├── 9x16.txt
+│   ├── A-Series-Horizontal.txt
+│   └── A-Series-Verical.txt
+├── git-update-push-logs
+│   ├── git-update-push-2025-07-06.log
+│   ├── git-update-push-2025-07-07.log
+│   └── git-update-push-2025-07-08.log
+├── git-update-push.sh
+├── inputs
+│   ├── Coordinates
+│   │   ├── 16x9
+│   │   │   ├── 16x9-Mockup-1.json
+│   │   │   ├── 16x9-Mockup-10.json
+│   │   │   ├── 16x9-Mockup-11.json
+│   │   │   ├── 16x9-Mockup-12.json
+│   │   │   ├── 16x9-Mockup-13.json
+│   │   │   ├── 16x9-Mockup-14.json
+│   │   │   ├── 16x9-Mockup-15.json
+│   │   │   ├── 16x9-Mockup-16.json
+│   │   │   ├── 16x9-Mockup-17.json
+│   │   │   ├── 16x9-Mockup-18.json
+│   │   │   ├── 16x9-Mockup-19.json
+│   │   │   ├── 16x9-Mockup-2.json
+│   │   │   ├── 16x9-Mockup-20.json
+│   │   │   ├── 16x9-Mockup-21.json
+│   │   │   ├── 16x9-Mockup-22.json
+│   │   │   ├── 16x9-Mockup-23.json
+│   │   │   ├── 16x9-Mockup-24.json
+│   │   │   ├── 16x9-Mockup-25.json
+│   │   │   ├── 16x9-Mockup-26.json
+│   │   │   ├── 16x9-Mockup-27.json
+│   │   │   ├── 16x9-Mockup-28.json
+│   │   │   ├── 16x9-Mockup-29.json
+│   │   │   ├── 16x9-Mockup-3.json
+│   │   │   ├── 16x9-Mockup-30.json
+│   │   │   ├── 16x9-Mockup-31.json
+│   │   │   ├── 16x9-Mockup-32.json
+│   │   │   ├── 16x9-Mockup-33.json
+│   │   │   ├── 16x9-Mockup-34.json
+│   │   │   ├── 16x9-Mockup-35.json
+│   │   │   ├── 16x9-Mockup-36.json
+│   │   │   ├── 16x9-Mockup-37.json
+│   │   │   ├── 16x9-Mockup-38.json
+│   │   │   ├── 16x9-Mockup-39.json
+│   │   │   ├── 16x9-Mockup-4.json
+│   │   │   ├── 16x9-Mockup-40.json
+│   │   │   ├── 16x9-Mockup-41.json
+│   │   │   ├── 16x9-Mockup-42.json
+│   │   │   ├── 16x9-Mockup-43.json
+│   │   │   ├── 16x9-Mockup-44.json
+│   │   │   ├── 16x9-Mockup-45.json
+│   │   │   ├── 16x9-Mockup-46.json
+│   │   │   ├── 16x9-Mockup-47.json
+│   │   │   ├── 16x9-Mockup-48.json
+│   │   │   ├── 16x9-Mockup-49.json
+│   │   │   ├── 16x9-Mockup-5.json
+│   │   │   ├── 16x9-Mockup-50.json
+│   │   │   ├── 16x9-Mockup-51.json
+│   │   │   ├── 16x9-Mockup-52.json
+│   │   │   ├── 16x9-Mockup-53.json
+│   │   │   ├── 16x9-Mockup-54.json
+│   │   │   ├── 16x9-Mockup-6.json
+│   │   │   ├── 16x9-Mockup-7.json
+│   │   │   ├── 16x9-Mockup-8.json
+│   │   │   └── 16x9-Mockup-9.json
+│   │   ├── 1x1
+│   │   │   ├── 1x1-Mockup-1.json
+│   │   │   ├── 1x1-Mockup-10.json
+│   │   │   ├── 1x1-Mockup-11.json
+│   │   │   ├── 1x1-Mockup-12.json
+│   │   │   ├── 1x1-Mockup-13.json
+│   │   │   ├── 1x1-Mockup-14.json
+│   │   │   ├── 1x1-Mockup-15.json
+│   │   │   ├── 1x1-Mockup-16.json
+│   │   │   ├── 1x1-Mockup-17.json
+│   │   │   ├── 1x1-Mockup-18.json
+│   │   │   ├── 1x1-Mockup-19.json
+│   │   │   ├── 1x1-Mockup-2.json
+│   │   │   ├── 1x1-Mockup-20.json
+│   │   │   ├── 1x1-Mockup-21.json
+│   │   │   ├── 1x1-Mockup-22.json
+│   │   │   ├── 1x1-Mockup-23.json
+│   │   │   ├── 1x1-Mockup-24.json
+│   │   │   ├── 1x1-Mockup-25.json
+│   │   │   ├── 1x1-Mockup-26.json
+│   │   │   ├── 1x1-Mockup-27.json
+│   │   │   ├── 1x1-Mockup-28.json
+│   │   │   ├── 1x1-Mockup-29.json
+│   │   │   ├── 1x1-Mockup-3.json
+│   │   │   ├── 1x1-Mockup-30.json
+│   │   │   ├── 1x1-Mockup-31.json
+│   │   │   ├── 1x1-Mockup-32.json
+│   │   │   ├── 1x1-Mockup-33.json
+│   │   │   ├── 1x1-Mockup-34.json
+│   │   │   ├── 1x1-Mockup-35.json
+│   │   │   ├── 1x1-Mockup-36.json
+│   │   │   ├── 1x1-Mockup-37.json
+│   │   │   ├── 1x1-Mockup-38.json
+│   │   │   ├── 1x1-Mockup-39.json
+│   │   │   ├── 1x1-Mockup-4.json
+│   │   │   ├── 1x1-Mockup-40.json
+│   │   │   ├── 1x1-Mockup-41.json
+│   │   │   ├── 1x1-Mockup-42.json
+│   │   │   ├── 1x1-Mockup-43.json
+│   │   │   ├── 1x1-Mockup-44.json
+│   │   │   ├── 1x1-Mockup-45.json
+│   │   │   ├── 1x1-Mockup-46.json
+│   │   │   ├── 1x1-Mockup-47.json
+│   │   │   ├── 1x1-Mockup-48.json
+│   │   │   ├── 1x1-Mockup-49.json
+│   │   │   ├── 1x1-Mockup-5.json
+│   │   │   ├── 1x1-Mockup-50.json
+│   │   │   ├── 1x1-Mockup-51.json
+│   │   │   ├── 1x1-Mockup-52.json
+│   │   │   ├── 1x1-Mockup-53.json
+│   │   │   ├── 1x1-Mockup-54.json
+│   │   │   ├── 1x1-Mockup-55.json
+│   │   │   ├── 1x1-Mockup-56.json
+│   │   │   ├── 1x1-Mockup-57.json
+│   │   │   ├── 1x1-Mockup-58.json
+│   │   │   ├── 1x1-Mockup-59.json
+│   │   │   ├── 1x1-Mockup-6.json
+│   │   │   ├── 1x1-Mockup-60.json
+│   │   │   ├── 1x1-Mockup-61.json
+│   │   │   ├── 1x1-Mockup-62.json
+│   │   │   ├── 1x1-Mockup-63.json
+│   │   │   ├── 1x1-Mockup-64.json
+│   │   │   ├── 1x1-Mockup-65.json
+│   │   │   ├── 1x1-Mockup-66.json
+│   │   │   ├── 1x1-Mockup-67.json
+│   │   │   ├── 1x1-Mockup-68.json
+│   │   │   ├── 1x1-Mockup-69.json
+│   │   │   ├── 1x1-Mockup-7.json
+│   │   │   ├── 1x1-Mockup-70.json
+│   │   │   ├── 1x1-Mockup-71.json
+│   │   │   ├── 1x1-Mockup-72.json
+│   │   │   ├── 1x1-Mockup-73.json
+│   │   │   ├── 1x1-Mockup-74.json
+│   │   │   ├── 1x1-Mockup-8.json
+│   │   │   └── 1x1-Mockup-9.json
+│   │   ├── 2x3
+│   │   │   ├── 2x3-Mockup-1.json
+│   │   │   ├── 2x3-Mockup-10.json
+│   │   │   ├── 2x3-Mockup-11.json
+│   │   │   ├── 2x3-Mockup-12.json
+│   │   │   ├── 2x3-Mockup-13.json
+│   │   │   ├── 2x3-Mockup-14.json
+│   │   │   ├── 2x3-Mockup-15.json
+│   │   │   ├── 2x3-Mockup-16.json
+│   │   │   ├── 2x3-Mockup-17.json
+│   │   │   ├── 2x3-Mockup-18.json
+│   │   │   ├── 2x3-Mockup-19.json
+│   │   │   ├── 2x3-Mockup-2.json
+│   │   │   ├── 2x3-Mockup-20.json
+│   │   │   ├── 2x3-Mockup-21.json
+│   │   │   ├── 2x3-Mockup-22.json
+│   │   │   ├── 2x3-Mockup-23.json
+│   │   │   ├── 2x3-Mockup-24.json
+│   │   │   ├── 2x3-Mockup-25.json
+│   │   │   ├── 2x3-Mockup-26.json
+│   │   │   ├── 2x3-Mockup-3.json
+│   │   │   ├── 2x3-Mockup-4.json
+│   │   │   ├── 2x3-Mockup-5.json
+│   │   │   ├── 2x3-Mockup-6.json
+│   │   │   ├── 2x3-Mockup-7.json
+│   │   │   ├── 2x3-Mockup-8.json
+│   │   │   └── 2x3-Mockup-9.json
+│   │   ├── 3x2
+│   │   │   ├── 3x2-Mockup-1.json
+│   │   │   ├── 3x2-Mockup-10.json
+│   │   │   ├── 3x2-Mockup-11.json
+│   │   │   ├── 3x2-Mockup-12.json
+│   │   │   ├── 3x2-Mockup-13.json
+│   │   │   ├── 3x2-Mockup-14.json
+│   │   │   ├── 3x2-Mockup-15.json
+│   │   │   ├── 3x2-Mockup-16.json
+│   │   │   ├── 3x2-Mockup-17.json
+│   │   │   ├── 3x2-Mockup-18.json
+│   │   │   ├── 3x2-Mockup-19.json
+│   │   │   ├── 3x2-Mockup-2.json
+│   │   │   ├── 3x2-Mockup-20.json
+│   │   │   ├── 3x2-Mockup-3.json
+│   │   │   ├── 3x2-Mockup-4.json
+│   │   │   ├── 3x2-Mockup-5.json
+│   │   │   ├── 3x2-Mockup-6.json
+│   │   │   ├── 3x2-Mockup-7.json
+│   │   │   ├── 3x2-Mockup-8.json
+│   │   │   └── 3x2-Mockup-9.json
+│   │   ├── 3x4
+│   │   │   ├── 3x4-Mockup-1.json
+│   │   │   ├── 3x4-Mockup-10.json
+│   │   │   ├── 3x4-Mockup-11.json
+│   │   │   ├── 3x4-Mockup-12.json
+│   │   │   ├── 3x4-Mockup-13.json
+│   │   │   ├── 3x4-Mockup-14.json
+│   │   │   ├── 3x4-Mockup-15.json
+│   │   │   ├── 3x4-Mockup-16.json
+│   │   │   ├── 3x4-Mockup-17.json
+│   │   │   ├── 3x4-Mockup-18.json
+│   │   │   ├── 3x4-Mockup-19.json
+│   │   │   ├── 3x4-Mockup-2.json
+│   │   │   ├── 3x4-Mockup-20.json
+│   │   │   ├── 3x4-Mockup-3.json
+│   │   │   ├── 3x4-Mockup-4.json
+│   │   │   ├── 3x4-Mockup-5.json
+│   │   │   ├── 3x4-Mockup-6.json
+│   │   │   ├── 3x4-Mockup-7.json
+│   │   │   ├── 3x4-Mockup-8.json
+│   │   │   └── 3x4-Mockup-9.json
+│   │   ├── 4x3
+│   │   │   ├── 4x3-Mockup-1.json
+│   │   │   ├── 4x3-Mockup-10.json
+│   │   │   ├── 4x3-Mockup-11.json
+│   │   │   ├── 4x3-Mockup-12.json
+│   │   │   ├── 4x3-Mockup-13.json
+│   │   │   ├── 4x3-Mockup-15.json
+│   │   │   ├── 4x3-Mockup-16.json
+│   │   │   ├── 4x3-Mockup-17.json
+│   │   │   ├── 4x3-Mockup-19.json
+│   │   │   ├── 4x3-Mockup-20.json
+│   │   │   ├── 4x3-Mockup-3.json
+│   │   │   ├── 4x3-Mockup-4.json
+│   │   │   ├── 4x3-Mockup-5.json
+│   │   │   ├── 4x3-Mockup-7.json
+│   │   │   ├── 4x3-Mockup-8.json
+│   │   │   └── 4x3-Mockup-9.json
+│   │   ├── 4x5
+│   │   │   ├── 4x5-mockup-01.json
+│   │   │   ├── 4x5-mockup-02.json
+│   │   │   ├── 4x5-mockup-03.json
+│   │   │   ├── 4x5-mockup-04.json
+│   │   │   ├── 4x5-mockup-05.json
+│   │   │   ├── 4x5-mockup-06.json
+│   │   │   ├── 4x5-mockup-07.json
+│   │   │   ├── 4x5-mockup-08.json
+│   │   │   ├── 4x5-mockup-09.json
+│   │   │   ├── 4x5-mockup-10.json
+│   │   │   ├── 4x5-mockup-11.json
+│   │   │   ├── 4x5-mockup-12.json
+│   │   │   ├── 4x5-mockup-13.json
+│   │   │   ├── 4x5-mockup-14.json
+│   │   │   ├── 4x5-mockup-15.json
+│   │   │   ├── 4x5-mockup-16.json
+│   │   │   ├── 4x5-mockup-17.json
+│   │   │   ├── 4x5-mockup-18.json
+│   │   │   ├── 4x5-mockup-19.json
+│   │   │   ├── 4x5-mockup-20.json
+│   │   │   ├── 4x5-mockup-21.json
+│   │   │   ├── 4x5-mockup-22.json
+│   │   │   ├── 4x5-mockup-23.json
+│   │   │   ├── 4x5-mockup-24.json
+│   │   │   ├── 4x5-mockup-25.json
+│   │   │   ├── 4x5-mockup-26.json
+│   │   │   ├── 4x5-mockup-27.json
+│   │   │   ├── 4x5-mockup-28.json
+│   │   │   ├── 4x5-mockup-29.json
+│   │   │   ├── 4x5-mockup-30.json
+│   │   │   ├── 4x5-mockup-31.json
+│   │   │   ├── 4x5-mockup-32.json
+│   │   │   ├── 4x5-mockup-33.json
+│   │   │   ├── 4x5-mockup-34.json
+│   │   │   ├── 4x5-mockup-35.json
+│   │   │   ├── 4x5-mockup-36.json
+│   │   │   ├── 4x5-mockup-37.json
+│   │   │   ├── 4x5-mockup-38.json
+│   │   │   ├── 4x5-mockup-39.json
+│   │   │   ├── 4x5-mockup-40.json
+│   │   │   ├── 4x5-mockup-41.json
+│   │   │   ├── 4x5-mockup-42.json
+│   │   │   ├── 4x5-mockup-43.json
+│   │   │   ├── 4x5-mockup-44.json
+│   │   │   ├── 4x5-mockup-45.json
+│   │   │   ├── 4x5-mockup-46.json
+│   │   │   ├── 4x5-mockup-47.json
+│   │   │   ├── 4x5-mockup-48.json
+│   │   │   ├── 4x5-mockup-49.json
+│   │   │   ├── 4x5-mockup-50.json
+│   │   │   ├── 4x5-mockup-51.json
+│   │   │   ├── 4x5-mockup-52.json
+│   │   │   ├── 4x5-mockup-53.json
+│   │   │   ├── 4x5-mockup-54.json
+│   │   │   ├── 4x5-mockup-55.json
+│   │   │   ├── 4x5-mockup-56.json
+│   │   │   ├── 4x5-mockup-57.json
+│   │   │   ├── 4x5-mockup-58.json
+│   │   │   ├── 4x5-mockup-59.json
+│   │   │   ├── 4x5-mockup-60.json
+│   │   │   ├── 4x5-mockup-61.json
+│   │   │   ├── 4x5-mockup-62.json
+│   │   │   ├── 4x5-mockup-63.json
+│   │   │   ├── 4x5-mockup-64.json
+│   │   │   ├── 4x5-mockup-65.json
+│   │   │   ├── 4x5-mockup-66.json
+│   │   │   ├── 4x5-mockup-67.json
+│   │   │   ├── 4x5-mockup-68.json
+│   │   │   ├── 4x5-mockup-69.json
+│   │   │   ├── 4x5-mockup-70.json
+│   │   │   ├── 4x5-mockup-71.json
+│   │   │   ├── 4x5-mockup-72.json
+│   │   │   ├── 4x5-mockup-73.json
+│   │   │   ├── 4x5-mockup-74.json
+│   │   │   ├── 4x5-mockup-75.json
+│   │   │   ├── 4x5-mockup-76.json
+│   │   │   ├── 4x5-mockup-77.json
+│   │   │   └── 4x5-mockup-78.json
+│   │   ├── 5x4
+│   │   │   ├── 5x4-Mockup-1.json
+│   │   │   ├── 5x4-Mockup-10.json
+│   │   │   ├── 5x4-Mockup-11.json
+│   │   │   ├── 5x4-Mockup-12.json
+│   │   │   ├── 5x4-Mockup-13.json
+│   │   │   ├── 5x4-Mockup-14.json
+│   │   │   ├── 5x4-Mockup-15.json
+│   │   │   ├── 5x4-Mockup-16.json
+│   │   │   ├── 5x4-Mockup-17.json
+│   │   │   ├── 5x4-Mockup-18.json
+│   │   │   ├── 5x4-Mockup-19.json
+│   │   │   ├── 5x4-Mockup-2.json
+│   │   │   ├── 5x4-Mockup-20.json
+│   │   │   ├── 5x4-Mockup-21.json
+│   │   │   ├── 5x4-Mockup-22.json
+│   │   │   ├── 5x4-Mockup-3.json
+│   │   │   ├── 5x4-Mockup-4.json
+│   │   │   ├── 5x4-Mockup-5.json
+│   │   │   ├── 5x4-Mockup-6.json
+│   │   │   ├── 5x4-Mockup-7.json
+│   │   │   ├── 5x4-Mockup-8.json
+│   │   │   └── 5x4-Mockup-9.json
+│   │   └── 9x16
+│   │       ├── 9x16-Mockup-1.json
+│   │       ├── 9x16-Mockup-10.json
+│   │       ├── 9x16-Mockup-11.json
+│   │       ├── 9x16-Mockup-12.json
+│   │       ├── 9x16-Mockup-13.json
+│   │       ├── 9x16-Mockup-14.json
+│   │       ├── 9x16-Mockup-15.json
+│   │       ├── 9x16-Mockup-16.json
+│   │       ├── 9x16-Mockup-17.json
+│   │       ├── 9x16-Mockup-18.json
+│   │       ├── 9x16-Mockup-19.json
+│   │       ├── 9x16-Mockup-2.json
+│   │       ├── 9x16-Mockup-20.json
+│   │       ├── 9x16-Mockup-21.json
+│   │       ├── 9x16-Mockup-22.json
+│   │       ├── 9x16-Mockup-23.json
+│   │       ├── 9x16-Mockup-24.json
+│   │       ├── 9x16-Mockup-3.json
+│   │       ├── 9x16-Mockup-4.json
+│   │       ├── 9x16-Mockup-5.json
+│   │       ├── 9x16-Mockup-6.json
+│   │       ├── 9x16-Mockup-7.json
+│   │       ├── 9x16-Mockup-8.json
+│   │       └── 9x16-Mockup-9.json
+│   ├── artworks
+│   │   ├── 4x5-artworks
+│   │   └── sample.jpg
+│   └── mockups
+│       └── 4x5-categorised
+│           ├── Bedroom
+│           │   ├── 4x5-mockup-10.png
+│           │   ├── 4x5-mockup-11.png
+│           │   ├── 4x5-mockup-12.png
+│           │   └── 4x5-mockup-13.png
+│           ├── Closeup
+│           │   ├── 4x5-mockup-06.png
+│           │   ├── 4x5-mockup-07.png
+│           │   ├── 4x5-mockup-08.png
+│           │   ├── 4x5-mockup-09.png
+│           │   ├── 4x5-mockup-16.png
+│           │   ├── 4x5-mockup-17.png
+│           │   ├── 4x5-mockup-18.png
+│           │   ├── 4x5-mockup-19.png
+│           │   ├── 4x5-mockup-20.png
+│           │   ├── 4x5-mockup-22.png
+│           │   ├── 4x5-mockup-23.png
+│           │   ├── 4x5-mockup-46.png
+│           │   ├── 4x5-mockup-48.png
+│           │   ├── 4x5-mockup-49.png
+│           │   ├── 4x5-mockup-50.png
+│           │   ├── 4x5-mockup-59.png
+│           │   ├── 4x5-mockup-65.png
+│           │   └── 4x5-mockup-72.png
+│           ├── Dining-Room
+│           │   ├── 4x5-mockup-75.png
+│           │   └── 4x5-mockup-76.png
+│           ├── Gallery-Wall
+│           │   ├── 4x5-mockup-63.png
+│           │   └── 4x5-mockup-64.png
+│           ├── Hallway
+│           │   ├── 4x5-mockup-25.png
+│           │   ├── 4x5-mockup-55.png
+│           │   ├── 4x5-mockup-60.png
+│           │   └── 4x5-mockup-70.png
+│           ├── Living Room
+│           │   ├── 4x5-mockup-01.png
+│           │   ├── 4x5-mockup-02.png
+│           │   ├── 4x5-mockup-04.png
+│           │   ├── 4x5-mockup-21.png
+│           │   ├── 4x5-mockup-26.png
+│           │   ├── 4x5-mockup-27.png
+│           │   ├── 4x5-mockup-28.png
+│           │   ├── 4x5-mockup-39.png
+│           │   ├── 4x5-mockup-40.png
+│           │   ├── 4x5-mockup-41.png
+│           │   ├── 4x5-mockup-42.png
+│           │   ├── 4x5-mockup-43.png
+│           │   ├── 4x5-mockup-45.png
+│           │   ├── 4x5-mockup-47.png
+│           │   ├── 4x5-mockup-51.png
+│           │   ├── 4x5-mockup-52.png
+│           │   ├── 4x5-mockup-53.png
+│           │   ├── 4x5-mockup-54.png
+│           │   ├── 4x5-mockup-56.png
+│           │   ├── 4x5-mockup-66.png
+│           │   ├── 4x5-mockup-67.png
+│           │   ├── 4x5-mockup-71.png
+│           │   ├── 4x5-mockup-73.png
+│           │   ├── 4x5-mockup-74.png
+│           │   └── 4x5-mockup-78.png
+│           ├── Nursery
+│           │   ├── 4x5-mockup-03.png
+│           │   └── 4x5-mockup-05.png
+│           ├── Office
+│           │   ├── 4x5-mockup-14.png
+│           │   ├── 4x5-mockup-15.png
+│           │   ├── 4x5-mockup-57.png
+│           │   ├── 4x5-mockup-58.png
+│           │   ├── 4x5-mockup-61.png
+│           │   ├── 4x5-mockup-62.png
+│           │   ├── 4x5-mockup-68.png
+│           │   ├── 4x5-mockup-69.png
+│           │   └── 4x5-mockup-77.png
+│           └── Outdoors
+│               ├── 4x5-mockup-24.png
+│               ├── 4x5-mockup-29.png
+│               ├── 4x5-mockup-30.png
+│               ├── 4x5-mockup-31.png
+│               ├── 4x5-mockup-32.png
+│               ├── 4x5-mockup-33.png
+│               ├── 4x5-mockup-34.png
+│               ├── 4x5-mockup-35.png
+│               ├── 4x5-mockup-36.png
+│               ├── 4x5-mockup-37.png
+│               └── 4x5-mockup-38.png
+├── logs
+│   ├── analyze-artwork-2025-07-05-1400.log
+│   ├── analyze-artwork-2025-07-05-1401.log
+│   ├── analyze-artwork-2025-07-05-1403.log
+│   ├── analyze-artwork-2025-07-05-1424.log
+│   ├── analyze-artwork-2025-07-05-1425.log
+│   ├── analyze-artwork-2025-07-05-1449.log
+│   ├── analyze-artwork-2025-07-05-1450.log
+│   ├── analyze-artwork-2025-07-05-1451.log
+│   ├── analyze-artwork-2025-07-05-1452.log
+│   ├── analyze-artwork-2025-07-05-1526.log
+│   ├── analyze-artwork-2025-07-05-1527.log
+│   ├── analyze-artwork-2025-07-05-1542.log
+│   ├── analyze-artwork-2025-07-05-1543.log
+│   ├── analyze-artwork-2025-07-05-1545.log
+│   ├── analyze-artwork-2025-07-05-1616.log
+│   ├── analyze-artwork-2025-07-05-1617.log
+│   ├── analyze-artwork-2025-07-05-1647.log
+│   ├── analyze-artwork-2025-07-05-1814.log
+│   ├── analyze-artwork-2025-07-05-1820.log
+│   ├── analyze-artwork-2025-07-05-1910.log
+│   ├── analyze-artwork-2025-07-05-1915.log
+│   ├── analyze-artwork-2025-07-05-1945.log
+│   ├── analyze-artwork-2025-07-05-1950.log
+│   ├── analyze-artwork-2025-07-05-1954.log
+│   ├── analyze-artwork-2025-07-05-2011.log
+│   ├── analyze-artwork-2025-07-05-2024.log
+│   ├── analyze-artwork-2025-07-05-2028.log
+│   ├── analyze-artwork-2025-07-05-2034.log
+│   ├── analyze-artwork-2025-07-05-2042.log
+│   ├── analyze-artwork-2025-07-05-2046.log
+│   ├── analyze-artwork-2025-07-05-2047.log
+│   ├── analyze-artwork-2025-07-05-2049.log
+│   ├── analyze-artwork-2025-07-05-2053.log
+│   ├── analyze-artwork-2025-07-05-2104.log
+│   ├── analyze-artwork-2025-07-05-2105.log
+│   ├── analyze-artwork-2025-07-05-2119.log
+│   ├── analyze-artwork-2025-07-05-2121.log
+│   ├── analyze-artwork-2025-07-05-2122.log
+│   ├── analyze-artwork-2025-07-05-2124.log
+│   ├── analyze-artwork-2025-07-05-2126.log
+│   ├── analyze-artwork-2025-07-05-2130.log
+│   ├── analyze-artwork-2025-07-05-2133.log
+│   ├── analyze-artwork-2025-07-05-2134.log
+│   ├── analyze-artwork-2025-07-05-2139.log
+│   ├── analyze-artwork-2025-07-05-2140.log
+│   ├── analyze-artwork-2025-07-05-2142.log
+│   ├── analyze-artwork-2025-07-05-2145.log
+│   ├── analyze-artwork-2025-07-05-2148.log
+│   ├── analyze-artwork-2025-07-05-2155.log
+│   ├── analyze-artwork-2025-07-05-2231.log
+│   ├── analyze-artwork-2025-07-05-2232.log
+│   ├── analyze-artwork-2025-07-06-0847.log
+│   ├── analyze-artwork-2025-07-06-1008.log
+│   ├── analyze-artwork-2025-07-06-1033.log
+│   ├── analyze-artwork-2025-07-06-1034.log
+│   ├── analyze-artwork-2025-07-06-1109.log
+│   ├── analyze-artwork-2025-07-06-1112.log
+│   ├── analyze-artwork-2025-07-06-1206.log
+│   ├── analyze-artwork-2025-07-06-1234.log
+│   ├── analyze-artwork-2025-07-06-1258.log
+│   ├── analyze-artwork-2025-07-07-0656.log
+│   ├── analyze-artwork-2025-07-07-0659.log
+│   ├── analyze-openai-calls-2025-07-05.log
+│   ├── analyze-openai-calls-2025-07-06.log
+│   ├── analyze-openai-calls-2025-07-07.log
+│   ├── analyze_019bc7204cb144a182f014dca9f3e9fc.log
+│   ├── analyze_0ae169e4-c0cc-4361-aa83-18a4e3508cb2.log
+│   ├── analyze_0fac704888994ee18333f1b537d25c71.log
+│   ├── analyze_13dc655a-6be0-4669-ac4c-ecf114afb7d5.log
+│   ├── analyze_240d34d6-fef0-42d9-98ea-2617a8b5b5c7.log
+│   ├── analyze_27017011-c0c5-4977-9f89-df5b2bc1fa1d.log
+│   ├── analyze_27030967-659f-4290-9bf3-888e471ae3d2.log
+│   ├── analyze_2eb73c08-979a-4847-9a73-33618f3b1d64.log
+│   ├── analyze_3272c19fda7240f09efec731db0b56c2.log
+│   ├── analyze_3c9694af7f994087915b7d08d35ff0f1.log
+│   ├── analyze_3e5cb19f368549ccad5195a88dc7356f.log
+│   ├── analyze_472f9915-c81d-47f0-a1a3-5112bcfe7611.log
+│   ├── analyze_49e95081-f38c-455d-8cc6-48520c61f9c9.log
+│   ├── analyze_55eef74e-28dd-46a9-9996-9307c78fddd8.log
+│   ├── analyze_5ac77d9fea554a75915ccf05bfd9c9bb.log
+│   ├── analyze_5ebef164-3a7f-476d-8030-135c1eb756ee.log
+│   ├── analyze_6201888b-1135-411e-8775-d21749aca1fd.log
+│   ├── analyze_655a8e9b-2c93-48eb-90e3-3ce72fedf203.log
+│   ├── analyze_69568c6fc9854e1fa24a89c6b6ff0e6c.log
+│   ├── analyze_6e082dc8e9f14b3c9fd1f97001727b56.log
+│   ├── analyze_731f3de10684401ab84e514b35908efb.log
+│   ├── analyze_7a09d518-6d73-4ff1-9308-6bbe96b8353c.log
+│   ├── analyze_80ee4e9a-cabe-4420-bd6f-16374e221075.log
+│   ├── analyze_874b6457297241e38c5c0b0aef4613e6.log
+│   ├── analyze_891849e5314b470298326e10a2961319.log
+│   ├── analyze_8a07aafb-436d-48ee-8841-74878ddcd51c.log
+│   ├── analyze_8a4eff95-75a9-48fb-8ee9-ba907d4f6730.log
+│   ├── analyze_998fc7b4-9507-4835-85f0-e5f4b893925e.log
+│   ├── analyze_99b7a15bdd9b47ca8882c3f993ac3c45.log
+│   ├── analyze_a2463ca5d08b45aea5c900b7802a9dd6.log
+│   ├── analyze_a59e2dae-8354-48a3-ac9b-f8cbfe9a2d1e.log
+│   ├── analyze_a9107f898c474c3597d8e7d22a96f4e4.log
+│   ├── analyze_abc216cf3f42410fabbbed95bce74321.log
+│   ├── analyze_b7f66bdf31134409ab1f6faae894a91f.log
+│   ├── analyze_b9d8e5e6-ba2e-4f70-9b8d-b3fad9258ab2.log
+│   ├── analyze_cb01bfd2c42746cd80c13b24192111a9.log
+│   ├── analyze_e26ec5d5-71d3-4367-85b4-213674e618b3.log
+│   ├── analyze_e3c6d6c41d304513ad9b5eec42d20c39.log
+│   ├── analyze_e6d295099a754585940165c05f32e1f0.log
+│   ├── analyze_e98d7b6424824e1792b2ffe1bc7470de.log
+│   ├── analyze_e9b80d2e-6269-45b0-b97a-b4dcc9694f1e.log
+│   ├── analyze_fa5975a7e80943d5b3b8207435b55d5d.log
+│   ├── composite_gen_019bc7204cb144a182f014dca9f3e9fc.log
+│   ├── composite_gen_0fac704888994ee18333f1b537d25c71.log
+│   ├── composite_gen_240d34d6-fef0-42d9-98ea-2617a8b5b5c7.log
+│   ├── composite_gen_27030967-659f-4290-9bf3-888e471ae3d2.log
+│   ├── composite_gen_3272c19fda7240f09efec731db0b56c2.log
+│   ├── composite_gen_3c9694af7f994087915b7d08d35ff0f1.log
+│   ├── composite_gen_3e5cb19f368549ccad5195a88dc7356f.log
+│   ├── composite_gen_472f9915-c81d-47f0-a1a3-5112bcfe7611.log
+│   ├── composite_gen_49e95081-f38c-455d-8cc6-48520c61f9c9.log
+│   ├── composite_gen_55eef74e-28dd-46a9-9996-9307c78fddd8.log
+│   ├── composite_gen_5ac77d9fea554a75915ccf05bfd9c9bb.log
+│   ├── composite_gen_5ebef164-3a7f-476d-8030-135c1eb756ee.log
+│   ├── composite_gen_6e082dc8e9f14b3c9fd1f97001727b56.log
+│   ├── composite_gen_731f3de10684401ab84e514b35908efb.log
+│   ├── composite_gen_874b6457297241e38c5c0b0aef4613e6.log
+│   ├── composite_gen_891849e5314b470298326e10a2961319.log
+│   ├── composite_gen_99b7a15bdd9b47ca8882c3f993ac3c45.log
+│   ├── composite_gen_a2463ca5d08b45aea5c900b7802a9dd6.log
+│   ├── composite_gen_a9107f898c474c3597d8e7d22a96f4e4.log
+│   ├── composite_gen_abc216cf3f42410fabbbed95bce74321.log
+│   ├── composite_gen_b7f66bdf31134409ab1f6faae894a91f.log
+│   ├── composite_gen_b9d8e5e6-ba2e-4f70-9b8d-b3fad9258ab2.log
+│   ├── composite_gen_cb01bfd2c42746cd80c13b24192111a9.log
+│   ├── composite_gen_e26ec5d5-71d3-4367-85b4-213674e618b3.log
+│   ├── composite_gen_e3c6d6c41d304513ad9b5eec42d20c39.log
+│   ├── composite_gen_e6d295099a754585940165c05f32e1f0.log
+│   ├── composite_gen_e98d7b6424824e1792b2ffe1bc7470de.log
+│   ├── composite_gen_e9b80d2e-6269-45b0-b97a-b4dcc9694f1e.log
+│   ├── composite_gen_fa5975a7e80943d5b3b8207435b55d5d.log
+│   ├── composites-workflow.log
+│   ├── crops
+│   ├── finalise.log
+│   ├── openai_analysis.log
+│   ├── openai_prompts
+│   ├── openai_responses
+│   └── parse_failures
+├── mnt
+│   └── data
+│       ├── Full-Rundown.txt
+│       └── report_code_snapshot_reports-08-jul-2025-10-35pm.md
+├── mockup_categoriser.py
+├── outputs
+│   ├── Composites
+│   ├── finalised-artwork
+│   ├── processed
+│   ├── selections
+│   ├── sellbrite
+│   │   ├── sellbrite_2025-07-06T04-52-26_locked.log
+│   │   ├── sellbrite_2025-07-06T20-46-48_locked.log
+│   │   ├── sellbrite_2025-07-06T20-46-51_locked.log
+│   │   ├── sellbrite_2025-07-06T21-37-05_locked.log
+│   │   ├── sellbrite_2025-07-06T22-05-09_locked.log
+│   │   ├── sellbrite_2025-07-06T22-05-20_locked.log
+│   │   ├── sellbrite_2025-07-06T22-28-20_locked.log
+│   │   └── sellbrite_2025-07-07T16-26-20_locked.log
+│   └── signed
+├── package-lock.json
+├── patches
+│   ├── codex_patch_2025-06-29_15-03-34.patch
+│   ├── codex_patch_2025-06-29_15-07-34.patch
+│   ├── codex_patch_2025-06-29_15-09-29.patch
+│   ├── codex_patch_2025-06-29_16-42-47.patch
+│   ├── codex_patch_2025-06-29_16-45-56.patch
+│   └── codex_patch_2025-06-29_16-53-02.patch
+├── reports
+│   └── REPORTS-08-JUL-2025-10-35PM
+│       ├── env_metadata.txt
+│       ├── file_summary.md
+│       ├── git_snapshot.txt
+│       └── report_code_snapshot_reports-08-jul-2025-10-35pm.md
+├── requirements.txt
+├── routes
+│   ├── __init__.py
+│   ├── admin_debug.py
+│   ├── artwork_routes.py
+│   ├── export_routes.py
+│   ├── gdws_admin_routes.py
+│   ├── logs
+│   │   └── composites-workflow.log
+│   ├── sellbrite_export.py
+│   ├── sellbrite_service.py
+│   └── utils.py
+├── run_codex_patch.py
+├── scripts
+│   ├── analyze_artwork.py
+│   ├── dev_cycle.sh
+│   ├── generate_composites.py
+│   └── sellbrite_csv_export.py
+├── settings
+│   ├── Master-Etsy-Listing-Description-Writing-Onboarding.txt
+│   └── sku_tracker.json
+├── smart_sign_artwork.py
+├── smart_sign_test01.py
+├── sort_and_prepare_midjourney_images.py
+├── static
+│   ├── css
+│   │   └── style.css
+│   ├── img
+│   │   └── no-image.svg
+│   └── js
+│       ├── main.js
+│       └── upload.js
+├── templates
+│   ├── artworks.html
+│   ├── composites_preview.html
+│   ├── debug_parse_ai.html
+│   ├── debug_status.html
+│   ├── dws_editor.html
+│   ├── edit_listing.html
+│   ├── finalised.html
+│   ├── gallery.html
+│   ├── index.html
+│   ├── locked.html
+│   ├── main.html
+│   ├── missing_endpoint.html
+│   ├── mockup_selector.html
+│   ├── review.html
+│   ├── sellbrite_csv_preview.html
+│   ├── sellbrite_exports.html
+│   ├── sellbrite_log.html
+│   ├── test_description.html
+│   ├── upload.html
+│   └── upload_results.html
+├── tests
+│   ├── test_ai_pipeline.py
+│   ├── test_analyze_artwork.py
+│   ├── test_csv_header.py
+│   ├── test_export_tags_materials.py
+│   ├── test_routes.py
+│   ├── test_sku_assigner.py
+│   ├── test_sku_tracker.py
+│   ├── test_sku_utils.py
+│   ├── test_upload.py
+│   └── test_utils_cleaning.py
+├── tmp
+│   └── ai_input_images
+├── uploads_temp
+├── utils
+│   ├── ai_services.py
+│   └── sku_assigner.py
+└── version.json

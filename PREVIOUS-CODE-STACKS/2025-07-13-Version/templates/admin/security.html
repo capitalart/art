@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+{% block title %}Security Controls{% endblock %}
+{% block content %}
+<h1>Security Controls</h1>
+<form method="post">
+  <label for="duration">Bypass Duration</label>
+  <select name="duration" id="duration">
+    <option value="300">5 minutes</option>
+    <option value="600">10 minutes</option>
+    <option value="3600">1 hour</option>
+    <option value="86400">1 day</option>
+  </select>
+  <button type="submit" name="action" value="enable" class="btn btn-warning">Enable</button>
+  <button type="submit" name="action" value="disable" class="btn btn-danger">Disable</button>
+</form>
+<p>Status: {% if remaining %}<strong>ACTIVE</strong> ({{ remaining }}){% else %}Not active{% endif %}</p>
+{% endblock %}

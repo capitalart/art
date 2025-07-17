@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+{% block title %}Cache Control{% endblock %}
+{% block content %}
+<h1>Cache Control</h1>
+<form method="post">
+  <button type="submit" name="action" value="enable" class="btn btn-warning">Enable</button>
+  <button type="submit" name="action" value="disable" class="btn btn-danger">Disable</button>
+</form>
+<p>Status: {% if status %}<strong>ACTIVE</strong> ({{ remaining }}){% else %}Not active{% endif %}</p>
+{% endblock %}

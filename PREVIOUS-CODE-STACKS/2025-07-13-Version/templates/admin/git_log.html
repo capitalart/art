@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+{% block title %}Git Commit Log{% endblock %}
+{% block content %}
+<h1>Debug: Git Log</h1>
+<pre>
+{% for line in log_lines %}
+{{ line }}
+{% endfor %}
+</pre>
+{% endblock %}

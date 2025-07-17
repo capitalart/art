@@ -1,0 +1,48 @@
+{% extends "main.html" %}
+{% block title %}Prompt Whisperer | ART Narrator{% endblock %}
+{% block content %}
+<h2>AI Image Prompt Whisperer</h2>
+<div class="whisperer-form">
+  <label for="prompt">Prompt</label>
+  <textarea id="prompt" rows="4">{{ prompt }}</textarea>
+
+  <label for="instructions">Instructions</label>
+  <input id="instructions" type="text" placeholder="Optional guidance" />
+
+  <label for="word_count">Word Count</label>
+  <select id="word_count">
+    {% for n in [10,20,40,60,100] %}
+    <option value="{{n}}">{{n}}</option>
+    {% endfor %}
+  </select>
+
+  <label for="category">Category</label>
+  <select id="category">
+    {% for cat in categories %}
+    <option value="{{cat}}">{{cat}}</option>
+    {% endfor %}
+  </select>
+
+  <fieldset>
+    <legend>Prompt Randomness</legend>
+    {% for r in [0,20,40,60,80,100] %}
+    <label><input type="radio" name="randomness" value="{{r}}" {% if r==40 %}checked{% endif %}>{{r}}</label>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset>
+    <legend>Sentiment</legend>
+    {% for s in sentiments %}
+    <label><input type="radio" name="sentiment" value="{{s}}" {% if loop.index==1 %}checked{% endif %}>{{s}}</label>
+    {% endfor %}
+  </fieldset>
+
+  <div class="actions">
+    <button id="generate">Generate Prompt</button>
+    <button id="save">Save Prompt</button>
+    <button id="clear" type="button">Clear</button>
+  </div>
+</div>
+<p class="example">Example: <span id="example">A mystical landscape with shimmering light.</span></p>
+<script src="{{ url_for_static('static', filename='js/prompt_whisperer.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+{% block title %}Edit {{ meta.filename }}{% endblock %}
+{% block content %}
+<h2>Edit {{ meta.filename }}</h2>
+<form method="post">
+  <label>Category</label>
+  <select name="category">
+    {% for c in categories %}
+      <option value="{{ c }}" {% if c==meta.category %}selected{% endif %}>{{ c }}</option>
+    {% endfor %}
+  </select>
+  <label>Description</label>
+  <textarea name="description">{{ meta.description }}</textarea>
+  <button type="submit" name="action" value="save" class="btn btn-primary">Save</button>
+  <button type="submit" name="action" value="delete" class="btn btn-danger" onclick="return confirm('Delete mockup?')">Delete</button>
+</form>
+<p><a href="{{ url_for('mockups.image', aspect=meta.aspect, category=meta.category, filename=meta.filename) }}">Download Image</a></p>
+<p><a href="{{ url_for('mockups.gallery', aspect=meta.aspect) }}">Back</a></p>
+{% endblock %}

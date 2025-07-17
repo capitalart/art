@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% block title %}Prompt Options Admin{% endblock %}
+{% block content %}
+<h1>Prompt Options</h1>
+<select id="category-select"></select>
+<textarea id="options-text" rows="10" cols="50"></textarea><br>
+<button id="save-btn">Save</button>
+<div id="status"></div>
+<script>
+const categories = {{ categories|tojson }};
+const select = document.getElementById('category-select');
+const textArea = document.getElementById('options-text');
+const statusEl = document.getElementById('status');
+categories.forEach(c => {
+  const opt = document.createElement('option');
+  opt.value = c;
+  opt.textContent = c;
+  select.appendChild(opt);
+});
+function loadOptions(cat){
+  fetch(`/api/prompt-options/${cat}`)
+    .then(r => r.json())
+    .then(d => { textArea.value = JSON.stringify(d, null, 2); });
+}
+select.addEventListener('change', () => loadOptions(select.value));
+document.getElementById('save-btn').addEventListener('click', () => {
+  const data = textArea.value;
+  fetch(`/admin/prompt-options/${select.value}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: data
+  }).then(r => r.json()).then(d => { statusEl.textContent = d.message; });
+});
+if (categories.length) loadOptions(categories[0]);
+</script>
+{% endblock %}

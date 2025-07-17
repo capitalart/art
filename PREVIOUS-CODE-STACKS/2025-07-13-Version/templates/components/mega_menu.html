@@ -1,0 +1,15 @@
+<div id="mega-menu" class="mega-menu" aria-hidden="true">
+  <div class="mega-inner">
+    {% for section, items in mega_menu.items() %}
+    <div class="mega-col">
+      <h3 tabindex="0">{{ section }}</h3>
+      <ul>
+        {% for item in items %}
+        <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div id="mega-overlay" class="mega-overlay" tabindex="-1"></div>

@@ -1,0 +1,44 @@
+{% extends "main.html" %}
+{% block title %}Preview {{ csv_filename }}{% endblock %}
+{% block content %}
+<div class="page-step-wrapper" style="text-align: center; margin-bottom: 1.5em;">
+  <div class="step-label">STAGE</div>
+  <img class="page-step-icon" src="{{ url_for_static('static', filename='icons/svg/light/number-circle-five-light.svg') }}" alt="STAGE 5" />
+</div>
+<h1>Preview {{ csv_filename }}</h1>
+{% if export %}
+<div class="export-info">
+  <div class="export-filename">{{ export.filename or csv_filename }}</div>
+  {% if export.timestamp %}<div class="export-time">{{ export.timestamp }}</div>{% endif %}
+  {% if export.warnings %}
+  <ul class="export-warnings">
+    {% for w in export.warnings %}<li>{{ w }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  {% if export.log_path %}
+  <div class="export-log"><a href="{{ url_for('exports.view_sellbrite_log', log_filename=export.log_path|basename) }}">View Log</a></div>
+  {% endif %}
+</div>
+{% endif %}
+<p><a class="btn-black" href="{{ url_for('exports.download_sellbrite', csv_filename=csv_filename) }}">Download Full CSV</a></p>
+<div class="csv-preview">
+  {% for row in csv_data %}
+  <section class="csv-artwork-panel">
+    {% if row.image_url or row.image %}
+    <div class="csv-thumb"><img src="{{ row.image_url or row.image }}" alt="thumbnail" /></div>
+    {% endif %}
+    <div class="csv-fields">
+      {% for field, value in row.items() %}
+      <div class="csv-field csv-field-{{ field|replace(' ', '_') }}">
+        <div class="csv-label">{{ field }}</div>
+        <div class="csv-value{% if field == 'description' %} csv-field-description{% endif %}">
+          {{ value if value else '—' }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="csv-status"></div>
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

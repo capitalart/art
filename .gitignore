@@ -1,0 +1,65 @@
+# ===========================================
+# ArtNarrator - .gitignore File
+# ===========================================
+
+# Ignore Python bytecode and other generated files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore environment files
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Ignore Flask-related files
+instance/
+.webassets-cache
+
+# Ignore logs and temporary files
+*.log
+*.swp
+*.bak
+*.tmp
+
+# Ignore compressed files
+*.tar.gz
+*.tgz
+*.zip
+
+# Ignore uploads and processed artwork folders
+inputs/
+outputs/
+backups/
+reports/
+
+# Ignore sensitive files such as .env and config
+.env
+*.json
+
+
+# Ignore database files
+*.db
+*.sqlite3
+
+# Ignore all system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE and editor-specific files
+.vscode/
+.idea/
+
+# Ignore packaging and distribution files
+dist/
+build/
+*.egg-info/
+
+# Ignore Nginx and server-related configurations
+nginx.conf
+
+# ===========================================
+# End of .gitignore
+# ===========================================

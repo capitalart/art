@@ -1,0 +1,213 @@
+/* ==============================
+   ART Narrator Layout Styles
+   Scope: header, nav, main containers, footer and responsive spacing
+   ============================== */
+
+header, .site-nav {
+  background: var(--nav-bg);
+  color: var(--footer-link);
+  height: var(--menu-height);
+  display: flex;
+  align-items: center;
+  padding: 0 2em;
+  font-size: 1.2em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  gap: 1.7em;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+nav a, .site-nav a {
+  color: var(--footer-link);
+  text-decoration: none;
+  margin-right: 2em;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+nav a:hover,
+nav a.active,
+.site-nav a:hover { color: #ffe873; }
+.brand-logo {
+  font-family: sans-serif;
+  font-weight: 400;
+  font-size: 2em;
+  letter-spacing: 0.05em;
+  margin-right: 2em;
+  display: flex;
+  align-items: center;
+}
+.brand-logo .brand-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
+  color: inherit;
+}
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+.theme-toggle img {
+  width: 28px;
+  height: 28px;
+}
+.theme-dark .theme-toggle { color: #ffe873; }
+#icon-moon { display: none; }
+.theme-dark #icon-sun { display: none; }
+.theme-dark #icon-moon { display: inline; }
+
+.profile-area {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  font-size: 0.95em;
+}
+.profile-area a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.profile-area a:hover {
+  color: var(--link-hover);
+}
+.profile-area a.active {
+  color: var(--link-active);
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2.5em var(--container-padding) 2em var(--container-padding);
+}
+@media (max-width: 700px) {
+  main { padding: 1.1em 0.4em; }
+}
+
+footer, .gallery-footer {
+  text-align: left;
+  margin-top: 4em;
+  padding: 2em 1em;
+  font-size: 0.95em;
+  color: #555;
+  background: #f2f2f2;
+  border-top: 1px solid #ececec;
+  letter-spacing: 0.01em;
+  display: block;
+}
+footer a {
+  color: var(--footer-link);
+  text-decoration: none;
+  display: block;
+  margin: 2px 0;
+  font-weight: 500;
+}
+footer a:hover { color: var(--footer-link-hover); }
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  gap: 4px;
+}
+.footer-brand {
+  font-family: sans-serif;
+  font-weight: 700;
+}
+@media (max-width: 700px) {
+  footer, .gallery-footer {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+/* Simple layout for policy and info pages */
+.legal-page, .info-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1em;
+  line-height: 1.6;
+}
+
+/* Mega Menu Layout */
+.mega-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.mega-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--menu-height);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  display: none;
+  padding: 2em 1em;
+  z-index: 1000;
+}
+.mega-menu.open {
+  display: block;
+}
+.mega-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--gallery-gap);
+}
+.mega-col h3 {
+  margin-top: 0;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+.mega-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mega-col li a {
+  display: block;
+  padding: 0.3em 0;
+  color: var(--footer-link);
+  text-decoration: none;
+  font-weight: 500;
+}
+.mega-col li a:hover {
+  color: var(--link-hover);
+}
+@media (max-width: 700px) {
+  .mega-menu {
+    position: fixed;
+    top: var(--menu-height);
+    bottom: 0;
+    overflow-y: auto;
+  }
+  .mega-inner {
+    grid-template-columns: 1fr;
+  }
+  .mega-col {
+    border-bottom: 1px solid var(--border);
+  }
+  .mega-col h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 0;
+    cursor: pointer;
+  }
+  .mega-col ul {
+    display: none;
+    padding-bottom: 0.5em;
+  }
+  .mega-col.open ul {
+    display: block;
+  }
+}
+

@@ -1,0 +1,199 @@
+🎨 DreamArtMachine / ArtNarrator — Master System Overview
+By Robin “Robbie” Custance | Updated July 2025 | For Codex Reference
+
+1. Project Vision & Core Philosophy
+DreamArtMachine (now evolving as ArtNarrator) is a next-gen, self-hosted, modular art business suite purpose-built for digital artists, especially those working at scale. It automates everything from art upload and AI-powered description writing, to bulk mockup generation, export-ready listings, and deep quality control.
+The system is specifically crafted for Australian and Aboriginal art workflows, with a focus on authentic storytelling, cultural sensitivity, and pro-level curation.
+End Game: Empower artists to control, scale, and monetize their art—without losing their voice, values, or sanity.
+
+Key Ethos:
+
+Keep the artist at the centre (no soulless automation).
+
+Scale, but never at the expense of quality or culture.
+
+Every artwork gets world-class treatment, from visual curation to written narrative.
+
+2. Tech Stack & Architecture
+Core: Python 3.11+, FastAPI backend, Jinja2 templates for admin UI.
+
+AI: OpenAI GPT-4 Vision (with future Gemini/Mistral/Claude plug-in support).
+
+DB: SQLite (migratable to Postgres). ORM: SQLAlchemy + Pydantic.
+
+Image Ops: Pillow, pathlib.
+
+File I/O: Strict folder conventions. All files versioned, named, and logged.
+
+Export: Native CSV (Etsy, Nembol), JSON, partner ZIPs.
+
+Security: Passlib, session management, role-based auth.
+
+Automation: Shell scripts, cron jobs, code snapshots, QA bots.
+
+Hosting: Google Cloud VM (Linux), ready for Docker/cloud.
+
+3. Project Goals & Differentiators
+Fully Automated Pipeline: From upload to export, every repetitive step is automated.
+
+AI-Driven Listings: Generates 400+ word, Pulitzer-worthy, SEO-optimized, culturally aware listings using custom prompt templates and reusable content blocks.
+
+Mockup Automation: Generates, manages, and enforces naming/filing rules for mockups and their variants.
+
+Strict Data Integrity: Every move, rename, export is logged. Orphaned files/records are flagged.
+
+Cultural Intelligence: Aboriginal art and Aussie nature profiles ensure all content is respectful, authentic, and on-brand.
+
+Zero CSV Headaches: Exports are always ready for upload—no manual Excel cleanups.
+
+Deep QA: Every step (file, DB, listing) gets QC checked, with reports/audit logs.
+
+4. Core Workflows
+A. Upload & Ingestion:
+
+User uploads high-res artwork.
+
+System assigns temp-processing folder and extracts metadata.
+
+DB entry created: tracks file, user, status, etc.
+
+B. AI Analysis:
+
+Triggers OpenAI Vision for visual breakdown (style, colour, subject, texture, method).
+
+Runs custom prompt for long-form listing—adheres to “Robbie Mode™” (fun, warm, pro curation, culturally aware, strict CTAs).
+
+Stores AI results (title, desc, analysis) in DB.
+
+C. Mockup Generation:
+
+Batch creates mockups from curated templates (room types, orientations).
+
+Strict naming ({seo_filename}-MU-01.jpg etc.) and filing rules.
+
+All mockups, thumbs, openai-variants stored per artwork.
+
+D. Review & Finalization:
+
+User reviews/selects best mockups in dashboard UI.
+
+On finalize: moves assets to /finalised-artwork/{seo_folder}/, updates DB, cleans temp, enforces names.
+
+E. Export & Publishing:
+
+Exports listings for Etsy, Nembol, or partner (CSV, JSON, ZIP).
+
+Exports always pass pre-flight QA (missing images, titles, tag count etc.).
+
+F. Quality Assurance:
+
+Scripts/UI run health checks for file/DB mismatches, broken links, naming issues.
+
+Every critical action is timestamped and logged for traceability.
+
+5. Data & File Structure
+Upload: /art-uploads/temp-processing/{uuid}/
+
+Final Artworks: /finalised-artwork/{seo_folder}/
+
+Mockups: /mockup-generator/Input/Mockups/{aspect}/{category}/
+
+Exports: /exports/Composites/
+
+Naming:
+
+Main: {seo_filename}.jpg
+
+Mockups: {seo_filename}-MU-01.jpg ... -MU-10.jpg
+
+Thumb: {seo_filename}-thumb.jpg
+
+AI Variant: {seo_filename}-openai.jpg
+
+DB:
+
+Tracks artwork, mockup, user, export, status, file paths.
+
+6. AI & Content Generation
+Profiles: Supports multiple art/listing profiles (Aboriginal Dot Art, Australian Nature, etc.)—prompt blocks and templates are modular (editable in settings.json, etsy_master_template.txt).
+
+Strict Prompting: No “realistic”/“immerse yourself”, includes aspect/technique, pro art curation, EEAT, and local Aussie flair.
+
+Audit Logs: Every AI call (input/output, user, timing, version) is logged for debugging and review.
+
+7. Security, Permissions, & Auth
+User roles: Admin (full), Curator, Mockup, Exporter.
+
+Strong password, session, optional 2FA.
+
+Audit trail: Every login, edit, export logged (tamper-evident).
+
+Privacy: No personal info in exports; all secrets in .env.
+
+8. Integrations & Extensibility
+Print-on-Demand: Gelato.com (ready for full API/CSV), future: Printful, others.
+
+Marketplace: Etsy/Nembol CSVs, JSON for B2B, direct partner export (ZIPs).
+
+WordPress: Gallery sync (planned via REST API or folder polling).
+
+DevOps: All scripts, health checks, and deploys are versioned (nightly backups, dependency audits, etc.).
+
+9. Coding Standards (“Robbie Mode™”)
+All files fully sectioned, sub-sectioned, and labelled with unique codes (e.g. analyze-routes-py-1a).
+
+Full table of contents (ToC) at the top of every major code file.
+
+Comprehensive docstrings and inline comments.
+
+No partial rewrites: Full files or well-defined sections only—never lose functionality.
+
+Ask for clarification if anything is unclear—never guess.
+
+New features are modular and backward compatible.
+
+When updating/rewriting: never break existing workflows, QA, or naming conventions.
+
+Scripts (Python, shell) start with a plain English summary, usage, dependencies.
+
+10. Limitations & Roadmap
+Manual review still needed for certain listings and mockups.
+
+Admin UI: Functional but basic—mobile/responsive planned.
+
+Bulk actions possible, but may slow with 10k+ artworks (scaling in progress).
+
+Integrations: Full API connection for PODs, live sync with WordPress in development.
+
+Advanced analytics/partner dashboard on roadmap.
+
+Future: Automated listing QA bots, cultural compliance checks, team workflows, full SaaS version for trusted artist community.
+
+11. Sample Workflow (From Artist POV)
+Upload artwork →
+
+AI analyzes, generates title/desc →
+
+Batch generate mockups →
+
+Review and finalize best mockups →
+
+System renames/files everything into neat folders, logs everything in DB →
+
+Export listing with all images, CSV, ready for Etsy/Nembol/POD/partners →
+
+All actions logged and quality checked—easy to fix or retry.
+
+12. Why This System is Different
+Built by an artist, for artists—actual real-world curation and workflow, not “one size fits none”.
+
+AI is a creative partner, not a replacement—your stories, your voice, your culture.
+
+Designed for easy onboarding—whether you’re a dev, AI, or future team member, the docs, code, and practices are all here and crystal clear.
+
+Can grow with you: from solo artist to collective, from Etsy to global partners.
+
+For Codex/AI:
+When writing or editing code, always reference this doc and enforce all section, naming, and workflow conventions. No quick hacks—only production-grade, well-commented, fully ToC’d code accepted.
+
+If you’re a new developer, AI assistant, or future Robbie, read this top to bottom before you touch the code. Ask questions. Build awesome. And always keep the art (and a bit of Aussie heart) at the centre.

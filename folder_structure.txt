@@ -1,0 +1,1776 @@
+art
+├── .env
+├── .gitignore
+├── Archive.zip
+├── LICENSE
+├── README.md
+├── __MACOSX
+│   ├── ._LICENSE
+│   ├── ._README.md
+│   ├── .___pycache__
+│   ├── ._app.py
+│   ├── ._artnarrator-total-rundown.py
+│   ├── ._artnarrator.py
+│   ├── ._assets
+│   ├── ._backups
+│   ├── ._config.py
+│   ├── ._descriptions
+│   ├── ._dev-logs
+│   ├── ._generate_folder_tree.py
+│   ├── ._generic_texts
+│   ├── ._git-update-push-logs
+│   ├── ._git-update-push.sh
+│   ├── ._inputs
+│   ├── ._logs
+│   ├── ._mockup_categoriser.py
+│   ├── ._notes-and-instructions
+│   ├── ._outputs
+│   ├── ._package-lock.json
+│   ├── ._patches
+│   ├── ._reports
+│   ├── ._requirements.txt
+│   ├── ._routes
+│   ├── ._run_codex_patch.py
+│   ├── ._scripts
+│   ├── ._sellbrite_template.csv
+│   ├── ._settings
+│   ├── ._smart_sign_artwork.py
+│   ├── ._smart_sign_test01.py
+│   ├── ._sort_and_prepare_midjourney_images.py
+│   ├── ._static
+│   ├── ._templates
+│   ├── ._tests
+│   ├── ._tmp
+│   ├── ._uploads_temp
+│   ├── ._utils
+│   ├── assets
+│   │   └── ._style.css
+│   ├── backups
+│   │   ├── ._older-scripts
+│   │   └── older-scripts
+│   │       ├── ._.DS_Store
+│   │       ├── .___pycache__
+│   │       ├── ._ai-jpeg-reset.sh
+│   │       ├── ._backup_mockup_generator.sh
+│   │       ├── ._backup_mockup_structure.sh
+│   │       ├── ._compatible-image-generator.jsx
+│   │       ├── ._dupe-png-files-and-rename.py
+│   │       ├── ._export-artwork-layers.jsx
+│   │       ├── ._find-matching-png-files.py
+│   │       ├── ._fix_srgb_profiles.py
+│   │       ├── ._gather_mockup_code_to_text.sh
+│   │       ├── ._generate_all_coordinates.py
+│   │       ├── ._generate_composites.py
+│   │       ├── ._generate_folder_structure.py
+│   │       ├── ._google_vision_basic_analyzer.py
+│   │       ├── ._openai_vision_test.py
+│   │       ├── ._organise-jpg-and-png-files.py
+│   │       ├── ._rename-4x5-mockup-layers.jsx
+│   │       ├── ._utils.py
+│   │       └── ._write_all_composite_generators.py
+│   ├── descriptions
+│   │   ├── ._artworks.json
+│   │   ├── ._autojourney_downloader_export_26_06_2025_15_02_55.csv
+│   │   └── ._autojourney_downloader_export_26_06_2025_15_03_12.json
+│   ├── generic_texts
+│   │   ├── ._16x9.txt
+│   │   ├── ._1x1.txt
+│   │   ├── ._2x3.txt
+│   │   ├── ._3x2.txt
+│   │   ├── ._3x4.txt
+│   │   ├── ._4x3.txt
+│   │   ├── ._4x5.txt
+│   │   ├── ._5x4.txt
+│   │   ├── ._5x7.txt
+│   │   ├── ._7x5.txt
+│   │   ├── ._9x16.txt
+│   │   ├── ._A-Series-Horizontal.txt
+│   │   └── ._A-Series-Verical.txt
+│   ├── git-update-push-logs
+│   │   └── ._git-update-push-2025-07-06.log
+│   ├── inputs
+│   │   ├── ._.DS_Store
+│   │   ├── ._Coordinates
+│   │   ├── ._artworks
+│   │   ├── ._mockups
+│   │   ├── Coordinates
+│   │   │   ├── ._.DS_Store
+│   │   │   ├── ._16x9
+│   │   │   ├── ._1x1
+│   │   │   ├── ._2x3
+│   │   │   ├── ._3x2
+│   │   │   ├── ._3x4
+│   │   │   ├── ._4x3
+│   │   │   ├── ._4x5
+│   │   │   ├── ._5x4
+│   │   │   ├── ._9x16
+│   │   │   ├── 16x9
+│   │   │   │   ├── ._16x9-Mockup-1.json
+│   │   │   │   ├── ._16x9-Mockup-10.json
+│   │   │   │   ├── ._16x9-Mockup-11.json
+│   │   │   │   ├── ._16x9-Mockup-12.json
+│   │   │   │   ├── ._16x9-Mockup-13.json
+│   │   │   │   ├── ._16x9-Mockup-14.json
+│   │   │   │   ├── ._16x9-Mockup-15.json
+│   │   │   │   ├── ._16x9-Mockup-16.json
+│   │   │   │   ├── ._16x9-Mockup-17.json
+│   │   │   │   ├── ._16x9-Mockup-18.json
+│   │   │   │   ├── ._16x9-Mockup-19.json
+│   │   │   │   ├── ._16x9-Mockup-2.json
+│   │   │   │   ├── ._16x9-Mockup-20.json
+│   │   │   │   ├── ._16x9-Mockup-21.json
+│   │   │   │   ├── ._16x9-Mockup-22.json
+│   │   │   │   ├── ._16x9-Mockup-23.json
+│   │   │   │   ├── ._16x9-Mockup-24.json
+│   │   │   │   ├── ._16x9-Mockup-25.json
+│   │   │   │   ├── ._16x9-Mockup-26.json
+│   │   │   │   ├── ._16x9-Mockup-27.json
+│   │   │   │   ├── ._16x9-Mockup-28.json
+│   │   │   │   ├── ._16x9-Mockup-29.json
+│   │   │   │   ├── ._16x9-Mockup-3.json
+│   │   │   │   ├── ._16x9-Mockup-30.json
+│   │   │   │   ├── ._16x9-Mockup-31.json
+│   │   │   │   ├── ._16x9-Mockup-32.json
+│   │   │   │   ├── ._16x9-Mockup-33.json
+│   │   │   │   ├── ._16x9-Mockup-34.json
+│   │   │   │   ├── ._16x9-Mockup-35.json
+│   │   │   │   ├── ._16x9-Mockup-36.json
+│   │   │   │   ├── ._16x9-Mockup-37.json
+│   │   │   │   ├── ._16x9-Mockup-38.json
+│   │   │   │   ├── ._16x9-Mockup-39.json
+│   │   │   │   ├── ._16x9-Mockup-4.json
+│   │   │   │   ├── ._16x9-Mockup-40.json
+│   │   │   │   ├── ._16x9-Mockup-41.json
+│   │   │   │   ├── ._16x9-Mockup-42.json
+│   │   │   │   ├── ._16x9-Mockup-43.json
+│   │   │   │   ├── ._16x9-Mockup-44.json
+│   │   │   │   ├── ._16x9-Mockup-45.json
+│   │   │   │   ├── ._16x9-Mockup-46.json
+│   │   │   │   ├── ._16x9-Mockup-47.json
+│   │   │   │   ├── ._16x9-Mockup-48.json
+│   │   │   │   ├── ._16x9-Mockup-49.json
+│   │   │   │   ├── ._16x9-Mockup-5.json
+│   │   │   │   ├── ._16x9-Mockup-50.json
+│   │   │   │   ├── ._16x9-Mockup-51.json
+│   │   │   │   ├── ._16x9-Mockup-52.json
+│   │   │   │   ├── ._16x9-Mockup-53.json
+│   │   │   │   ├── ._16x9-Mockup-54.json
+│   │   │   │   ├── ._16x9-Mockup-6.json
+│   │   │   │   ├── ._16x9-Mockup-7.json
+│   │   │   │   ├── ._16x9-Mockup-8.json
+│   │   │   │   └── ._16x9-Mockup-9.json
+│   │   │   ├── 1x1
+│   │   │   │   ├── ._1x1-Mockup-1.json
+│   │   │   │   ├── ._1x1-Mockup-10.json
+│   │   │   │   ├── ._1x1-Mockup-11.json
+│   │   │   │   ├── ._1x1-Mockup-12.json
+│   │   │   │   ├── ._1x1-Mockup-13.json
+│   │   │   │   ├── ._1x1-Mockup-14.json
+│   │   │   │   ├── ._1x1-Mockup-15.json
+│   │   │   │   ├── ._1x1-Mockup-16.json
+│   │   │   │   ├── ._1x1-Mockup-17.json
+│   │   │   │   ├── ._1x1-Mockup-18.json
+│   │   │   │   ├── ._1x1-Mockup-19.json
+│   │   │   │   ├── ._1x1-Mockup-2.json
+│   │   │   │   ├── ._1x1-Mockup-20.json
+│   │   │   │   ├── ._1x1-Mockup-21.json
+│   │   │   │   ├── ._1x1-Mockup-22.json
+│   │   │   │   ├── ._1x1-Mockup-23.json
+│   │   │   │   ├── ._1x1-Mockup-24.json
+│   │   │   │   ├── ._1x1-Mockup-25.json
+│   │   │   │   ├── ._1x1-Mockup-26.json
+│   │   │   │   ├── ._1x1-Mockup-27.json
+│   │   │   │   ├── ._1x1-Mockup-28.json
+│   │   │   │   ├── ._1x1-Mockup-29.json
+│   │   │   │   ├── ._1x1-Mockup-3.json
+│   │   │   │   ├── ._1x1-Mockup-30.json
+│   │   │   │   ├── ._1x1-Mockup-31.json
+│   │   │   │   ├── ._1x1-Mockup-32.json
+│   │   │   │   ├── ._1x1-Mockup-33.json
+│   │   │   │   ├── ._1x1-Mockup-34.json
+│   │   │   │   ├── ._1x1-Mockup-35.json
+│   │   │   │   ├── ._1x1-Mockup-36.json
+│   │   │   │   ├── ._1x1-Mockup-37.json
+│   │   │   │   ├── ._1x1-Mockup-38.json
+│   │   │   │   ├── ._1x1-Mockup-39.json
+│   │   │   │   ├── ._1x1-Mockup-4.json
+│   │   │   │   ├── ._1x1-Mockup-40.json
+│   │   │   │   ├── ._1x1-Mockup-41.json
+│   │   │   │   ├── ._1x1-Mockup-42.json
+│   │   │   │   ├── ._1x1-Mockup-43.json
+│   │   │   │   ├── ._1x1-Mockup-44.json
+│   │   │   │   ├── ._1x1-Mockup-45.json
+│   │   │   │   ├── ._1x1-Mockup-46.json
+│   │   │   │   ├── ._1x1-Mockup-47.json
+│   │   │   │   ├── ._1x1-Mockup-48.json
+│   │   │   │   ├── ._1x1-Mockup-49.json
+│   │   │   │   ├── ._1x1-Mockup-5.json
+│   │   │   │   ├── ._1x1-Mockup-50.json
+│   │   │   │   ├── ._1x1-Mockup-51.json
+│   │   │   │   ├── ._1x1-Mockup-52.json
+│   │   │   │   ├── ._1x1-Mockup-53.json
+│   │   │   │   ├── ._1x1-Mockup-54.json
+│   │   │   │   ├── ._1x1-Mockup-55.json
+│   │   │   │   ├── ._1x1-Mockup-56.json
+│   │   │   │   ├── ._1x1-Mockup-57.json
+│   │   │   │   ├── ._1x1-Mockup-58.json
+│   │   │   │   ├── ._1x1-Mockup-59.json
+│   │   │   │   ├── ._1x1-Mockup-6.json
+│   │   │   │   ├── ._1x1-Mockup-60.json
+│   │   │   │   ├── ._1x1-Mockup-61.json
+│   │   │   │   ├── ._1x1-Mockup-62.json
+│   │   │   │   ├── ._1x1-Mockup-63.json
+│   │   │   │   ├── ._1x1-Mockup-64.json
+│   │   │   │   ├── ._1x1-Mockup-65.json
+│   │   │   │   ├── ._1x1-Mockup-66.json
+│   │   │   │   ├── ._1x1-Mockup-67.json
+│   │   │   │   ├── ._1x1-Mockup-68.json
+│   │   │   │   ├── ._1x1-Mockup-69.json
+│   │   │   │   ├── ._1x1-Mockup-7.json
+│   │   │   │   ├── ._1x1-Mockup-70.json
+│   │   │   │   ├── ._1x1-Mockup-71.json
+│   │   │   │   ├── ._1x1-Mockup-72.json
+│   │   │   │   ├── ._1x1-Mockup-73.json
+│   │   │   │   ├── ._1x1-Mockup-74.json
+│   │   │   │   ├── ._1x1-Mockup-8.json
+│   │   │   │   └── ._1x1-Mockup-9.json
+│   │   │   ├── 2x3
+│   │   │   │   ├── ._2x3-Mockup-1.json
+│   │   │   │   ├── ._2x3-Mockup-10.json
+│   │   │   │   ├── ._2x3-Mockup-11.json
+│   │   │   │   ├── ._2x3-Mockup-12.json
+│   │   │   │   ├── ._2x3-Mockup-13.json
+│   │   │   │   ├── ._2x3-Mockup-14.json
+│   │   │   │   ├── ._2x3-Mockup-15.json
+│   │   │   │   ├── ._2x3-Mockup-16.json
+│   │   │   │   ├── ._2x3-Mockup-17.json
+│   │   │   │   ├── ._2x3-Mockup-18.json
+│   │   │   │   ├── ._2x3-Mockup-19.json
+│   │   │   │   ├── ._2x3-Mockup-2.json
+│   │   │   │   ├── ._2x3-Mockup-20.json
+│   │   │   │   ├── ._2x3-Mockup-21.json
+│   │   │   │   ├── ._2x3-Mockup-22.json
+│   │   │   │   ├── ._2x3-Mockup-23.json
+│   │   │   │   ├── ._2x3-Mockup-24.json
+│   │   │   │   ├── ._2x3-Mockup-25.json
+│   │   │   │   ├── ._2x3-Mockup-26.json
+│   │   │   │   ├── ._2x3-Mockup-3.json
+│   │   │   │   ├── ._2x3-Mockup-4.json
+│   │   │   │   ├── ._2x3-Mockup-5.json
+│   │   │   │   ├── ._2x3-Mockup-6.json
+│   │   │   │   ├── ._2x3-Mockup-7.json
+│   │   │   │   ├── ._2x3-Mockup-8.json
+│   │   │   │   └── ._2x3-Mockup-9.json
+│   │   │   ├── 3x2
+│   │   │   │   ├── ._3x2-Mockup-1.json
+│   │   │   │   ├── ._3x2-Mockup-10.json
+│   │   │   │   ├── ._3x2-Mockup-11.json
+│   │   │   │   ├── ._3x2-Mockup-12.json
+│   │   │   │   ├── ._3x2-Mockup-13.json
+│   │   │   │   ├── ._3x2-Mockup-14.json
+│   │   │   │   ├── ._3x2-Mockup-15.json
+│   │   │   │   ├── ._3x2-Mockup-16.json
+│   │   │   │   ├── ._3x2-Mockup-17.json
+│   │   │   │   ├── ._3x2-Mockup-18.json
+│   │   │   │   ├── ._3x2-Mockup-19.json
+│   │   │   │   ├── ._3x2-Mockup-2.json
+│   │   │   │   ├── ._3x2-Mockup-20.json
+│   │   │   │   ├── ._3x2-Mockup-3.json
+│   │   │   │   ├── ._3x2-Mockup-4.json
+│   │   │   │   ├── ._3x2-Mockup-5.json
+│   │   │   │   ├── ._3x2-Mockup-6.json
+│   │   │   │   ├── ._3x2-Mockup-7.json
+│   │   │   │   ├── ._3x2-Mockup-8.json
+│   │   │   │   └── ._3x2-Mockup-9.json
+│   │   │   ├── 3x4
+│   │   │   │   ├── ._3x4-Mockup-1.json
+│   │   │   │   ├── ._3x4-Mockup-10.json
+│   │   │   │   ├── ._3x4-Mockup-11.json
+│   │   │   │   ├── ._3x4-Mockup-12.json
+│   │   │   │   ├── ._3x4-Mockup-13.json
+│   │   │   │   ├── ._3x4-Mockup-14.json
+│   │   │   │   ├── ._3x4-Mockup-15.json
+│   │   │   │   ├── ._3x4-Mockup-16.json
+│   │   │   │   ├── ._3x4-Mockup-17.json
+│   │   │   │   ├── ._3x4-Mockup-18.json
+│   │   │   │   ├── ._3x4-Mockup-19.json
+│   │   │   │   ├── ._3x4-Mockup-2.json
+│   │   │   │   ├── ._3x4-Mockup-20.json
+│   │   │   │   ├── ._3x4-Mockup-3.json
+│   │   │   │   ├── ._3x4-Mockup-4.json
+│   │   │   │   ├── ._3x4-Mockup-5.json
+│   │   │   │   ├── ._3x4-Mockup-6.json
+│   │   │   │   ├── ._3x4-Mockup-7.json
+│   │   │   │   ├── ._3x4-Mockup-8.json
+│   │   │   │   └── ._3x4-Mockup-9.json
+│   │   │   ├── 4x3
+│   │   │   │   ├── ._4x3-Mockup-1.json
+│   │   │   │   ├── ._4x3-Mockup-10.json
+│   │   │   │   ├── ._4x3-Mockup-11.json
+│   │   │   │   ├── ._4x3-Mockup-12.json
+│   │   │   │   ├── ._4x3-Mockup-13.json
+│   │   │   │   ├── ._4x3-Mockup-15.json
+│   │   │   │   ├── ._4x3-Mockup-16.json
+│   │   │   │   ├── ._4x3-Mockup-17.json
+│   │   │   │   ├── ._4x3-Mockup-19.json
+│   │   │   │   ├── ._4x3-Mockup-20.json
+│   │   │   │   ├── ._4x3-Mockup-3.json
+│   │   │   │   ├── ._4x3-Mockup-4.json
+│   │   │   │   ├── ._4x3-Mockup-5.json
+│   │   │   │   ├── ._4x3-Mockup-7.json
+│   │   │   │   ├── ._4x3-Mockup-8.json
+│   │   │   │   └── ._4x3-Mockup-9.json
+│   │   │   ├── 4x5
+│   │   │   │   ├── ._4x5-mockup-01.json
+│   │   │   │   ├── ._4x5-mockup-02.json
+│   │   │   │   ├── ._4x5-mockup-03.json
+│   │   │   │   ├── ._4x5-mockup-04.json
+│   │   │   │   ├── ._4x5-mockup-05.json
+│   │   │   │   ├── ._4x5-mockup-06.json
+│   │   │   │   ├── ._4x5-mockup-07.json
+│   │   │   │   ├── ._4x5-mockup-08.json
+│   │   │   │   ├── ._4x5-mockup-09.json
+│   │   │   │   ├── ._4x5-mockup-10.json
+│   │   │   │   ├── ._4x5-mockup-11.json
+│   │   │   │   ├── ._4x5-mockup-12.json
+│   │   │   │   ├── ._4x5-mockup-13.json
+│   │   │   │   ├── ._4x5-mockup-14.json
+│   │   │   │   ├── ._4x5-mockup-15.json
+│   │   │   │   ├── ._4x5-mockup-16.json
+│   │   │   │   ├── ._4x5-mockup-17.json
+│   │   │   │   ├── ._4x5-mockup-18.json
+│   │   │   │   ├── ._4x5-mockup-19.json
+│   │   │   │   ├── ._4x5-mockup-20.json
+│   │   │   │   ├── ._4x5-mockup-21.json
+│   │   │   │   ├── ._4x5-mockup-22.json
+│   │   │   │   ├── ._4x5-mockup-23.json
+│   │   │   │   ├── ._4x5-mockup-24.json
+│   │   │   │   ├── ._4x5-mockup-25.json
+│   │   │   │   ├── ._4x5-mockup-26.json
+│   │   │   │   ├── ._4x5-mockup-27.json
+│   │   │   │   ├── ._4x5-mockup-28.json
+│   │   │   │   ├── ._4x5-mockup-29.json
+│   │   │   │   ├── ._4x5-mockup-30.json
+│   │   │   │   ├── ._4x5-mockup-31.json
+│   │   │   │   ├── ._4x5-mockup-32.json
+│   │   │   │   ├── ._4x5-mockup-33.json
+│   │   │   │   ├── ._4x5-mockup-34.json
+│   │   │   │   ├── ._4x5-mockup-35.json
+│   │   │   │   ├── ._4x5-mockup-36.json
+│   │   │   │   ├── ._4x5-mockup-37.json
+│   │   │   │   ├── ._4x5-mockup-38.json
+│   │   │   │   ├── ._4x5-mockup-39.json
+│   │   │   │   ├── ._4x5-mockup-40.json
+│   │   │   │   ├── ._4x5-mockup-41.json
+│   │   │   │   ├── ._4x5-mockup-42.json
+│   │   │   │   ├── ._4x5-mockup-43.json
+│   │   │   │   ├── ._4x5-mockup-44.json
+│   │   │   │   ├── ._4x5-mockup-45.json
+│   │   │   │   ├── ._4x5-mockup-46.json
+│   │   │   │   ├── ._4x5-mockup-47.json
+│   │   │   │   ├── ._4x5-mockup-48.json
+│   │   │   │   ├── ._4x5-mockup-49.json
+│   │   │   │   ├── ._4x5-mockup-50.json
+│   │   │   │   ├── ._4x5-mockup-51.json
+│   │   │   │   ├── ._4x5-mockup-52.json
+│   │   │   │   ├── ._4x5-mockup-53.json
+│   │   │   │   ├── ._4x5-mockup-54.json
+│   │   │   │   ├── ._4x5-mockup-55.json
+│   │   │   │   ├── ._4x5-mockup-56.json
+│   │   │   │   ├── ._4x5-mockup-57.json
+│   │   │   │   ├── ._4x5-mockup-58.json
+│   │   │   │   ├── ._4x5-mockup-59.json
+│   │   │   │   ├── ._4x5-mockup-60.json
+│   │   │   │   ├── ._4x5-mockup-61.json
+│   │   │   │   ├── ._4x5-mockup-62.json
+│   │   │   │   ├── ._4x5-mockup-63.json
+│   │   │   │   ├── ._4x5-mockup-64.json
+│   │   │   │   ├── ._4x5-mockup-65.json
+│   │   │   │   ├── ._4x5-mockup-66.json
+│   │   │   │   ├── ._4x5-mockup-67.json
+│   │   │   │   ├── ._4x5-mockup-68.json
+│   │   │   │   ├── ._4x5-mockup-69.json
+│   │   │   │   ├── ._4x5-mockup-70.json
+│   │   │   │   ├── ._4x5-mockup-71.json
+│   │   │   │   ├── ._4x5-mockup-72.json
+│   │   │   │   ├── ._4x5-mockup-73.json
+│   │   │   │   ├── ._4x5-mockup-74.json
+│   │   │   │   ├── ._4x5-mockup-75.json
+│   │   │   │   ├── ._4x5-mockup-76.json
+│   │   │   │   ├── ._4x5-mockup-77.json
+│   │   │   │   └── ._4x5-mockup-78.json
+│   │   │   ├── 5x4
+│   │   │   │   ├── ._5x4-Mockup-1.json
+│   │   │   │   ├── ._5x4-Mockup-10.json
+│   │   │   │   ├── ._5x4-Mockup-11.json
+│   │   │   │   ├── ._5x4-Mockup-12.json
+│   │   │   │   ├── ._5x4-Mockup-13.json
+│   │   │   │   ├── ._5x4-Mockup-14.json
+│   │   │   │   ├── ._5x4-Mockup-15.json
+│   │   │   │   ├── ._5x4-Mockup-16.json
+│   │   │   │   ├── ._5x4-Mockup-17.json
+│   │   │   │   ├── ._5x4-Mockup-18.json
+│   │   │   │   ├── ._5x4-Mockup-19.json
+│   │   │   │   ├── ._5x4-Mockup-2.json
+│   │   │   │   ├── ._5x4-Mockup-20.json
+│   │   │   │   ├── ._5x4-Mockup-21.json
+│   │   │   │   ├── ._5x4-Mockup-22.json
+│   │   │   │   ├── ._5x4-Mockup-3.json
+│   │   │   │   ├── ._5x4-Mockup-4.json
+│   │   │   │   ├── ._5x4-Mockup-5.json
+│   │   │   │   ├── ._5x4-Mockup-6.json
+│   │   │   │   ├── ._5x4-Mockup-7.json
+│   │   │   │   ├── ._5x4-Mockup-8.json
+│   │   │   │   └── ._5x4-Mockup-9.json
+│   │   │   └── 9x16
+│   │   │       ├── ._9x16-Mockup-1.json
+│   │   │       ├── ._9x16-Mockup-10.json
+│   │   │       ├── ._9x16-Mockup-11.json
+│   │   │       ├── ._9x16-Mockup-12.json
+│   │   │       ├── ._9x16-Mockup-13.json
+│   │   │       ├── ._9x16-Mockup-14.json
+│   │   │       ├── ._9x16-Mockup-15.json
+│   │   │       ├── ._9x16-Mockup-16.json
+│   │   │       ├── ._9x16-Mockup-17.json
+│   │   │       ├── ._9x16-Mockup-18.json
+│   │   │       ├── ._9x16-Mockup-19.json
+│   │   │       ├── ._9x16-Mockup-2.json
+│   │   │       ├── ._9x16-Mockup-20.json
+│   │   │       ├── ._9x16-Mockup-21.json
+│   │   │       ├── ._9x16-Mockup-22.json
+│   │   │       ├── ._9x16-Mockup-23.json
+│   │   │       ├── ._9x16-Mockup-24.json
+│   │   │       ├── ._9x16-Mockup-3.json
+│   │   │       ├── ._9x16-Mockup-4.json
+│   │   │       ├── ._9x16-Mockup-5.json
+│   │   │       ├── ._9x16-Mockup-6.json
+│   │   │       ├── ._9x16-Mockup-7.json
+│   │   │       ├── ._9x16-Mockup-8.json
+│   │   │       └── ._9x16-Mockup-9.json
+│   │   ├── artworks
+│   │   │   ├── ._.DS_Store
+│   │   │   ├── ._4x5-artworks
+│   │   │   ├── ._sample.jpg
+│   │   │   └── 4x5-artworks
+│   │   │       └── ._.DS_Store
+│   │   └── mockups
+│   │       ├── ._4x5-categorised
+│   │       └── 4x5-categorised
+│   │           ├── ._.DS_Store
+│   │           ├── ._Bedroom
+│   │           ├── ._Closeup
+│   │           ├── ._Dining-Room
+│   │           ├── ._Gallery-Wall
+│   │           ├── ._Hallway
+│   │           ├── ._Living Room
+│   │           ├── ._Nursery
+│   │           ├── ._Office
+│   │           ├── ._Outdoors
+│   │           ├── Bedroom
+│   │           │   ├── ._4x5-mockup-10.png
+│   │           │   ├── ._4x5-mockup-11.png
+│   │           │   ├── ._4x5-mockup-12.png
+│   │           │   └── ._4x5-mockup-13.png
+│   │           ├── Closeup
+│   │           │   ├── ._4x5-mockup-06.png
+│   │           │   ├── ._4x5-mockup-07.png
+│   │           │   ├── ._4x5-mockup-08.png
+│   │           │   ├── ._4x5-mockup-09.png
+│   │           │   ├── ._4x5-mockup-16.png
+│   │           │   ├── ._4x5-mockup-17.png
+│   │           │   ├── ._4x5-mockup-18.png
+│   │           │   ├── ._4x5-mockup-19.png
+│   │           │   ├── ._4x5-mockup-20.png
+│   │           │   ├── ._4x5-mockup-22.png
+│   │           │   ├── ._4x5-mockup-23.png
+│   │           │   ├── ._4x5-mockup-46.png
+│   │           │   ├── ._4x5-mockup-48.png
+│   │           │   ├── ._4x5-mockup-49.png
+│   │           │   ├── ._4x5-mockup-50.png
+│   │           │   ├── ._4x5-mockup-59.png
+│   │           │   ├── ._4x5-mockup-65.png
+│   │           │   └── ._4x5-mockup-72.png
+│   │           ├── Dining-Room
+│   │           │   ├── ._4x5-mockup-75.png
+│   │           │   └── ._4x5-mockup-76.png
+│   │           ├── Gallery-Wall
+│   │           │   ├── ._4x5-mockup-63.png
+│   │           │   └── ._4x5-mockup-64.png
+│   │           ├── Hallway
+│   │           │   ├── ._4x5-mockup-25.png
+│   │           │   ├── ._4x5-mockup-55.png
+│   │           │   ├── ._4x5-mockup-60.png
+│   │           │   └── ._4x5-mockup-70.png
+│   │           ├── Living Room
+│   │           │   ├── ._4x5-mockup-01.png
+│   │           │   ├── ._4x5-mockup-02.png
+│   │           │   ├── ._4x5-mockup-04.png
+│   │           │   ├── ._4x5-mockup-21.png
+│   │           │   ├── ._4x5-mockup-26.png
+│   │           │   ├── ._4x5-mockup-27.png
+│   │           │   ├── ._4x5-mockup-28.png
+│   │           │   ├── ._4x5-mockup-39.png
+│   │           │   ├── ._4x5-mockup-40.png
+│   │           │   ├── ._4x5-mockup-41.png
+│   │           │   ├── ._4x5-mockup-42.png
+│   │           │   ├── ._4x5-mockup-43.png
+│   │           │   ├── ._4x5-mockup-45.png
+│   │           │   ├── ._4x5-mockup-47.png
+│   │           │   ├── ._4x5-mockup-51.png
+│   │           │   ├── ._4x5-mockup-52.png
+│   │           │   ├── ._4x5-mockup-53.png
+│   │           │   ├── ._4x5-mockup-54.png
+│   │           │   ├── ._4x5-mockup-56.png
+│   │           │   ├── ._4x5-mockup-66.png
+│   │           │   ├── ._4x5-mockup-67.png
+│   │           │   ├── ._4x5-mockup-71.png
+│   │           │   ├── ._4x5-mockup-73.png
+│   │           │   ├── ._4x5-mockup-74.png
+│   │           │   └── ._4x5-mockup-78.png
+│   │           ├── Nursery
+│   │           │   ├── ._4x5-mockup-03.png
+│   │           │   └── ._4x5-mockup-05.png
+│   │           ├── Office
+│   │           │   ├── ._4x5-mockup-14.png
+│   │           │   ├── ._4x5-mockup-15.png
+│   │           │   ├── ._4x5-mockup-57.png
+│   │           │   ├── ._4x5-mockup-58.png
+│   │           │   ├── ._4x5-mockup-61.png
+│   │           │   ├── ._4x5-mockup-62.png
+│   │           │   ├── ._4x5-mockup-68.png
+│   │           │   ├── ._4x5-mockup-69.png
+│   │           │   └── ._4x5-mockup-77.png
+│   │           └── Outdoors
+│   │               ├── ._4x5-mockup-24.png
+│   │               ├── ._4x5-mockup-29.png
+│   │               ├── ._4x5-mockup-30.png
+│   │               ├── ._4x5-mockup-31.png
+│   │               ├── ._4x5-mockup-32.png
+│   │               ├── ._4x5-mockup-33.png
+│   │               ├── ._4x5-mockup-34.png
+│   │               ├── ._4x5-mockup-35.png
+│   │               ├── ._4x5-mockup-36.png
+│   │               ├── ._4x5-mockup-37.png
+│   │               └── ._4x5-mockup-38.png
+│   ├── logs
+│   │   ├── ._.DS_Store
+│   │   ├── ._analysis_status.json
+│   │   ├── ._analyze-artwork-2025-07-05-1400.log
+│   │   ├── ._analyze-artwork-2025-07-05-1401.log
+│   │   ├── ._analyze-artwork-2025-07-05-1403.log
+│   │   ├── ._analyze-artwork-2025-07-05-1424.log
+│   │   ├── ._analyze-artwork-2025-07-05-1425.log
+│   │   ├── ._analyze-artwork-2025-07-05-1449.log
+│   │   ├── ._analyze-artwork-2025-07-05-1450.log
+│   │   ├── ._analyze-artwork-2025-07-05-1451.log
+│   │   ├── ._analyze-artwork-2025-07-05-1452.log
+│   │   ├── ._analyze-artwork-2025-07-05-1526.log
+│   │   ├── ._analyze-artwork-2025-07-05-1527.log
+│   │   ├── ._analyze-artwork-2025-07-05-1542.log
+│   │   ├── ._analyze-artwork-2025-07-05-1543.log
+│   │   ├── ._analyze-artwork-2025-07-05-1545.log
+│   │   ├── ._analyze-artwork-2025-07-05-1616.log
+│   │   ├── ._analyze-artwork-2025-07-05-1617.log
+│   │   ├── ._analyze-artwork-2025-07-05-1647.log
+│   │   ├── ._analyze-artwork-2025-07-05-1814.log
+│   │   ├── ._analyze-artwork-2025-07-05-1820.log
+│   │   ├── ._analyze-artwork-2025-07-05-1910.log
+│   │   ├── ._analyze-artwork-2025-07-05-1915.log
+│   │   ├── ._analyze-artwork-2025-07-05-1945.log
+│   │   ├── ._analyze-artwork-2025-07-05-1950.log
+│   │   ├── ._analyze-artwork-2025-07-05-1954.log
+│   │   ├── ._analyze-artwork-2025-07-05-2011.log
+│   │   ├── ._analyze-artwork-2025-07-05-2024.log
+│   │   ├── ._analyze-artwork-2025-07-05-2028.log
+│   │   ├── ._analyze-artwork-2025-07-05-2034.log
+│   │   ├── ._analyze-artwork-2025-07-05-2042.log
+│   │   ├── ._analyze-artwork-2025-07-05-2046.log
+│   │   ├── ._analyze-artwork-2025-07-05-2047.log
+│   │   ├── ._analyze-artwork-2025-07-05-2049.log
+│   │   ├── ._analyze-artwork-2025-07-05-2053.log
+│   │   ├── ._analyze-artwork-2025-07-05-2104.log
+│   │   ├── ._analyze-artwork-2025-07-05-2105.log
+│   │   ├── ._analyze-artwork-2025-07-05-2119.log
+│   │   ├── ._analyze-artwork-2025-07-05-2121.log
+│   │   ├── ._analyze-artwork-2025-07-05-2122.log
+│   │   ├── ._analyze-artwork-2025-07-05-2124.log
+│   │   ├── ._analyze-artwork-2025-07-05-2126.log
+│   │   ├── ._analyze-artwork-2025-07-05-2130.log
+│   │   ├── ._analyze-artwork-2025-07-05-2133.log
+│   │   ├── ._analyze-artwork-2025-07-05-2134.log
+│   │   ├── ._analyze-artwork-2025-07-05-2139.log
+│   │   ├── ._analyze-artwork-2025-07-05-2140.log
+│   │   ├── ._analyze-artwork-2025-07-05-2142.log
+│   │   ├── ._analyze-artwork-2025-07-05-2145.log
+│   │   ├── ._analyze-artwork-2025-07-05-2148.log
+│   │   ├── ._analyze-artwork-2025-07-05-2155.log
+│   │   ├── ._analyze-artwork-2025-07-05-2231.log
+│   │   ├── ._analyze-artwork-2025-07-05-2232.log
+│   │   ├── ._analyze-artwork-2025-07-06-0847.log
+│   │   ├── ._analyze-artwork-2025-07-14-2053.log
+│   │   ├── ._analyze-artwork-2025-07-14-2054.log
+│   │   ├── ._analyze-artwork-2025-07-14-2057.log
+│   │   ├── ._analyze-openai-calls-2025-07-05.log
+│   │   ├── ._analyze-openai-calls-2025-07-06.log
+│   │   ├── ._analyze-openai-calls-2025-07-14.log
+│   │   ├── ._analyze_019bc7204cb144a182f014dca9f3e9fc.log
+│   │   ├── ._analyze_0ae169e4-c0cc-4361-aa83-18a4e3508cb2.log
+│   │   ├── ._analyze_0fac704888994ee18333f1b537d25c71.log
+│   │   ├── ._analyze_13dc655a-6be0-4669-ac4c-ecf114afb7d5.log
+│   │   ├── ._analyze_240d34d6-fef0-42d9-98ea-2617a8b5b5c7.log
+│   │   ├── ._analyze_27017011-c0c5-4977-9f89-df5b2bc1fa1d.log
+│   │   ├── ._analyze_27030967-659f-4290-9bf3-888e471ae3d2.log
+│   │   ├── ._analyze_2eb73c08-979a-4847-9a73-33618f3b1d64.log
+│   │   ├── ._analyze_3272c19fda7240f09efec731db0b56c2.log
+│   │   ├── ._analyze_3c9694af7f994087915b7d08d35ff0f1.log
+│   │   ├── ._analyze_3e5cb19f368549ccad5195a88dc7356f.log
+│   │   ├── ._analyze_472f9915-c81d-47f0-a1a3-5112bcfe7611.log
+│   │   ├── ._analyze_49e95081-f38c-455d-8cc6-48520c61f9c9.log
+│   │   ├── ._analyze_55eef74e-28dd-46a9-9996-9307c78fddd8.log
+│   │   ├── ._analyze_5ac77d9fea554a75915ccf05bfd9c9bb.log
+│   │   ├── ._analyze_5ebef164-3a7f-476d-8030-135c1eb756ee.log
+│   │   ├── ._analyze_6201888b-1135-411e-8775-d21749aca1fd.log
+│   │   ├── ._analyze_655a8e9b-2c93-48eb-90e3-3ce72fedf203.log
+│   │   ├── ._analyze_69568c6fc9854e1fa24a89c6b6ff0e6c.log
+│   │   ├── ._analyze_6e082dc8e9f14b3c9fd1f97001727b56.log
+│   │   ├── ._analyze_731f3de10684401ab84e514b35908efb.log
+│   │   ├── ._analyze_7a09d518-6d73-4ff1-9308-6bbe96b8353c.log
+│   │   ├── ._analyze_80ee4e9a-cabe-4420-bd6f-16374e221075.log
+│   │   ├── ._analyze_874b6457297241e38c5c0b0aef4613e6.log
+│   │   ├── ._analyze_891849e5314b470298326e10a2961319.log
+│   │   ├── ._analyze_8a07aafb-436d-48ee-8841-74878ddcd51c.log
+│   │   ├── ._analyze_8a4eff95-75a9-48fb-8ee9-ba907d4f6730.log
+│   │   ├── ._analyze_998fc7b4-9507-4835-85f0-e5f4b893925e.log
+│   │   ├── ._analyze_99b7a15bdd9b47ca8882c3f993ac3c45.log
+│   │   ├── ._analyze_a2463ca5d08b45aea5c900b7802a9dd6.log
+│   │   ├── ._analyze_a59e2dae-8354-48a3-ac9b-f8cbfe9a2d1e.log
+│   │   ├── ._analyze_a9107f898c474c3597d8e7d22a96f4e4.log
+│   │   ├── ._analyze_abc216cf3f42410fabbbed95bce74321.log
+│   │   ├── ._analyze_b7f66bdf31134409ab1f6faae894a91f.log
+│   │   ├── ._analyze_b9d8e5e6-ba2e-4f70-9b8d-b3fad9258ab2.log
+│   │   ├── ._analyze_cb01bfd2c42746cd80c13b24192111a9.log
+│   │   ├── ._analyze_e26ec5d5-71d3-4367-85b4-213674e618b3.log
+│   │   ├── ._analyze_e6d295099a754585940165c05f32e1f0.log
+│   │   ├── ._analyze_e98d7b6424824e1792b2ffe1bc7470de.log
+│   │   ├── ._analyze_fa5975a7e80943d5b3b8207435b55d5d.log
+│   │   ├── ._composite_gen_019bc7204cb144a182f014dca9f3e9fc.log
+│   │   ├── ._composite_gen_0fac704888994ee18333f1b537d25c71.log
+│   │   ├── ._composite_gen_240d34d6-fef0-42d9-98ea-2617a8b5b5c7.log
+│   │   ├── ._composite_gen_27030967-659f-4290-9bf3-888e471ae3d2.log
+│   │   ├── ._composite_gen_3272c19fda7240f09efec731db0b56c2.log
+│   │   ├── ._composite_gen_3c9694af7f994087915b7d08d35ff0f1.log
+│   │   ├── ._composite_gen_3e5cb19f368549ccad5195a88dc7356f.log
+│   │   ├── ._composite_gen_472f9915-c81d-47f0-a1a3-5112bcfe7611.log
+│   │   ├── ._composite_gen_49e95081-f38c-455d-8cc6-48520c61f9c9.log
+│   │   ├── ._composite_gen_55eef74e-28dd-46a9-9996-9307c78fddd8.log
+│   │   ├── ._composite_gen_5ac77d9fea554a75915ccf05bfd9c9bb.log
+│   │   ├── ._composite_gen_5ebef164-3a7f-476d-8030-135c1eb756ee.log
+│   │   ├── ._composite_gen_6e082dc8e9f14b3c9fd1f97001727b56.log
+│   │   ├── ._composite_gen_731f3de10684401ab84e514b35908efb.log
+│   │   ├── ._composite_gen_874b6457297241e38c5c0b0aef4613e6.log
+│   │   ├── ._composite_gen_891849e5314b470298326e10a2961319.log
+│   │   ├── ._composite_gen_99b7a15bdd9b47ca8882c3f993ac3c45.log
+│   │   ├── ._composite_gen_a2463ca5d08b45aea5c900b7802a9dd6.log
+│   │   ├── ._composite_gen_a9107f898c474c3597d8e7d22a96f4e4.log
+│   │   ├── ._composite_gen_abc216cf3f42410fabbbed95bce74321.log
+│   │   ├── ._composite_gen_b7f66bdf31134409ab1f6faae894a91f.log
+│   │   ├── ._composite_gen_b9d8e5e6-ba2e-4f70-9b8d-b3fad9258ab2.log
+│   │   ├── ._composite_gen_cb01bfd2c42746cd80c13b24192111a9.log
+│   │   ├── ._composite_gen_e26ec5d5-71d3-4367-85b4-213674e618b3.log
+│   │   ├── ._composite_gen_e6d295099a754585940165c05f32e1f0.log
+│   │   ├── ._composite_gen_e98d7b6424824e1792b2ffe1bc7470de.log
+│   │   ├── ._composite_gen_fa5975a7e80943d5b3b8207435b55d5d.log
+│   │   ├── ._composites-workflow.log
+│   │   ├── ._crops
+│   │   ├── ._finalise.log
+│   │   ├── ._openai_analysis.log
+│   │   └── crops
+│   │       ├── ._.DS_Store
+│   │       ├── ._baby-koala-dot-artwork-by-robin-custance-rjc-9278-crop.jpg
+│   │       ├── ._baby-koala-dreaming-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │       ├── ._banksia-bloom-artwork-by-robin-custance-rjc-001-crop.jpg
+│   │       ├── ._cassowary-profile-artwork-by-robin-custance-rjc-8402-crop.jpg
+│   │       ├── ._coastal-dunes-sunset-artwork-by-robin-custance-rjc-0109-crop.jpg
+│   │       ├── ._coastal-dunes-sunset-artwork-by-robin-custance-rjc-4592-crop.jpg
+│   │       ├── ._firelight-canopy-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │       ├── ._firelight-canopy-glow-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │       ├── ._gang-gang-cockatoo-artwork-by-robin-custance-rjc-0001-crop.jpg
+│   │       ├── ._great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-crop.jpg
+│   │       ├── ._hibiscus-dreamtime-artwork-by-robin-custance-rjc-0001-crop.jpg
+│   │       ├── ._mangrove-estuary-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │       ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-crop.jpg
+│   │       ├── ._outback-billabong-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │       ├── ._outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-01da91ad-crop.jpg
+│   │       ├── ._riverbank-reeds-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │       ├── ._sunset-waterhole-artwork-by-robin-custance-rjc-0023-crop.jpg
+│   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0001-crop.jpg
+│   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-crop.jpg
+│   │       └── ._tawny-frogmouth-visage-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   ├── notes-and-instructions
+│   │   └── ._Full-Rundown-V02.txt
+│   ├── outputs
+│   │   ├── ._.DS_Store
+│   │   ├── ._Composites
+│   │   ├── ._artwork_listing_master.json
+│   │   ├── ._finalised-artwork
+│   │   ├── ._processed
+│   │   ├── ._selections
+│   │   ├── ._sellbrite
+│   │   ├── ._signed
+│   │   ├── finalised-artwork
+│   │   │   └── ._.DS_Store
+│   │   ├── processed
+│   │   │   ├── ._.DS_Store
+│   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109
+│   │   │   ├── ._pending_mockups.json
+│   │   │   ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-05.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-10.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-23.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-33.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-60.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-63.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-69.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-76.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-78.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-ANALYSE.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-THUMB.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109-listing.json
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109.jpg
+│   │   │   │   ├── ._night-seeds-artwork-by-robin-custance-rjc-0109.qc.json
+│   │   │   │   └── ._original-night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-9ff939e8.jpg
+│   │   │   └── tawny-frogmouth-artwork-by-robin-custance-rjc-0111
+│   │   │       ├── ._original-tawny-frogmouth-artwork-by-robin-custance-rjc-0111.jpg
+│   │   │       ├── ._original-tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-focusin-1-b8cbe239.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-05.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-09.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-13.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-35.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-54.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-57.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-60.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-63.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-76.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-ANALYSE.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-THUMB.jpg
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111-listing.json
+│   │   │       ├── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111.jpg
+│   │   │       └── ._tawny-frogmouth-artwork-by-robin-custance-rjc-0111.qc.json
+│   │   └── sellbrite
+│   │       ├── ._sellbrite_2025-07-06T04-52-26_locked.csv
+│   │       └── ._sellbrite_2025-07-06T04-52-26_locked.log
+│   ├── patches
+│   │   ├── ._codex_patch_2025-06-29_15-03-34.patch
+│   │   ├── ._codex_patch_2025-06-29_15-07-34.patch
+│   │   ├── ._codex_patch_2025-06-29_15-09-29.patch
+│   │   ├── ._codex_patch_2025-06-29_16-42-47.patch
+│   │   ├── ._codex_patch_2025-06-29_16-45-56.patch
+│   │   └── ._codex_patch_2025-06-29_16-53-02.patch
+│   ├── reports
+│   │   ├── ._.DS_Store
+│   │   ├── ._REPORTS-05-JUL-2025-06-12PM
+│   │   ├── ._REPORTS-05-JUL-2025-06-12PM.zip
+│   │   ├── ._REPORTS-05-JUL-2025-08-09PM
+│   │   ├── ._REPORTS-05-JUL-2025-08-09PM.zip
+│   │   ├── ._REPORTS-05-JUL-2025-09-06PM
+│   │   ├── ._REPORTS-05-JUL-2025-09-06PM.zip
+│   │   ├── ._REPORTS-05-JUL-2025-09-26PM
+│   │   ├── ._REPORTS-05-JUL-2025-09-26PM.zip
+│   │   ├── ._REPORTS-05-JUL-2025-09-54PM
+│   │   ├── ._REPORTS-05-JUL-2025-09-54PM.zip
+│   │   ├── ._REPORTS-05-JUL-2025-10-45PM
+│   │   ├── ._REPORTS-05-JUL-2025-10-45PM.zip
+│   │   ├── ._REPORTS-05-JUL-2025-11-36PM
+│   │   ├── ._REPORTS-05-JUL-2025-11-36PM.zip
+│   │   ├── ._REPORTS-05-JUL-2025-11-59PM
+│   │   ├── ._REPORTS-05-JUL-2025-11-59PM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-03-50AM
+│   │   ├── ._REPORTS-06-JUL-2025-03-50AM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-04-21AM
+│   │   ├── ._REPORTS-06-JUL-2025-04-21AM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-04-44AM
+│   │   ├── ._REPORTS-06-JUL-2025-04-44AM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-05-04AM
+│   │   ├── ._REPORTS-06-JUL-2025-05-04AM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-05-26AM
+│   │   ├── ._REPORTS-06-JUL-2025-05-26AM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-05-28PM
+│   │   ├── ._REPORTS-06-JUL-2025-05-28PM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-06-16AM
+│   │   ├── ._REPORTS-06-JUL-2025-06-16AM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-06-38AM
+│   │   ├── ._REPORTS-06-JUL-2025-06-38AM.zip
+│   │   ├── ._REPORTS-06-JUL-2025-07-17AM
+│   │   ├── ._REPORTS-06-JUL-2025-07-17AM.zip
+│   │   ├── REPORTS-05-JUL-2025-06-12PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-06-12pm.md
+│   │   ├── REPORTS-05-JUL-2025-08-09PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-08-09pm.md
+│   │   ├── REPORTS-05-JUL-2025-09-06PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-09-06pm.md
+│   │   ├── REPORTS-05-JUL-2025-09-26PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-09-26pm.md
+│   │   ├── REPORTS-05-JUL-2025-09-54PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-09-54pm.md
+│   │   ├── REPORTS-05-JUL-2025-10-45PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-10-45pm.md
+│   │   ├── REPORTS-05-JUL-2025-11-36PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-11-36pm.md
+│   │   ├── REPORTS-05-JUL-2025-11-59PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-05-jul-2025-11-59pm.md
+│   │   ├── REPORTS-06-JUL-2025-03-50AM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-03-50am.md
+│   │   ├── REPORTS-06-JUL-2025-04-21AM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-04-21am.md
+│   │   ├── REPORTS-06-JUL-2025-04-44AM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-04-44am.md
+│   │   ├── REPORTS-06-JUL-2025-05-04AM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-05-04am.md
+│   │   ├── REPORTS-06-JUL-2025-05-26AM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-05-26am.md
+│   │   ├── REPORTS-06-JUL-2025-05-28PM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-05-28pm.md
+│   │   ├── REPORTS-06-JUL-2025-06-16AM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-06-16am.md
+│   │   ├── REPORTS-06-JUL-2025-06-38AM
+│   │   │   ├── ._env_metadata.txt
+│   │   │   ├── ._file_summary.md
+│   │   │   ├── ._git_snapshot.txt
+│   │   │   └── ._report_code_snapshot_reports-06-jul-2025-06-38am.md
+│   │   └── REPORTS-06-JUL-2025-07-17AM
+│   │       ├── ._env_metadata.txt
+│   │       ├── ._file_summary.md
+│   │       ├── ._git_snapshot.txt
+│   │       └── ._report_code_snapshot_reports-06-jul-2025-07-17am.md
+│   ├── routes
+│   │   ├── ._.DS_Store
+│   │   ├── .___init__.py
+│   │   ├── .___pycache__
+│   │   ├── ._artwork_routes.py
+│   │   ├── ._export_routes.py
+│   │   ├── ._logs
+│   │   ├── ._sellbrite_export.py
+│   │   ├── ._sellbrite_service.py
+│   │   ├── ._utils.py
+│   │   └── logs
+│   │       └── ._composites-workflow.log
+│   ├── scripts
+│   │   ├── ._.DS_Store
+│   │   ├── .___pycache__
+│   │   ├── ._analyze_artwork.py
+│   │   ├── ._dev_cycle.sh
+│   │   ├── ._generate_composites.py
+│   │   └── ._sellbrite_csv_export.py
+│   ├── settings
+│   │   ├── ._Master-Etsy-Listing-Description-Writing-Onboarding.txt
+│   │   └── ._sku_tracker.json
+│   ├── static
+│   │   ├── ._.DS_Store
+│   │   ├── ._css
+│   │   ├── ._img
+│   │   ├── ._js
+│   │   ├── css
+│   │   │   └── ._style.css
+│   │   ├── img
+│   │   │   └── ._no-image.svg
+│   │   └── js
+│   │       ├── ._main.js
+│   │       └── ._upload.js
+│   ├── templates
+│   │   ├── ._artworks.html
+│   │   ├── ._composites_preview.html
+│   │   ├── ._edit_listing.html
+│   │   ├── ._finalised.html
+│   │   ├── ._gallery.html
+│   │   ├── ._index.html
+│   │   ├── ._locked.html
+│   │   ├── ._main.html
+│   │   ├── ._missing_endpoint.html
+│   │   ├── ._mockup_selector.html
+│   │   ├── ._review.html
+│   │   ├── ._sellbrite_csv_preview.html
+│   │   ├── ._sellbrite_exports.html
+│   │   ├── ._sellbrite_log.html
+│   │   ├── ._test_description.html
+│   │   ├── ._upload.html
+│   │   └── ._upload_results.html
+│   ├── tests
+│   │   ├── ._.DS_Store
+│   │   ├── .___pycache__
+│   │   ├── ._test_analyze_artwork.py
+│   │   ├── ._test_routes.py
+│   │   ├── ._test_sku_assigner.py
+│   │   ├── ._test_sku_tracker.py
+│   │   ├── ._test_sku_utils.py
+│   │   ├── ._test_upload.py
+│   │   └── ._test_utils_cleaning.py
+│   ├── tmp
+│   │   ├── ._.DS_Store
+│   │   └── ._ai_input_images
+│   └── utils
+│       ├── ._.DS_Store
+│       ├── .___pycache__
+│       └── ._sku_assigner.py
+├── app.py
+├── artnarrator-report.sh
+├── artnarrator.py
+├── assets
+│   └── style.css
+├── backups
+│   ├── artnarrator-rundown_2025-07-16_00-06-45.zip
+│   ├── artnarrator-rundown_2025-07-16_09-49-47.md
+│   ├── backup_2025-07-16_01-07-50.zip
+│   ├── diff_report_2025-07-16_01-07-50.md
+│   ├── older-scripts
+│   │   ├── ai-jpeg-reset.sh
+│   │   ├── backup_mockup_generator.sh
+│   │   ├── backup_mockup_structure.sh
+│   │   ├── compatible-image-generator.jsx
+│   │   ├── dupe-png-files-and-rename.py
+│   │   ├── export-artwork-layers.jsx
+│   │   ├── find-matching-png-files.py
+│   │   ├── fix_srgb_profiles.py
+│   │   ├── gather_mockup_code_to_text.sh
+│   │   ├── generate_all_coordinates.py
+│   │   ├── generate_composites.py
+│   │   ├── generate_folder_structure.py
+│   │   ├── google_vision_basic_analyzer.py
+│   │   ├── openai_vision_test.py
+│   │   ├── organise-jpg-and-png-files.py
+│   │   ├── rename-4x5-mockup-layers.jsx
+│   │   ├── utils.py
+│   │   └── write_all_composite_generators.py
+│   ├── pre-pull-backup_2025-07-16_00-27-04.zip
+│   ├── pre-pull-backup_2025-07-16_00-32-02.zip
+│   ├── pre-pull-backup_2025-07-16_01-07-52.zip
+│   └── pre-pull-backup_2025-07-16_01-12-59.zip
+├── config.py
+├── cron-backup.sh
+├── descriptions
+│   ├── artworks.json
+│   ├── autojourney_downloader_export_26_06_2025_15_02_55.csv
+│   └── autojourney_downloader_export_26_06_2025_15_03_12.json
+├── dev-logs
+├── generate_folder_tree.py
+├── generic_texts
+│   ├── 16x9.txt
+│   ├── 1x1.txt
+│   ├── 2x3.txt
+│   ├── 3x2.txt
+│   ├── 3x4.txt
+│   ├── 4x3.txt
+│   ├── 4x5.txt
+│   ├── 5x4.txt
+│   ├── 5x7.txt
+│   ├── 7x5.txt
+│   ├── 9x16.txt
+│   ├── A-Series-Horizontal.txt
+│   └── A-Series-Verical.txt
+├── git-update-pull.sh
+├── git-update-push-logs
+│   └── git-update-push-2025-07-06.log
+├── git-update-push.sh
+├── inputs
+│   ├── Coordinates
+│   │   ├── 16x9
+│   │   │   ├── 16x9-Mockup-1.json
+│   │   │   ├── 16x9-Mockup-10.json
+│   │   │   ├── 16x9-Mockup-11.json
+│   │   │   ├── 16x9-Mockup-12.json
+│   │   │   ├── 16x9-Mockup-13.json
+│   │   │   ├── 16x9-Mockup-14.json
+│   │   │   ├── 16x9-Mockup-15.json
+│   │   │   ├── 16x9-Mockup-16.json
+│   │   │   ├── 16x9-Mockup-17.json
+│   │   │   ├── 16x9-Mockup-18.json
+│   │   │   ├── 16x9-Mockup-19.json
+│   │   │   ├── 16x9-Mockup-2.json
+│   │   │   ├── 16x9-Mockup-20.json
+│   │   │   ├── 16x9-Mockup-21.json
+│   │   │   ├── 16x9-Mockup-22.json
+│   │   │   ├── 16x9-Mockup-23.json
+│   │   │   ├── 16x9-Mockup-24.json
+│   │   │   ├── 16x9-Mockup-25.json
+│   │   │   ├── 16x9-Mockup-26.json
+│   │   │   ├── 16x9-Mockup-27.json
+│   │   │   ├── 16x9-Mockup-28.json
+│   │   │   ├── 16x9-Mockup-29.json
+│   │   │   ├── 16x9-Mockup-3.json
+│   │   │   ├── 16x9-Mockup-30.json
+│   │   │   ├── 16x9-Mockup-31.json
+│   │   │   ├── 16x9-Mockup-32.json
+│   │   │   ├── 16x9-Mockup-33.json
+│   │   │   ├── 16x9-Mockup-34.json
+│   │   │   ├── 16x9-Mockup-35.json
+│   │   │   ├── 16x9-Mockup-36.json
+│   │   │   ├── 16x9-Mockup-37.json
+│   │   │   ├── 16x9-Mockup-38.json
+│   │   │   ├── 16x9-Mockup-39.json
+│   │   │   ├── 16x9-Mockup-4.json
+│   │   │   ├── 16x9-Mockup-40.json
+│   │   │   ├── 16x9-Mockup-41.json
+│   │   │   ├── 16x9-Mockup-42.json
+│   │   │   ├── 16x9-Mockup-43.json
+│   │   │   ├── 16x9-Mockup-44.json
+│   │   │   ├── 16x9-Mockup-45.json
+│   │   │   ├── 16x9-Mockup-46.json
+│   │   │   ├── 16x9-Mockup-47.json
+│   │   │   ├── 16x9-Mockup-48.json
+│   │   │   ├── 16x9-Mockup-49.json
+│   │   │   ├── 16x9-Mockup-5.json
+│   │   │   ├── 16x9-Mockup-50.json
+│   │   │   ├── 16x9-Mockup-51.json
+│   │   │   ├── 16x9-Mockup-52.json
+│   │   │   ├── 16x9-Mockup-53.json
+│   │   │   ├── 16x9-Mockup-54.json
+│   │   │   ├── 16x9-Mockup-6.json
+│   │   │   ├── 16x9-Mockup-7.json
+│   │   │   ├── 16x9-Mockup-8.json
+│   │   │   └── 16x9-Mockup-9.json
+│   │   ├── 1x1
+│   │   │   ├── 1x1-Mockup-1.json
+│   │   │   ├── 1x1-Mockup-10.json
+│   │   │   ├── 1x1-Mockup-11.json
+│   │   │   ├── 1x1-Mockup-12.json
+│   │   │   ├── 1x1-Mockup-13.json
+│   │   │   ├── 1x1-Mockup-14.json
+│   │   │   ├── 1x1-Mockup-15.json
+│   │   │   ├── 1x1-Mockup-16.json
+│   │   │   ├── 1x1-Mockup-17.json
+│   │   │   ├── 1x1-Mockup-18.json
+│   │   │   ├── 1x1-Mockup-19.json
+│   │   │   ├── 1x1-Mockup-2.json
+│   │   │   ├── 1x1-Mockup-20.json
+│   │   │   ├── 1x1-Mockup-21.json
+│   │   │   ├── 1x1-Mockup-22.json
+│   │   │   ├── 1x1-Mockup-23.json
+│   │   │   ├── 1x1-Mockup-24.json
+│   │   │   ├── 1x1-Mockup-25.json
+│   │   │   ├── 1x1-Mockup-26.json
+│   │   │   ├── 1x1-Mockup-27.json
+│   │   │   ├── 1x1-Mockup-28.json
+│   │   │   ├── 1x1-Mockup-29.json
+│   │   │   ├── 1x1-Mockup-3.json
+│   │   │   ├── 1x1-Mockup-30.json
+│   │   │   ├── 1x1-Mockup-31.json
+│   │   │   ├── 1x1-Mockup-32.json
+│   │   │   ├── 1x1-Mockup-33.json
+│   │   │   ├── 1x1-Mockup-34.json
+│   │   │   ├── 1x1-Mockup-35.json
+│   │   │   ├── 1x1-Mockup-36.json
+│   │   │   ├── 1x1-Mockup-37.json
+│   │   │   ├── 1x1-Mockup-38.json
+│   │   │   ├── 1x1-Mockup-39.json
+│   │   │   ├── 1x1-Mockup-4.json
+│   │   │   ├── 1x1-Mockup-40.json
+│   │   │   ├── 1x1-Mockup-41.json
+│   │   │   ├── 1x1-Mockup-42.json
+│   │   │   ├── 1x1-Mockup-43.json
+│   │   │   ├── 1x1-Mockup-44.json
+│   │   │   ├── 1x1-Mockup-45.json
+│   │   │   ├── 1x1-Mockup-46.json
+│   │   │   ├── 1x1-Mockup-47.json
+│   │   │   ├── 1x1-Mockup-48.json
+│   │   │   ├── 1x1-Mockup-49.json
+│   │   │   ├── 1x1-Mockup-5.json
+│   │   │   ├── 1x1-Mockup-50.json
+│   │   │   ├── 1x1-Mockup-51.json
+│   │   │   ├── 1x1-Mockup-52.json
+│   │   │   ├── 1x1-Mockup-53.json
+│   │   │   ├── 1x1-Mockup-54.json
+│   │   │   ├── 1x1-Mockup-55.json
+│   │   │   ├── 1x1-Mockup-56.json
+│   │   │   ├── 1x1-Mockup-57.json
+│   │   │   ├── 1x1-Mockup-58.json
+│   │   │   ├── 1x1-Mockup-59.json
+│   │   │   ├── 1x1-Mockup-6.json
+│   │   │   ├── 1x1-Mockup-60.json
+│   │   │   ├── 1x1-Mockup-61.json
+│   │   │   ├── 1x1-Mockup-62.json
+│   │   │   ├── 1x1-Mockup-63.json
+│   │   │   ├── 1x1-Mockup-64.json
+│   │   │   ├── 1x1-Mockup-65.json
+│   │   │   ├── 1x1-Mockup-66.json
+│   │   │   ├── 1x1-Mockup-67.json
+│   │   │   ├── 1x1-Mockup-68.json
+│   │   │   ├── 1x1-Mockup-69.json
+│   │   │   ├── 1x1-Mockup-7.json
+│   │   │   ├── 1x1-Mockup-70.json
+│   │   │   ├── 1x1-Mockup-71.json
+│   │   │   ├── 1x1-Mockup-72.json
+│   │   │   ├── 1x1-Mockup-73.json
+│   │   │   ├── 1x1-Mockup-74.json
+│   │   │   ├── 1x1-Mockup-8.json
+│   │   │   └── 1x1-Mockup-9.json
+│   │   ├── 2x3
+│   │   │   ├── 2x3-Mockup-1.json
+│   │   │   ├── 2x3-Mockup-10.json
+│   │   │   ├── 2x3-Mockup-11.json
+│   │   │   ├── 2x3-Mockup-12.json
+│   │   │   ├── 2x3-Mockup-13.json
+│   │   │   ├── 2x3-Mockup-14.json
+│   │   │   ├── 2x3-Mockup-15.json
+│   │   │   ├── 2x3-Mockup-16.json
+│   │   │   ├── 2x3-Mockup-17.json
+│   │   │   ├── 2x3-Mockup-18.json
+│   │   │   ├── 2x3-Mockup-19.json
+│   │   │   ├── 2x3-Mockup-2.json
+│   │   │   ├── 2x3-Mockup-20.json
+│   │   │   ├── 2x3-Mockup-21.json
+│   │   │   ├── 2x3-Mockup-22.json
+│   │   │   ├── 2x3-Mockup-23.json
+│   │   │   ├── 2x3-Mockup-24.json
+│   │   │   ├── 2x3-Mockup-25.json
+│   │   │   ├── 2x3-Mockup-26.json
+│   │   │   ├── 2x3-Mockup-3.json
+│   │   │   ├── 2x3-Mockup-4.json
+│   │   │   ├── 2x3-Mockup-5.json
+│   │   │   ├── 2x3-Mockup-6.json
+│   │   │   ├── 2x3-Mockup-7.json
+│   │   │   ├── 2x3-Mockup-8.json
+│   │   │   └── 2x3-Mockup-9.json
+│   │   ├── 3x2
+│   │   │   ├── 3x2-Mockup-1.json
+│   │   │   ├── 3x2-Mockup-10.json
+│   │   │   ├── 3x2-Mockup-11.json
+│   │   │   ├── 3x2-Mockup-12.json
+│   │   │   ├── 3x2-Mockup-13.json
+│   │   │   ├── 3x2-Mockup-14.json
+│   │   │   ├── 3x2-Mockup-15.json
+│   │   │   ├── 3x2-Mockup-16.json
+│   │   │   ├── 3x2-Mockup-17.json
+│   │   │   ├── 3x2-Mockup-18.json
+│   │   │   ├── 3x2-Mockup-19.json
+│   │   │   ├── 3x2-Mockup-2.json
+│   │   │   ├── 3x2-Mockup-20.json
+│   │   │   ├── 3x2-Mockup-3.json
+│   │   │   ├── 3x2-Mockup-4.json
+│   │   │   ├── 3x2-Mockup-5.json
+│   │   │   ├── 3x2-Mockup-6.json
+│   │   │   ├── 3x2-Mockup-7.json
+│   │   │   ├── 3x2-Mockup-8.json
+│   │   │   └── 3x2-Mockup-9.json
+│   │   ├── 3x4
+│   │   │   ├── 3x4-Mockup-1.json
+│   │   │   ├── 3x4-Mockup-10.json
+│   │   │   ├── 3x4-Mockup-11.json
+│   │   │   ├── 3x4-Mockup-12.json
+│   │   │   ├── 3x4-Mockup-13.json
+│   │   │   ├── 3x4-Mockup-14.json
+│   │   │   ├── 3x4-Mockup-15.json
+│   │   │   ├── 3x4-Mockup-16.json
+│   │   │   ├── 3x4-Mockup-17.json
+│   │   │   ├── 3x4-Mockup-18.json
+│   │   │   ├── 3x4-Mockup-19.json
+│   │   │   ├── 3x4-Mockup-2.json
+│   │   │   ├── 3x4-Mockup-20.json
+│   │   │   ├── 3x4-Mockup-3.json
+│   │   │   ├── 3x4-Mockup-4.json
+│   │   │   ├── 3x4-Mockup-5.json
+│   │   │   ├── 3x4-Mockup-6.json
+│   │   │   ├── 3x4-Mockup-7.json
+│   │   │   ├── 3x4-Mockup-8.json
+│   │   │   └── 3x4-Mockup-9.json
+│   │   ├── 4x3
+│   │   │   ├── 4x3-Mockup-1.json
+│   │   │   ├── 4x3-Mockup-10.json
+│   │   │   ├── 4x3-Mockup-11.json
+│   │   │   ├── 4x3-Mockup-12.json
+│   │   │   ├── 4x3-Mockup-13.json
+│   │   │   ├── 4x3-Mockup-15.json
+│   │   │   ├── 4x3-Mockup-16.json
+│   │   │   ├── 4x3-Mockup-17.json
+│   │   │   ├── 4x3-Mockup-19.json
+│   │   │   ├── 4x3-Mockup-20.json
+│   │   │   ├── 4x3-Mockup-3.json
+│   │   │   ├── 4x3-Mockup-4.json
+│   │   │   ├── 4x3-Mockup-5.json
+│   │   │   ├── 4x3-Mockup-7.json
+│   │   │   ├── 4x3-Mockup-8.json
+│   │   │   └── 4x3-Mockup-9.json
+│   │   ├── 4x5
+│   │   │   ├── 4x5-mockup-01.json
+│   │   │   ├── 4x5-mockup-02.json
+│   │   │   ├── 4x5-mockup-03.json
+│   │   │   ├── 4x5-mockup-04.json
+│   │   │   ├── 4x5-mockup-05.json
+│   │   │   ├── 4x5-mockup-06.json
+│   │   │   ├── 4x5-mockup-07.json
+│   │   │   ├── 4x5-mockup-08.json
+│   │   │   ├── 4x5-mockup-09.json
+│   │   │   ├── 4x5-mockup-10.json
+│   │   │   ├── 4x5-mockup-11.json
+│   │   │   ├── 4x5-mockup-12.json
+│   │   │   ├── 4x5-mockup-13.json
+│   │   │   ├── 4x5-mockup-14.json
+│   │   │   ├── 4x5-mockup-15.json
+│   │   │   ├── 4x5-mockup-16.json
+│   │   │   ├── 4x5-mockup-17.json
+│   │   │   ├── 4x5-mockup-18.json
+│   │   │   ├── 4x5-mockup-19.json
+│   │   │   ├── 4x5-mockup-20.json
+│   │   │   ├── 4x5-mockup-21.json
+│   │   │   ├── 4x5-mockup-22.json
+│   │   │   ├── 4x5-mockup-23.json
+│   │   │   ├── 4x5-mockup-24.json
+│   │   │   ├── 4x5-mockup-25.json
+│   │   │   ├── 4x5-mockup-26.json
+│   │   │   ├── 4x5-mockup-27.json
+│   │   │   ├── 4x5-mockup-28.json
+│   │   │   ├── 4x5-mockup-29.json
+│   │   │   ├── 4x5-mockup-30.json
+│   │   │   ├── 4x5-mockup-31.json
+│   │   │   ├── 4x5-mockup-32.json
+│   │   │   ├── 4x5-mockup-33.json
+│   │   │   ├── 4x5-mockup-34.json
+│   │   │   ├── 4x5-mockup-35.json
+│   │   │   ├── 4x5-mockup-36.json
+│   │   │   ├── 4x5-mockup-37.json
+│   │   │   ├── 4x5-mockup-38.json
+│   │   │   ├── 4x5-mockup-39.json
+│   │   │   ├── 4x5-mockup-40.json
+│   │   │   ├── 4x5-mockup-41.json
+│   │   │   ├── 4x5-mockup-42.json
+│   │   │   ├── 4x5-mockup-43.json
+│   │   │   ├── 4x5-mockup-44.json
+│   │   │   ├── 4x5-mockup-45.json
+│   │   │   ├── 4x5-mockup-46.json
+│   │   │   ├── 4x5-mockup-47.json
+│   │   │   ├── 4x5-mockup-48.json
+│   │   │   ├── 4x5-mockup-49.json
+│   │   │   ├── 4x5-mockup-50.json
+│   │   │   ├── 4x5-mockup-51.json
+│   │   │   ├── 4x5-mockup-52.json
+│   │   │   ├── 4x5-mockup-53.json
+│   │   │   ├── 4x5-mockup-54.json
+│   │   │   ├── 4x5-mockup-55.json
+│   │   │   ├── 4x5-mockup-56.json
+│   │   │   ├── 4x5-mockup-57.json
+│   │   │   ├── 4x5-mockup-58.json
+│   │   │   ├── 4x5-mockup-59.json
+│   │   │   ├── 4x5-mockup-60.json
+│   │   │   ├── 4x5-mockup-61.json
+│   │   │   ├── 4x5-mockup-62.json
+│   │   │   ├── 4x5-mockup-63.json
+│   │   │   ├── 4x5-mockup-64.json
+│   │   │   ├── 4x5-mockup-65.json
+│   │   │   ├── 4x5-mockup-66.json
+│   │   │   ├── 4x5-mockup-67.json
+│   │   │   ├── 4x5-mockup-68.json
+│   │   │   ├── 4x5-mockup-69.json
+│   │   │   ├── 4x5-mockup-70.json
+│   │   │   ├── 4x5-mockup-71.json
+│   │   │   ├── 4x5-mockup-72.json
+│   │   │   ├── 4x5-mockup-73.json
+│   │   │   ├── 4x5-mockup-74.json
+│   │   │   ├── 4x5-mockup-75.json
+│   │   │   ├── 4x5-mockup-76.json
+│   │   │   ├── 4x5-mockup-77.json
+│   │   │   └── 4x5-mockup-78.json
+│   │   ├── 5x4
+│   │   │   ├── 5x4-Mockup-1.json
+│   │   │   ├── 5x4-Mockup-10.json
+│   │   │   ├── 5x4-Mockup-11.json
+│   │   │   ├── 5x4-Mockup-12.json
+│   │   │   ├── 5x4-Mockup-13.json
+│   │   │   ├── 5x4-Mockup-14.json
+│   │   │   ├── 5x4-Mockup-15.json
+│   │   │   ├── 5x4-Mockup-16.json
+│   │   │   ├── 5x4-Mockup-17.json
+│   │   │   ├── 5x4-Mockup-18.json
+│   │   │   ├── 5x4-Mockup-19.json
+│   │   │   ├── 5x4-Mockup-2.json
+│   │   │   ├── 5x4-Mockup-20.json
+│   │   │   ├── 5x4-Mockup-21.json
+│   │   │   ├── 5x4-Mockup-22.json
+│   │   │   ├── 5x4-Mockup-3.json
+│   │   │   ├── 5x4-Mockup-4.json
+│   │   │   ├── 5x4-Mockup-5.json
+│   │   │   ├── 5x4-Mockup-6.json
+│   │   │   ├── 5x4-Mockup-7.json
+│   │   │   ├── 5x4-Mockup-8.json
+│   │   │   └── 5x4-Mockup-9.json
+│   │   └── 9x16
+│   │       ├── 9x16-Mockup-1.json
+│   │       ├── 9x16-Mockup-10.json
+│   │       ├── 9x16-Mockup-11.json
+│   │       ├── 9x16-Mockup-12.json
+│   │       ├── 9x16-Mockup-13.json
+│   │       ├── 9x16-Mockup-14.json
+│   │       ├── 9x16-Mockup-15.json
+│   │       ├── 9x16-Mockup-16.json
+│   │       ├── 9x16-Mockup-17.json
+│   │       ├── 9x16-Mockup-18.json
+│   │       ├── 9x16-Mockup-19.json
+│   │       ├── 9x16-Mockup-2.json
+│   │       ├── 9x16-Mockup-20.json
+│   │       ├── 9x16-Mockup-21.json
+│   │       ├── 9x16-Mockup-22.json
+│   │       ├── 9x16-Mockup-23.json
+│   │       ├── 9x16-Mockup-24.json
+│   │       ├── 9x16-Mockup-3.json
+│   │       ├── 9x16-Mockup-4.json
+│   │       ├── 9x16-Mockup-5.json
+│   │       ├── 9x16-Mockup-6.json
+│   │       ├── 9x16-Mockup-7.json
+│   │       ├── 9x16-Mockup-8.json
+│   │       └── 9x16-Mockup-9.json
+│   ├── artworks
+│   │   ├── 4x5-artworks
+│   │   └── sample.jpg
+│   └── mockups
+│       └── 4x5-categorised
+│           ├── Bedroom
+│           │   ├── 4x5-mockup-10.png
+│           │   ├── 4x5-mockup-11.png
+│           │   ├── 4x5-mockup-12.png
+│           │   └── 4x5-mockup-13.png
+│           ├── Closeup
+│           │   ├── 4x5-mockup-06.png
+│           │   ├── 4x5-mockup-07.png
+│           │   ├── 4x5-mockup-08.png
+│           │   ├── 4x5-mockup-09.png
+│           │   ├── 4x5-mockup-16.png
+│           │   ├── 4x5-mockup-17.png
+│           │   ├── 4x5-mockup-18.png
+│           │   ├── 4x5-mockup-19.png
+│           │   ├── 4x5-mockup-20.png
+│           │   ├── 4x5-mockup-22.png
+│           │   ├── 4x5-mockup-23.png
+│           │   ├── 4x5-mockup-46.png
+│           │   ├── 4x5-mockup-48.png
+│           │   ├── 4x5-mockup-49.png
+│           │   ├── 4x5-mockup-50.png
+│           │   ├── 4x5-mockup-59.png
+│           │   ├── 4x5-mockup-65.png
+│           │   └── 4x5-mockup-72.png
+│           ├── Dining-Room
+│           │   ├── 4x5-mockup-75.png
+│           │   └── 4x5-mockup-76.png
+│           ├── Gallery-Wall
+│           │   ├── 4x5-mockup-63.png
+│           │   └── 4x5-mockup-64.png
+│           ├── Hallway
+│           │   ├── 4x5-mockup-25.png
+│           │   ├── 4x5-mockup-55.png
+│           │   ├── 4x5-mockup-60.png
+│           │   └── 4x5-mockup-70.png
+│           ├── Living Room
+│           │   ├── 4x5-mockup-01.png
+│           │   ├── 4x5-mockup-02.png
+│           │   ├── 4x5-mockup-04.png
+│           │   ├── 4x5-mockup-21.png
+│           │   ├── 4x5-mockup-26.png
+│           │   ├── 4x5-mockup-27.png
+│           │   ├── 4x5-mockup-28.png
+│           │   ├── 4x5-mockup-39.png
+│           │   ├── 4x5-mockup-40.png
+│           │   ├── 4x5-mockup-41.png
+│           │   ├── 4x5-mockup-42.png
+│           │   ├── 4x5-mockup-43.png
+│           │   ├── 4x5-mockup-45.png
+│           │   ├── 4x5-mockup-47.png
+│           │   ├── 4x5-mockup-51.png
+│           │   ├── 4x5-mockup-52.png
+│           │   ├── 4x5-mockup-53.png
+│           │   ├── 4x5-mockup-54.png
+│           │   ├── 4x5-mockup-56.png
+│           │   ├── 4x5-mockup-66.png
+│           │   ├── 4x5-mockup-67.png
+│           │   ├── 4x5-mockup-71.png
+│           │   ├── 4x5-mockup-73.png
+│           │   ├── 4x5-mockup-74.png
+│           │   └── 4x5-mockup-78.png
+│           ├── Nursery
+│           │   ├── 4x5-mockup-03.png
+│           │   └── 4x5-mockup-05.png
+│           ├── Office
+│           │   ├── 4x5-mockup-14.png
+│           │   ├── 4x5-mockup-15.png
+│           │   ├── 4x5-mockup-57.png
+│           │   ├── 4x5-mockup-58.png
+│           │   ├── 4x5-mockup-61.png
+│           │   ├── 4x5-mockup-62.png
+│           │   ├── 4x5-mockup-68.png
+│           │   ├── 4x5-mockup-69.png
+│           │   └── 4x5-mockup-77.png
+│           └── Outdoors
+│               ├── 4x5-mockup-24.png
+│               ├── 4x5-mockup-29.png
+│               ├── 4x5-mockup-30.png
+│               ├── 4x5-mockup-31.png
+│               ├── 4x5-mockup-32.png
+│               ├── 4x5-mockup-33.png
+│               ├── 4x5-mockup-34.png
+│               ├── 4x5-mockup-35.png
+│               ├── 4x5-mockup-36.png
+│               ├── 4x5-mockup-37.png
+│               └── 4x5-mockup-38.png
+├── logs
+│   ├── analysis_status.json
+│   ├── analyze-artwork-2025-07-05-1400.log
+│   ├── analyze-artwork-2025-07-05-1401.log
+│   ├── analyze-artwork-2025-07-05-1403.log
+│   ├── analyze-artwork-2025-07-05-1424.log
+│   ├── analyze-artwork-2025-07-05-1425.log
+│   ├── analyze-artwork-2025-07-05-1449.log
+│   ├── analyze-artwork-2025-07-05-1450.log
+│   ├── analyze-artwork-2025-07-05-1451.log
+│   ├── analyze-artwork-2025-07-05-1452.log
+│   ├── analyze-artwork-2025-07-05-1526.log
+│   ├── analyze-artwork-2025-07-05-1527.log
+│   ├── analyze-artwork-2025-07-05-1542.log
+│   ├── analyze-artwork-2025-07-05-1543.log
+│   ├── analyze-artwork-2025-07-05-1545.log
+│   ├── analyze-artwork-2025-07-05-1616.log
+│   ├── analyze-artwork-2025-07-05-1617.log
+│   ├── analyze-artwork-2025-07-05-1647.log
+│   ├── analyze-artwork-2025-07-05-1814.log
+│   ├── analyze-artwork-2025-07-05-1820.log
+│   ├── analyze-artwork-2025-07-05-1910.log
+│   ├── analyze-artwork-2025-07-05-1915.log
+│   ├── analyze-artwork-2025-07-05-1945.log
+│   ├── analyze-artwork-2025-07-05-1950.log
+│   ├── analyze-artwork-2025-07-05-1954.log
+│   ├── analyze-artwork-2025-07-05-2011.log
+│   ├── analyze-artwork-2025-07-05-2024.log
+│   ├── analyze-artwork-2025-07-05-2028.log
+│   ├── analyze-artwork-2025-07-05-2034.log
+│   ├── analyze-artwork-2025-07-05-2042.log
+│   ├── analyze-artwork-2025-07-05-2046.log
+│   ├── analyze-artwork-2025-07-05-2047.log
+│   ├── analyze-artwork-2025-07-05-2049.log
+│   ├── analyze-artwork-2025-07-05-2053.log
+│   ├── analyze-artwork-2025-07-05-2104.log
+│   ├── analyze-artwork-2025-07-05-2105.log
+│   ├── analyze-artwork-2025-07-05-2119.log
+│   ├── analyze-artwork-2025-07-05-2121.log
+│   ├── analyze-artwork-2025-07-05-2122.log
+│   ├── analyze-artwork-2025-07-05-2124.log
+│   ├── analyze-artwork-2025-07-05-2126.log
+│   ├── analyze-artwork-2025-07-05-2130.log
+│   ├── analyze-artwork-2025-07-05-2133.log
+│   ├── analyze-artwork-2025-07-05-2134.log
+│   ├── analyze-artwork-2025-07-05-2139.log
+│   ├── analyze-artwork-2025-07-05-2140.log
+│   ├── analyze-artwork-2025-07-05-2142.log
+│   ├── analyze-artwork-2025-07-05-2145.log
+│   ├── analyze-artwork-2025-07-05-2148.log
+│   ├── analyze-artwork-2025-07-05-2155.log
+│   ├── analyze-artwork-2025-07-05-2231.log
+│   ├── analyze-artwork-2025-07-05-2232.log
+│   ├── analyze-artwork-2025-07-06-0847.log
+│   ├── analyze-artwork-2025-07-14-2053.log
+│   ├── analyze-artwork-2025-07-14-2054.log
+│   ├── analyze-artwork-2025-07-14-2057.log
+│   ├── analyze-artwork-2025-07-15-2247.log
+│   ├── analyze-artwork-2025-07-15-2249.log
+│   ├── analyze-artwork-2025-07-15-2250.log
+│   ├── analyze-artwork-2025-07-15-2251.log
+│   ├── analyze-artwork-2025-07-15-2321.log
+│   ├── analyze-artwork-2025-07-15-2335.log
+│   ├── analyze-artwork-2025-07-16-0002.log
+│   ├── analyze-artwork-2025-07-16-0011.log
+│   ├── analyze-artwork-2025-07-16-0014.log
+│   ├── analyze-artwork-2025-07-16-0015.log
+│   ├── analyze-artwork-2025-07-16-0016.log
+│   ├── analyze-artwork-2025-07-16-0018.log
+│   ├── analyze-artwork-2025-07-16-0019.log
+│   ├── analyze-artwork-2025-07-16-0024.log
+│   ├── analyze-openai-calls-2025-07-05.log
+│   ├── analyze-openai-calls-2025-07-06.log
+│   ├── analyze-openai-calls-2025-07-14.log
+│   ├── analyze-openai-calls-2025-07-15.log
+│   ├── analyze-openai-calls-2025-07-16.log
+│   ├── analyze_019bc7204cb144a182f014dca9f3e9fc.log
+│   ├── analyze_0ae169e4-c0cc-4361-aa83-18a4e3508cb2.log
+│   ├── analyze_0fac704888994ee18333f1b537d25c71.log
+│   ├── analyze_13dc655a-6be0-4669-ac4c-ecf114afb7d5.log
+│   ├── analyze_240d34d6-fef0-42d9-98ea-2617a8b5b5c7.log
+│   ├── analyze_27017011-c0c5-4977-9f89-df5b2bc1fa1d.log
+│   ├── analyze_27030967-659f-4290-9bf3-888e471ae3d2.log
+│   ├── analyze_2eb73c08-979a-4847-9a73-33618f3b1d64.log
+│   ├── analyze_3272c19fda7240f09efec731db0b56c2.log
+│   ├── analyze_3c9694af7f994087915b7d08d35ff0f1.log
+│   ├── analyze_3e5cb19f368549ccad5195a88dc7356f.log
+│   ├── analyze_472f9915-c81d-47f0-a1a3-5112bcfe7611.log
+│   ├── analyze_49e95081-f38c-455d-8cc6-48520c61f9c9.log
+│   ├── analyze_55eef74e-28dd-46a9-9996-9307c78fddd8.log
+│   ├── analyze_5ac77d9fea554a75915ccf05bfd9c9bb.log
+│   ├── analyze_5ebef164-3a7f-476d-8030-135c1eb756ee.log
+│   ├── analyze_6201888b-1135-411e-8775-d21749aca1fd.log
+│   ├── analyze_655a8e9b-2c93-48eb-90e3-3ce72fedf203.log
+│   ├── analyze_69568c6fc9854e1fa24a89c6b6ff0e6c.log
+│   ├── analyze_6e082dc8e9f14b3c9fd1f97001727b56.log
+│   ├── analyze_731f3de10684401ab84e514b35908efb.log
+│   ├── analyze_750af838-d212-4c41-b113-91ebdc045329.log
+│   ├── analyze_7a09d518-6d73-4ff1-9308-6bbe96b8353c.log
+│   ├── analyze_80ee4e9a-cabe-4420-bd6f-16374e221075.log
+│   ├── analyze_874b6457297241e38c5c0b0aef4613e6.log
+│   ├── analyze_891849e5314b470298326e10a2961319.log
+│   ├── analyze_8a07aafb-436d-48ee-8841-74878ddcd51c.log
+│   ├── analyze_8a4eff95-75a9-48fb-8ee9-ba907d4f6730.log
+│   ├── analyze_8d4c0878a07f41b4b91149a4302cac58.log
+│   ├── analyze_998fc7b4-9507-4835-85f0-e5f4b893925e.log
+│   ├── analyze_99b7a15bdd9b47ca8882c3f993ac3c45.log
+│   ├── analyze_a2463ca5d08b45aea5c900b7802a9dd6.log
+│   ├── analyze_a59e2dae-8354-48a3-ac9b-f8cbfe9a2d1e.log
+│   ├── analyze_a9107f898c474c3597d8e7d22a96f4e4.log
+│   ├── analyze_abc216cf3f42410fabbbed95bce74321.log
+│   ├── analyze_b7f66bdf31134409ab1f6faae894a91f.log
+│   ├── analyze_b9d8e5e6-ba2e-4f70-9b8d-b3fad9258ab2.log
+│   ├── analyze_cb01bfd2c42746cd80c13b24192111a9.log
+│   ├── analyze_e26ec5d5-71d3-4367-85b4-213674e618b3.log
+│   ├── analyze_e6d295099a754585940165c05f32e1f0.log
+│   ├── analyze_e98d7b6424824e1792b2ffe1bc7470de.log
+│   ├── analyze_fa5975a7e80943d5b3b8207435b55d5d.log
+│   ├── composite_gen_019bc7204cb144a182f014dca9f3e9fc.log
+│   ├── composite_gen_0fac704888994ee18333f1b537d25c71.log
+│   ├── composite_gen_240d34d6-fef0-42d9-98ea-2617a8b5b5c7.log
+│   ├── composite_gen_27030967-659f-4290-9bf3-888e471ae3d2.log
+│   ├── composite_gen_3272c19fda7240f09efec731db0b56c2.log
+│   ├── composite_gen_3c9694af7f994087915b7d08d35ff0f1.log
+│   ├── composite_gen_3e5cb19f368549ccad5195a88dc7356f.log
+│   ├── composite_gen_472f9915-c81d-47f0-a1a3-5112bcfe7611.log
+│   ├── composite_gen_49e95081-f38c-455d-8cc6-48520c61f9c9.log
+│   ├── composite_gen_55eef74e-28dd-46a9-9996-9307c78fddd8.log
+│   ├── composite_gen_5ac77d9fea554a75915ccf05bfd9c9bb.log
+│   ├── composite_gen_5ebef164-3a7f-476d-8030-135c1eb756ee.log
+│   ├── composite_gen_6e082dc8e9f14b3c9fd1f97001727b56.log
+│   ├── composite_gen_731f3de10684401ab84e514b35908efb.log
+│   ├── composite_gen_750af838-d212-4c41-b113-91ebdc045329.log
+│   ├── composite_gen_874b6457297241e38c5c0b0aef4613e6.log
+│   ├── composite_gen_891849e5314b470298326e10a2961319.log
+│   ├── composite_gen_8d4c0878a07f41b4b91149a4302cac58.log
+│   ├── composite_gen_99b7a15bdd9b47ca8882c3f993ac3c45.log
+│   ├── composite_gen_a2463ca5d08b45aea5c900b7802a9dd6.log
+│   ├── composite_gen_a9107f898c474c3597d8e7d22a96f4e4.log
+│   ├── composite_gen_abc216cf3f42410fabbbed95bce74321.log
+│   ├── composite_gen_b7f66bdf31134409ab1f6faae894a91f.log
+│   ├── composite_gen_b9d8e5e6-ba2e-4f70-9b8d-b3fad9258ab2.log
+│   ├── composite_gen_cb01bfd2c42746cd80c13b24192111a9.log
+│   ├── composite_gen_e26ec5d5-71d3-4367-85b4-213674e618b3.log
+│   ├── composite_gen_e6d295099a754585940165c05f32e1f0.log
+│   ├── composite_gen_e98d7b6424824e1792b2ffe1bc7470de.log
+│   ├── composite_gen_fa5975a7e80943d5b3b8207435b55d5d.log
+│   ├── composites-workflow.log
+│   ├── cron-backup-2025-07-16_00-42-31.log
+│   ├── cron-backup-2025-07-16_00-43-51.log
+│   ├── crops
+│   │   ├── baby-koala-dot-artwork-by-robin-custance-rjc-9278-crop.jpg
+│   │   ├── baby-koala-dreaming-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │   ├── banksia-bloom-artwork-by-robin-custance-rjc-001-crop.jpg
+│   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-crop.jpg
+│   │   ├── cassowary-profile-artwork-by-robin-custance-rjc-8402-crop.jpg
+│   │   ├── coastal-dunes-sunset-artwork-by-robin-custance-rjc-0109-crop.jpg
+│   │   ├── coastal-dunes-sunset-artwork-by-robin-custance-rjc-4592-crop.jpg
+│   │   ├── firelight-canopy-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │   ├── firelight-canopy-glow-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │   ├── gang-gang-cockatoo-artwork-by-robin-custance-rjc-0001-crop.jpg
+│   │   ├── great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-crop.jpg
+│   │   ├── hibiscus-dreamtime-artwork-by-robin-custance-rjc-0001-crop.jpg
+│   │   ├── mangrove-estuary-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-crop.jpg
+│   │   ├── outback-billabong-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │   ├── outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-01da91ad-crop.jpg
+│   │   ├── riverbank-reeds-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │   ├── sunset-waterhole-artwork-by-robin-custance-rjc-0023-crop.jpg
+│   │   ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0001-crop.jpg
+│   │   ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   │   ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-crop.jpg
+│   │   └── tawny-frogmouth-visage-artwork-by-robin-custance-rjc-0046-crop.jpg
+│   ├── finalise.log
+│   ├── git-update-pull-2025-07-16_00-26-36.log
+│   ├── git-update-pull-2025-07-16_00-27-04.log
+│   ├── git-update-pull-2025-07-16_00-32-02.log
+│   ├── git-update-pull-2025-07-16_01-07-52.log
+│   ├── git-update-pull-2025-07-16_01-12-59.log
+│   ├── git-update-push-2025-07-16_00-55-59.log
+│   ├── git-update-push-2025-07-16_01-07-50.log
+│   └── openai_analysis.log
+├── mockup_categoriser.py
+├── notes-and-instructions
+│   └── Full-Rundown-V02.txt
+├── outputs
+│   ├── Composites
+│   ├── artwork_listing_master.json
+│   ├── composites
+│   ├── finalised-artwork
+│   ├── processed
+│   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-04.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-05.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-06.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-10.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-25.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-35.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-61.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-63.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-4x5-mockup-75.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-ANALYSE.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-THUMB.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122-listing.json
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122.jpg
+│   │   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0122.qc.json
+│   │   │   ├── original-cassowary-dot-artwork-by-robin-custance-rjc-0122.jpg
+│   │   │   └── original-cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-4ee63128.jpg
+│   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-05.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-10.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-23.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-33.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-60.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-63.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-69.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-76.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-4x5-mockup-78.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-ANALYSE.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-THUMB.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109-listing.json
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109.jpg
+│   │   │   ├── night-seeds-artwork-by-robin-custance-rjc-0109.qc.json
+│   │   │   └── original-night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-9ff939e8.jpg
+│   │   ├── pending_mockups.json
+│   │   └── tawny-frogmouth-artwork-by-robin-custance-rjc-0111
+│   │       ├── original-tawny-frogmouth-artwork-by-robin-custance-rjc-0111.jpg
+│   │       ├── original-tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-focusin-1-b8cbe239.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-05.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-09.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-13.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-35.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-54.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-57.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-60.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-63.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-4x5-mockup-76.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-ANALYSE.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-THUMB.jpg
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111-listing.json
+│   │       ├── tawny-frogmouth-artwork-by-robin-custance-rjc-0111.jpg
+│   │       └── tawny-frogmouth-artwork-by-robin-custance-rjc-0111.qc.json
+│   ├── selections
+│   ├── sellbrite
+│   │   ├── sellbrite_2025-07-06T04-52-26_locked.csv
+│   │   └── sellbrite_2025-07-06T04-52-26_locked.log
+│   └── signed
+├── package-lock.json
+├── patches
+│   ├── codex_patch_2025-06-29_15-03-34.patch
+│   ├── codex_patch_2025-06-29_15-07-34.patch
+│   ├── codex_patch_2025-06-29_15-09-29.patch
+│   ├── codex_patch_2025-06-29_16-42-47.patch
+│   ├── codex_patch_2025-06-29_16-45-56.patch
+│   └── codex_patch_2025-06-29_16-53-02.patch
+├── rename_artnarrator_to_artnarrator.py
+├── reports
+│   ├── artnarrator-rundown_2025-07-16_00-06-45.log
+│   └── artnarrator-rundown_2025-07-16_00-06-45.md
+├── requirements.txt
+├── routes
+│   ├── __init__.py
+│   ├── artwork_routes.py
+│   ├── export_routes.py
+│   ├── logs
+│   │   └── composites-workflow.log
+│   ├── sellbrite_export.py
+│   ├── sellbrite_service.py
+│   └── utils.py
+├── run_codex_patch.py
+├── scripts
+│   ├── analyze_artwork.py
+│   ├── dev_cycle.sh
+│   ├── generate_composites.py
+│   └── sellbrite_csv_export.py
+├── sellbrite_template.csv
+├── settings
+│   ├── Master-Etsy-Listing-Description-Writing-Onboarding.txt
+│   └── sku_tracker.json
+├── smart_sign_artwork.py
+├── smart_sign_test01.py
+├── sort_and_prepare_midjourney_images.py
+├── static
+│   ├── css
+│   │   └── style.css
+│   ├── img
+│   │   └── no-image.svg
+│   └── js
+│       ├── main.js
+│       └── upload.js
+├── templates
+│   ├── artworks.html
+│   ├── composites_preview.html
+│   ├── edit_listing.html
+│   ├── finalised.html
+│   ├── gallery.html
+│   ├── index.html
+│   ├── locked.html
+│   ├── main.html
+│   ├── missing_endpoint.html
+│   ├── mockup_selector.html
+│   ├── review.html
+│   ├── sellbrite_csv_preview.html
+│   ├── sellbrite_exports.html
+│   ├── sellbrite_log.html
+│   ├── test_description.html
+│   ├── upload.html
+│   └── upload_results.html
+├── tests
+│   ├── test_analyze_artwork.py
+│   ├── test_routes.py
+│   ├── test_sku_assigner.py
+│   ├── test_sku_tracker.py
+│   ├── test_sku_utils.py
+│   ├── test_upload.py
+│   └── test_utils_cleaning.py
+├── tmp
+│   └── ai_input_images
+├── uploads_temp
+└── utils
+    └── sku_assigner.py

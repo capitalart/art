@@ -1,0 +1,104 @@
+{% extends "main.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="login-container">
+  <h2>Admin Login</h2>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash">
+        {% for category, msg in messages %}
+          <div class="flash-{{ category|default('info') }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  <form method="post" class="login-form" autocomplete="on">
+    <input type="hidden" name="next" value="{{ next or '' }}">
+    <label for="username">Username</label>
+    <input id="username" name="username" type="text" required autocomplete="username" autofocus>
+    <label for="password">Password</label>
+    <div class="pw-wrap">
+      <input id="password" name="password" type="password" required autocomplete="current-password">
+      <button type="button" id="toggle-password"
+        aria-label="Show password" tabindex="0" class="pw-toggle-btn">
+        <svg id="eye-icon" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <ellipse cx="12" cy="12" rx="9" ry="6"></ellipse>
+          <circle cx="12" cy="12" r="2.5"></circle>
+        </svg>
+      </button>
+    </div>
+    <button type="submit">Login</button>
+  </form>
+</div>
+<style>
+  .pw-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  #password {
+    width: 100%;
+    padding-right: 2.6em;
+  }
+  .pw-toggle-btn {
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 2.2em;
+    width: 2.2em;
+    /* Use theme text color so icon adapts to light/dark themes */
+    color: var(--input-text);
+    outline: none;
+  }
+  .pw-toggle-btn:focus {
+    outline: 2px solid #ffe873;
+  }
+</style>
+<script>
+  (() => {
+    const pwInput = document.getElementById('password');
+    const pwToggle = document.getElementById('toggle-password');
+    const eyeIcon = document.getElementById('eye-icon');
+    let isShown = false;
+
+    // Open eye icon displayed when password is hidden
+    const openEye = `<ellipse cx="12" cy="12" rx="9" ry="6"></ellipse>
+      <circle cx="12" cy="12" r="2.5"></circle>`;
+
+    // Crossed eye icon displayed when password is visible
+    const closedEye = `<ellipse cx="12" cy="12" rx="9" ry="6"></ellipse>
+      <circle cx="12" cy="12" r="2.5"></circle>
+      <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width="2"></line>`;
+
+    function togglePassword() {
+      const start = pwInput.selectionStart;
+      const end = pwInput.selectionEnd;
+      isShown = !isShown;
+      pwInput.type = isShown ? 'text' : 'password';
+      pwToggle.setAttribute('aria-label', isShown ? 'Hide password' : 'Show password');
+      eyeIcon.innerHTML = isShown ? closedEye : openEye;
+      pwInput.focus();
+      if (start !== null && end !== null) {
+        pwInput.setSelectionRange(start, end);
+      }
+    }
+
+    pwToggle.addEventListener('click', togglePassword);
+    pwToggle.addEventListener('keydown', e => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        togglePassword();
+      }
+    });
+  })();
+</script>
+{% endblock %}

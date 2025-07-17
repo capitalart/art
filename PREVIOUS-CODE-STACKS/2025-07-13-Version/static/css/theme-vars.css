@@ -1,0 +1,50 @@
+:root {
+  /* 🎨 Colour Palette */
+  --main-bg: #f9f9f9;
+  --main-txt: #222;
+  --accent: #000000;
+  --accent-dark: #414141;
+  --border: #ddd;
+  --card-bg:none;
+  --highlight: #ffeaa7;
+  --error: #e74c3c;
+  --success: #2ecc71;
+  --info: #3498db;
+
+  /* 🌈 Theme Modes */
+  --dark-bg: #1e1e1e;
+  --dark-txt: #f1f1f1;
+  --dark-card-hover-bg: #464646;
+  --light-card-hover-bg: #dedede;
+
+  /* ✍️ Fonts */
+  --font-body: sans-serif;
+  --font-heading: serif;
+  --font-code: monospace;
+
+  /* 📐 Layout */
+  --max-width: 1280px;
+  --container-padding: 2rem;
+  --menu-height: 64px;
+  --gallery-gap: .5em;
+
+  /* 🧱 Borders & Shadows */
+  --radius: 0px;
+  --thumb-radius: 0px;
+  --shadow: 0 2px 6px rgba(0,0,0,0.06);
+  --shadow-deep: 0 4px 10px rgba(0,0,0,0.1);
+
+  /* 🕹 Transitions & Motion */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-medium: 0.3s ease-in-out;
+
+  /* 🎯 Z-index Layers */
+  --z-header: 1000;
+  --z-overlay: 9999;
+  --z-modal: 1100;
+  --z-dropdown: 1050;
+
+  --border-light: #444;
+  --accent-muted: #888;
+  --font-mono: "SFMono-Regular", Consolas, "Courier New", monospace;
+}

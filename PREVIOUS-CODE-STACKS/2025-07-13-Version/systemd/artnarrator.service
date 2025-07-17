@@ -1,0 +1,20 @@
+# ==============================================================
+# ArtNarrator Gunicorn Service (systemd unit)
+# Maintains the production Gunicorn server for the ART Narrator
+# Flask application. Uses virtualenv and restarts on failure.
+# ==============================================================
+[Unit]
+Description=ArtNarrator Gunicorn Service
+After=network.target
+
+[Service]
+User=artlistmachine
+Group=artlistmachine
+WorkingDirectory=/home/artlistmachine/capitalart
+Environment=PATH=/home/artlistmachine/capitalart/venv/bin
+ExecStart=/home/artlistmachine/capitalart/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8070 app:app
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,130 @@
+# 56-Module-Map-Audit-11-July-2025-09-30AM
+
+**System:** ArtNarrator / ART Narrator (Robbie Mode™ Codex Prompt Framework)  
+**Author:** Robbie Custance  
+**Goal:** Comprehensive Module Map & File Dependency Audit  
+**QA:** This task *must* be audited using `codex-prompts/README-CODEX-PROMPT-ACTIONS.md` — full 10-point checklist is required at the end of the output.  
+
+---
+
+## 🟢 Description
+
+Audit the entire ArtNarrator / ART Narrator codebase. For each major **module** (see below; also auto-detect new/related ones), list all directly connected files—Python modules, templates, static assets, configs, scripts, and their exact workflow roles.  
+Show how files interconnect (imports, templates, API calls, shared utilities).  
+**Flag** any unused, obsolete, or duplicate files.  
+**Highlight** shared/core files (used across multiple modules) in a separate section.  
+**You MUST include the full QA & Handover Protocol from `codex-prompts/README-CODEX-PROMPT-ACTIONS.md` as the final section of your output.**
+
+---
+
+## 🟢 Modules to Map
+
+Start with these, but auto-detect and add others if present:
+- upload
+- analyze
+- edit_listing
+- finalised
+- GDWS
+- mockup_generation
+- export/csv
+- admin/tools
+- DWS (Description Writing System)
+- Any other functional or workflow area you find
+
+---
+
+## 🟢 Functional Requirements
+
+For each module:
+- List all relevant backend files (.py), templates (.html), static assets (JS/CSS), configs, scripts, etc.
+- 1–2 line summary for each file’s purpose within that module.
+- Show how these files interact (routes, imports, templates, calls).
+- Flag unused, duplicate, or obsolete files with a note.
+- Include files used by more than one module in a **Shared/Core** section at the end.
+- Output must be **structured markdown** for fast dev/manager review.
+
+---
+
+## 🟢 Files to Scan
+
+Scan **all** code and resource files in:
+- Project root (e.g., `capitalart.py`, `app.py`, `config.py`)
+- `/scripts/`, `/outputs/`, `/inputs/`, `/templates/`, `/static/`, `/mockup-generator/`, `/codex-prompts/`, `/logs/`, `/data/`, and any module subfolders.
+- Ignore only virtualenvs (`venv/`, `.venv/`), `.git/`, backup or archive folders, and irrelevant system files.
+
+---
+
+## 🟢 Logic & Constraints
+
+- Every file with a relevant extension (as per `art_narrator_total_rundown.py`) must be considered, unless explicitly excluded above.
+- If a file is used by several modules, mention all, but only fully document in "Shared/Core".
+- For **uncertain** or ambiguous files, explain assumptions.
+- Where code structure is inferred from usage patterns, explain reasoning.
+
+---
+
+## 🟢 QA Reference
+
+**MANDATORY:**  
+You must apply and include the **entire 10-section QA & Handover Protocol** as defined in:  
+`codex-prompts/README-CODEX-PROMPT-ACTIONS.md`  
+Do NOT omit any section. The checklist must be appended to your output.
+
+---
+
+## 🟢 Output Format Example
+
+## [MODULE NAME]
+
+### Backend / Python Files
+- `filename.py`: [Brief description]
+- `another_file.py`: [Brief description]
+
+### Templates
+- `templates/modulename/template.html`: [Description, UI role]
+
+### Static Assets
+- `static/modulename/script.js`: [Description]
+
+### Config / Data Files
+- `settings.json`: [Module purpose]
+
+### Connection Map
+- Brief summary: e.g., "upload.html posts to upload.py, which saves to ARTWORKS_INPUT_DIR, triggers analyze_artwork.py..."
+
+---
+
+## Shared/Core Files
+
+- `config.py`: Central settings for all modules
+- `auth.py`: Session and admin logic
+- `app.py`/`capitalart.py`: Main app and route dispatcher
+- (continue...)
+
+---
+
+## Obsolete/Unreferenced Files
+
+- `old_script.py`: Not imported anywhere (recommend removal)
+
+---
+
+## 🟢 Save Output
+
+Output must be **well-structured markdown** and saved as:  
+`audit/module-map-YYYY-MM-DD.md`
+
+---
+
+## 🟢 Review & QA
+
+- Ensure all modules and files are mapped and described
+- Unused files are flagged
+- Shared files are explained only once
+- **The full 10-point QA checklist from `README-CODEX-PROMPT-ACTIONS.md` is included and completed at the end**
+
+---
+
+# 🚀 Go!
+Produce the full module map and audit as above.  
+Append the full, completed QA checklist to your output as the final section.

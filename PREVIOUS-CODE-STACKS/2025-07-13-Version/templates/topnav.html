@@ -1,0 +1,78 @@
+{% set current = request.endpoint or '' %}
+<nav class="site-nav">
+  <a href="{{ url_for('artwork.home') }}" class="brand-logo">
+    <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="ART Narrator logo" class="brand-icon" />
+    ART Narrator
+  </a>
+  <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+    <img id="icon-menu" src="{{ url_for('static', filename='icons/svg/light/list-light.svg') }}" alt="Open menu" />
+    <img id="icon-close" src="{{ url_for('static', filename='icons/svg/light/x-light.svg') }}" alt="Close menu" />
+  </button>
+  <button id="mega-button" class="mega-button" aria-expanded="false">
+    Menu <span id="mega-arrow">▼</span>
+  </button>
+  <div id="nav-links" class="nav-links">
+    <a href="{{ url_for('artwork.upload_artwork') }}" class="{% if current=='artwork.upload_artwork' %}active{% endif %}">Upload</a>
+    <a href="{{ url_for('artwork.artworks') }}" class="{% if current=='artwork.artworks' %}active{% endif %}">Gallery</a>
+    <a href="{{ url_for('artwork.finalised_gallery') }}" class="{% if current=='artwork.finalised_gallery' %}active{% endif %}">Finalised</a>
+    <a href="{{ url_for('exports.sellbrite_exports') }}" class="{% if current=='exports.sellbrite_exports' %}active{% endif %}">Exports</a>
+    <a href="{{ url_for('whisperer.index') }}" class="{% if current=='whisperer.index' %}active{% endif %}">Prompts</a>
+
+    <div class="dropdown" id="help-dropdown">
+      <button class="dropdown-toggle" id="help-toggle" aria-haspopup="true" aria-expanded="false">Docs ▾</button>
+      <ul class="dropdown-menu" id="help-menu">
+        <li><a href="{{ url_for('documentation.howto_home') }}">Artwork Home</a></li>
+        <li><a href="{{ url_for('documentation.howto_upload') }}">Upload</a></li>
+        <li><a href="{{ url_for('documentation.howto_analyze') }}">Analyze</a></li>
+        <li><a href="{{ url_for('documentation.howto_gallery') }}">Gallery</a></li>
+        <li><a href="{{ url_for('documentation.howto_exports') }}">Exports</a></li>
+        <li><a href="{{ url_for('documentation.howto_whisperer') }}">Prompt Whisperer</a></li>
+        <li><a href="{{ url_for('documentation.faq') }}">FAQ</a></li>
+        <li><a href="{{ url_for('info.accessibility') }}">Accessibility</a></li>
+        <li><a href="{{ url_for('info.terms') }}">Terms</a></li>
+        <li><a href="{{ url_for('info.privacy') }}">Privacy</a></li>
+        <li><a href="{{ url_for('info.about') }}">About</a></li>
+      </ul>
+    </div>
+        {% if session.get('user') == 'robbie' %}
+        <div class="dropdown admin-dropdown" id="admin-dropdown">
+          <button class="dropdown-toggle" id="admin-toggle" aria-haspopup="true" aria-expanded="false">Admin ▾</button>
+          <ul class="dropdown-menu" id="admin-menu">
+            <li><a href="{{ url_for('admin_routes.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin_routes.user_management') }}">User Management</a></li>
+            <li><a href="{{ url_for('admin_routes.settings') }}">Settings</a></li>
+            <li><a href="{{ url_for('admin_routes.prompt_options_editor') }}">Prompt Options</a></li>
+            <li><a href="{{ url_for('admin_routes.security') }}">Security</a></li>
+            <li><a href="{{ url_for('admin_routes.active_sessions') }}">Sessions</a></li>
+            <li><a href="{{ url_for('admin_routes.cache_control') }}">Cache Control</a></li>
+            <li><a href="{{ url_for('admin_routes.git_log') }}">Git Log</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+          </ul>
+        </div>
+        {% endif %}
+  </div>
+  <div class="profile-area">
+    {% if session.get('user') %}
+      <button class="dropdown-toggle" id="profile-toggle" aria-haspopup="true" aria-expanded="false">
+      <img id="profile-icon" src="{{ url_for('static', filename='icons/svg/light/user-circle-light.svg') }}" alt="Profile" />
+      </button>
+      <span class="login-greeting">Logged in as {{ session['user'] }}</span>
+      <ul class="dropdown-menu" id="profile-menu">
+        {% if session.get('user') == 'robbie' %}
+          <li><a href="{{ url_for('auth.account') }}">Account</a></li>
+          {% if config.ENABLE_UPGRADE %}
+            <li><a href="{{ url_for('info.upgrade') }}">Upgrade</a></li>
+          {% endif %}
+          <li><a href="{{ url_for('admin.debug_status') }}">Admin</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+      </ul>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}" class="login-link">Login</a>
+    {% endif %}
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+      <img id="icon-sun" src="{{ url_for('static', filename='icons/svg/light/sun-dim-light.svg') }}" alt="" aria-hidden="true" />
+      <img id="icon-moon" src="{{ url_for('static', filename='icons/svg/light/moon-light.svg') }}" alt="" aria-hidden="true" />
+    </button>
+  </div>
+</nav>

@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+{% block title %}Upload Mockups{% endblock %}
+{% block content %}
+<h2>Upload Mockups</h2>
+<form method="post" enctype="multipart/form-data">
+  <label for="aspect">Aspect Ratio:</label>
+  <select name="aspect" id="aspect">
+    {% for a in aspects %}
+      <option value="{{ a }}">{{ a }}</option>
+    {% endfor %}
+  </select>
+  <input type="file" name="images" multiple required accept="image/png">
+  <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+{% endblock %}

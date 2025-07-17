@@ -1,0 +1,13 @@
+{% extends "main.html" %}
+{% block title %}{{ category }} - {{ aspect }}{% endblock %}
+{% block content %}
+<h2>{{ category }} - {{ aspect }}</h2>
+<div class="mockup-grid">
+  {% for img in images %}
+    <div class="mockup-card">
+      <img src="{{ url_for('mockups.image', aspect=aspect, category=category, filename=img) }}" alt="{{ category }} mockup" class="mockup-thumb">
+    </div>
+  {% endfor %}
+</div>
+{% if not images %}<p>No mockups found.</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'main.html' %}
+{% block title %}AI Prompt Generator{% endblock %}
+{% block content %}
+<h1>AI Prompt Generator</h1>
+<form id="prompt-form">
+  <label>Genre:
+    <select name="genre" id="genre-select"></select>
+  </label><br>
+  <label>Style:
+    <select name="style" id="style-select"></select>
+  </label><br>
+  <label>Technique:
+    <select name="technique" id="technique-select"></select>
+  </label><br>
+  <label>Medium:
+    <select name="medium" id="medium-select"></select>
+  </label><br>
+  <label>Palette:
+    <select name="palette" id="palette-select"></select>
+  </label><br>
+  <label>Texture:
+    <select name="texture" id="texture-select"></select>
+  </label><br>
+  <button type="submit">Generate Prompt</button>
+</form>
+<pre id="prompt-output"></pre>
+<script>
+const fields = ['genre','style','technique','medium','palette','texture'];
+fields.forEach(f => {
+  fetch(`/api/prompt-options/${f}s`)
+    .then(r=>r.json())
+    .then(opts => {
+      const sel=document.getElementById(`${f}-select`);
+      opts.forEach(o=>{ const opt=document.createElement('option'); opt.value=o; opt.textContent=o; sel.appendChild(opt); });
+    });
+});
+document.getElementById('prompt-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const data = {};
+  fields.forEach(f=>{ data[f]=document.getElementById(`${f}-select`).value; });
+  document.getElementById('prompt-output').textContent = JSON.stringify(data, null, 2);
+});
+</script>
+{% endblock %}

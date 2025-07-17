@@ -1,0 +1,105 @@
+{# All url_for calls use blueprint prefixes like 'artwork.upload_artwork' #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+  <title>{% block title %}ArtNarrator{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <!-- ========== [MA.1] Top Navigation ========== -->
+  <nav class="main-nav">
+    <a href="{{ url_for('artwork.home') }}">Home</a>
+    <a href="{{ url_for('artwork.upload_artwork') }}">Upload</a>
+    <a href="{{ url_for('artwork.artworks') }}">Artwork Gallery</a>
+    <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
+    <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
+    <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+      <img id="icon-sun" src="{{ url_for('static', filename='icons/svg/light/sun-light.svg') }}" alt="Light mode">
+      <img id="icon-moon" src="{{ url_for('static', filename='icons/svg/light/moon-light.svg') }}" alt="Dark mode">
+    </button>
+  </nav>
+  <main>
+    <!-- ========== [MA.2] Flash Message Area ========== -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for m in messages %}
+            {{ m }}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    <!-- ========== [MA.3] Main Content Block ========== -->
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Analysis Progress Modal -->
+  <div id="analysis-modal" class="analysis-modal">
+    <div class="analysis-box">
+      <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
+      <h3>Analyzing Artwork...</h3>
+      <div class="analysis-progress" aria-label="analysis progress">
+        <div id="analysis-bar" class="analysis-progress-bar"
+             role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      </div>
+      <div id="analysis-status" class="analysis-status" aria-live="polite"></div>
+      <div class="analysis-friendly">This can take up to a couple of minutes. Go have a coffee while the AI works its magic! ☕️</div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('analysis-modal');
+      const bar = document.getElementById('analysis-bar');
+      const statusEl = document.getElementById('analysis-status');
+      const closeBtn = document.getElementById('analysis-close');
+      const statusUrl = "{{ url_for('artwork.analysis_status') }}";
+      let pollStatus;
+
+      function openModal() {
+        modal.classList.add('active');
+        fetchStatus();
+        pollStatus = setInterval(fetchStatus, 1000);
+      }
+
+      function closeModal() {
+        modal.classList.remove('active');
+        clearInterval(pollStatus);
+      }
+
+      function fetchStatus() {
+        fetch(statusUrl)
+          .then(r => r.json())
+          .then(d => {
+            const pct = d.percent || 0;
+            bar.style.width = pct + '%';
+            bar.setAttribute('aria-valuenow', pct);
+            statusEl.textContent = d.step || '';
+          });
+      }
+
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+      document.querySelectorAll('form.analyze-form').forEach(f => {
+        f.addEventListener('submit', function(ev) {
+          ev.preventDefault();
+          openModal();
+          const data = new FormData(f);
+          fetch(f.action, {method: 'POST', body: data})
+            .then(resp => resp.text().then(() => resp.url))
+            .then(url => { setTimeout(() => { closeModal(); window.location.href = url; }, 1000); });
+        });
+      });
+    });
+  </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

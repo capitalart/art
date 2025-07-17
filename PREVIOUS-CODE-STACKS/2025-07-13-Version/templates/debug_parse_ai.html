@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+{% block title %}Parse AI Output{% endblock %}
+{% block content %}
+<h1>Debug: Parse AI Output</h1>
+<form method="post">
+  <textarea name="raw" rows="15" cols="80">{{ raw }}</textarea><br>
+  <button type="submit">Parse</button>
+</form>
+{% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+{% if parsed %}
+<pre>{{ parsed | tojson(indent=2) }}</pre>
+{% endif %}
+{% endblock %}

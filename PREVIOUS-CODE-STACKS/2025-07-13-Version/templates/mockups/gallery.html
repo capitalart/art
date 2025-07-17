@@ -1,0 +1,10 @@
+{% extends "main.html" %}
+{% block title %}{{ aspect }} Gallery{% endblock %}
+{% block content %}
+<h2>{{ aspect }} Categories</h2>
+<ul class="category-list">
+  {% for c in categories %}
+    <li><a href="{{ url_for('mockups.category_gallery', aspect=aspect, category=c.name) }}">{{ c.name }} ({{ c.count }})</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
