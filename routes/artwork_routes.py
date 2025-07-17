@@ -758,6 +758,7 @@ def edit_listing(aspect, filename):
 
 _PROCESSED_REL = ARTWORKS_PROCESSED_DIR.relative_to(BASE_DIR).as_posix()
 _FINALISED_REL = ARTWORKS_FINALISED_DIR.relative_to(BASE_DIR).as_posix()
+_LOCKED_REL = utils.LOCKED_VAULT_DIR.relative_to(BASE_DIR).as_posix()
 
 
 @bp.route(f"/static/{_PROCESSED_REL}/<seo_folder>/<filename>")
@@ -775,6 +776,13 @@ def processed_image(seo_folder, filename):
 def finalised_image(seo_folder, filename):
     """Serve images strictly from the finalised-artwork folder."""
     folder = utils.FINALISED_DIR / seo_folder
+    return send_from_directory(folder, filename)
+
+
+@bp.route(f"/static/{_LOCKED_REL}/<seo_folder>/<filename>")
+def locked_image(seo_folder, filename):
+    """Serve images from the locked artwork vault."""
+    folder = utils.LOCKED_VAULT_DIR / seo_folder
     return send_from_directory(folder, filename)
 
 
@@ -1075,6 +1083,17 @@ def lock_listing(aspect, filename):
         flash("Artwork must be finalised before locking", "danger")
         return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
     try:
+        target = utils.LOCKED_VAULT_DIR / f"LOCKED-{seo}"
+        utils.LOCKED_VAULT_DIR.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            idx = 1
+            base = target
+            while target.exists():
+                target = base.with_name(f"{base.name}_{idx}")
+                idx += 1
+        shutil.move(str(folder), str(target))
+        listing = target / f"{seo}-listing.json"
+        utils.update_listing_paths(listing, folder, target)
         with open(listing, "r", encoding="utf-8") as f:
             data = json.load(f)
         data["locked"] = True
@@ -1095,6 +1114,16 @@ def unlock_listing(aspect, filename):
         flash("Artwork not found", "danger")
         return redirect(url_for("artwork.artworks"))
     try:
+        target = utils.ARTWORKS_FINALISED_DIR / seo
+        if target.exists():
+            idx = 1
+            base = target
+            while target.exists():
+                target = base.with_name(f"{base.name}_{idx}")
+                idx += 1
+        shutil.move(str(folder), str(target))
+        listing = target / f"{seo}-listing.json"
+        utils.update_listing_paths(listing, folder, target)
         with open(listing, "r", encoding="utf-8") as f:
             data = json.load(f)
         data["locked"] = False

@@ -23,6 +23,7 @@ from config import (
     SELECTIONS_DIR,
     COMPOSITES_DIR,
     ARTWORKS_FINALISED_DIR as FINALISED_DIR,
+    LOCKED_VAULT_DIR,
     LOGS_DIR,
     MOCKUPS_CATEGORISED_DIR as MOCKUPS_DIR,
     ANALYSE_MAX_DIM,
@@ -300,11 +301,14 @@ def list_finalised_artworks() -> List[Dict]:
 def list_finalised_artworks_extended() -> List[Dict]:
     """Return detailed info for finalised artworks including locked state."""
     items: List[Dict] = []
-    if FINALISED_DIR.exists():
-        for folder in FINALISED_DIR.iterdir():
+    for base in (FINALISED_DIR, LOCKED_VAULT_DIR):
+        if not base.exists():
+            continue
+        for folder in base.iterdir():
             if not folder.is_dir():
                 continue
-            listing_file = folder / f"{folder.name}-listing.json"
+            slug = folder.name.removeprefix("LOCKED-")
+            listing_file = folder / f"{slug}-listing.json"
             if not listing_file.exists():
                 continue
             try:
@@ -312,22 +316,22 @@ def list_finalised_artworks_extended() -> List[Dict]:
                     data = json.load(f)
             except Exception:
                 continue
-            main_img = folder / f"{folder.name}.jpg"
-            thumb_img = folder / f"{folder.name}-THUMB.jpg"
+            main_img = folder / f"{slug}.jpg"
+            thumb_img = folder / f"{slug}-THUMB.jpg"
             items.append(
                 {
                     "seo_folder": folder.name,
-                    "title": data.get("title") or prettify_slug(folder.name),
+                    "title": data.get("title") or prettify_slug(slug),
                     "description": data.get("description", ""),
                     "sku": data.get("sku", ""),
                     "primary_colour": data.get("primary_colour", ""),
                     "secondary_colour": data.get("secondary_colour", ""),
                     "price": data.get("price", ""),
-                    "seo_filename": data.get("seo_filename", f"{folder.name}.jpg"),
+                    "seo_filename": data.get("seo_filename", f"{slug}.jpg"),
                     "tags": data.get("tags", []),
                     "materials": data.get("materials", []),
                     "aspect": data.get("aspect_ratio", ""),
-                    "filename": data.get("filename", f"{folder.name}.jpg"),
+                    "filename": data.get("filename", f"{slug}.jpg"),
                     "locked": data.get("locked", False),
                     "main_image": main_img.name if main_img.exists() else None,
                     "thumb": thumb_img.name if thumb_img.exists() else None,
@@ -354,11 +358,12 @@ def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
     slug_base = slugify(basename)
     candidates: list[tuple[float, str]] = []
 
-    for base in (ARTWORK_PROCESSED_DIR, FINALISED_DIR):
+    for base in (ARTWORK_PROCESSED_DIR, FINALISED_DIR, LOCKED_VAULT_DIR):
         for folder in base.iterdir():
             if not folder.is_dir():
                 continue
-            listing_file = folder / FILENAME_TEMPLATES["listing_json"].format(seo_slug=folder.name)
+            slug = folder.name.removeprefix("LOCKED-")
+            listing_file = folder / FILENAME_TEMPLATES["listing_json"].format(seo_slug=slug)
             if not listing_file.exists():
                 continue
             try:
@@ -370,14 +375,15 @@ def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
             stems = {
                 Path(data.get("filename", "")).stem.lower(),
                 Path(data.get("seo_filename", "")).stem.lower(),
+                slug.lower(),
                 folder.name.lower(),
                 slugify(Path(data.get("filename", "")).stem),
                 slugify(Path(data.get("seo_filename", "")).stem),
-                slugify(folder.name),
+                slugify(slug),
             }
 
             if basename in stems or slug_base in stems:
-                candidates.append((listing_file.stat().st_mtime, folder.name))
+                candidates.append((listing_file.stat().st_mtime, slug))
 
     if not candidates:
         raise FileNotFoundError(f"SEO folder not found for {filename}")
@@ -519,12 +525,45 @@ def sync_filename_with_sku(seo_filename: str, sku: str) -> str:
 
 
 def is_finalised_image(path: str | Path) -> bool:
-    """Return True if the given path is within the finalised-artwork folder."""
+    """Return True if the given path is within a finalised or locked folder."""
+    p = Path(path).resolve()
     try:
-        Path(path).resolve().relative_to(FINALISED_DIR)
+        p.relative_to(FINALISED_DIR)
+        return True
+    except Exception:
+        pass
+    try:
+        p.relative_to(LOCKED_VAULT_DIR)
         return True
     except Exception:
         return False
+
+
+def update_listing_paths(listing: Path, old_base: Path, new_base: Path) -> None:
+    """Replace base path strings inside a listing JSON when folders move."""
+    if not listing.exists():
+        return
+    try:
+        with open(listing, "r", encoding="utf-8") as lf:
+            data = json.load(lf)
+    except Exception:
+        return
+
+    old_rel = relative_to_base(old_base)
+    new_rel = relative_to_base(new_base)
+
+    def _swap(p: str) -> str:
+        return p.replace(old_rel, new_rel)
+
+    for key in ("main_jpg_path", "orig_jpg_path", "thumb_jpg_path", "processed_folder"):
+        if isinstance(data.get(key), str):
+            data[key] = _swap(data[key])
+
+    if isinstance(data.get("images"), list):
+        data["images"] = [_swap(img) if isinstance(img, str) else img for img in data["images"]]
+
+    with open(listing, "w", encoding="utf-8") as lf:
+        json.dump(data, lf, indent=2, ensure_ascii=False)
 
 
 def parse_csv_list(text: str) -> List[str]:
@@ -579,6 +618,7 @@ def resolve_listing_paths(aspect: str, filename: str) -> Tuple[str, Path, Path, 
     seo_folder = find_seo_folder_from_filename(aspect, filename)
     processed_dir = ARTWORK_PROCESSED_DIR / seo_folder
     final_dir = FINALISED_DIR / seo_folder
+    locked_dir = LOCKED_VAULT_DIR / f"LOCKED-{seo_folder}"
 
     listing = processed_dir / f"{seo_folder}-listing.json"
     if listing.exists():
@@ -587,6 +627,10 @@ def resolve_listing_paths(aspect: str, filename: str) -> Tuple[str, Path, Path, 
     listing = final_dir / f"{seo_folder}-listing.json"
     if listing.exists():
         return seo_folder, final_dir, listing, True
+
+    listing = locked_dir / f"{seo_folder}-listing.json"
+    if listing.exists():
+        return seo_folder, locked_dir, listing, True
 
     raise FileNotFoundError(f"Listing file for {filename} not found")
 
@@ -600,7 +644,7 @@ def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str,
     ``.jpg`` extension and to match the actual casing on disk when possible.
     """
 
-    for base in (ARTWORK_PROCESSED_DIR, FINALISED_DIR):
+    for base in (ARTWORK_PROCESSED_DIR, FINALISED_DIR, LOCKED_VAULT_DIR):
         folder = base / seo_folder
         listing = folder / f"{seo_folder}-listing.json"
         aspect = ""

@@ -19,8 +19,8 @@
   <div class="final-card">
     <div class="card-thumb">
       {% if art.main_image %}
-      <a href="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="final-img-link" data-img="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=art.main_image) }}">
-        <img src="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="card-img-top" alt="{{ art.title }}">
+      <a href="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="final-img-link" data-img="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=art.main_image) }}">
+        <img src="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="card-img-top" alt="{{ art.title }}">
       </a>
       {% else %}
       <img src="{{ url_for('static', filename='img/no-image.svg') }}" class="card-img-top" alt="No image">
@@ -40,7 +40,7 @@
       {% if art.mockups %}
       <div class="mini-mockup-grid">
         {% for m in art.mockups %}
-        <img src="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=m.filename) }}" alt="mockup"/>
+        <img src="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=m.filename) }}" alt="mockup"/>
         {% endfor %}
       </div>
       {% endif %}
@@ -50,21 +50,21 @@
         <ul>
           {% for img in art.images %}
           <li>
-            <a href="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=img.split('/')[-1]) }}" target="_blank">/{{ img }}</a>
+            <a href="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=img.split('/')[-1]) }}" target="_blank">/{{ img }}</a>
           </li>
           {% endfor %}
         </ul>
       </details>
       {% endif %}
     </div>
-  <div class="final-actions">
-    <a class="btn-black btn-disabled" aria-disabled="true">Edit</a>
-    <form method="post" action="{{ url_for('artwork.unlock_listing', aspect=art.aspect, filename=art.filename) }}" style="display:inline;">
-      <button type="submit" class="btn-black">Unlock</button>
+  <div class="button-row">
+    <a class="art-btn disabled" aria-disabled="true">Edit</a>
+    <form method="post" action="{{ url_for('artwork.unlock_listing', aspect=art.aspect, filename=art.filename) }}">
+      <button type="submit" class="art-btn">Unlock</button>
     </form>
-    <form method="post" action="{{ url_for('artwork.delete_finalised', aspect=art.aspect, filename=art.filename) }}" class="locked-delete-form" style="display:inline;">
+    <form method="post" action="{{ url_for('artwork.delete_finalised', aspect=art.aspect, filename=art.filename) }}" class="locked-delete-form">
       <input type="hidden" name="confirm" value="">
-      <button type="submit" class="btn-black btn-danger">Delete</button>
+      <button type="submit" class="art-btn delete">Delete</button>
     </form>
   </div>
   </div>

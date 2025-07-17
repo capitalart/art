@@ -17,16 +17,19 @@ bp = Blueprint("exports", __name__, url_prefix="/exports")
 
 def _collect_listings(locked_only: bool) -> List[Dict]:
     listings = []
-    for listing in config.ARTWORKS_FINALISED_DIR.rglob("*-listing.json"):
-        try:
-            utils.assign_or_get_sku(listing, config.SKU_TRACKER)
-            with open(listing, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except Exception:
+    for base in (config.ARTWORKS_FINALISED_DIR, config.LOCKED_VAULT_DIR):
+        if not base.exists():
             continue
-        if locked_only and not data.get("locked"):
-            continue
-        listings.append(data)
+        for listing in base.rglob("*-listing.json"):
+            try:
+                utils.assign_or_get_sku(listing, config.SKU_TRACKER)
+                with open(listing, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except Exception:
+                continue
+            if locked_only and not data.get("locked"):
+                continue
+            listings.append(data)
     return listings
 
 

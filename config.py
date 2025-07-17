@@ -31,6 +31,9 @@ MOCKUPS_CATEGORISED_DIR = Path(
 )
 ARTWORKS_PROCESSED_DIR = Path(os.getenv("ARTWORKS_PROCESSED_DIR", BASE_DIR / "outputs" / "processed"))
 ARTWORKS_FINALISED_DIR = Path(os.getenv("ARTWORKS_FINALISED_DIR", BASE_DIR / "outputs" / "finalised-artwork"))
+LOCKED_VAULT_DIR = Path(
+    os.getenv("LOCKED_VAULT_DIR", BASE_DIR / "outputs" / "locked-artwork-vault")
+)
 COMPOSITES_DIR = Path(os.getenv("COMPOSITES_DIR", BASE_DIR / "outputs" / "composites"))
 SELECTIONS_DIR = Path(os.getenv("SELECTIONS_DIR", BASE_DIR / "outputs" / "selections"))
 THUMBNAILS_DIR = Path(os.getenv("THUMBNAILS_DIR", BASE_DIR / "outputs" / "thumbnails"))
@@ -133,6 +136,7 @@ for folder in [
     PATCHES_DIR,
     SIGNED_OUTPUT_DIR,
     SELLBRITE_OUTPUT_DIR,
+    LOCKED_VAULT_DIR,
     UPLOADS_TEMP_DIR,
 ]:
     try:
