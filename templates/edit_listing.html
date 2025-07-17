@@ -3,9 +3,9 @@
 {% block title %}Edit Listing{% endblock %}
 {% block content %}
 
-<div class="review-artwork-grid">
+<div class="review-artwork-grid row">
   <!-- === Mockup Column === -->
-  <div class="mockup-col">
+  <div class="col col-6 mockup-col">
     <div class="main-thumb">
       <a href="#" 
     class="main-thumb-link" 
@@ -28,7 +28,7 @@
             {% else %}
               <div class="missing-img">Image Not Found</div>
             {% endif %}
-            <form method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
+            <form role="form" method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
               <select name="new_category">
                 {% for c in categories %}
                   <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
@@ -43,8 +43,8 @@
   </div>
 
   <!-- === Edit Fields Column === -->
-  <div class="edit-listing-col">
-    <div class="page-title-row" style="display: flex; align-items: center; margin-bottom: 40px;">
+  <div class="col col-6 edit-listing-col">
+    <div class="page-title-row" >
       <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="hero-step-icon" alt="Step 3: Edit Listing" />
       <h1>Edit Listing</h1>
     </div>
@@ -61,7 +61,7 @@
     {% endif %}
 
     <!-- Main Edit Form -->
-    <form id="edit-form" method="POST" autocomplete="off">
+    <form role="form" id="edit-form" method="POST" autocomplete="off">
       <label>Title:</label>
       <textarea name="title" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.title|e }}</textarea>
 
@@ -117,23 +117,23 @@
       <button form="edit-form" type="submit" name="action" value="save" class="btn btn-primary wide-btn" {% if not editable %}disabled{% endif %}>Save Changes</button>
       <button form="edit-form" type="submit" name="action" value="delete" class="btn btn-danger wide-btn" onclick="return confirm('Delete this artwork and all files?');" {% if not editable %}disabled{% endif %}>Delete</button>
       {% if not finalised %}
-        <form method="post" action="{{ url_for('artwork.finalise_artwork', aspect=aspect, filename=filename) }}" style="width:100%;">
+        <form role='form' method="post" action="{{ url_for('artwork.finalise_artwork', aspect=aspect, filename=filename) }}" style="width:100%;">
           <button type="submit" class="btn btn-primary wide-btn">Finalise</button>
         </form>
       {% endif %}
-      <form method="POST" action="{{ url_for('artwork.analyze_artwork', aspect=aspect, filename=filename) }}" style="width:100%;" class="analyze-form">
+      <form role='form' method="POST" action="{{ url_for('artwork.analyze_artwork', aspect=aspect, filename=filename) }}" style="width:100%;" class="analyze-form">
         <button type="submit" class="btn btn-primary wide-btn" {% if locked %}disabled{% endif %}>Re-analyse Artwork</button>
       </form>
       {% if finalised and not locked %}
-        <form method="post" action="{{ url_for('artwork.lock_listing', aspect=aspect, filename=filename) }}" style="width:100%;">
+        <form role='form' method="post" action="{{ url_for('artwork.lock_listing', aspect=aspect, filename=filename) }}" style="width:100%;">
           <button type="submit" class="btn btn-primary wide-btn">Lock it in</button>
         </form>
       {% elif locked %}
-        <form method="post" action="{{ url_for('artwork.unlock_listing', aspect=aspect, filename=filename) }}" style="width:100%;">
+        <form role='form' method="post" action="{{ url_for('artwork.unlock_listing', aspect=aspect, filename=filename) }}" style="width:100%;">
           <button type="submit" class="btn btn-primary wide-btn">Unlock</button>
         </form>
       {% endif %}
-      <form method="post" action="{{ url_for('artwork.reset_sku', aspect=aspect, filename=filename) }}" style="width:100%;">
+      <form role='form' method="post" action="{{ url_for('artwork.reset_sku', aspect=aspect, filename=filename) }}" style="width:100%;">
         <button type="submit" class="btn-primary wide-btn" {% if locked %}disabled{% endif %}>Reset SKU</button>
       </form>
     </div>

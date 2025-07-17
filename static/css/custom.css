@@ -13,6 +13,12 @@
 
   --modal-overlay-bg: rgba(34,34,34,0.68);
 }
+/* ---- Responsive Layout ---- */
+.container{max-width:1200px;margin:0 auto;padding:1em;}
+.row{display:flex;flex-wrap:wrap;margin:0 -0.5em;}
+.col{flex:1 0 0;padding:0 0.5em;box-sizing:border-box;}
+@media (max-width:900px){.row{flex-direction:column;margin:0;}.col{max-width:100%;width:100%;padding:0;}}
+@media (min-width:901px){.col-6{flex:0 0 50%;max-width:50%;}.col-4{flex:0 0 33.333%;max-width:33.333%;}}
 
 .modal-bg {
   display: none;
@@ -144,7 +150,7 @@
 }
 
 .nav-row1, .nav-row2 {
-  display: flex;
+  display: flex; flex-wrap: wrap;
   align-items: center;
   padding: 0 1em;
   gap: 1.2em;
@@ -282,6 +288,8 @@
 .theme-dark .hero-step-icon {
   filter: none;
 }
+.page-title-row{display:flex;align-items:center;gap:20px;margin-bottom:40px;}
+@media(max-width:900px){.page-title-row{flex-direction:column;text-align:center;gap:1em;}}
 
 .workflow-btn {
   display: flex;

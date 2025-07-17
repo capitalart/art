@@ -1,8 +1,8 @@
 <footer class="site-footer">
-  <div class="footer-inner">
+  <div class="footer-inner container">
     <nav class="footer-nav">
       <a href="{{ url_for('artwork.home') }}">Home</a>
-      <a href="{{ url_for('artwork.artworks') }}">Gallery</a>
+      <a href="{{ url_for('artwork.artworks') }}">Artwork</a>
       <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
       {% if session.get('username') == 'robbie' %}
         <a href="{{ url_for('admin.security_page') }}">Security</a>

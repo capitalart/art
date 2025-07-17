@@ -7,7 +7,7 @@
 <div class="home-hero">
   <h1>🎨 Welcome to ArtNarrator Listing Machine</h1>
   <p class="home-intro">
-    G’day! Start in the Artwork Gallery, analyze new pieces, review your AI-generated listings and mockups, and prep everything for marketplace export—all streamlined for you.
+    G’day! Start in the Artwork section, analyze new pieces, review your AI-generated listings and mockups, and prep everything for marketplace export—all streamlined for you.
   </p>
 </div>
 
@@ -15,11 +15,11 @@
 <div class="workflow-grid">
   <a href="{{ url_for('artwork.upload_artwork') }}" class="workflow-btn">
     <img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="step-btn-icon" alt="Step 1" />
-    Upload<br>to Art Gallery
+    Upload Artwork
   </a>
   <a href="{{ url_for('artwork.artworks') }}" class="workflow-btn">
     <img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="step-btn-icon" alt="Step 2" />
-    Art Gallery<br>Select to Analyze
+    Artwork<br>Select to Analyze
   </a>
   {% if latest_artwork %}
     <a href="{{ url_for('artwork.edit_listing', aspect=latest_artwork.aspect, filename=latest_artwork.filename) }}" class="workflow-btn">
