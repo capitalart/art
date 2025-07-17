@@ -36,6 +36,7 @@ from flask import (
     flash,
     send_from_directory,
     Response,
+    jsonify,
 )
 import re
 
@@ -501,10 +502,36 @@ def review_regenerate_mockup(aspect, filename, slot_idx):
 @bp.route("/review/<seo_folder>/swap/<int:slot_idx>", methods=["POST"])
 def review_swap_mockup(seo_folder, slot_idx):
     new_cat = request.form["new_category"]
-    if not utils.swap_one_mockup(seo_folder, slot_idx, new_cat):
-        flash("Failed to swap mockup", "danger")
+    success = utils.swap_one_mockup(seo_folder, slot_idx, new_cat)
 
     info = utils.find_aspect_filename_from_seo_folder(seo_folder)
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.accept_mimetypes.best == "application/json":
+        img_url = ""
+        if success and info:
+            aspect, _filename = info
+            folder = utils.ARTWORK_PROCESSED_DIR / seo_folder
+            listing = folder / f"{seo_folder}-listing.json"
+            if not listing.exists():
+                folder = utils.FINALISED_DIR / seo_folder
+                listing = folder / f"{seo_folder}-listing.json"
+            try:
+                with open(listing, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                mp = data.get("mockups", [])[slot_idx]
+                if isinstance(mp, dict):
+                    comp = mp.get("composite")
+                    if comp:
+                        img_url = url_for(
+                            "artwork.processed_image", seo_folder=seo_folder, filename=comp
+                        )
+            except Exception:  # noqa: BLE001
+                img_url = ""
+        return jsonify({"success": success, "img_url": img_url})
+
+    if not success:
+        flash("Failed to swap mockup", "danger")
+
     if info:
         aspect, filename = info
         return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
