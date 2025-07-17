@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from utils import security
 from dotenv import load_dotenv
 import config
 

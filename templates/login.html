@@ -6,6 +6,7 @@
   {% with msgs = get_flashed_messages(with_categories=true) %}
     {% if msgs %}
       <div class="flash">
+        <img src="{{ url_for('static', filename='icons/svg/light/warning-circle-light.svg') }}" alt="!" style="width:20px;margin-right:6px;vertical-align:middle;">
         {% for cat, msg in msgs %}
           {{ msg }}
         {% endfor %}
