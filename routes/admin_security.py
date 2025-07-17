@@ -4,7 +4,8 @@ from __future__ import annotations
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from datetime import datetime
 
-from utils import security
+from utils import security, session_tracker
+import config
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -27,9 +28,12 @@ def security_page():
         return redirect(url_for("admin.security_page"))
     remaining = security.remaining_minutes()
     login_required = security.login_required_enabled()
+    active_count = len(session_tracker.active_sessions(config.ADMIN_USERNAME))
     return render_template(
         "admin/security.html",
         login_required=login_required,
         remaining=remaining,
         expires=security.load_settings().get("expires"),
+        active=active_count,
+        max_sessions=session_tracker.MAX_SESSIONS,
     )

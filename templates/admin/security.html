@@ -4,6 +4,7 @@
 <h1>Site Security</h1>
 <div class="security-panel">
   <p>Login required: <strong>{{ 'ON' if login_required else 'OFF' }}</strong></p>
+  <p>Active devices: {{ active }}/{{ max_sessions }}</p>
   {% if remaining %}
   <p>Login will re-enable in {{ remaining }} minute{{ 's' if remaining != 1 else '' }}.</p>
   {% endif %}

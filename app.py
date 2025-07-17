@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
-from utils import security
+from utils import security, session_tracker
 from werkzeug.routing import BuildError
 from dotenv import load_dotenv
 from datetime import datetime
@@ -33,8 +33,16 @@ def require_login() -> None:
     allowed = {"auth.login", "static"}
     if request.endpoint in allowed or request.endpoint is None:
         return
-    if security.login_required_enabled() and not session.get("logged_in"):
-        return redirect(url_for("auth.login", next=request.path))
+    if not session.get("logged_in"):
+        if security.login_required_enabled():
+            return redirect(url_for("auth.login", next=request.path))
+        return
+    username = session.get("username")
+    sid = session.get("session_id")
+    if not session_tracker.touch_session(username, sid):
+        session.clear()
+        if security.login_required_enabled():
+            return redirect(url_for("auth.login", next=request.path))
 
 # ---- Logging Setup ----
 logging.basicConfig(
