@@ -1,14 +1,16 @@
 <header class="site-header">
-  <nav class="topnav">
-    <a href="{{ url_for('artwork.home') }}" class="logo">ArtNarrator</a>
-    <a href="{{ url_for('artwork.upload_artwork') }}">Upload</a>
-    <a href="{{ url_for('artwork.artworks') }}">Artwork Gallery</a>
-    <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
-    <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
-    <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
-    {% if session.get('username') == 'robbie' %}
-      <a href="{{ url_for('admin.security_page') }}">Security</a>
-    {% endif %}
+  <div class="nav-row1">
+    <a href="{{ url_for('artwork.home') }}" class="logo">
+      <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon" width="35"/>
+      ArtNarrator
+    </a>
+    <nav class="main-nav">
+      <a href="{{ url_for('artwork.upload_artwork') }}">Upload</a>
+      <a href="{{ url_for('artwork.artworks') }}">Artwork</a>
+      <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
+      <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
+      <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
+    </nav>
     <div class="user-links">
       {% if session.get('logged_in') %}
         <span class="user-name">{{ session.get('username') }}</span>
@@ -31,5 +33,16 @@
         <path d="M108.11 28.11A96.09 96.09 0 00227.89 147.89 96 96 0 11108.11 28.11z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
       </svg>
     </button>
-  </nav>
+  </div>
+  <div class="nav-row2">
+    <nav class="secondary-nav">
+      {% if session.get('username') == 'robbie' %}
+        <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+      {% endif %}
+      <a href="/gdws">GDWS</a>
+      <a href="/udwa">UDWA</a>
+      <a href="/art-prompts">Art Prompts</a>
+      <a href="/mockups">Mockups</a>
+    </nav>
+  </div>
 </header>
