@@ -32,9 +32,10 @@
   </main>
 
   <!-- Analysis Progress Modal -->
-  <div id="analysis-modal" class="analysis-modal">
-    <div class="analysis-box">
+  <div id="analysis-modal" class="analysis-modal" role="dialog" aria-modal="true">
+    <div class="analysis-box" tabindex="-1">
       <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
+      <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" class="progress-icon" alt="">
       <h3>Analyzing Artwork...</h3>
       <div class="analysis-progress" aria-label="analysis progress">
         <div id="analysis-bar" class="analysis-progress-bar"
@@ -58,6 +59,7 @@
         modal.classList.add('active');
         fetchStatus();
         pollStatus = setInterval(fetchStatus, 1000);
+        modal.querySelector('.analysis-box').focus();
       }
 
       function closeModal() {
@@ -77,6 +79,9 @@
       }
 
       if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+      });
 
       document.querySelectorAll('form.analyze-form').forEach(f => {
         f.addEventListener('submit', function(ev) {
