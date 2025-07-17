@@ -38,8 +38,7 @@
         </div>
         <div class="card-details">
           <div class="card-title">{{ art.title }}</div>
-          <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.filename) }}"
-             class="btn btn-secondary">Review</a>
+          <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.filename) }}"class="btn btn-primary">Review</a>
         </div>
       </div>
       {% endfor %}

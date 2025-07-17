@@ -111,11 +111,11 @@
 
     <!-- Action Buttons -->
     <div class="edit-actions-col">
-      <button form="edit-form" type="submit" name="action" value="save" class="btn btn-success wide-btn require-images" {% if not editable %}disabled{% endif %}>Save Changes</button>
+      <button form="edit-form" type="submit" name="action" value="save" class="btn btn-primary wide-btn" {% if not editable %}disabled{% endif %}>Save Changes</button>
       <button form="edit-form" type="submit" name="action" value="delete" class="btn btn-danger wide-btn" onclick="return confirm('Delete this artwork and all files?');" {% if not editable %}disabled{% endif %}>Delete</button>
       {% if not finalised %}
         <form method="post" action="{{ url_for('artwork.finalise_artwork', aspect=aspect, filename=filename) }}" style="width:100%;">
-          <button type="submit" class="btn btn-primary wide-btn require-images">Finalise</button>
+          <button type="submit" class="btn btn-primary wide-btn">Finalise</button>
         </form>
       {% endif %}
       <form method="POST" action="{{ url_for('artwork.analyze_artwork', aspect=aspect, filename=filename) }}" style="width:100%;" class="analyze-form">
@@ -131,7 +131,7 @@
         </form>
       {% endif %}
       <form method="post" action="{{ url_for('artwork.reset_sku', aspect=aspect, filename=filename) }}" style="width:100%;">
-        <button type="submit" class="btn btn-warning wide-btn" {% if locked %}disabled{% endif %}>Reset SKU</button>
+        <button type="submit" class="btn-primary wide-btn" {% if locked %}disabled{% endif %}>Reset SKU</button>
       </form>
     </div>
     {% if openai_analysis %}
