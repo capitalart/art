@@ -16,6 +16,8 @@
   --color-btn-bg: #000000;
   --color-btn-text: #ffffff;
   --color-danger: #c8252d;
+  --color-white-text-links: #ffffff;
+  --color-orange-links-hover: #e76a25;
 
   /* Legacy variable aliases */
   --main-bg: var(--color-bg);
@@ -61,7 +63,6 @@ a { color: var(--color-fg); text-decoration: none; }
 a:hover { color: var(--color-accent); }
 
 header, nav, .main-nav {
-  background: var(--accent);
   color: #fff;
   height: var(--menu-height);
   display: flex;
@@ -414,8 +415,8 @@ footer, .gallery-footer {
   border-top: 1px solid #ececec;
   letter-spacing: 0.01em;
 }
-footer a { color: var(--color-accent); text-decoration: none; }
-footer a:hover { color: var(--accent-dark); }
+footer a { color: var(--color-white-text-links); text-decoration: none; }
+footer a:hover { color: var(--color-orange-links-hover); }
 
 /* --------- [ 8. Light/Dark Mode Ready ] --------- */
 body.dark, .dark main {
