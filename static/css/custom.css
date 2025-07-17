@@ -137,30 +137,30 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.site-header,
-.topnav {
+.site-header {
   width: 100%;
   background: var(--color-header-bg) !important;
   color: var(--color-header-icon);
 }
 
-.topnav {
+.nav-row1, .nav-row2 {
   display: flex;
   align-items: center;
   padding: 0 1em;
-  gap: 1.5em;
-  height: var(--menu-height, 64px);
+  gap: 1.2em;
 }
+.nav-row1 { height: var(--menu-height, 64px); }
+.nav-row2 { height: 40px; font-size: 0.9em; }
 
-.topnav a {
+.main-nav a, .secondary-nav a {
   color: var(--color-header-icon);
   font-family: monospace !important;
   text-decoration: none;
-  margin-right: 0;
-  padding: 0 0.5em;
+  padding: 0 0.4em;
 }
 
-.topnav a:hover {
+.main-nav a:hover,
+.secondary-nav a:hover {
   color: var(--color-accent);
 }
 
@@ -201,6 +201,13 @@
 }
 
 .user-links a:hover { color: var(--color-accent); }
+
+.logo-icon {
+  width: 35px;
+  height: 35px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
 
 /* --- Footer Styling --- */
 .site-footer {
@@ -295,6 +302,11 @@
 
 
 .workflow-btn.disabled{background:#ccc;color:#666;pointer-events:none;}
+
+@media (max-width: 800px) {
+  .workflow-grid { grid-template-columns: 1fr; }
+  .workflow-btn { width: 100%; margin-right: 0; }
+}
 
 /* --------- [ Login Form ] --------- */
 .login-container {
