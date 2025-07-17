@@ -4,6 +4,13 @@
 
 /* --------- [ C1. Modal Carousel ] --------- */
 :root {
+  /* Global override variables */
+  --color-header-bg: #111;
+  --color-footer-bg: #111;
+  --color-header-icon: #fff;
+  --color-accent: #e76a25;
+  --color-danger: #c8252d;
+
   --modal-overlay-bg: rgba(34,34,34,0.68);
 }
 
@@ -120,4 +127,86 @@
 .art-btn.delete:not(:disabled):hover {
   color: #fff;
   background: var(--color-danger, #c8252d);
+}
+
+/* --------- [ C2. Header Overrides ] --------- */
+.site-header,
+.topnav {
+  width: 100%;
+  background: var(--color-header-bg) !important;
+  color: var(--color-header-icon);
+}
+
+.topnav {
+  display: flex;
+  align-items: center;
+  padding: 0 1em;
+  gap: 1.5em;
+  height: var(--menu-height, 64px);
+}
+
+.topnav a {
+  color: var(--color-header-icon);
+  font-family: monospace !important;
+  text-decoration: none;
+  margin-right: 0;
+  padding: 0 0.5em;
+}
+
+.topnav a:hover {
+  color: var(--color-accent);
+}
+
+.theme-toggle {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle .icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-header-icon);
+  stroke: currentColor;
+  fill: none;
+  transition: color 0.2s;
+}
+
+.theme-toggle .icon:hover {
+  color: var(--color-accent);
+}
+
+/* --------- [ C3. Footer ] --------- */
+.site-footer {
+  width: 100%;
+  background: var(--color-footer-bg);
+  color: #fff;
+  padding: 2em 0;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1em;
+  text-align: center;
+}
+
+.footer-nav a {
+  color: #fff;
+  font-family: monospace !important;
+  text-decoration: none;
+  margin: 0 0.7em;
+}
+
+.footer-nav a:hover {
+  color: var(--color-accent);
+}
+
+.footer-copy {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  color: #bbb;
 }

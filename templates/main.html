@@ -15,18 +15,7 @@
 </head>
 <body>
   <!-- ========== [MA.1] Top Navigation ========== -->
-  <nav class="main-nav">
-    <a href="{{ url_for('artwork.home') }}">Home</a>
-    <a href="{{ url_for('artwork.upload_artwork') }}">Upload</a>
-    <a href="{{ url_for('artwork.artworks') }}">Artwork Gallery</a>
-    <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
-    <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
-    <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-      <img id="icon-sun" src="{{ url_for('static', filename='icons/svg/light/sun-light.svg') }}" alt="Light mode">
-      <img id="icon-moon" src="{{ url_for('static', filename='icons/svg/light/moon-light.svg') }}" alt="Dark mode">
-    </button>
-  </nav>
+  {% include "partials/topnav.html" %}
   <main>
     <!-- ========== [MA.2] Flash Message Area ========== -->
     {% with messages = get_flashed_messages() %}
@@ -102,5 +91,6 @@
     });
   </script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% include "partials/footer.html" %}
 </body>
 </html>
