@@ -353,3 +353,82 @@ main { flex:1 0 auto; }
 .footer-copy{text-align:left;margin-top:auto;color:#fff;}
 @media(max-width:600px){.footer-nav{flex-direction:column;gap:1em;}}
 
+/* === MOBILE: Edit Listing One Column === */
+@media (max-width: 800px) {
+  html, body { overflow-x: hidden; font-size: 18px; }
+
+  .review-artwork-grid {
+    flex-direction: column;
+    gap: 1.5em;
+  }
+
+  .mockup-col,
+  .edit-listing-col {
+    width: 100%;
+    max-width: none;
+  }
+
+  .main-thumb img {
+    width: 100%;
+    height: auto;
+  }
+
+  .mockup-preview-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .mockup-card {
+    width: 100%;
+  }
+
+  .swap-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .swap-form select,
+  .swap-form button {
+    width: 100%;
+  }
+
+  .row-inline,
+  .price-sku-row {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .edit-actions-col > * {
+    width: 100%;
+  }
+
+  .btn,
+  .btn-sm,
+  .wide-btn {
+    min-height: 48px;
+  }
+
+  .openai-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .openai-table tr {
+    display: block;
+    margin-bottom: 0.8em;
+  }
+
+  .openai-table th,
+  .openai-table td {
+    display: block;
+    width: 100%;
+    padding: 0.4em 0.6em;
+  }
+
+  .openai-table tr:nth-child(even) {
+    background: #f2f2f2;
+  }
+}
+
