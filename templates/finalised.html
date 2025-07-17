@@ -2,7 +2,10 @@
 {% extends "main.html" %}
 {% block title %}Finalised Artworks{% endblock %}
 {% block content %}
-<h1>Finalised Artworks</h1>
+<div class="page-title-row" style="display: flex; align-items: center; margin-bottom: 40px;">
+  <img src="{{ url_for('static', filename='icons/svg/light/number-circle-four-light.svg') }}" class="hero-step-icon" alt="Step 4: Finalised" />
+  <h1>Finalised Artworks</h1>
+</div>
 <p class="help-tip">Finalised artworks are ready for publishing or exporting to Sellbrite. You can still edit or delete them here.</p>
 <div class="view-toggle">
   <button id="grid-view-btn" class="btn-small">Grid</button>

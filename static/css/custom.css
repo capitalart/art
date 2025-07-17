@@ -230,3 +230,47 @@
     margin-bottom: 16px;
   }
 }
+
+/* --------- [ Workflow Step Icons ] --------- */
+.step-btn-icon {
+  width: 35px;
+  height: 35px;
+  margin-right: 12px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.hero-step-icon {
+  width: 100px;
+  height: 100px;
+  vertical-align: middle;
+  margin-right: 28px;
+  display: inline-block;
+}
+
+.theme-light .hero-step-icon {
+  filter: invert(1) grayscale(1) brightness(1.5);
+}
+.theme-dark .hero-step-icon {
+  filter: none;
+}
+
+.workflow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: monospace !important;
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 18px 32px;
+  background: var(--color-accent, #e76a25);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  min-width: 220px;
+  margin: 0 16px 0 0;
+  transition: background 0.2s;
+}
+
+
+.workflow-btn.disabled{background:#ccc;color:#666;pointer-events:none;}

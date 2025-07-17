@@ -13,15 +13,33 @@
 
 <!-- ========== [IN.2] Home Quick Actions ========== -->
 <div class="workflow-grid">
-  <a href="{{ url_for('artwork.upload_artwork') }}" class="step-btn">1️⃣ Upload<br>to Art Gallery</a>
-  <a href="{{ url_for('artwork.artworks') }}" class="step-btn">2️⃣ Art Gallery<br>Select to Analyze</a>
+  <a href="{{ url_for('artwork.upload_artwork') }}" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="step-btn-icon" alt="Step 1" />
+    Upload<br>to Art Gallery
+  </a>
+  <a href="{{ url_for('artwork.artworks') }}" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="step-btn-icon" alt="Step 2" />
+    Art Gallery<br>Select to Analyze
+  </a>
   {% if latest_artwork %}
-    <a href="{{ url_for('artwork.edit_listing', aspect=latest_artwork.aspect, filename=latest_artwork.filename) }}" class="step-btn">3️⃣ Edit Review<br>and Finalise Artwork</a>
+    <a href="{{ url_for('artwork.edit_listing', aspect=latest_artwork.aspect, filename=latest_artwork.filename) }}" class="workflow-btn">
+      <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="step-btn-icon" alt="Step 3" />
+      Edit Review<br>and Finalise Artwork
+    </a>
   {% else %}
-    <span class="step-btn disabled">3️⃣ Edit Review<br>and Finalise Artwork</span>
+    <span class="workflow-btn disabled">
+      <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="step-btn-icon" alt="Step 3" />
+      Edit Review<br>and Finalise Artwork
+    </span>
   {% endif %}
-  <a href="{{ url_for('artwork.finalised_gallery') }}" class="step-btn">4️⃣ Finalised Gallery<br>(Select to List)</a>
-  <span class="step-btn disabled">5️⃣ List Artwork<br>(Export to Sellbrite)</span>
+  <a href="{{ url_for('artwork.finalised_gallery') }}" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-four-light.svg') }}" class="step-btn-icon" alt="Step 4" />
+    Finalised Gallery<br>(Select to List)
+  </a>
+  <span class="workflow-btn disabled">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-five-light.svg') }}" class="step-btn-icon" alt="Step 5" />
+    List Artwork<br>(Export to Sellbrite)
+  </span>
 </div>
 
 <!-- ========== [IN.3] How It Works Section ========== -->
