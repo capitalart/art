@@ -157,66 +157,60 @@
   </div>
 </div>
 
-<!-- Mockup modal for image preview -->
-<div id="mockup-modal-bg" class="modal-bg">
-  <button id="mockup-modal-close" class="modal-close" aria-label="Close modal">&times;</button>
+<!-- Mockup carousel modal -->
+<div id="mockup-carousel" class="modal-bg" tabindex="-1">
+  <button id="carousel-close" class="modal-close" aria-label="Close">&times;</button>
+  <button id="carousel-prev" class="carousel-nav" aria-label="Previous">&#10094;</button>
   <div class="modal-img">
-    <img id="mockup-modal-img" src="" alt="Full-size Mockup Preview" />
+    <img id="carousel-img" src="" alt="Mockup Preview" />
   </div>
+  <button id="carousel-next" class="carousel-nav" aria-label="Next">&#10095;</button>
 </div>
 
+
 <script>
-  // Wait for DOM (robust for template includes)
   document.addEventListener('DOMContentLoaded', function() {
-    const modalBg = document.getElementById('mockup-modal-bg');
-    const modalImg = document.getElementById('mockup-modal-img');
-    const modalClose = document.getElementById('mockup-modal-close');
+    const carousel = document.getElementById('mockup-carousel');
+    const imgEl = document.getElementById('carousel-img');
+    const closeBtn = document.getElementById('carousel-close');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
 
-    // --- Helper to open modal with any img ---
-    function openModal(imgUrl) {
-      if (modalImg) modalImg.src = imgUrl;
-      if (modalBg) modalBg.style.display = 'flex';
-    }
-    function closeModal() {
-      if (modalBg) modalBg.style.display = 'none';
-      if (modalImg) modalImg.src = '';
+    const links = Array.from(document.querySelectorAll('.mockup-img-link'));
+    const thumb = document.querySelector('.main-thumb-link');
+    if (thumb) links.unshift(thumb);
+    const images = links.map(l => l.dataset.img);
+    let idx = 0;
+
+    function show(i) {
+      idx = (i + images.length) % images.length;
+      imgEl.src = images[idx];
+      carousel.classList.add('active');
     }
 
-    // --- Attach to mockup images ---
-    document.querySelectorAll('.mockup-img-link').forEach(link => {
-      link.addEventListener('click', function(e) {
+    function close() {
+      carousel.classList.remove('active');
+      imgEl.src = '';
+    }
+
+    links.forEach((link, i) => {
+      link.addEventListener('click', e => {
         e.preventDefault();
-        openModal(this.dataset.img);
+        show(i);
       });
     });
 
-    // --- Attach to main artwork thumbnail ---
-    const thumbLink = document.querySelector('.main-thumb-link');
-    if (thumbLink) {
-      thumbLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal(this.dataset.img);
-      });
-    }
-
-    // --- Close modal on cross click ---
-    if (modalClose) {
-      modalClose.onclick = closeModal;
-    }
-
-    // --- Close modal on background click ---
-    if (modalBg) {
-      modalBg.onclick = function(e) {
-        if (e.target === this) closeModal();
-      };
-    }
-
-    // --- Optional: ESC key closes modal ---
-    document.addEventListener('keydown', function(e) {
-      if (e.key === "Escape") closeModal();
+    if (closeBtn) closeBtn.onclick = close;
+    if (prevBtn) prevBtn.onclick = () => show(idx - 1);
+    if (nextBtn) nextBtn.onclick = () => show(idx + 1);
+    if (carousel) carousel.addEventListener('click', e => { if (e.target === carousel) close(); });
+    document.addEventListener('keydown', e => {
+      if (!carousel.classList.contains('active')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') show(idx - 1);
+      else if (e.key === 'ArrowRight') show(idx + 1);
     });
 
-    // === Enable/disable buttons depending on image field ===
     function toggleActionBtns() {
       const txt = document.querySelector('textarea[name="images"]');
       const disabled = !(txt && txt.value.trim());
@@ -227,5 +221,4 @@
     toggleActionBtns();
   });
 </script>
-
 {% endblock %}

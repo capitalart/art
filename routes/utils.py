@@ -312,6 +312,8 @@ def list_finalised_artworks_extended() -> List[Dict]:
                     data = json.load(f)
             except Exception:
                 continue
+            main_img = folder / f"{folder.name}.jpg"
+            thumb_img = folder / f"{folder.name}-THUMB.jpg"
             items.append(
                 {
                     "seo_folder": folder.name,
@@ -327,6 +329,8 @@ def list_finalised_artworks_extended() -> List[Dict]:
                     "aspect": data.get("aspect_ratio", ""),
                     "filename": data.get("filename", f"{folder.name}.jpg"),
                     "locked": data.get("locked", False),
+                    "main_image": main_img.name if main_img.exists() else None,
+                    "thumb": thumb_img.name if thumb_img.exists() else None,
                     "images": [
                         str(p)
                         for p in data.get("images", [])

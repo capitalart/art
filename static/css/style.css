@@ -5,45 +5,60 @@
 
 /* --------- [ 0. Global Styles & Variables ] --------- */
 :root {
-  --main-bg: #f9f9f9;
-  --main-txt: #222;
-  --accent: #000000;
-  --accent-dark: #414141;
-  --border: #ddd;
-  --card-bg: #ffffff;
-  --shadow: 0 2px 6px rgba(0,0,0,0.06);
-  --radius: 0px;
-  --thumb-radius: 0px;
+  --color-bg: #ffffff;
+  --color-fg: #222222;
+  --color-accent: #000000;
+  --color-accent-dark: #414141;
+  --color-border: #dddddd;
+  --color-card-bg: #ffffff;
+  --color-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  --color-btn-bg: #000000;
+  --color-btn-text: #ffffff;
+  --color-danger: #c8252d;
+
+  /* Legacy variable aliases */
+  --main-bg: var(--color-bg);
+  --main-txt: var(--color-fg);
+  --accent: var(--color-accent);
+  --accent-dark: var(--color-accent-dark);
+  --border: var(--color-border);
+  --card-bg: var(--color-card-bg);
+  --shadow: var(--color-shadow);
+  --danger-red: var(--color-danger);
+
+  --radius: 6px;
+  --thumb-radius: 6px;
   --menu-height: 64px;
   --gallery-gap: 2em;
-  --danger-red: #c8252d;
+}
 
 /* Dark mode overrides */
 .theme-dark {
-  --main-bg: #1e1e1e;
-  --main-txt: #f1f1f1;
-  --accent: #111;
-  --border: #444;
-  --card-bg: #333;
+  --color-bg: #1e1e1e;
+  --color-fg: #f1f1f1;
+  --color-accent: #111111;
+  --color-border: #444444;
+  --color-card-bg: #333333;
 }
 
 html {
-  background: var(--main-bg);
-  color: var(--main-txt);
+  background: var(--color-bg);
+  color: var(--color-fg);
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 body {
   font-family: monospace !important;
-  background: var(--main-bg);
-  color: var(--main-txt);
+  background: var(--color-bg);
+  color: var(--color-fg);
   transition: background 0.2s ease, color 0.2s ease;
   margin: 0;
   padding: 0;
   min-height: 100vh;
 }
+a { color: var(--color-fg); text-decoration: none; }
+a:hover { color: var(--color-accent); }
 
-/* --------- [ 1. Header/Menu/Nav ] --------- */
 header, nav, .main-nav {
   background: var(--accent);
   color: #fff;
@@ -170,47 +185,53 @@ select {
   font-size: 0.97em;
 }
 .btn, .btn-sm {
-  padding: 4px 10px;
-  border-radius: 0px;
-  font-size: 1em;
-  background: #f7f7f7;
-  border: 1px solid #bbb;
+  padding: 0.5em 1.2em;
+  border-radius: var(--radius);
+  font-size: 18px;
+  font-family: monospace !important;
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  border: none;
   cursor: pointer;
-  transition: background 0.18s, border 0.18s;
+  transition: background 0.18s;
+  text-decoration: none;
 }
+
 .btn-primary {
-  background: var(--accent);
-  color: #fff;
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
   border: none;
   text-decoration: none;
 }
 
-.btn-primary:hover,
-.btn:hover { background: #d1f8da; }
-.btn-primary:hover { background: var(--accent-dark); color: #ffe873; }
-.btn-danger:hover { background: var(--accent-dark); color: #ff6868; }
+.btn-danger {
+  color: var(--color-danger);
+}
+
+.btn:hover, .btn-primary:hover { background: var(--color-accent-dark); }
+.btn-danger:hover { background: var(--color-accent-dark); }
 
 /* === [CA.ARTY-BUTTONS] ArtNarrator Black Button Style === */
 .btn-black {
-  background: #000 !important;
-  color: #fff !important;
+  background: var(--color-btn-bg) !important;
+  color: var(--color-btn-text) !important;
   border: none !important;
-  border-radius: 0 !important;
+  border-radius: var(--radius) !important;
   font-weight: bold;
   font-size: 1.06em;
   letter-spacing: 0.01em;
   padding: 0.8em 1.6em;
   display: inline-block;
   cursor: pointer;
-  transition: background 0.16s, color 0.16s;
+  transition: background 0.16s;
   margin: 0.2em 0;
   box-shadow: 0 1px 6px rgba(0,0,0,0.07);
   text-align: center;
   text-decoration: none;
 }
 .btn-black:hover, .btn-black:focus {
-  background: #222 !important;
-  color: #ffe873 !important;
+  background: var(--color-accent-dark) !important;
+  color: var(--color-btn-text) !important;
   text-decoration: none;
 }
 
@@ -309,9 +330,9 @@ textarea {
 }
 .back-link a {
   font-size: 1em;
-  color: #6c38b1;
+  color: var(--color-accent);
   padding: 7px 18px;
-  text-decoration: underline;
+  text-decoration: none;
 }
 .card-img-top {
   max-width: 100%;
@@ -366,6 +387,19 @@ textarea {
 }
 .modal-close:focus { outline: 2px solid #ffe873; }
 
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-btn-text);
+  font-size: 2.5em;
+  cursor: pointer;
+  padding: 0 0.2em;
+}
+#carousel-prev { left: 1vw; }
+#carousel-next { right: 1vw; }
 /* --------- [ 7. Footer ] --------- */
 footer, .gallery-footer {
   text-align: center;
@@ -377,7 +411,7 @@ footer, .gallery-footer {
   border-top: 1px solid #ececec;
   letter-spacing: 0.01em;
 }
-footer a { color: var(--accent); text-decoration: underline; }
+footer a { color: var(--color-accent); text-decoration: none; }
 footer a:hover { color: var(--accent-dark); }
 
 /* --------- [ 8. Light/Dark Mode Ready ] --------- */
