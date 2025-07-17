@@ -44,7 +44,10 @@
 
   <!-- === Edit Fields Column === -->
   <div class="edit-listing-col">
-    <h1>Edit Listing</h1>
+    <div class="page-title-row" style="display: flex; align-items: center; margin-bottom: 40px;">
+      <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="hero-step-icon" alt="Step 3: Edit Listing" />
+      <h1>Edit Listing</h1>
+    </div>
     <!-- Status at Top -->
     <p class="status-line {% if finalised %}status-finalised{% else %}status-pending{% endif %}">
       Status: This artwork is {% if finalised %}<strong>finalised</strong>{% else %}<em>NOT yet finalised</em>{% endif %}
