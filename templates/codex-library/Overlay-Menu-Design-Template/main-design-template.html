@@ -95,7 +95,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 2rem;
+            padding: 1rem 1rem;
             width: 100%;
         }
         
@@ -124,6 +124,14 @@
             font-weight: 400;
             font-size: 1.3rem;
             letter-spacing: 0.5px;
+        }
+
+        .logo-icon {
+        width: 35px;
+        height: 35px;
+        margin-right: 6px;
+        margin-bottom: none;
+        vertical-align: bottom;
         }
 
         .menu-toggle-btn, .menu-close-btn {
@@ -201,7 +209,7 @@
             gap: 2rem;
             width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto 50px auto; /* Center horizontally */
         }
 
         .nav-column h3 {
@@ -307,6 +315,7 @@
             color: var(--color-footer-text);
             height: 400px;
             display: flex;
+            margin-top: 3rem;
             flex-direction: column;
             justify-content: center;
             border-top: 1px solid var(--color-footer-border);
@@ -324,7 +333,7 @@
 
         .footer-column h4 {
             font-size: 1rem;
-            margin: -20px 0 1rem 0;
+            margin: 20px 0 1rem 0;
             text-transform: uppercase;
             letter-spacing: 1px;
             opacity: 0.7;
@@ -457,6 +466,25 @@
             .footer-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            .site-logo {
+            font-weight: 400;
+            font-size: 1rem;
+            letter-spacing: none;
+            }
+            .logo-icon {
+                width: 30px;
+                height: 30px;
+                margin-right: 4px;
+            }
+            .nav-column a {
+                font-size: .9em;
+                line-height: .2em;
+                display: inline-block;
+            }
+            .nav-column ul {
+                gap: .5rem;
+                margin-bottom: 30px;
+            }
         }
         
         @media (max-width: 600px) {
@@ -468,8 +496,43 @@
                 text-align: center;
                 gap: 2rem;
             }
-             .copyright-bar {
+            .copyright-bar {
                 margin-top: 2rem;
+            }
+            .site-logo {
+                font-weight: 400;
+                font-size: 1rem;
+                letter-spacing: none;
+            }
+            .logo-icon {
+                width: 24px;
+                height: 24px;
+                margin-right: 2px;
+            }
+            .site-header {
+                height:50px
+            }
+            .menu-toggle-btn, .menu-close-btn {
+                font-size: 1em;
+            }
+        }
+
+        
+        @media (max-width: 400px) {
+            .site-header, .overlay-header {
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem;
+            }
+            .header-left, .header-right {
+                width: 100%;
+                text-align: center;
+            }
+            .header-center {
+                margin-top: 1rem;
+            }
+            .menu-toggle-btn, .menu-close-btn {
+                font-size: .8em;
             }
         }
     </style>
@@ -479,7 +542,8 @@
     <!-- Site Header -->
     <header class="site-header">
         <div class="header-left">
-             <a href="#" class="site-logo">ART Narrator</a>
+             <a href="{{ url_for('artwork.home') }}" class="site-logo">
+            <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon">ArtNarrator</a>
         </div>
         <div class="header-center">
             <button id="menu-toggle" class="menu-toggle-btn" aria-label="Open menu">
@@ -500,48 +564,59 @@
 
     <!-- Overlay Menu -->
     <div id="overlay-menu" class="overlay-menu">
-        <div class="overlay-header">
-            <div class="header-left">
-                 <a href="#" class="site-logo">ART Narrator</a>
-            </div>
-            <div class="header-center">
-                <button id="menu-close" class="menu-close-btn" aria-label="Close menu">
-                    Close
-                    <!-- Arrow Up Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.78 11.78a.75.75 0 0 1-1.06 0L10 8.06l-3.72 3.72a.75.75 0 1 1-1.06-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd" /></svg>
-                </button>
-            </div>
-            <div class="header-right">
-                <!-- This empty div balances the flexbox layout -->
-            </div>
+    <div class="overlay-header">
+        <div class="header-left">
+             <a href="{{ url_for('artwork.home') }}" class="site-logo">
+            <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon">ArtNarrator</a>
         </div>
-        <nav class="overlay-nav">
-            <div class="nav-column">
-                <h3>ArtNarrator</h3>
-                <ul>
-                    <li><a href="#">1 Upload</a></li>
-                    <li><a href="#">2 Artwork</a></li>
-                    <li><a href="#">3 Edit Listing</a></li>
-                </ul>
-            </div>
-            <div class="nav-column">
-                <h3>Workflow</h3>
-                <ul>
-                    <li><a href="#">4 Finalised review</a></li>
-                    <li><a href="#">5 Lock Art management</a></li>
-                    <li><a href="#">8 Export to Marketplace</a></li>
-                </ul>
-            </div>
-            <div class="nav-column">
-                <h3>Tools</h3>
-                <ul>
-                    <li><a href="#">Art Prompts</a></li>
-                    <li><a href="#">Mockups</a></li>
-                    <li><a href="#">Login</a></li>
-                </ul>
-            </div>
-        </nav>
+        <div class="header-center">
+            <button id="menu-close" class="menu-close-btn" aria-label="Close menu">
+                Close
+                <!-- Arrow Up Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.78 11.78a.75.75 0 0 1-1.06 0L10 8.06l-3.72 3.72a.75.75 0 1 1-1.06-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd" /></svg>
+            </button>
+        </div>
+        <div class="header-right">
+            <!-- This empty div balances the flexbox layout -->
+        </div>
     </div>
+    <nav class="overlay-nav">
+        <div class="nav-column">
+            <h3>Artwork & Gallery</h3>
+            <ul>
+                <li><a href="/upload.html">Upload Artwork</a></li>
+                <li><a href="/artworks.html">All Artworks</a></li>
+                <li><a href="/gallery.html">Gallery</a></li>
+                <li><a href="/finalised.html">Finalised</a></li>
+                <li><a href="/locked.html">Locked</a></li>
+                <li><a href="/edit_listing.html">Edit Listing</a></li>
+            </ul>
+        </div>
+        <div class="nav-column">
+            <h3>Workflow & Tools</h3>
+            <ul>
+                <li><a href="/composites_preview.html">Composites Preview</a></li>
+                <li><a href="/review.html">Review Listing</a></li>
+                <li><a href="/mockup_selector.html">Mockup Selector</a></li>
+                <li><a href="/test_description.html">Test Description</a></li>
+                <li><a href="/upload_results.html">Upload Results</a></li>
+                <li><a href="/main.html">Main (Home)</a></li>
+            </ul>
+        </div>
+        <div class="nav-column">
+            <h3>Exports & Admin</h3>
+            <ul>
+                <li><a href="/sellbrite_exports.html">Sellbrite Exports</a></li>
+                <li><a href="/sellbrite_csv_preview.html">Sellbrite CSV Preview</a></li>
+                <li><a href="/sellbrite_log.html">Sellbrite Log</a></li>
+                <li><a href="/admin/dashboard.html">Admin Dashboard</a></li>
+                <li><a href="/admin/security.html">Admin Security</a></li>
+                <li><a href="/admin/users.html">Admin Users</a></li>
+                <li><a href="/login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
 
     <!-- Main Content -->
     <main>
@@ -556,7 +631,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -569,7 +644,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -582,7 +657,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -595,7 +670,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -608,7 +683,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -621,7 +696,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -634,59 +709,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
-                    <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
-                </div>
-            </div>
-            <div class="art-piece">
-                <div class="art-piece-info">
-                    <img src="https://placehold.co/600x800/f0f0f0/ccc?text=Artwork" alt="Placeholder for an art piece" onerror="this.onerror=null;this.src='https://placehold.co/600x800/f0f0f0/ccc?text=Image+Not+Found';">
-                    <h2>Chunk Chair</h2>
-                    <p>by Obscure Objects</p>
-                </div>
-                <div class="art-actions">
-                    <button class="btn-action btn-analyse">Analyse</button>
-                    <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
-                    <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
-                </div>
-            </div>
-            <div class="art-piece">
-                <div class="art-piece-info">
-                    <img src="https://placehold.co/600x800/f0f0f0/ccc?text=Artwork" alt="Placeholder for an art piece" onerror="this.onerror=null;this.src='https://placehold.co/600x800/f0f0f0/ccc?text=Image+Not+Found';">
-                    <h2>M_001 Travertine Chair</h2>
-                    <p>by Monolith</p>
-                </div>
-                <div class="art-actions">
-                    <button class="btn-action btn-analyse">Analyse</button>
-                    <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
-                    <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
-                </div>
-            </div>
-            <div class="art-piece">
-                <div class="art-piece-info">
-                    <img src="https://placehold.co/600x800/f0f0f0/ccc?text=Artwork" alt="Placeholder for an art piece" onerror="this.onerror=null;this.src='https://placehold.co/600x800/f0f0f0/ccc?text=Image+Not+Found';">
-                    <h2>Chunk Chair</h2>
-                    <p>by Obscure Objects</p>
-                </div>
-                <div class="art-actions">
-                    <button class="btn-action btn-analyse">Analyse</button>
-                    <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
-                    <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
-                </div>
-            </div>
-            <div class="art-piece">
-                <div class="art-piece-info">
-                    <img src="https://placehold.co/600x800/f0f0f0/ccc?text=Artwork" alt="Placeholder for an art piece" onerror="this.onerror=null;this.src='https://placehold.co/600x800/f0f0f0/ccc?text=Image+Not+Found';">
-                    <h2>Tan Ball Foot Chair</h2>
-                    <p>by Panorammma</p>
-                </div>
-                <div class="art-actions">
-                    <button class="btn-action btn-analyse">Analyse</button>
-                    <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -699,7 +722,7 @@
                 <div class="art-actions">
                     <button class="btn-action btn-analyse">Analyse</button>
                     <button class="btn-action btn-delete">Delete</button>
-                    <button class="btn-action btn-gemini" data-action="generate-description">✨ Generate Description</button>
+
                     <button class="btn-action btn-gemini" data-action="create-social-post">✨ Create Social Post</button>
                 </div>
             </div>
@@ -723,44 +746,54 @@
 
     <!-- Footer -->
     <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-column">
-                <h4>Navigate</h4>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Workflow</h4>
-                <ul>
-                    <li><a href="#">Upload</a></li>
-                    <li><a href="#">Gallery</a></li>
-                    <li><a href="#">Exports</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Tools</h4>
-                <ul>
-                    <li><a href="#">Mockups</a></li>
-                    <li><a href="#">Prompts</a></li>
-                    <li><a href="#">Settings</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Social</h4>
-                <ul>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
-            </div>
+    <div class="footer-grid">
+        <div class="footer-column">
+            <h4>Navigate</h4>
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/about.html">About</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li><a href="/login.html">Login</a></li>
+            </ul>
         </div>
-        <div class="copyright-bar">
-            © Copyright 2025 ART Narrator All rights reserved | artnarrator.com designed and built by Robin Custance.
+        <div class="footer-column">
+            <h4>Artwork & Gallery</h4>
+            <ul>
+                <li><a href="/upload.html">Upload Artwork</a></li>
+                <li><a href="/artworks.html">Artworks</a></li>
+                <li><a href="/edit_listing.html">Edit Listing</a></li>
+                <li><a href="/finalised.html">Finalised</a></li>
+                <li><a href="/gallery.html">Gallery</a></li>
+                <li><a href="/locked.html">Locked</a></li>
+            </ul>
         </div>
-    </footer>
+        <div class="footer-column">
+            <h4>Workflow & Tools</h4>
+            <ul>
+                <li><a href="/composites_preview.html">Composites Preview</a></li>
+                <li><a href="/review.html">Review</a></li>
+                <li><a href="/mockup_selector.html">Mockups</a></li>
+                <li><a href="/test_description.html">Test Description</a></li>
+                <li><a href="/upload_results.html">Upload Results</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>Exports & Admin</h4>
+            <ul>
+                <li><a href="/sellbrite_exports.html">Sellbrite Exports</a></li>
+                <li><a href="/sellbrite_csv_preview.html">Sellbrite CSV Preview</a></li>
+                <li><a href="/sellbrite_log.html">Sellbrite Log</a></li>
+                <li><a href="/admin/dashboard.html">Admin Dashboard</a></li>
+                <li><a href="/admin/security.html">Admin Security</a></li>
+                <li><a href="/admin/users.html">Admin Users</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright-bar">
+        © Copyright 2025 ART Narrator All rights reserved | <a href="https://artnarrator.com">artnarrator.com</a> designed and built by Robin Custance.
+    </div>
+</footer>
+
 
     <!-- JavaScript -->
     <script>

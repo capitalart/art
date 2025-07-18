@@ -212,7 +212,8 @@
   width: 35px;
   height: 35px;
   margin-right: 6px;
-  vertical-align: middle;
+  margin-bottom: -10px;
+  vertical-align: bottom;
 }
 
 /* --- Footer Styling --- */
