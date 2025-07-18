@@ -1,16 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const toggle = document.getElementById('theme-toggle');
-  const sunIcon = document.getElementById('icon-sun');
-  const moonIcon = document.getElementById('icon-moon');
+  const toggles = document.querySelectorAll('.theme-toggle');
+  const sunIcons = document.querySelectorAll('.icon-sun');
+  const moonIcons = document.querySelectorAll('.icon-moon');
 
   function applyTheme(theme) {
     document.documentElement.classList.remove('theme-light', 'theme-dark');
     document.documentElement.classList.add('theme-' + theme);
     localStorage.setItem('theme', theme);
-    if (sunIcon && moonIcon) {
-      sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
-      moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
-    }
+    sunIcons.forEach(i => i.style.display = theme === 'dark' ? 'none' : 'inline');
+    moonIcons.forEach(i => i.style.display = theme === 'dark' ? 'inline' : 'none');
   }
 
   const saved = localStorage.getItem('theme');
@@ -18,11 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const initial = saved || (prefersDark ? 'dark' : 'light');
   applyTheme(initial);
 
-  if (toggle) {
-    toggle.addEventListener('click', () => {
+  toggles.forEach(btn => {
+    btn.addEventListener('click', () => {
       const next = document.documentElement.classList.contains('theme-dark')
         ? 'light' : 'dark';
       applyTheme(next);
     });
-  }
+  });
 });
