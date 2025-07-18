@@ -18,6 +18,7 @@ from routes.sellbrite_service import bp as sellbrite_bp
 from routes.export_routes import bp as exports_bp
 from routes.auth_routes import bp as auth_bp
 from routes.admin_security import bp as admin_bp
+from routes.test_routes import test_bp  
 
 # ---- Load .env Configuration ----
 load_dotenv()
@@ -78,6 +79,7 @@ app.register_blueprint(artwork_bp)
 app.register_blueprint(sellbrite_bp)
 app.register_blueprint(exports_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(test_bp)  
 
 # ---- Error Handlers ----
 @app.errorhandler(BuildError)
