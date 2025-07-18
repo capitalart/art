@@ -17,7 +17,7 @@
 {% if not artworks %}
   <p>No artworks have been finalised yet. Come back after you approve some beautiful pieces!</p>
 {% else %}
-<div class="finalised-grid">
+<div class="finalised-grid" data-view-key="view">
   {% for art in artworks %}
   <div class="final-card">
     <div class="card-thumb">
@@ -88,41 +88,5 @@
   <button id="final-modal-close" class="modal-close" aria-label="Close modal">&times;</button>
   <div class="modal-img"><img id="final-modal-img" src="" alt="Full image"/></div>
 </div>
-<script>
-  document.querySelectorAll('.final-img-link').forEach(link => {
-    link.addEventListener('click', function(e){
-      e.preventDefault();
-      const modal = document.getElementById('final-modal-bg');
-      const img = document.getElementById('final-modal-img');
-      img.src = this.dataset.img;
-      modal.style.display = 'flex';
-    });
-  });
-  document.getElementById('final-modal-close').onclick = function(){
-    document.getElementById('final-modal-bg').style.display='none';
-    document.getElementById('final-modal-img').src='';
-  };
-  document.getElementById('final-modal-bg').onclick = function(e){
-    if(e.target===this){
-      this.style.display='none';
-      document.getElementById('final-modal-img').src='';
-    }
-  };
-  document.querySelectorAll('.locked-delete-form').forEach(f=>{
-    f.addEventListener('submit',function(ev){
-      const val=prompt('This listing is locked and will be permanently deleted. Type DELETE to confirm');
-      if(val!=='DELETE'){ev.preventDefault();}
-      else{this.querySelector('input[name="confirm"]').value='DELETE';}
-    });
-  });
-  const gBtn=document.getElementById('grid-view-btn');
-  const lBtn=document.getElementById('list-view-btn');
-  const grid=document.querySelector('.finalised-grid');
-  function apply(v){
-    if(v==='list'){grid.classList.add('list-view');} else {grid.classList.remove('list-view');}
-  }
-  if(gBtn) gBtn.addEventListener('click',()=>{apply('grid'); localStorage.setItem('view','grid');});
-  if(lBtn) lBtn.addEventListener('click',()=>{apply('list'); localStorage.setItem('view','list');});
-  apply(localStorage.getItem('view')||'grid');
-</script>
+<script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
 {% endblock %}
