@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+  <title>{% block title %}ArtNarrator{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/overlay.css') }}">
+</head>
+<body>
+  <header class="overlay-header">
+    <a href="{{ url_for('artwork.home') }}" class="brand">ART Narrator</a>
+    <button id="menu-toggle" class="menu-toggle" aria-controls="overlay-menu" aria-expanded="false">
+      Menu <span class="arrow">▼</span>
+    </button>
+    <div class="header-controls">
+      {% if session.get('logged_in') %}
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Login</a>
+      {% endif %}
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
+          <path d="M128 40v-24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <circle cx="128" cy="128" r="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <path d="M64 64L48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <path d="M64 192L48 208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <path d="M192 64l16-16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <path d="M192 192l16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <path d="M40 128H16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <path d="M128 216v24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          <path d="M216 128h24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        </svg>
+        <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
+          <path d="M108.11 28.11A96.09 96.09 0 00227.89 147.89 96 96 0 11108.11 28.11z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="overlay-menu" class="overlay-menu" aria-hidden="true">
+    <div class="overlay-menu-header">
+      <div class="brand">ART Narrator</div>
+      <button id="overlay-close" class="menu-toggle" aria-label="Close menu"><span class="arrow">▲</span></button>
+      <div class="header-controls">
+        {% if session.get('logged_in') %}
+          <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}">Login</a>
+        {% endif %}
+        <button id="theme-toggle-ov" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
+            <path d="M128 40v-24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <circle cx="128" cy="128" r="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <path d="M64 64L48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <path d="M64 192L48 208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <path d="M192 64l16-16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <path d="M192 192l16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <path d="M40 128H16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <path d="M128 216v24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+            <path d="M216 128h24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          </svg>
+          <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
+            <path d="M108.11 28.11A96.09 96.09 0 00227.89 147.89 96 96 0 11108.11 28.11z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="overlay-columns">
+      <div class="column">
+        <h3>ArtNarrator</h3>
+        <a href="{{ url_for('artwork.upload_artwork') }}">Upload</a>
+        <a href="{{ url_for('artwork.artworks') }}">Artwork</a>
+        <a href="{{ url_for('artwork.edit_listing') }}">Edit Listing</a>
+      </div>
+      <div class="column">
+        <h3>Workflow</h3>
+        <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised Review</a>
+        <a href="{{ url_for('artwork.locked_gallery') }}">Lock Art Management</a>
+        <a href="{{ url_for('exports.sellbrite_exports') }}">Export to Marketplace</a>
+      </div>
+      <div class="column">
+        <h3>Tools</h3>
+        <a href="/art-prompts">Art Prompts</a>
+        <a href="/mockups">Mockups</a>
+        {% if session.get('logged_in') %}
+          <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/overlay.js') }}"></script>
+</body>
+</html>
