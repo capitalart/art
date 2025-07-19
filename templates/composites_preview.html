@@ -2,6 +2,7 @@
 {% extends "main.html" %}
 {% block title %}Composite Preview | ArtNarrator{% endblock %}
 {% block content %}
+<div class="container">
 <h1 style="text-align:center;">Composite Preview: {{ seo_folder }}</h1>
 {% if listing %}
   <div style="text-align:center;margin-bottom:1.5em;">
@@ -33,5 +34,6 @@
 {% endif %}
 <div style="text-align:center;margin-top:2em;">
   <a href="{{ url_for('artwork.select') }}" class="composite-btn" style="background:#666;">Back to Selector</a>
+</div>
 </div>
 {% endblock %}

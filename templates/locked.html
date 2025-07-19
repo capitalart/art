@@ -2,6 +2,7 @@
 {% extends "main.html" %}
 {% block title %}Locked Artworks{% endblock %}
 {% block content %}
+<div class="container">
 <h1>Locked Artworks</h1>
 <p class="help-tip">These artworks are locked and cannot be edited until unlocked.</p>
 <div class="view-toggle">
@@ -76,4 +77,5 @@
   <div class="modal-img"><img id="final-modal-img" src="" alt="Full image"/></div>
 </div>
 <script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+</div>
 {% endblock %}

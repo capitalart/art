@@ -4,6 +4,27 @@
    Last updated: 2025-07-20
    ===================================== */
 
+/* --- Universal Content Container (override if needed) --- */
+.container {
+  max-width: 2400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  box-sizing: border-box;
+}
+@media (max-width: 1800px) {
+  .container { max-width: 98vw; }
+}
+@media (max-width: 1400px) {
+  .container { max-width: 99vw; }
+}
+@media (max-width: 1000px) {
+  .container { padding: 1.8rem 1rem; }
+}
+@media (max-width: 700px) {
+  .container { padding: 1.2rem 0.5rem; }
+}
+
 /* 1. Example: Card layouts used on non-main.html templates */
 .artwork-info-card {
   background: #fcfcfc;
