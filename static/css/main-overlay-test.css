@@ -13,6 +13,7 @@
             --color-footer-text: #111111;
             --color-footer-border: #dddddd;
 
+
             /* Dark Theme Colors */
             --dark-color-background: #111111;
             --dark-color-text: #FFFFFF;
@@ -25,6 +26,11 @@
             --color-btn-text: #fff;
             --color-delete-hover: #8B0000;
             --ease-quart: cubic-bezier(0.77, 0, 0.175, 1);
+
+            /* Card Variables */
+            --card-border:#c8c7c7;
+            /* Dark Theme Colors */
+            --dark-card-border:#727272;
         }
 
         body.dark-theme {
