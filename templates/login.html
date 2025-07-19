@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 {% block title %}Login{% endblock %}
 {% block content %}
-<div class="login-container">
+<div class="container">
   <h1>Login</h1>
   {% with msgs = get_flashed_messages(with_categories=true) %}
     {% if msgs %}

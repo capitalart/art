@@ -2,6 +2,7 @@
 {% extends "main.html" %}
 {% block title %}Review | ArtNarrator{% endblock %}
 {% block content %}
+<div class="container">
 <h1>Review &amp; Approve Listing</h1>
 <section class="review-artwork">
   <h2>{{ artwork.title }}</h2>
@@ -31,5 +32,6 @@
 </form>
 <div style="text-align:center;margin-top:1.5em;">
   <a href="{{ url_for('artwork.composites_specific', seo_folder=artwork.seo_name) }}" class="composite-btn" style="background:#666;">Preview Composites</a>
+</div>
 </div>
 {% endblock %}

@@ -2,6 +2,7 @@
 {% extends "main.html" %}
 {% block title %}Edit Listing{% endblock %}
 {% block content %}
+<div class="container">
 
 <div class="review-artwork-grid row">
   <!-- === Mockup Column === -->
@@ -170,6 +171,6 @@
   <button id="carousel-next" class="carousel-nav" aria-label="Next">&#10095;</button>
 </div>
 
-
+</div>
 <script src="{{ url_for('static', filename='js/edit_listing.js') }}"></script>
 {% endblock %}

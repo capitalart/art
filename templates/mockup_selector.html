@@ -2,6 +2,7 @@
 {% extends "main.html" %}
 {% block title %}Select Mockups | ArtNarrator{% endblock %}
 {% block content %}
+<div class="container">
 <h1>🖼️ Select Your Mockup Lineup</h1>
 <div class="grid">
   {% for slot, options in zipped %}
@@ -38,5 +39,6 @@
   {% else %}
     <a href="{{ url_for('artwork.composites_preview') }}" class="composite-btn" style="background:#666;">👁️ Preview Composites</a>
   {% endif %}
+</div>
 </div>
 {% endblock %}
