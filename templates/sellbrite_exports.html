@@ -1,0 +1,32 @@
+{% extends "main.html" %}
+{% block title %}Sellbrite Exports{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Sellbrite Exports</h1>
+<p class="help-tip">Review all previous exports below. Warnings show missing fields or short descriptions.</p>
+<div class="export-actions">
+  <form method="post" action="{{ url_for('exports.run_sellbrite_export') }}" style="display:inline">
+    <button type="submit" class="btn-black">Export Now (All)</button>
+  </form>
+  <form method="post" action="{{ url_for('exports.run_sellbrite_export', locked=1) }}" style="display:inline">
+    <button type="submit" class="btn-black">Export Now (Locked)</button>
+  </form>
+</div>
+<table class="exports-table">
+  <thead>
+    <tr><th>Date</th><th>Type</th><th>CSV</th><th>Preview</th><th>Log</th></tr>
+  </thead>
+  <tbody>
+  {% for e in exports %}
+    <tr>
+      <td>{{ e.mtime.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ e.type }}</td>
+      <td><a href="{{ url_for('exports.download_sellbrite', csv_filename=e.name) }}">{{ e.name }}</a></td>
+      <td><a href="{{ url_for('exports.preview_sellbrite_csv', csv_filename=e.name) }}">Preview</a></td>
+      <td>{% if e.log %}<a href="{{ url_for('exports.view_sellbrite_log', log_filename=e.log) }}">Log</a>{% else %}-{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

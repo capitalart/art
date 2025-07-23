@@ -1,0 +1,17 @@
+2025-07-23 15:43:57,923 - INFO - === DreamArtMachine Lite: OpenAI Analyzer Started ===
+2025-07-23 15:43:57,925 - INFO - Single-image mode: /home/art/art-processing/unanalysed-artwork/unanalysed-04/tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-perched-2c7aa2df.jpg
+2025-07-23 15:43:57,935 - INFO - Aspect ratio for tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-perched-2c7aa2df.jpg: 4x5
+2025-07-23 15:43:57,937 - INFO - Selected 9 mockups from 4x5-categorised for 4x5
+2025-07-23 15:43:57,937 - INFO - Loaded generic text for 4x5
+[SKU DEBUG] Peeking tracker file: /home/art/settings/sku_tracker.json
+2025-07-23 15:44:00,817 - INFO - Optimized image saved for AI: tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-perched-2c7aa2df-OPTIMIZED.jpg (1920x2400, 1002081 bytes, Q=60)
+2025-07-23 15:44:24,293 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-23 15:44:24,299 - INFO - {"provider": "openai", "messages": [{"role": "system", "content": "<image data>"}, {"role": "user", "content": "<image data>"}], "response": "```json\n{\n  \"seo_filename\": \"Tawny-Frogmouth-Dot-Artwork-by-Robin-Custance-RJC-0127.jpg\",\n  \"title\": \"High Resolution Digital Tawny Frogmouth Dot Art Print \u2013 Aboriginal Owl Print | Robin Custance Download\",\n  \"description\": \"Australian dot art tawny frogmouth print, Aboriginal owl artwork, digital download, Robin Custance, nocturnal bird decor. The artwork brilliantly captures the essence of the tawny frogmouth, a quintessentially Australian bird known for its unique appearance. Through the meti"}
+2025-07-23 15:44:24,301 - INFO - {"file": "/home/art/art-processing/unanalysed-artwork/unanalysed-04/tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-perched-2c7aa2df.jpg", "user_id": "anonymous", "opt_image": "/home/art/art-processing/unanalysed-artwork/temp/tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-perched-2c7aa2df-OPTIMIZED.jpg", "size_bytes": 1002081, "size_mb": 0.96, "dimensions": "1920x2400", "time_sent": "2025-07-23T06:14:00.818708+00:00", "provider": "openai", "status": "fail", "error": "OpenAI response not valid JSON", "error_type": "fallback", "time_responded": "2025-07-23T06:14:24.301569+00:00", "duration_sec": 23.482847}
+2025-07-23 15:44:24,301 - ERROR - Failed processing /home/art/art-processing/unanalysed-artwork/unanalysed-04/tawny-frogmouth-generate-an-aboriginal-dot-painting-of-a-tawny-frogmouth-podargus-strigoides-perched-2c7aa2df.jpg: OpenAI response not valid JSON
+2025-07-23 15:44:24,302 - ERROR - Traceback (most recent call last):
+  File "/home/art/scripts/analyze_artwork.py", line 647, in analyze_single
+    raise RuntimeError(err_msg)
+RuntimeError: OpenAI response not valid JSON
+
+null
