@@ -10,7 +10,7 @@ set -euo pipefail
 # --------- CONFIG ---------------------------------------------------------
 PROJECTS=("art" "ezy" "thebigshed")
 PROJECTS_PATH="/home"
-DEFAULT_BRANCH="master"
+DEFAULT_BRANCH="main"
 GDRIVE_REMOTE="gdrive"
 GDRIVE_BACKUP_FOLDER="project-backups"
 LOG_DIR="logs"
