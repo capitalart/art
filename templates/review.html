@@ -1,0 +1,37 @@
+{# Use blueprint-prefixed endpoints like 'artwork.home' in url_for #}
+{% extends "main.html" %}
+{% block title %}Review | ArtNarrator{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Review &amp; Approve Listing</h1>
+<section class="review-artwork">
+  <h2>{{ artwork.title }}</h2>
+  <div class="artwork-images">
+    <img src="{{ url_for('static', filename='outputs/processed/' ~ artwork.seo_name ~ '/' ~ artwork.main_image) }}"
+         alt="Main artwork" class="main-art-img" style="max-width:360px;">
+    <img src="{{ url_for('static', filename='outputs/processed/' ~ artwork.seo_name ~ '/' ~ artwork.thumb) }}"
+         alt="Thumbnail" class="thumb-img" style="max-width:120px;">
+  </div>
+  <h3>Description</h3>
+  <div class="art-description" style="max-width:431px;">
+    <pre style="white-space: pre-wrap; font-family:inherit;">{{ artwork.description }}</pre>
+  </div>
+  <h3>Mockups</h3>
+  <div class="grid">
+    {% for slot in slots %}
+    <div class="item">
+      <img src="{{ url_for('artwork.mockup_img', category=slot.category, filename=slot.image) }}" alt="{{ slot.category }}">
+      <strong>{{ slot.category }}</strong>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<form method="get" action="{{ url_for('artwork.select') }}">
+  <input type="hidden" name="reset" value="1">
+  <button class="composite-btn" type="submit">Start Over</button>
+</form>
+<div style="text-align:center;margin-top:1.5em;">
+  <a href="{{ url_for('artwork.composites_specific', seo_folder=artwork.seo_name) }}" class="composite-btn" style="background:#666;">Preview Composites</a>
+</div>
+</div>
+{% endblock %}

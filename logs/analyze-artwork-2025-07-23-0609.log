@@ -1,0 +1,18 @@
+2025-07-23 15:39:24,660 - INFO - === DreamArtMachine Lite: OpenAI Analyzer Started ===
+2025-07-23 15:39:24,663 - INFO - Single-image mode: /home/art/art-processing/unanalysed-artwork/unanalysed-03/eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-b3b79971.jpg
+2025-07-23 15:39:24,673 - INFO - Aspect ratio for eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-b3b79971.jpg: 4x5
+2025-07-23 15:39:24,674 - INFO - Selected 9 mockups from 4x5-categorised for 4x5
+2025-07-23 15:39:24,674 - INFO - Loaded generic text for 4x5
+[SKU DEBUG] Peeking tracker file: /home/art/settings/sku_tracker.json
+2025-07-23 15:39:27,616 - WARNING - eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-b3b79971-OPTIMIZED.jpg exceeds 1048576 bytes at Q=60
+2025-07-23 15:39:27,622 - INFO - Optimized image saved for AI: eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-b3b79971-OPTIMIZED.jpg (1920x2400, 1056727 bytes, Q=60)
+2025-07-23 15:39:54,040 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-23 15:39:54,044 - INFO - {"provider": "openai", "messages": [{"role": "system", "content": "<image data>"}, {"role": "user", "content": "<image data>"}], "response": "```json\n{\n  \"seo_filename\": \"Eucalypt-Woodland-Artwork-by-Robin-Custance-RJC-0127.jpg\",\n  \"title\": \"High Resolution Digital Dot Art Print \u2013 Eucalypt Woodland Forest | Robin Custance Download\",\n  \"description\": \"Eucalypt woodland artwork, Aboriginal dot art download, Australian dry forest print, Robin Custance digital print, printable wall art. This stunning depiction of an Australian eucalypt woodland captures the serene beauty of the natural landscape in vivid detail. Through the intricate use "}
+2025-07-23 15:39:54,046 - INFO - {"file": "/home/art/art-processing/unanalysed-artwork/unanalysed-03/eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-b3b79971.jpg", "user_id": "anonymous", "opt_image": "/home/art/art-processing/unanalysed-artwork/temp/eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-b3b79971-OPTIMIZED.jpg", "size_bytes": 1056727, "size_mb": 1.01, "dimensions": "1920x2400", "time_sent": "2025-07-23T06:09:27.623820+00:00", "provider": "openai", "status": "fail", "error": "OpenAI response not valid JSON", "error_type": "fallback", "time_responded": "2025-07-23T06:09:54.046253+00:00", "duration_sec": 26.422418}
+2025-07-23 15:39:54,046 - ERROR - Failed processing /home/art/art-processing/unanalysed-artwork/unanalysed-03/eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-b3b79971.jpg: OpenAI response not valid JSON
+2025-07-23 15:39:54,047 - ERROR - Traceback (most recent call last):
+  File "/home/art/scripts/analyze_artwork.py", line 647, in analyze_single
+    raise RuntimeError(err_msg)
+RuntimeError: OpenAI response not valid JSON
+
+null

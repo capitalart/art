@@ -1,0 +1,2250 @@
+art
+├── .env
+├── .gitignore
+├── CHANGELOG.md
+├── CODEX-LOGS
+├── CODEX-README.md
+├── LICENSE
+├── README.md
+├── app.py
+├── art-logs
+├── art-processing
+│   ├── artwork-vault
+│   ├── finalised-artwork
+│   ├── processed-artwork
+│   └── unanalysed-artwork
+├── artnarrator-report.sh
+├── backup_excludes.txt
+├── backups
+│   ├── ALLINONE-Sat-19-Jul-2025-05-51-AM.zip
+│   ├── ALLINONE-Sat-19-Jul-2025-06-02-AM.zip
+│   ├── ALLINONE-Sat-19-Jul-2025-06-08-AM.zip
+│   ├── ALLINONE-Sat-19-Jul-2025-09-14-AM.zip
+│   ├── END-Sun-20-Jul-2025-03-47-PM.zip
+│   ├── backup-Fri-18-Jul-2025-0153PM.tar.gz
+│   ├── backup-Fri-18-Jul-2025-0217PM.tar.gz
+│   ├── backup-Sun-20-Jul-2025-0410PM.tar.gz
+│   ├── backup-Sun-20-Jul-2025-0557PM.tar.gz
+│   ├── backup-Sun-20-Jul-2025-0804PM.tar.gz
+│   ├── backup-Sun-20-Jul-2025-0920AM.tar.gz
+│   ├── backup-Sun-20-Jul-2025-1217PM.tar.gz
+│   ├── backup-Thu-17-Jul-2025-0632PM.tar.gz
+│   ├── backup-Thu-17-Jul-2025-0634PM.tar.gz
+│   ├── backup-Thu-17-Jul-2025-0653PM.tar.gz
+│   ├── backup-Thu-17-Jul-2025-0729PM.tar.gz
+│   ├── backup_.zip
+│   ├── backup_2025-07-18_09-31-32.zip
+│   ├── backup_2025-07-18_09-50-56.zip
+│   ├── backup_2025-07-18_10-19-39.zip
+│   ├── backup_2025-07-18_11-30-35.zip
+│   ├── backup_2025-07-18_13-54-10.zip
+│   ├── backup_Mon-21-Jul-2025-02-47-AM.zip
+│   ├── backup_Mon-21-Jul-2025-02-48-AM.zip
+│   ├── backup_Mon-21-Jul-2025-03-26-AM.zip
+│   ├── backup_Mon-21-Jul-2025-09-03-AM.zip
+│   ├── backup_Sat-19-Jul-2025-08-36-AM.zip
+│   ├── backup_Sun-20-Jul-2025-02-13-PM.zip
+│   ├── backup_Sun-20-Jul-2025-04-27-PM.zip
+│   ├── backup_Sun-20-Jul-2025-04-40-AM.zip
+│   ├── backup_Sun-20-Jul-2025-04-50-PM.zip
+│   ├── backup_Sun-20-Jul-2025-05-05-PM.zip
+│   ├── backup_Sun-20-Jul-2025-05-25-AM.zip
+│   ├── backup_Sun-20-Jul-2025-05-37-AM.zip
+│   ├── backup_Sun-20-Jul-2025-05-57-PM.zip
+│   ├── backup_Sun-20-Jul-2025-06-14-PM.zip
+│   ├── backup_Sun-20-Jul-2025-06-30-PM.zip
+│   ├── backup_Sun-20-Jul-2025-07-01-PM.zip
+│   ├── backup_Sun-20-Jul-2025-07-31-PM.zip
+│   ├── backup_Sun-20-Jul-2025-07-36-PM.zip
+│   ├── backup_Sun-20-Jul-2025-07-37-PM.zip
+│   ├── backup_Sun-20-Jul-2025-08-02-PM.zip
+│   ├── backup_Sun-20-Jul-2025-09-17-PM.zip
+│   ├── backup_Sun-20-Jul-2025-10-41-AM.zip
+│   ├── backup_Sun-20-Jul-2025-11-50-AM.zip
+│   ├── codex-git-backup_2025-07-20_16-32-11.zip
+│   └── older-scripts
+│       ├── ai-jpeg-reset.sh
+│       ├── backup_mockup_generator.sh
+│       ├── backup_mockup_structure.sh
+│       ├── compatible-image-generator.jsx
+│       ├── dupe-png-files-and-rename.py
+│       ├── export-artwork-layers.jsx
+│       ├── find-matching-png-files.py
+│       ├── fix_srgb_profiles.py
+│       ├── gather_mockup_code_to_text.sh
+│       ├── generate_all_coordinates.py
+│       ├── generate_composites.py
+│       ├── generate_folder_structure.py
+│       ├── google_vision_basic_analyzer.py
+│       ├── openai_vision_test.py
+│       ├── organise-jpg-and-png-files.py
+│       ├── rename-4x5-mockup-layers.jsx
+│       ├── utils.py
+│       └── write_all_composite_generators.py
+├── code-stacker.sh
+├── code-stacks
+│   ├── full-code-stack
+│   │   └── code-stack-MON-21-JULY-2025-09-50-AM.md
+│   └── root-files-code-stack
+│       └── root-files-code-stack-MON-21-JULY-2025-09-50-AM.md
+├── config.py
+├── cron-backup.sh
+├── descriptions
+│   ├── artworks.json
+│   ├── autojourney_downloader_export_26_06_2025_15_02_55.csv
+│   └── autojourney_downloader_export_26_06_2025_15_03_12.json
+├── file-storage
+│   ├── PREVIOUS-CODE-STACKS.zip
+│   ├── artnarrator.py
+│   ├── codex-merge.sh
+│   ├── mockup_categoriser.py
+│   ├── rename_artnarrator_to_artnarrator.py
+│   ├── run_codex_patch.py
+│   ├── smart_sign_artwork.py
+│   ├── smart_sign_test01.py
+│   └── sort_and_prepare_midjourney_images.py
+├── folder_structure.txt
+├── generate_folder_tree.py
+├── generic_texts
+│   ├── 16x9.txt
+│   ├── 1x1.txt
+│   ├── 2x3.txt
+│   ├── 3x2.txt
+│   ├── 3x4.txt
+│   ├── 4x3.txt
+│   ├── 4x5.txt
+│   ├── 5x4.txt
+│   ├── 5x7.txt
+│   ├── 7x5.txt
+│   ├── 9x16.txt
+│   ├── A-Series-Horizontal.txt
+│   └── A-Series-Verical.txt
+├── git-update-pull.sh
+├── git-update-push.sh
+├── inputs
+│   ├── Coordinates
+│   │   ├── 16x9
+│   │   │   ├── 16x9-Mockup-1.json
+│   │   │   ├── 16x9-Mockup-10.json
+│   │   │   ├── 16x9-Mockup-11.json
+│   │   │   ├── 16x9-Mockup-12.json
+│   │   │   ├── 16x9-Mockup-13.json
+│   │   │   ├── 16x9-Mockup-14.json
+│   │   │   ├── 16x9-Mockup-15.json
+│   │   │   ├── 16x9-Mockup-16.json
+│   │   │   ├── 16x9-Mockup-17.json
+│   │   │   ├── 16x9-Mockup-18.json
+│   │   │   ├── 16x9-Mockup-19.json
+│   │   │   ├── 16x9-Mockup-2.json
+│   │   │   ├── 16x9-Mockup-20.json
+│   │   │   ├── 16x9-Mockup-21.json
+│   │   │   ├── 16x9-Mockup-22.json
+│   │   │   ├── 16x9-Mockup-23.json
+│   │   │   ├── 16x9-Mockup-24.json
+│   │   │   ├── 16x9-Mockup-25.json
+│   │   │   ├── 16x9-Mockup-26.json
+│   │   │   ├── 16x9-Mockup-27.json
+│   │   │   ├── 16x9-Mockup-28.json
+│   │   │   ├── 16x9-Mockup-29.json
+│   │   │   ├── 16x9-Mockup-3.json
+│   │   │   ├── 16x9-Mockup-30.json
+│   │   │   ├── 16x9-Mockup-31.json
+│   │   │   ├── 16x9-Mockup-32.json
+│   │   │   ├── 16x9-Mockup-33.json
+│   │   │   ├── 16x9-Mockup-34.json
+│   │   │   ├── 16x9-Mockup-35.json
+│   │   │   ├── 16x9-Mockup-36.json
+│   │   │   ├── 16x9-Mockup-37.json
+│   │   │   ├── 16x9-Mockup-38.json
+│   │   │   ├── 16x9-Mockup-39.json
+│   │   │   ├── 16x9-Mockup-4.json
+│   │   │   ├── 16x9-Mockup-40.json
+│   │   │   ├── 16x9-Mockup-41.json
+│   │   │   ├── 16x9-Mockup-42.json
+│   │   │   ├── 16x9-Mockup-43.json
+│   │   │   ├── 16x9-Mockup-44.json
+│   │   │   ├── 16x9-Mockup-45.json
+│   │   │   ├── 16x9-Mockup-46.json
+│   │   │   ├── 16x9-Mockup-47.json
+│   │   │   ├── 16x9-Mockup-48.json
+│   │   │   ├── 16x9-Mockup-49.json
+│   │   │   ├── 16x9-Mockup-5.json
+│   │   │   ├── 16x9-Mockup-50.json
+│   │   │   ├── 16x9-Mockup-51.json
+│   │   │   ├── 16x9-Mockup-52.json
+│   │   │   ├── 16x9-Mockup-53.json
+│   │   │   ├── 16x9-Mockup-54.json
+│   │   │   ├── 16x9-Mockup-6.json
+│   │   │   ├── 16x9-Mockup-7.json
+│   │   │   ├── 16x9-Mockup-8.json
+│   │   │   └── 16x9-Mockup-9.json
+│   │   ├── 1x1
+│   │   │   ├── 1x1-Mockup-1.json
+│   │   │   ├── 1x1-Mockup-10.json
+│   │   │   ├── 1x1-Mockup-11.json
+│   │   │   ├── 1x1-Mockup-12.json
+│   │   │   ├── 1x1-Mockup-13.json
+│   │   │   ├── 1x1-Mockup-14.json
+│   │   │   ├── 1x1-Mockup-15.json
+│   │   │   ├── 1x1-Mockup-16.json
+│   │   │   ├── 1x1-Mockup-17.json
+│   │   │   ├── 1x1-Mockup-18.json
+│   │   │   ├── 1x1-Mockup-19.json
+│   │   │   ├── 1x1-Mockup-2.json
+│   │   │   ├── 1x1-Mockup-20.json
+│   │   │   ├── 1x1-Mockup-21.json
+│   │   │   ├── 1x1-Mockup-22.json
+│   │   │   ├── 1x1-Mockup-23.json
+│   │   │   ├── 1x1-Mockup-24.json
+│   │   │   ├── 1x1-Mockup-25.json
+│   │   │   ├── 1x1-Mockup-26.json
+│   │   │   ├── 1x1-Mockup-27.json
+│   │   │   ├── 1x1-Mockup-28.json
+│   │   │   ├── 1x1-Mockup-29.json
+│   │   │   ├── 1x1-Mockup-3.json
+│   │   │   ├── 1x1-Mockup-30.json
+│   │   │   ├── 1x1-Mockup-31.json
+│   │   │   ├── 1x1-Mockup-32.json
+│   │   │   ├── 1x1-Mockup-33.json
+│   │   │   ├── 1x1-Mockup-34.json
+│   │   │   ├── 1x1-Mockup-35.json
+│   │   │   ├── 1x1-Mockup-36.json
+│   │   │   ├── 1x1-Mockup-37.json
+│   │   │   ├── 1x1-Mockup-38.json
+│   │   │   ├── 1x1-Mockup-39.json
+│   │   │   ├── 1x1-Mockup-4.json
+│   │   │   ├── 1x1-Mockup-40.json
+│   │   │   ├── 1x1-Mockup-41.json
+│   │   │   ├── 1x1-Mockup-42.json
+│   │   │   ├── 1x1-Mockup-43.json
+│   │   │   ├── 1x1-Mockup-44.json
+│   │   │   ├── 1x1-Mockup-45.json
+│   │   │   ├── 1x1-Mockup-46.json
+│   │   │   ├── 1x1-Mockup-47.json
+│   │   │   ├── 1x1-Mockup-48.json
+│   │   │   ├── 1x1-Mockup-49.json
+│   │   │   ├── 1x1-Mockup-5.json
+│   │   │   ├── 1x1-Mockup-50.json
+│   │   │   ├── 1x1-Mockup-51.json
+│   │   │   ├── 1x1-Mockup-52.json
+│   │   │   ├── 1x1-Mockup-53.json
+│   │   │   ├── 1x1-Mockup-54.json
+│   │   │   ├── 1x1-Mockup-55.json
+│   │   │   ├── 1x1-Mockup-56.json
+│   │   │   ├── 1x1-Mockup-57.json
+│   │   │   ├── 1x1-Mockup-58.json
+│   │   │   ├── 1x1-Mockup-59.json
+│   │   │   ├── 1x1-Mockup-6.json
+│   │   │   ├── 1x1-Mockup-60.json
+│   │   │   ├── 1x1-Mockup-61.json
+│   │   │   ├── 1x1-Mockup-62.json
+│   │   │   ├── 1x1-Mockup-63.json
+│   │   │   ├── 1x1-Mockup-64.json
+│   │   │   ├── 1x1-Mockup-65.json
+│   │   │   ├── 1x1-Mockup-66.json
+│   │   │   ├── 1x1-Mockup-67.json
+│   │   │   ├── 1x1-Mockup-68.json
+│   │   │   ├── 1x1-Mockup-69.json
+│   │   │   ├── 1x1-Mockup-7.json
+│   │   │   ├── 1x1-Mockup-70.json
+│   │   │   ├── 1x1-Mockup-71.json
+│   │   │   ├── 1x1-Mockup-72.json
+│   │   │   ├── 1x1-Mockup-73.json
+│   │   │   ├── 1x1-Mockup-74.json
+│   │   │   ├── 1x1-Mockup-8.json
+│   │   │   └── 1x1-Mockup-9.json
+│   │   ├── 2x3
+│   │   │   ├── 2x3-Mockup-1.json
+│   │   │   ├── 2x3-Mockup-10.json
+│   │   │   ├── 2x3-Mockup-11.json
+│   │   │   ├── 2x3-Mockup-12.json
+│   │   │   ├── 2x3-Mockup-13.json
+│   │   │   ├── 2x3-Mockup-14.json
+│   │   │   ├── 2x3-Mockup-15.json
+│   │   │   ├── 2x3-Mockup-16.json
+│   │   │   ├── 2x3-Mockup-17.json
+│   │   │   ├── 2x3-Mockup-18.json
+│   │   │   ├── 2x3-Mockup-19.json
+│   │   │   ├── 2x3-Mockup-2.json
+│   │   │   ├── 2x3-Mockup-20.json
+│   │   │   ├── 2x3-Mockup-21.json
+│   │   │   ├── 2x3-Mockup-22.json
+│   │   │   ├── 2x3-Mockup-23.json
+│   │   │   ├── 2x3-Mockup-24.json
+│   │   │   ├── 2x3-Mockup-25.json
+│   │   │   ├── 2x3-Mockup-26.json
+│   │   │   ├── 2x3-Mockup-3.json
+│   │   │   ├── 2x3-Mockup-4.json
+│   │   │   ├── 2x3-Mockup-5.json
+│   │   │   ├── 2x3-Mockup-6.json
+│   │   │   ├── 2x3-Mockup-7.json
+│   │   │   ├── 2x3-Mockup-8.json
+│   │   │   └── 2x3-Mockup-9.json
+│   │   ├── 3x2
+│   │   │   ├── 3x2-Mockup-1.json
+│   │   │   ├── 3x2-Mockup-10.json
+│   │   │   ├── 3x2-Mockup-11.json
+│   │   │   ├── 3x2-Mockup-12.json
+│   │   │   ├── 3x2-Mockup-13.json
+│   │   │   ├── 3x2-Mockup-14.json
+│   │   │   ├── 3x2-Mockup-15.json
+│   │   │   ├── 3x2-Mockup-16.json
+│   │   │   ├── 3x2-Mockup-17.json
+│   │   │   ├── 3x2-Mockup-18.json
+│   │   │   ├── 3x2-Mockup-19.json
+│   │   │   ├── 3x2-Mockup-2.json
+│   │   │   ├── 3x2-Mockup-20.json
+│   │   │   ├── 3x2-Mockup-3.json
+│   │   │   ├── 3x2-Mockup-4.json
+│   │   │   ├── 3x2-Mockup-5.json
+│   │   │   ├── 3x2-Mockup-6.json
+│   │   │   ├── 3x2-Mockup-7.json
+│   │   │   ├── 3x2-Mockup-8.json
+│   │   │   └── 3x2-Mockup-9.json
+│   │   ├── 3x4
+│   │   │   ├── 3x4-Mockup-1.json
+│   │   │   ├── 3x4-Mockup-10.json
+│   │   │   ├── 3x4-Mockup-11.json
+│   │   │   ├── 3x4-Mockup-12.json
+│   │   │   ├── 3x4-Mockup-13.json
+│   │   │   ├── 3x4-Mockup-14.json
+│   │   │   ├── 3x4-Mockup-15.json
+│   │   │   ├── 3x4-Mockup-16.json
+│   │   │   ├── 3x4-Mockup-17.json
+│   │   │   ├── 3x4-Mockup-18.json
+│   │   │   ├── 3x4-Mockup-19.json
+│   │   │   ├── 3x4-Mockup-2.json
+│   │   │   ├── 3x4-Mockup-20.json
+│   │   │   ├── 3x4-Mockup-3.json
+│   │   │   ├── 3x4-Mockup-4.json
+│   │   │   ├── 3x4-Mockup-5.json
+│   │   │   ├── 3x4-Mockup-6.json
+│   │   │   ├── 3x4-Mockup-7.json
+│   │   │   ├── 3x4-Mockup-8.json
+│   │   │   └── 3x4-Mockup-9.json
+│   │   ├── 4x3
+│   │   │   ├── 4x3-Mockup-1.json
+│   │   │   ├── 4x3-Mockup-10.json
+│   │   │   ├── 4x3-Mockup-11.json
+│   │   │   ├── 4x3-Mockup-12.json
+│   │   │   ├── 4x3-Mockup-13.json
+│   │   │   ├── 4x3-Mockup-15.json
+│   │   │   ├── 4x3-Mockup-16.json
+│   │   │   ├── 4x3-Mockup-17.json
+│   │   │   ├── 4x3-Mockup-19.json
+│   │   │   ├── 4x3-Mockup-20.json
+│   │   │   ├── 4x3-Mockup-3.json
+│   │   │   ├── 4x3-Mockup-4.json
+│   │   │   ├── 4x3-Mockup-5.json
+│   │   │   ├── 4x3-Mockup-7.json
+│   │   │   ├── 4x3-Mockup-8.json
+│   │   │   └── 4x3-Mockup-9.json
+│   │   ├── 4x5
+│   │   │   ├── 4x5-mockup-01.json
+│   │   │   ├── 4x5-mockup-02.json
+│   │   │   ├── 4x5-mockup-03.json
+│   │   │   ├── 4x5-mockup-04.json
+│   │   │   ├── 4x5-mockup-05.json
+│   │   │   ├── 4x5-mockup-06.json
+│   │   │   ├── 4x5-mockup-07.json
+│   │   │   ├── 4x5-mockup-08.json
+│   │   │   ├── 4x5-mockup-09.json
+│   │   │   ├── 4x5-mockup-10.json
+│   │   │   ├── 4x5-mockup-11.json
+│   │   │   ├── 4x5-mockup-12.json
+│   │   │   ├── 4x5-mockup-13.json
+│   │   │   ├── 4x5-mockup-14.json
+│   │   │   ├── 4x5-mockup-15.json
+│   │   │   ├── 4x5-mockup-16.json
+│   │   │   ├── 4x5-mockup-17.json
+│   │   │   ├── 4x5-mockup-18.json
+│   │   │   ├── 4x5-mockup-19.json
+│   │   │   ├── 4x5-mockup-20.json
+│   │   │   ├── 4x5-mockup-21.json
+│   │   │   ├── 4x5-mockup-22.json
+│   │   │   ├── 4x5-mockup-23.json
+│   │   │   ├── 4x5-mockup-24.json
+│   │   │   ├── 4x5-mockup-25.json
+│   │   │   ├── 4x5-mockup-26.json
+│   │   │   ├── 4x5-mockup-27.json
+│   │   │   ├── 4x5-mockup-28.json
+│   │   │   ├── 4x5-mockup-29.json
+│   │   │   ├── 4x5-mockup-30.json
+│   │   │   ├── 4x5-mockup-31.json
+│   │   │   ├── 4x5-mockup-32.json
+│   │   │   ├── 4x5-mockup-33.json
+│   │   │   ├── 4x5-mockup-34.json
+│   │   │   ├── 4x5-mockup-35.json
+│   │   │   ├── 4x5-mockup-36.json
+│   │   │   ├── 4x5-mockup-37.json
+│   │   │   ├── 4x5-mockup-38.json
+│   │   │   ├── 4x5-mockup-39.json
+│   │   │   ├── 4x5-mockup-40.json
+│   │   │   ├── 4x5-mockup-41.json
+│   │   │   ├── 4x5-mockup-42.json
+│   │   │   ├── 4x5-mockup-43.json
+│   │   │   ├── 4x5-mockup-44.json
+│   │   │   ├── 4x5-mockup-45.json
+│   │   │   ├── 4x5-mockup-46.json
+│   │   │   ├── 4x5-mockup-47.json
+│   │   │   ├── 4x5-mockup-48.json
+│   │   │   ├── 4x5-mockup-49.json
+│   │   │   ├── 4x5-mockup-50.json
+│   │   │   ├── 4x5-mockup-51.json
+│   │   │   ├── 4x5-mockup-52.json
+│   │   │   ├── 4x5-mockup-53.json
+│   │   │   ├── 4x5-mockup-54.json
+│   │   │   ├── 4x5-mockup-55.json
+│   │   │   ├── 4x5-mockup-56.json
+│   │   │   ├── 4x5-mockup-57.json
+│   │   │   ├── 4x5-mockup-58.json
+│   │   │   ├── 4x5-mockup-59.json
+│   │   │   ├── 4x5-mockup-60.json
+│   │   │   ├── 4x5-mockup-61.json
+│   │   │   ├── 4x5-mockup-62.json
+│   │   │   ├── 4x5-mockup-63.json
+│   │   │   ├── 4x5-mockup-64.json
+│   │   │   ├── 4x5-mockup-65.json
+│   │   │   ├── 4x5-mockup-66.json
+│   │   │   ├── 4x5-mockup-67.json
+│   │   │   ├── 4x5-mockup-68.json
+│   │   │   ├── 4x5-mockup-69.json
+│   │   │   ├── 4x5-mockup-70.json
+│   │   │   ├── 4x5-mockup-71.json
+│   │   │   ├── 4x5-mockup-72.json
+│   │   │   ├── 4x5-mockup-73.json
+│   │   │   ├── 4x5-mockup-74.json
+│   │   │   ├── 4x5-mockup-75.json
+│   │   │   ├── 4x5-mockup-76.json
+│   │   │   ├── 4x5-mockup-77.json
+│   │   │   └── 4x5-mockup-78.json
+│   │   ├── 5x4
+│   │   │   ├── 5x4-Mockup-1.json
+│   │   │   ├── 5x4-Mockup-10.json
+│   │   │   ├── 5x4-Mockup-11.json
+│   │   │   ├── 5x4-Mockup-12.json
+│   │   │   ├── 5x4-Mockup-13.json
+│   │   │   ├── 5x4-Mockup-14.json
+│   │   │   ├── 5x4-Mockup-15.json
+│   │   │   ├── 5x4-Mockup-16.json
+│   │   │   ├── 5x4-Mockup-17.json
+│   │   │   ├── 5x4-Mockup-18.json
+│   │   │   ├── 5x4-Mockup-19.json
+│   │   │   ├── 5x4-Mockup-2.json
+│   │   │   ├── 5x4-Mockup-20.json
+│   │   │   ├── 5x4-Mockup-21.json
+│   │   │   ├── 5x4-Mockup-22.json
+│   │   │   ├── 5x4-Mockup-3.json
+│   │   │   ├── 5x4-Mockup-4.json
+│   │   │   ├── 5x4-Mockup-5.json
+│   │   │   ├── 5x4-Mockup-6.json
+│   │   │   ├── 5x4-Mockup-7.json
+│   │   │   ├── 5x4-Mockup-8.json
+│   │   │   └── 5x4-Mockup-9.json
+│   │   └── 9x16
+│   │       ├── 9x16-Mockup-1.json
+│   │       ├── 9x16-Mockup-10.json
+│   │       ├── 9x16-Mockup-11.json
+│   │       ├── 9x16-Mockup-12.json
+│   │       ├── 9x16-Mockup-13.json
+│   │       ├── 9x16-Mockup-14.json
+│   │       ├── 9x16-Mockup-15.json
+│   │       ├── 9x16-Mockup-16.json
+│   │       ├── 9x16-Mockup-17.json
+│   │       ├── 9x16-Mockup-18.json
+│   │       ├── 9x16-Mockup-19.json
+│   │       ├── 9x16-Mockup-2.json
+│   │       ├── 9x16-Mockup-20.json
+│   │       ├── 9x16-Mockup-21.json
+│   │       ├── 9x16-Mockup-22.json
+│   │       ├── 9x16-Mockup-23.json
+│   │       ├── 9x16-Mockup-24.json
+│   │       ├── 9x16-Mockup-3.json
+│   │       ├── 9x16-Mockup-4.json
+│   │       ├── 9x16-Mockup-5.json
+│   │       ├── 9x16-Mockup-6.json
+│   │       ├── 9x16-Mockup-7.json
+│   │       ├── 9x16-Mockup-8.json
+│   │       └── 9x16-Mockup-9.json
+│   ├── artworks
+│   │   ├── 4x5-artworks
+│   │   └── sample.jpg
+│   ├── mockups
+│   │   └── 4x5-categorised
+│   │       ├── Bedroom
+│   │       │   ├── 4x5-mockup-10.png
+│   │       │   ├── 4x5-mockup-11.png
+│   │       │   ├── 4x5-mockup-12.png
+│   │       │   └── 4x5-mockup-13.png
+│   │       ├── Closeup
+│   │       │   ├── 4x5-mockup-06.png
+│   │       │   ├── 4x5-mockup-07.png
+│   │       │   ├── 4x5-mockup-08.png
+│   │       │   ├── 4x5-mockup-09.png
+│   │       │   ├── 4x5-mockup-16.png
+│   │       │   ├── 4x5-mockup-17.png
+│   │       │   ├── 4x5-mockup-18.png
+│   │       │   ├── 4x5-mockup-19.png
+│   │       │   ├── 4x5-mockup-20.png
+│   │       │   ├── 4x5-mockup-22.png
+│   │       │   ├── 4x5-mockup-23.png
+│   │       │   ├── 4x5-mockup-46.png
+│   │       │   ├── 4x5-mockup-48.png
+│   │       │   ├── 4x5-mockup-49.png
+│   │       │   ├── 4x5-mockup-50.png
+│   │       │   ├── 4x5-mockup-59.png
+│   │       │   ├── 4x5-mockup-65.png
+│   │       │   └── 4x5-mockup-72.png
+│   │       ├── Dining-Room
+│   │       │   ├── 4x5-mockup-75.png
+│   │       │   └── 4x5-mockup-76.png
+│   │       ├── Gallery-Wall
+│   │       │   ├── 4x5-mockup-63.png
+│   │       │   └── 4x5-mockup-64.png
+│   │       ├── Hallway
+│   │       │   ├── 4x5-mockup-25.png
+│   │       │   ├── 4x5-mockup-55.png
+│   │       │   ├── 4x5-mockup-60.png
+│   │       │   └── 4x5-mockup-70.png
+│   │       ├── Living Room
+│   │       │   ├── 4x5-mockup-01.png
+│   │       │   ├── 4x5-mockup-02.png
+│   │       │   ├── 4x5-mockup-04.png
+│   │       │   ├── 4x5-mockup-21.png
+│   │       │   ├── 4x5-mockup-26.png
+│   │       │   ├── 4x5-mockup-27.png
+│   │       │   ├── 4x5-mockup-28.png
+│   │       │   ├── 4x5-mockup-39.png
+│   │       │   ├── 4x5-mockup-40.png
+│   │       │   ├── 4x5-mockup-41.png
+│   │       │   ├── 4x5-mockup-42.png
+│   │       │   ├── 4x5-mockup-43.png
+│   │       │   ├── 4x5-mockup-45.png
+│   │       │   ├── 4x5-mockup-47.png
+│   │       │   ├── 4x5-mockup-51.png
+│   │       │   ├── 4x5-mockup-52.png
+│   │       │   ├── 4x5-mockup-53.png
+│   │       │   ├── 4x5-mockup-54.png
+│   │       │   ├── 4x5-mockup-56.png
+│   │       │   ├── 4x5-mockup-66.png
+│   │       │   ├── 4x5-mockup-67.png
+│   │       │   ├── 4x5-mockup-71.png
+│   │       │   ├── 4x5-mockup-73.png
+│   │       │   ├── 4x5-mockup-74.png
+│   │       │   └── 4x5-mockup-78.png
+│   │       ├── Nursery
+│   │       │   ├── 4x5-mockup-03.png
+│   │       │   └── 4x5-mockup-05.png
+│   │       ├── Office
+│   │       │   ├── 4x5-mockup-14.png
+│   │       │   ├── 4x5-mockup-15.png
+│   │       │   ├── 4x5-mockup-57.png
+│   │       │   ├── 4x5-mockup-58.png
+│   │       │   ├── 4x5-mockup-61.png
+│   │       │   ├── 4x5-mockup-62.png
+│   │       │   ├── 4x5-mockup-68.png
+│   │       │   ├── 4x5-mockup-69.png
+│   │       │   └── 4x5-mockup-77.png
+│   │       └── Outdoors
+│   │           ├── 4x5-mockup-24.png
+│   │           ├── 4x5-mockup-29.png
+│   │           ├── 4x5-mockup-30.png
+│   │           ├── 4x5-mockup-31.png
+│   │           ├── 4x5-mockup-32.png
+│   │           ├── 4x5-mockup-33.png
+│   │           ├── 4x5-mockup-34.png
+│   │           ├── 4x5-mockup-35.png
+│   │           ├── 4x5-mockup-36.png
+│   │           ├── 4x5-mockup-37.png
+│   │           └── 4x5-mockup-38.png
+│   └── signatures
+├── instructions
+├── logs
+│   ├── analysis_status.json
+│   ├── crops
+│   │   ├── banksia-flower-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
+│   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
+│   │   ├── first-artwork-crop.jpg
+│   │   ├── forest-reflection-fire-artwork-by-robin-custance-rjc-0122-crop.jpg
+│   │   ├── gang-gang-cockatoo-artwork-by-robin-custance-rjc-0127-crop.jpg
+│   │   ├── great-barrier-reef-dot-artwork-by-robin-custance-rjc-0122-crop.jpg
+│   │   ├── outback-billabong-dot-artwork-by-robin-custance-rjc-0123-crop.jpg
+│   │   ├── outback-billabong-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
+│   │   ├── owl-dotart-gaze-artwork-by-robin-custance-rjc-0123-crop.jpg
+│   │   ├── second-artwork-crop.jpg
+│   │   └── sulphur-crested-cockatoo-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
+│   └── session_registry.json
+├── outputs
+│   ├── artwork_listing_master.json
+│   ├── composites
+│   ├── sellbrite
+│   │   ├── sellbrite_2025-07-06T04-52-26_locked.csv
+│   │   └── sellbrite_2025-07-17T02-37-11_all.csv
+│   └── signed
+├── package-lock.json
+├── reports
+│   ├── report-ALLINONE-Sat-19-Jul-2025-05-51-AM
+│   │   ├── code-dump.md
+│   │   ├── folder-structure.txt
+│   │   └── system-health.txt
+│   ├── report-ALLINONE-Sat-19-Jul-2025-06-02-AM
+│   │   ├── code-dump.md
+│   │   ├── filelist.txt
+│   │   ├── folder-structure.txt
+│   │   └── system-health.txt
+│   ├── report-ALLINONE-Sat-19-Jul-2025-06-08-AM
+│   │   ├── code-dump.md
+│   │   ├── filelist.txt
+│   │   ├── folder-structure.txt
+│   │   └── system-health.txt
+│   ├── report-ALLINONE-Sat-19-Jul-2025-09-07-AM
+│   └── report-ALLINONE-Sat-19-Jul-2025-09-14-AM
+│       ├── code-dump.md
+│       ├── filelist.txt
+│       ├── folder-structure.txt
+│       └── system-health.txt
+├── requirements.txt
+├── routes
+│   ├── __init__.py
+│   ├── admin_security.py
+│   ├── artwork_routes.py
+│   ├── auth_routes.py
+│   ├── export_routes.py
+│   ├── sellbrite_export.py
+│   ├── sellbrite_service.py
+│   ├── test_routes.py
+│   └── utils.py
+├── scripts
+│   ├── analyze_artwork.py
+│   ├── dev_cycle.sh
+│   ├── generate_composites.py
+│   └── sellbrite_csv_export.py
+├── sellbrite_template.csv
+├── settings
+│   ├── Master-Etsy-Listing-Description-Writing-Onboarding.txt
+│   ├── security_settings.json
+│   ├── sku_tracker.json
+│   └── users.json
+├── static
+│   ├── css
+│   │   ├── 404.css
+│   │   ├── art-cards.css
+│   │   ├── backup-css
+│   │   │   ├── 404.css
+│   │   │   ├── artnarrator-styles.css
+│   │   │   ├── custom-bk2.css
+│   │   │   ├── custom-style-bk.css
+│   │   │   ├── custom-style-fail.css
+│   │   │   ├── custom-style.css
+│   │   │   ├── custom.css
+│   │   │   ├── main-overlay-test-fail.css
+│   │   │   ├── main-overlay-test.css
+│   │   │   ├── style-bk.css
+│   │   │   ├── style-bk2.css
+│   │   │   ├── style-bk3.css
+│   │   │   └── style.css
+│   │   ├── buttons.css
+│   │   ├── icons.css
+│   │   ├── layout.css
+│   │   ├── main.css
+│   │   ├── modals-popups.css
+│   │   ├── overlay-menu.css
+│   │   └── style.css
+│   ├── favicons
+│   │   ├── android-chrome-192x192.png
+│   │   ├── android-chrome-512x512.png
+│   │   ├── apple-touch-icon.png
+│   │   ├── favicon-16x16.png
+│   │   ├── favicon-32x32.png
+│   │   ├── favicon.ico
+│   │   └── site.webmanifest
+│   ├── fonts
+│   │   ├── Inter-Italic-VariableFont_opsz,wght.ttf
+│   │   ├── Inter-VariableFont_opsz,wght.ttf
+│   │   ├── Montserrat-Italic-VariableFont_wght.ttf
+│   │   ├── Montserrat-VariableFont_wght.ttf
+│   │   └── QA_REPORT.md
+│   ├── icons
+│   │   └── svg
+│   │       ├── dark
+│   │       │   └── user-circle-dark.svg
+│   │       └── light
+│   │           ├── acorn-light.svg
+│   │           ├── address-book-light.svg
+│   │           ├── address-book-tabs-light.svg
+│   │           ├── air-traffic-control-light.svg
+│   │           ├── airplane-in-flight-light.svg
+│   │           ├── airplane-landing-light.svg
+│   │           ├── airplane-light.svg
+│   │           ├── airplane-takeoff-light.svg
+│   │           ├── airplane-taxiing-light.svg
+│   │           ├── airplane-tilt-light.svg
+│   │           ├── airplay-light.svg
+│   │           ├── alarm-light.svg
+│   │           ├── alien-light.svg
+│   │           ├── align-bottom-light.svg
+│   │           ├── align-bottom-simple-light.svg
+│   │           ├── align-center-horizontal-light.svg
+│   │           ├── align-center-horizontal-simple-light.svg
+│   │           ├── align-center-vertical-light.svg
+│   │           ├── align-center-vertical-simple-light.svg
+│   │           ├── align-left-light.svg
+│   │           ├── align-left-simple-light.svg
+│   │           ├── align-right-light.svg
+│   │           ├── align-right-simple-light.svg
+│   │           ├── align-top-light.svg
+│   │           ├── align-top-simple-light.svg
+│   │           ├── amazon-logo-light.svg
+│   │           ├── ambulance-light.svg
+│   │           ├── anchor-light.svg
+│   │           ├── anchor-simple-light.svg
+│   │           ├── android-logo-light.svg
+│   │           ├── angle-light.svg
+│   │           ├── angular-logo-light.svg
+│   │           ├── aperture-light.svg
+│   │           ├── app-store-logo-light.svg
+│   │           ├── app-window-light.svg
+│   │           ├── apple-logo-light.svg
+│   │           ├── apple-podcasts-logo-light.svg
+│   │           ├── approximate-equals-light.svg
+│   │           ├── archive-light.svg
+│   │           ├── armchair-light.svg
+│   │           ├── arrow-arc-left-light.svg
+│   │           ├── arrow-arc-right-light.svg
+│   │           ├── arrow-bend-double-up-left-light.svg
+│   │           ├── arrow-bend-double-up-right-light.svg
+│   │           ├── arrow-bend-down-left-light.svg
+│   │           ├── arrow-bend-down-right-light.svg
+│   │           ├── arrow-bend-left-down-light.svg
+│   │           ├── arrow-bend-left-up-light.svg
+│   │           ├── arrow-bend-right-down-light.svg
+│   │           ├── arrow-bend-right-up-light.svg
+│   │           ├── arrow-bend-up-left-light.svg
+│   │           ├── arrow-bend-up-right-light.svg
+│   │           ├── arrow-circle-down-left-light.svg
+│   │           ├── arrow-circle-down-light.svg
+│   │           ├── arrow-circle-down-right-light.svg
+│   │           ├── arrow-circle-left-light.svg
+│   │           ├── arrow-circle-right-light.svg
+│   │           ├── arrow-circle-up-left-light.svg
+│   │           ├── arrow-circle-up-light.svg
+│   │           ├── arrow-circle-up-right-light.svg
+│   │           ├── arrow-clockwise-light.svg
+│   │           ├── arrow-counter-clockwise-light.svg
+│   │           ├── arrow-down-left-light.svg
+│   │           ├── arrow-down-light.svg
+│   │           ├── arrow-down-right-light.svg
+│   │           ├── arrow-elbow-down-left-light.svg
+│   │           ├── arrow-elbow-down-right-light.svg
+│   │           ├── arrow-elbow-left-down-light.svg
+│   │           ├── arrow-elbow-left-light.svg
+│   │           ├── arrow-elbow-left-up-light.svg
+│   │           ├── arrow-elbow-right-down-light.svg
+│   │           ├── arrow-elbow-right-light.svg
+│   │           ├── arrow-elbow-right-up-light.svg
+│   │           ├── arrow-elbow-up-left-light.svg
+│   │           ├── arrow-elbow-up-right-light.svg
+│   │           ├── arrow-fat-down-light.svg
+│   │           ├── arrow-fat-left-light.svg
+│   │           ├── arrow-fat-line-down-light.svg
+│   │           ├── arrow-fat-line-left-light.svg
+│   │           ├── arrow-fat-line-right-light.svg
+│   │           ├── arrow-fat-line-up-light.svg
+│   │           ├── arrow-fat-lines-down-light.svg
+│   │           ├── arrow-fat-lines-left-light.svg
+│   │           ├── arrow-fat-lines-right-light.svg
+│   │           ├── arrow-fat-lines-up-light.svg
+│   │           ├── arrow-fat-right-light.svg
+│   │           ├── arrow-fat-up-light.svg
+│   │           ├── arrow-left-light.svg
+│   │           ├── arrow-line-down-left-light.svg
+│   │           ├── arrow-line-down-light.svg
+│   │           ├── arrow-line-down-right-light.svg
+│   │           ├── arrow-line-left-light.svg
+│   │           ├── arrow-line-right-light.svg
+│   │           ├── arrow-line-up-left-light.svg
+│   │           ├── arrow-line-up-light.svg
+│   │           ├── arrow-line-up-right-light.svg
+│   │           ├── arrow-right-light.svg
+│   │           ├── arrow-square-down-left-light.svg
+│   │           ├── arrow-square-down-light.svg
+│   │           ├── arrow-square-down-right-light.svg
+│   │           ├── arrow-square-in-light.svg
+│   │           ├── arrow-square-left-light.svg
+│   │           ├── arrow-square-out-light.svg
+│   │           ├── arrow-square-right-light.svg
+│   │           ├── arrow-square-up-left-light.svg
+│   │           ├── arrow-square-up-light.svg
+│   │           ├── arrow-square-up-right-light.svg
+│   │           ├── arrow-u-down-left-light.svg
+│   │           ├── arrow-u-down-right-light.svg
+│   │           ├── arrow-u-left-down-light.svg
+│   │           ├── arrow-u-left-up-light.svg
+│   │           ├── arrow-u-right-down-light.svg
+│   │           ├── arrow-u-right-up-light.svg
+│   │           ├── arrow-u-up-left-light.svg
+│   │           ├── arrow-u-up-right-light.svg
+│   │           ├── arrow-up-left-light.svg
+│   │           ├── arrow-up-light.svg
+│   │           ├── arrow-up-right-light.svg
+│   │           ├── arrows-clockwise-light.svg
+│   │           ├── arrows-counter-clockwise-light.svg
+│   │           ├── arrows-down-up-light.svg
+│   │           ├── arrows-horizontal-light.svg
+│   │           ├── arrows-in-cardinal-light.svg
+│   │           ├── arrows-in-light.svg
+│   │           ├── arrows-in-line-horizontal-light.svg
+│   │           ├── arrows-in-line-vertical-light.svg
+│   │           ├── arrows-in-simple-light.svg
+│   │           ├── arrows-left-right-light.svg
+│   │           ├── arrows-merge-light.svg
+│   │           ├── arrows-out-cardinal-light.svg
+│   │           ├── arrows-out-light.svg
+│   │           ├── arrows-out-line-horizontal-light.svg
+│   │           ├── arrows-out-line-vertical-light.svg
+│   │           ├── arrows-out-simple-light.svg
+│   │           ├── arrows-split-light.svg
+│   │           ├── arrows-vertical-light.svg
+│   │           ├── article-light.svg
+│   │           ├── article-medium-light.svg
+│   │           ├── article-ny-times-light.svg
+│   │           ├── asclepius-light.svg
+│   │           ├── asterisk-light.svg
+│   │           ├── asterisk-simple-light.svg
+│   │           ├── at-light.svg
+│   │           ├── atom-light.svg
+│   │           ├── avocado-light.svg
+│   │           ├── axe-light.svg
+│   │           ├── baby-carriage-light.svg
+│   │           ├── baby-light.svg
+│   │           ├── backpack-light.svg
+│   │           ├── backspace-light.svg
+│   │           ├── bag-light.svg
+│   │           ├── bag-simple-light.svg
+│   │           ├── balloon-light.svg
+│   │           ├── bandaids-light.svg
+│   │           ├── bank-light.svg
+│   │           ├── barbell-light.svg
+│   │           ├── barcode-light.svg
+│   │           ├── barn-light.svg
+│   │           ├── barricade-light.svg
+│   │           ├── baseball-cap-light.svg
+│   │           ├── baseball-helmet-light.svg
+│   │           ├── baseball-light.svg
+│   │           ├── basket-light.svg
+│   │           ├── basketball-light.svg
+│   │           ├── bathtub-light.svg
+│   │           ├── battery-charging-light.svg
+│   │           ├── battery-charging-vertical-light.svg
+│   │           ├── battery-empty-light.svg
+│   │           ├── battery-full-light.svg
+│   │           ├── battery-high-light.svg
+│   │           ├── battery-low-light.svg
+│   │           ├── battery-medium-light.svg
+│   │           ├── battery-plus-light.svg
+│   │           ├── battery-plus-vertical-light.svg
+│   │           ├── battery-vertical-empty-light.svg
+│   │           ├── battery-vertical-full-light.svg
+│   │           ├── battery-vertical-high-light.svg
+│   │           ├── battery-vertical-low-light.svg
+│   │           ├── battery-vertical-medium-light.svg
+│   │           ├── battery-warning-light.svg
+│   │           ├── battery-warning-vertical-light.svg
+│   │           ├── beach-ball-light.svg
+│   │           ├── beanie-light.svg
+│   │           ├── bed-light.svg
+│   │           ├── beer-bottle-light.svg
+│   │           ├── beer-stein-light.svg
+│   │           ├── behance-logo-light.svg
+│   │           ├── bell-light.svg
+│   │           ├── bell-ringing-light.svg
+│   │           ├── bell-simple-light.svg
+│   │           ├── bell-simple-ringing-light.svg
+│   │           ├── bell-simple-slash-light.svg
+│   │           ├── bell-simple-z-light.svg
+│   │           ├── bell-slash-light.svg
+│   │           ├── bell-z-light.svg
+│   │           ├── belt-light.svg
+│   │           ├── bezier-curve-light.svg
+│   │           ├── bicycle-light.svg
+│   │           ├── binary-light.svg
+│   │           ├── binoculars-light.svg
+│   │           ├── biohazard-light.svg
+│   │           ├── bird-light.svg
+│   │           ├── blueprint-light.svg
+│   │           ├── bluetooth-connected-light.svg
+│   │           ├── bluetooth-light.svg
+│   │           ├── bluetooth-slash-light.svg
+│   │           ├── bluetooth-x-light.svg
+│   │           ├── boat-light.svg
+│   │           ├── bomb-light.svg
+│   │           ├── bone-light.svg
+│   │           ├── book-bookmark-light.svg
+│   │           ├── book-light.svg
+│   │           ├── book-open-light.svg
+│   │           ├── book-open-text-light.svg
+│   │           ├── book-open-user-light.svg
+│   │           ├── bookmark-light.svg
+│   │           ├── bookmark-simple-light.svg
+│   │           ├── bookmarks-light.svg
+│   │           ├── bookmarks-simple-light.svg
+│   │           ├── books-light.svg
+│   │           ├── boot-light.svg
+│   │           ├── boules-light.svg
+│   │           ├── bounding-box-light.svg
+│   │           ├── bowl-food-light.svg
+│   │           ├── bowl-steam-light.svg
+│   │           ├── bowling-ball-light.svg
+│   │           ├── box-arrow-down-light.svg
+│   │           ├── box-arrow-up-light.svg
+│   │           ├── boxing-glove-light.svg
+│   │           ├── brackets-angle-light.svg
+│   │           ├── brackets-curly-light.svg
+│   │           ├── brackets-round-light.svg
+│   │           ├── brackets-square-light.svg
+│   │           ├── brain-light.svg
+│   │           ├── brandy-light.svg
+│   │           ├── bread-light.svg
+│   │           ├── bridge-light.svg
+│   │           ├── briefcase-light.svg
+│   │           ├── briefcase-metal-light.svg
+│   │           ├── broadcast-light.svg
+│   │           ├── broom-light.svg
+│   │           ├── browser-light.svg
+│   │           ├── browsers-light.svg
+│   │           ├── bug-beetle-light.svg
+│   │           ├── bug-droid-light.svg
+│   │           ├── bug-light.svg
+│   │           ├── building-apartment-light.svg
+│   │           ├── building-light.svg
+│   │           ├── building-office-light.svg
+│   │           ├── buildings-light.svg
+│   │           ├── bulldozer-light.svg
+│   │           ├── bus-light.svg
+│   │           ├── butterfly-light.svg
+│   │           ├── cable-car-light.svg
+│   │           ├── cactus-light.svg
+│   │           ├── cake-light.svg
+│   │           ├── calculator-light.svg
+│   │           ├── calendar-blank-light.svg
+│   │           ├── calendar-check-light.svg
+│   │           ├── calendar-dot-light.svg
+│   │           ├── calendar-dots-light.svg
+│   │           ├── calendar-heart-light.svg
+│   │           ├── calendar-light.svg
+│   │           ├── calendar-minus-light.svg
+│   │           ├── calendar-plus-light.svg
+│   │           ├── calendar-slash-light.svg
+│   │           ├── calendar-star-light.svg
+│   │           ├── calendar-x-light.svg
+│   │           ├── call-bell-light.svg
+│   │           ├── camera-light.svg
+│   │           ├── camera-plus-light.svg
+│   │           ├── camera-rotate-light.svg
+│   │           ├── camera-slash-light.svg
+│   │           ├── campfire-light.svg
+│   │           ├── car-battery-light.svg
+│   │           ├── car-light.svg
+│   │           ├── car-profile-light.svg
+│   │           ├── car-simple-light.svg
+│   │           ├── cardholder-light.svg
+│   │           ├── cards-light.svg
+│   │           ├── cards-three-light.svg
+│   │           ├── caret-circle-double-down-light.svg
+│   │           ├── caret-circle-double-left-light.svg
+│   │           ├── caret-circle-double-right-light.svg
+│   │           ├── caret-circle-double-up-light.svg
+│   │           ├── caret-circle-down-light.svg
+│   │           ├── caret-circle-left-light.svg
+│   │           ├── caret-circle-right-light.svg
+│   │           ├── caret-circle-up-down-light.svg
+│   │           ├── caret-circle-up-light.svg
+│   │           ├── caret-double-down-light.svg
+│   │           ├── caret-double-left-light.svg
+│   │           ├── caret-double-right-light.svg
+│   │           ├── caret-double-up-light.svg
+│   │           ├── caret-down-light.svg
+│   │           ├── caret-left-light.svg
+│   │           ├── caret-line-down-light.svg
+│   │           ├── caret-line-left-light.svg
+│   │           ├── caret-line-right-light.svg
+│   │           ├── caret-line-up-light.svg
+│   │           ├── caret-right-light.svg
+│   │           ├── caret-up-down-light.svg
+│   │           ├── caret-up-light.svg
+│   │           ├── carrot-light.svg
+│   │           ├── cash-register-light.svg
+│   │           ├── cassette-tape-light.svg
+│   │           ├── castle-turret-light.svg
+│   │           ├── cat-light.svg
+│   │           ├── cell-signal-full-light.svg
+│   │           ├── cell-signal-high-light.svg
+│   │           ├── cell-signal-low-light.svg
+│   │           ├── cell-signal-medium-light.svg
+│   │           ├── cell-signal-none-light.svg
+│   │           ├── cell-signal-slash-light.svg
+│   │           ├── cell-signal-x-light.svg
+│   │           ├── cell-tower-light.svg
+│   │           ├── certificate-light.svg
+│   │           ├── chair-light.svg
+│   │           ├── chalkboard-light.svg
+│   │           ├── chalkboard-simple-light.svg
+│   │           ├── chalkboard-teacher-light.svg
+│   │           ├── champagne-light.svg
+│   │           ├── charging-station-light.svg
+│   │           ├── chart-bar-horizontal-light.svg
+│   │           ├── chart-bar-light.svg
+│   │           ├── chart-donut-light.svg
+│   │           ├── chart-line-down-light.svg
+│   │           ├── chart-line-light.svg
+│   │           ├── chart-line-up-light.svg
+│   │           ├── chart-pie-light.svg
+│   │           ├── chart-pie-slice-light.svg
+│   │           ├── chart-polar-light.svg
+│   │           ├── chart-scatter-light.svg
+│   │           ├── chat-centered-dots-light.svg
+│   │           ├── chat-centered-light.svg
+│   │           ├── chat-centered-slash-light.svg
+│   │           ├── chat-centered-text-light.svg
+│   │           ├── chat-circle-dots-light.svg
+│   │           ├── chat-circle-light.svg
+│   │           ├── chat-circle-slash-light.svg
+│   │           ├── chat-circle-text-light.svg
+│   │           ├── chat-dots-light.svg
+│   │           ├── chat-light.svg
+│   │           ├── chat-slash-light.svg
+│   │           ├── chat-teardrop-dots-light.svg
+│   │           ├── chat-teardrop-light.svg
+│   │           ├── chat-teardrop-slash-light.svg
+│   │           ├── chat-teardrop-text-light.svg
+│   │           ├── chat-text-light.svg
+│   │           ├── chats-circle-light.svg
+│   │           ├── chats-light.svg
+│   │           ├── chats-teardrop-light.svg
+│   │           ├── check-circle-light.svg
+│   │           ├── check-fat-light.svg
+│   │           ├── check-light.svg
+│   │           ├── check-square-light.svg
+│   │           ├── check-square-offset-light.svg
+│   │           ├── checkerboard-light.svg
+│   │           ├── checks-light.svg
+│   │           ├── cheers-light.svg
+│   │           ├── cheese-light.svg
+│   │           ├── chef-hat-light.svg
+│   │           ├── cherries-light.svg
+│   │           ├── church-light.svg
+│   │           ├── cigarette-light.svg
+│   │           ├── cigarette-slash-light.svg
+│   │           ├── circle-dashed-light.svg
+│   │           ├── circle-half-light.svg
+│   │           ├── circle-half-tilt-light.svg
+│   │           ├── circle-light.svg
+│   │           ├── circle-notch-light.svg
+│   │           ├── circles-four-light.svg
+│   │           ├── circles-three-light.svg
+│   │           ├── circles-three-plus-light.svg
+│   │           ├── circuitry-light.svg
+│   │           ├── city-light.svg
+│   │           ├── clipboard-light.svg
+│   │           ├── clipboard-text-light.svg
+│   │           ├── clock-afternoon-light.svg
+│   │           ├── clock-clockwise-light.svg
+│   │           ├── clock-countdown-light.svg
+│   │           ├── clock-counter-clockwise-light.svg
+│   │           ├── clock-light.svg
+│   │           ├── clock-user-light.svg
+│   │           ├── closed-captioning-light.svg
+│   │           ├── cloud-arrow-down-light.svg
+│   │           ├── cloud-arrow-up-light.svg
+│   │           ├── cloud-check-light.svg
+│   │           ├── cloud-fog-light.svg
+│   │           ├── cloud-light.svg
+│   │           ├── cloud-lightning-light.svg
+│   │           ├── cloud-moon-light.svg
+│   │           ├── cloud-rain-light.svg
+│   │           ├── cloud-slash-light.svg
+│   │           ├── cloud-snow-light.svg
+│   │           ├── cloud-sun-light.svg
+│   │           ├── cloud-warning-light.svg
+│   │           ├── cloud-x-light.svg
+│   │           ├── clover-light.svg
+│   │           ├── club-light.svg
+│   │           ├── coat-hanger-light.svg
+│   │           ├── coda-logo-light.svg
+│   │           ├── code-block-light.svg
+│   │           ├── code-light.svg
+│   │           ├── code-simple-light.svg
+│   │           ├── codepen-logo-light.svg
+│   │           ├── codesandbox-logo-light.svg
+│   │           ├── coffee-bean-light.svg
+│   │           ├── coffee-light.svg
+│   │           ├── coin-light.svg
+│   │           ├── coin-vertical-light.svg
+│   │           ├── coins-light.svg
+│   │           ├── columns-light.svg
+│   │           ├── columns-plus-left-light.svg
+│   │           ├── columns-plus-right-light.svg
+│   │           ├── command-light.svg
+│   │           ├── compass-light.svg
+│   │           ├── compass-rose-light.svg
+│   │           ├── compass-tool-light.svg
+│   │           ├── computer-tower-light.svg
+│   │           ├── confetti-light.svg
+│   │           ├── contactless-payment-light.svg
+│   │           ├── control-light.svg
+│   │           ├── cookie-light.svg
+│   │           ├── cooking-pot-light.svg
+│   │           ├── copy-light.svg
+│   │           ├── copy-simple-light.svg
+│   │           ├── copyleft-light.svg
+│   │           ├── copyright-light.svg
+│   │           ├── corners-in-light.svg
+│   │           ├── corners-out-light.svg
+│   │           ├── couch-light.svg
+│   │           ├── court-basketball-light.svg
+│   │           ├── cow-light.svg
+│   │           ├── cowboy-hat-light.svg
+│   │           ├── cpu-light.svg
+│   │           ├── crane-light.svg
+│   │           ├── crane-tower-light.svg
+│   │           ├── credit-card-light.svg
+│   │           ├── cricket-light.svg
+│   │           ├── crop-light.svg
+│   │           ├── cross-light.svg
+│   │           ├── crosshair-light.svg
+│   │           ├── crosshair-simple-light.svg
+│   │           ├── crown-cross-light.svg
+│   │           ├── crown-light.svg
+│   │           ├── crown-simple-light.svg
+│   │           ├── cube-focus-light.svg
+│   │           ├── cube-light.svg
+│   │           ├── cube-transparent-light.svg
+│   │           ├── currency-btc-light.svg
+│   │           ├── currency-circle-dollar-light.svg
+│   │           ├── currency-cny-light.svg
+│   │           ├── currency-dollar-light.svg
+│   │           ├── currency-dollar-simple-light.svg
+│   │           ├── currency-eth-light.svg
+│   │           ├── currency-eur-light.svg
+│   │           ├── currency-gbp-light.svg
+│   │           ├── currency-inr-light.svg
+│   │           ├── currency-jpy-light.svg
+│   │           ├── currency-krw-light.svg
+│   │           ├── currency-kzt-light.svg
+│   │           ├── currency-ngn-light.svg
+│   │           ├── currency-rub-light.svg
+│   │           ├── cursor-click-light.svg
+│   │           ├── cursor-light.svg
+│   │           ├── cursor-text-light.svg
+│   │           ├── cylinder-light.svg
+│   │           ├── database-light.svg
+│   │           ├── desk-light.svg
+│   │           ├── desktop-light.svg
+│   │           ├── desktop-tower-light.svg
+│   │           ├── detective-light.svg
+│   │           ├── dev-to-logo-light.svg
+│   │           ├── device-mobile-camera-light.svg
+│   │           ├── device-mobile-light.svg
+│   │           ├── device-mobile-slash-light.svg
+│   │           ├── device-mobile-speaker-light.svg
+│   │           ├── device-rotate-light.svg
+│   │           ├── device-tablet-camera-light.svg
+│   │           ├── device-tablet-light.svg
+│   │           ├── device-tablet-speaker-light.svg
+│   │           ├── devices-light.svg
+│   │           ├── diamond-light.svg
+│   │           ├── diamonds-four-light.svg
+│   │           ├── dice-five-light.svg
+│   │           ├── dice-four-light.svg
+│   │           ├── dice-one-light.svg
+│   │           ├── dice-six-light.svg
+│   │           ├── dice-three-light.svg
+│   │           ├── dice-two-light.svg
+│   │           ├── disc-light.svg
+│   │           ├── disco-ball-light.svg
+│   │           ├── discord-logo-light.svg
+│   │           ├── divide-light.svg
+│   │           ├── dna-light.svg
+│   │           ├── dog-light.svg
+│   │           ├── door-light.svg
+│   │           ├── door-open-light.svg
+│   │           ├── dot-light.svg
+│   │           ├── dot-outline-light.svg
+│   │           ├── dots-nine-light.svg
+│   │           ├── dots-six-light.svg
+│   │           ├── dots-six-vertical-light.svg
+│   │           ├── dots-three-circle-light.svg
+│   │           ├── dots-three-circle-vertical-light.svg
+│   │           ├── dots-three-light.svg
+│   │           ├── dots-three-outline-light.svg
+│   │           ├── dots-three-outline-vertical-light.svg
+│   │           ├── dots-three-vertical-light.svg
+│   │           ├── download-light.svg
+│   │           ├── download-simple-light.svg
+│   │           ├── dress-light.svg
+│   │           ├── dresser-light.svg
+│   │           ├── dribbble-logo-light.svg
+│   │           ├── drone-light.svg
+│   │           ├── drop-half-bottom-light.svg
+│   │           ├── drop-half-light.svg
+│   │           ├── drop-light.svg
+│   │           ├── drop-simple-light.svg
+│   │           ├── drop-slash-light.svg
+│   │           ├── dropbox-logo-light.svg
+│   │           ├── ear-light.svg
+│   │           ├── ear-slash-light.svg
+│   │           ├── egg-crack-light.svg
+│   │           ├── egg-light.svg
+│   │           ├── eject-light.svg
+│   │           ├── eject-simple-light.svg
+│   │           ├── elevator-light.svg
+│   │           ├── empty-light.svg
+│   │           ├── engine-light.svg
+│   │           ├── envelope-light.svg
+│   │           ├── envelope-open-light.svg
+│   │           ├── envelope-simple-light.svg
+│   │           ├── envelope-simple-open-light.svg
+│   │           ├── equalizer-light.svg
+│   │           ├── equals-light.svg
+│   │           ├── eraser-light.svg
+│   │           ├── escalator-down-light.svg
+│   │           ├── escalator-up-light.svg
+│   │           ├── exam-light.svg
+│   │           ├── exclamation-mark-light.svg
+│   │           ├── exclude-light.svg
+│   │           ├── exclude-square-light.svg
+│   │           ├── export-light.svg
+│   │           ├── eye-closed-light.svg
+│   │           ├── eye-light.svg
+│   │           ├── eye-slash-light.svg
+│   │           ├── eyedropper-light.svg
+│   │           ├── eyedropper-sample-light.svg
+│   │           ├── eyeglasses-light.svg
+│   │           ├── eyes-light.svg
+│   │           ├── face-mask-light.svg
+│   │           ├── facebook-logo-light.svg
+│   │           ├── factory-light.svg
+│   │           ├── faders-horizontal-light.svg
+│   │           ├── faders-light.svg
+│   │           ├── fallout-shelter-light.svg
+│   │           ├── fan-light.svg
+│   │           ├── farm-light.svg
+│   │           ├── fast-forward-circle-light.svg
+│   │           ├── fast-forward-light.svg
+│   │           ├── feather-light.svg
+│   │           ├── fediverse-logo-light.svg
+│   │           ├── figma-logo-light.svg
+│   │           ├── file-archive-light.svg
+│   │           ├── file-arrow-down-light.svg
+│   │           ├── file-arrow-up-light.svg
+│   │           ├── file-audio-light.svg
+│   │           ├── file-c-light.svg
+│   │           ├── file-c-sharp-light.svg
+│   │           ├── file-cloud-light.svg
+│   │           ├── file-code-light.svg
+│   │           ├── file-cpp-light.svg
+│   │           ├── file-css-light.svg
+│   │           ├── file-csv-light.svg
+│   │           ├── file-dashed-light.svg
+│   │           ├── file-doc-light.svg
+│   │           ├── file-html-light.svg
+│   │           ├── file-image-light.svg
+│   │           ├── file-ini-light.svg
+│   │           ├── file-jpg-light.svg
+│   │           ├── file-js-light.svg
+│   │           ├── file-jsx-light.svg
+│   │           ├── file-light.svg
+│   │           ├── file-lock-light.svg
+│   │           ├── file-magnifying-glass-light.svg
+│   │           ├── file-md-light.svg
+│   │           ├── file-minus-light.svg
+│   │           ├── file-pdf-light.svg
+│   │           ├── file-plus-light.svg
+│   │           ├── file-png-light.svg
+│   │           ├── file-ppt-light.svg
+│   │           ├── file-py-light.svg
+│   │           ├── file-rs-light.svg
+│   │           ├── file-sql-light.svg
+│   │           ├── file-svg-light.svg
+│   │           ├── file-text-light.svg
+│   │           ├── file-ts-light.svg
+│   │           ├── file-tsx-light.svg
+│   │           ├── file-txt-light.svg
+│   │           ├── file-video-light.svg
+│   │           ├── file-vue-light.svg
+│   │           ├── file-x-light.svg
+│   │           ├── file-xls-light.svg
+│   │           ├── file-zip-light.svg
+│   │           ├── files-light.svg
+│   │           ├── film-reel-light.svg
+│   │           ├── film-script-light.svg
+│   │           ├── film-slate-light.svg
+│   │           ├── film-strip-light.svg
+│   │           ├── fingerprint-light.svg
+│   │           ├── fingerprint-simple-light.svg
+│   │           ├── finn-the-human-light.svg
+│   │           ├── fire-extinguisher-light.svg
+│   │           ├── fire-light.svg
+│   │           ├── fire-simple-light.svg
+│   │           ├── fire-truck-light.svg
+│   │           ├── first-aid-kit-light.svg
+│   │           ├── first-aid-light.svg
+│   │           ├── fish-light.svg
+│   │           ├── fish-simple-light.svg
+│   │           ├── flag-banner-fold-light.svg
+│   │           ├── flag-banner-light.svg
+│   │           ├── flag-checkered-light.svg
+│   │           ├── flag-light.svg
+│   │           ├── flag-pennant-light.svg
+│   │           ├── flame-light.svg
+│   │           ├── flashlight-light.svg
+│   │           ├── flask-light.svg
+│   │           ├── flip-horizontal-light.svg
+│   │           ├── flip-vertical-light.svg
+│   │           ├── floppy-disk-back-light.svg
+│   │           ├── floppy-disk-light.svg
+│   │           ├── flow-arrow-light.svg
+│   │           ├── flower-light.svg
+│   │           ├── flower-lotus-light.svg
+│   │           ├── flower-tulip-light.svg
+│   │           ├── flying-saucer-light.svg
+│   │           ├── folder-dashed-light.svg
+│   │           ├── folder-light.svg
+│   │           ├── folder-lock-light.svg
+│   │           ├── folder-minus-light.svg
+│   │           ├── folder-open-light.svg
+│   │           ├── folder-plus-light.svg
+│   │           ├── folder-simple-dashed-light.svg
+│   │           ├── folder-simple-light.svg
+│   │           ├── folder-simple-lock-light.svg
+│   │           ├── folder-simple-minus-light.svg
+│   │           ├── folder-simple-plus-light.svg
+│   │           ├── folder-simple-star-light.svg
+│   │           ├── folder-simple-user-light.svg
+│   │           ├── folder-star-light.svg
+│   │           ├── folder-user-light.svg
+│   │           ├── folders-light.svg
+│   │           ├── football-helmet-light.svg
+│   │           ├── football-light.svg
+│   │           ├── footprints-light.svg
+│   │           ├── fork-knife-light.svg
+│   │           ├── four-k-light.svg
+│   │           ├── frame-corners-light.svg
+│   │           ├── framer-logo-light.svg
+│   │           ├── function-light.svg
+│   │           ├── funnel-light.svg
+│   │           ├── funnel-simple-light.svg
+│   │           ├── funnel-simple-x-light.svg
+│   │           ├── funnel-x-light.svg
+│   │           ├── game-controller-light.svg
+│   │           ├── garage-light.svg
+│   │           ├── gas-can-light.svg
+│   │           ├── gas-pump-light.svg
+│   │           ├── gauge-light.svg
+│   │           ├── gavel-light.svg
+│   │           ├── gear-fine-light.svg
+│   │           ├── gear-light.svg
+│   │           ├── gear-six-light.svg
+│   │           ├── gender-female-light.svg
+│   │           ├── gender-intersex-light.svg
+│   │           ├── gender-male-light.svg
+│   │           ├── gender-neuter-light.svg
+│   │           ├── gender-nonbinary-light.svg
+│   │           ├── gender-transgender-light.svg
+│   │           ├── ghost-light.svg
+│   │           ├── gif-light.svg
+│   │           ├── gift-light.svg
+│   │           ├── git-branch-light.svg
+│   │           ├── git-commit-light.svg
+│   │           ├── git-diff-light.svg
+│   │           ├── git-fork-light.svg
+│   │           ├── git-merge-light.svg
+│   │           ├── git-pull-request-light.svg
+│   │           ├── github-logo-light.svg
+│   │           ├── gitlab-logo-light.svg
+│   │           ├── gitlab-logo-simple-light.svg
+│   │           ├── globe-hemisphere-east-light.svg
+│   │           ├── globe-hemisphere-west-light.svg
+│   │           ├── globe-light.svg
+│   │           ├── globe-simple-light.svg
+│   │           ├── globe-simple-x-light.svg
+│   │           ├── globe-stand-light.svg
+│   │           ├── globe-x-light.svg
+│   │           ├── goggles-light.svg
+│   │           ├── golf-light.svg
+│   │           ├── goodreads-logo-light.svg
+│   │           ├── google-cardboard-logo-light.svg
+│   │           ├── google-chrome-logo-light.svg
+│   │           ├── google-drive-logo-light.svg
+│   │           ├── google-logo-light.svg
+│   │           ├── google-photos-logo-light.svg
+│   │           ├── google-play-logo-light.svg
+│   │           ├── google-podcasts-logo-light.svg
+│   │           ├── gps-fix-light.svg
+│   │           ├── gps-light.svg
+│   │           ├── gps-slash-light.svg
+│   │           ├── gradient-light.svg
+│   │           ├── graduation-cap-light.svg
+│   │           ├── grains-light.svg
+│   │           ├── grains-slash-light.svg
+│   │           ├── graph-light.svg
+│   │           ├── graphics-card-light.svg
+│   │           ├── greater-than-light.svg
+│   │           ├── greater-than-or-equal-light.svg
+│   │           ├── grid-four-light.svg
+│   │           ├── grid-nine-light.svg
+│   │           ├── guitar-light.svg
+│   │           ├── hair-dryer-light.svg
+│   │           ├── hamburger-light.svg
+│   │           ├── hammer-light.svg
+│   │           ├── hand-arrow-down-light.svg
+│   │           ├── hand-arrow-up-light.svg
+│   │           ├── hand-coins-light.svg
+│   │           ├── hand-deposit-light.svg
+│   │           ├── hand-eye-light.svg
+│   │           ├── hand-fist-light.svg
+│   │           ├── hand-grabbing-light.svg
+│   │           ├── hand-heart-light.svg
+│   │           ├── hand-light.svg
+│   │           ├── hand-palm-light.svg
+│   │           ├── hand-peace-light.svg
+│   │           ├── hand-pointing-light.svg
+│   │           ├── hand-soap-light.svg
+│   │           ├── hand-swipe-left-light.svg
+│   │           ├── hand-swipe-right-light.svg
+│   │           ├── hand-tap-light.svg
+│   │           ├── hand-waving-light.svg
+│   │           ├── hand-withdraw-light.svg
+│   │           ├── handbag-light.svg
+│   │           ├── handbag-simple-light.svg
+│   │           ├── hands-clapping-light.svg
+│   │           ├── hands-praying-light.svg
+│   │           ├── handshake-light.svg
+│   │           ├── hard-drive-light.svg
+│   │           ├── hard-drives-light.svg
+│   │           ├── hard-hat-light.svg
+│   │           ├── hash-light.svg
+│   │           ├── hash-straight-light.svg
+│   │           ├── head-circuit-light.svg
+│   │           ├── headlights-light.svg
+│   │           ├── headphones-light.svg
+│   │           ├── headset-light.svg
+│   │           ├── heart-break-light.svg
+│   │           ├── heart-half-light.svg
+│   │           ├── heart-light.svg
+│   │           ├── heart-straight-break-light.svg
+│   │           ├── heart-straight-light.svg
+│   │           ├── heartbeat-light.svg
+│   │           ├── hexagon-light.svg
+│   │           ├── high-definition-light.svg
+│   │           ├── high-heel-light.svg
+│   │           ├── highlighter-circle-light.svg
+│   │           ├── highlighter-light.svg
+│   │           ├── hockey-light.svg
+│   │           ├── hoodie-light.svg
+│   │           ├── horse-light.svg
+│   │           ├── hospital-light.svg
+│   │           ├── hourglass-high-light.svg
+│   │           ├── hourglass-light.svg
+│   │           ├── hourglass-low-light.svg
+│   │           ├── hourglass-medium-light.svg
+│   │           ├── hourglass-simple-high-light.svg
+│   │           ├── hourglass-simple-light.svg
+│   │           ├── hourglass-simple-low-light.svg
+│   │           ├── hourglass-simple-medium-light.svg
+│   │           ├── house-light.svg
+│   │           ├── house-line-light.svg
+│   │           ├── house-simple-light.svg
+│   │           ├── hurricane-light.svg
+│   │           ├── ice-cream-light.svg
+│   │           ├── identification-badge-light.svg
+│   │           ├── identification-card-light.svg
+│   │           ├── image-broken-light.svg
+│   │           ├── image-light.svg
+│   │           ├── image-square-light.svg
+│   │           ├── images-light.svg
+│   │           ├── images-square-light.svg
+│   │           ├── infinity-light.svg
+│   │           ├── info-light.svg
+│   │           ├── instagram-logo-light.svg
+│   │           ├── intersect-light.svg
+│   │           ├── intersect-square-light.svg
+│   │           ├── intersect-three-light.svg
+│   │           ├── intersection-light.svg
+│   │           ├── invoice-light.svg
+│   │           ├── island-light.svg
+│   │           ├── jar-label-light.svg
+│   │           ├── jar-light.svg
+│   │           ├── jeep-light.svg
+│   │           ├── joystick-light.svg
+│   │           ├── kanban-light.svg
+│   │           ├── key-light.svg
+│   │           ├── key-return-light.svg
+│   │           ├── keyboard-light.svg
+│   │           ├── keyhole-light.svg
+│   │           ├── knife-light.svg
+│   │           ├── ladder-light.svg
+│   │           ├── ladder-simple-light.svg
+│   │           ├── lamp-light.svg
+│   │           ├── lamp-pendant-light.svg
+│   │           ├── laptop-light.svg
+│   │           ├── lasso-light.svg
+│   │           ├── lastfm-logo-light.svg
+│   │           ├── layout-light.svg
+│   │           ├── leaf-light.svg
+│   │           ├── lectern-light.svg
+│   │           ├── lego-light.svg
+│   │           ├── lego-smiley-light.svg
+│   │           ├── less-than-light.svg
+│   │           ├── less-than-or-equal-light.svg
+│   │           ├── letter-circle-h-light.svg
+│   │           ├── letter-circle-p-light.svg
+│   │           ├── letter-circle-v-light.svg
+│   │           ├── lifebuoy-light.svg
+│   │           ├── lightbulb-filament-light.svg
+│   │           ├── lightbulb-light.svg
+│   │           ├── lighthouse-light.svg
+│   │           ├── lightning-a-light.svg
+│   │           ├── lightning-light.svg
+│   │           ├── lightning-slash-light.svg
+│   │           ├── line-segment-light.svg
+│   │           ├── line-segments-light.svg
+│   │           ├── line-vertical-light.svg
+│   │           ├── link-break-light.svg
+│   │           ├── link-light.svg
+│   │           ├── link-simple-break-light.svg
+│   │           ├── link-simple-horizontal-break-light.svg
+│   │           ├── link-simple-horizontal-light.svg
+│   │           ├── link-simple-light.svg
+│   │           ├── linkedin-logo-light.svg
+│   │           ├── linktree-logo-light.svg
+│   │           ├── linux-logo-light.svg
+│   │           ├── list-bullets-light.svg
+│   │           ├── list-checks-light.svg
+│   │           ├── list-dashes-light.svg
+│   │           ├── list-heart-light.svg
+│   │           ├── list-light.svg
+│   │           ├── list-magnifying-glass-light.svg
+│   │           ├── list-numbers-light.svg
+│   │           ├── list-plus-light.svg
+│   │           ├── list-star-light.svg
+│   │           ├── lock-key-light.svg
+│   │           ├── lock-key-open-light.svg
+│   │           ├── lock-laminated-light.svg
+│   │           ├── lock-laminated-open-light.svg
+│   │           ├── lock-light.svg
+│   │           ├── lock-open-light.svg
+│   │           ├── lock-simple-light.svg
+│   │           ├── lock-simple-open-light.svg
+│   │           ├── lockers-light.svg
+│   │           ├── log-light.svg
+│   │           ├── magic-wand-light.svg
+│   │           ├── magnet-light.svg
+│   │           ├── magnet-straight-light.svg
+│   │           ├── magnifying-glass-light.svg
+│   │           ├── magnifying-glass-minus-light.svg
+│   │           ├── magnifying-glass-plus-light.svg
+│   │           ├── mailbox-light.svg
+│   │           ├── map-pin-area-light.svg
+│   │           ├── map-pin-light.svg
+│   │           ├── map-pin-line-light.svg
+│   │           ├── map-pin-plus-light.svg
+│   │           ├── map-pin-simple-area-light.svg
+│   │           ├── map-pin-simple-light.svg
+│   │           ├── map-pin-simple-line-light.svg
+│   │           ├── map-trifold-light.svg
+│   │           ├── markdown-logo-light.svg
+│   │           ├── marker-circle-light.svg
+│   │           ├── martini-light.svg
+│   │           ├── mask-happy-light.svg
+│   │           ├── mask-sad-light.svg
+│   │           ├── mastodon-logo-light.svg
+│   │           ├── math-operations-light.svg
+│   │           ├── matrix-logo-light.svg
+│   │           ├── medal-light.svg
+│   │           ├── medal-military-light.svg
+│   │           ├── medium-logo-light.svg
+│   │           ├── megaphone-light.svg
+│   │           ├── megaphone-simple-light.svg
+│   │           ├── member-of-light.svg
+│   │           ├── memory-light.svg
+│   │           ├── messenger-logo-light.svg
+│   │           ├── meta-logo-light.svg
+│   │           ├── meteor-light.svg
+│   │           ├── metronome-light.svg
+│   │           ├── microphone-light.svg
+│   │           ├── microphone-slash-light.svg
+│   │           ├── microphone-stage-light.svg
+│   │           ├── microscope-light.svg
+│   │           ├── microsoft-excel-logo-light.svg
+│   │           ├── microsoft-outlook-logo-light.svg
+│   │           ├── microsoft-powerpoint-logo-light.svg
+│   │           ├── microsoft-teams-logo-light.svg
+│   │           ├── microsoft-word-logo-light.svg
+│   │           ├── minus-circle-light.svg
+│   │           ├── minus-light.svg
+│   │           ├── minus-square-light.svg
+│   │           ├── money-light.svg
+│   │           ├── money-wavy-light.svg
+│   │           ├── monitor-arrow-up-light.svg
+│   │           ├── monitor-light.svg
+│   │           ├── monitor-play-light.svg
+│   │           ├── moon-light.svg
+│   │           ├── moon-stars-light.svg
+│   │           ├── moped-front-light.svg
+│   │           ├── moped-light.svg
+│   │           ├── mosque-light.svg
+│   │           ├── motorcycle-light.svg
+│   │           ├── mountains-light.svg
+│   │           ├── mouse-left-click-light.svg
+│   │           ├── mouse-light.svg
+│   │           ├── mouse-middle-click-light.svg
+│   │           ├── mouse-right-click-light.svg
+│   │           ├── mouse-scroll-light.svg
+│   │           ├── mouse-simple-light.svg
+│   │           ├── music-note-light.svg
+│   │           ├── music-note-simple-light.svg
+│   │           ├── music-notes-light.svg
+│   │           ├── music-notes-minus-light.svg
+│   │           ├── music-notes-plus-light.svg
+│   │           ├── music-notes-simple-light.svg
+│   │           ├── navigation-arrow-light.svg
+│   │           ├── needle-light.svg
+│   │           ├── network-light.svg
+│   │           ├── network-slash-light.svg
+│   │           ├── network-x-light.svg
+│   │           ├── newspaper-clipping-light.svg
+│   │           ├── newspaper-light.svg
+│   │           ├── not-equals-light.svg
+│   │           ├── not-member-of-light.svg
+│   │           ├── not-subset-of-light.svg
+│   │           ├── not-superset-of-light.svg
+│   │           ├── notches-light.svg
+│   │           ├── note-blank-light.svg
+│   │           ├── note-light.svg
+│   │           ├── note-pencil-light.svg
+│   │           ├── notebook-light.svg
+│   │           ├── notepad-light.svg
+│   │           ├── notification-light.svg
+│   │           ├── notion-logo-light.svg
+│   │           ├── nuclear-plant-light.svg
+│   │           ├── number-circle-eight-light.svg
+│   │           ├── number-circle-five-light.svg
+│   │           ├── number-circle-four-light.svg
+│   │           ├── number-circle-nine-light.svg
+│   │           ├── number-circle-one-light.svg
+│   │           ├── number-circle-seven-light.svg
+│   │           ├── number-circle-six-light.svg
+│   │           ├── number-circle-three-light.svg
+│   │           ├── number-circle-two-light.svg
+│   │           ├── number-circle-zero-light.svg
+│   │           ├── number-eight-light.svg
+│   │           ├── number-five-light.svg
+│   │           ├── number-four-light.svg
+│   │           ├── number-nine-light.svg
+│   │           ├── number-one-light.svg
+│   │           ├── number-seven-light.svg
+│   │           ├── number-six-light.svg
+│   │           ├── number-square-eight-light.svg
+│   │           ├── number-square-five-light.svg
+│   │           ├── number-square-four-light.svg
+│   │           ├── number-square-nine-light.svg
+│   │           ├── number-square-one-light.svg
+│   │           ├── number-square-seven-light.svg
+│   │           ├── number-square-six-light.svg
+│   │           ├── number-square-three-light.svg
+│   │           ├── number-square-two-light.svg
+│   │           ├── number-square-zero-light.svg
+│   │           ├── number-three-light.svg
+│   │           ├── number-two-light.svg
+│   │           ├── number-zero-light.svg
+│   │           ├── numpad-light.svg
+│   │           ├── nut-light.svg
+│   │           ├── ny-times-logo-light.svg
+│   │           ├── octagon-light.svg
+│   │           ├── office-chair-light.svg
+│   │           ├── onigiri-light.svg
+│   │           ├── open-ai-logo-light.svg
+│   │           ├── option-light.svg
+│   │           ├── orange-light.svg
+│   │           ├── orange-slice-light.svg
+│   │           ├── oven-light.svg
+│   │           ├── package-light.svg
+│   │           ├── paint-brush-broad-light.svg
+│   │           ├── paint-brush-household-light.svg
+│   │           ├── paint-brush-light.svg
+│   │           ├── paint-bucket-light.svg
+│   │           ├── paint-roller-light.svg
+│   │           ├── palette-light.svg
+│   │           ├── panorama-light.svg
+│   │           ├── pants-light.svg
+│   │           ├── paper-plane-light.svg
+│   │           ├── paper-plane-right-light.svg
+│   │           ├── paper-plane-tilt-light.svg
+│   │           ├── paperclip-horizontal-light.svg
+│   │           ├── paperclip-light.svg
+│   │           ├── parachute-light.svg
+│   │           ├── paragraph-light.svg
+│   │           ├── parallelogram-light.svg
+│   │           ├── park-light.svg
+│   │           ├── password-light.svg
+│   │           ├── path-light.svg
+│   │           ├── patreon-logo-light.svg
+│   │           ├── pause-circle-light.svg
+│   │           ├── pause-light.svg
+│   │           ├── paw-print-light.svg
+│   │           ├── paypal-logo-light.svg
+│   │           ├── peace-light.svg
+│   │           ├── pen-light.svg
+│   │           ├── pen-nib-light.svg
+│   │           ├── pen-nib-straight-light.svg
+│   │           ├── pencil-circle-light.svg
+│   │           ├── pencil-light.svg
+│   │           ├── pencil-line-light.svg
+│   │           ├── pencil-ruler-light.svg
+│   │           ├── pencil-simple-light.svg
+│   │           ├── pencil-simple-line-light.svg
+│   │           ├── pencil-simple-slash-light.svg
+│   │           ├── pencil-slash-light.svg
+│   │           ├── pentagon-light.svg
+│   │           ├── pentagram-light.svg
+│   │           ├── pepper-light.svg
+│   │           ├── percent-light.svg
+│   │           ├── person-arms-spread-light.svg
+│   │           ├── person-light.svg
+│   │           ├── person-simple-bike-light.svg
+│   │           ├── person-simple-circle-light.svg
+│   │           ├── person-simple-hike-light.svg
+│   │           ├── person-simple-light.svg
+│   │           ├── person-simple-run-light.svg
+│   │           ├── person-simple-ski-light.svg
+│   │           ├── person-simple-snowboard-light.svg
+│   │           ├── person-simple-swim-light.svg
+│   │           ├── person-simple-tai-chi-light.svg
+│   │           ├── person-simple-throw-light.svg
+│   │           ├── person-simple-walk-light.svg
+│   │           ├── perspective-light.svg
+│   │           ├── phone-call-light.svg
+│   │           ├── phone-disconnect-light.svg
+│   │           ├── phone-incoming-light.svg
+│   │           ├── phone-light.svg
+│   │           ├── phone-list-light.svg
+│   │           ├── phone-outgoing-light.svg
+│   │           ├── phone-pause-light.svg
+│   │           ├── phone-plus-light.svg
+│   │           ├── phone-slash-light.svg
+│   │           ├── phone-transfer-light.svg
+│   │           ├── phone-x-light.svg
+│   │           ├── phosphor-logo-light.svg
+│   │           ├── pi-light.svg
+│   │           ├── piano-keys-light.svg
+│   │           ├── picnic-table-light.svg
+│   │           ├── picture-in-picture-light.svg
+│   │           ├── piggy-bank-light.svg
+│   │           ├── pill-light.svg
+│   │           ├── ping-pong-light.svg
+│   │           ├── pint-glass-light.svg
+│   │           ├── pinterest-logo-light.svg
+│   │           ├── pinwheel-light.svg
+│   │           ├── pipe-light.svg
+│   │           ├── pipe-wrench-light.svg
+│   │           ├── pix-logo-light.svg
+│   │           ├── pizza-light.svg
+│   │           ├── placeholder-light.svg
+│   │           ├── planet-light.svg
+│   │           ├── plant-light.svg
+│   │           ├── play-circle-light.svg
+│   │           ├── play-light.svg
+│   │           ├── play-pause-light.svg
+│   │           ├── playlist-light.svg
+│   │           ├── plug-charging-light.svg
+│   │           ├── plug-light.svg
+│   │           ├── plugs-connected-light.svg
+│   │           ├── plugs-light.svg
+│   │           ├── plus-circle-light.svg
+│   │           ├── plus-light.svg
+│   │           ├── plus-minus-light.svg
+│   │           ├── plus-square-light.svg
+│   │           ├── poker-chip-light.svg
+│   │           ├── police-car-light.svg
+│   │           ├── polygon-light.svg
+│   │           ├── popcorn-light.svg
+│   │           ├── popsicle-light.svg
+│   │           ├── potted-plant-light.svg
+│   │           ├── power-light.svg
+│   │           ├── prescription-light.svg
+│   │           ├── presentation-chart-light.svg
+│   │           ├── presentation-light.svg
+│   │           ├── printer-light.svg
+│   │           ├── prohibit-inset-light.svg
+│   │           ├── prohibit-light.svg
+│   │           ├── projector-screen-chart-light.svg
+│   │           ├── projector-screen-light.svg
+│   │           ├── pulse-light.svg
+│   │           ├── push-pin-light.svg
+│   │           ├── push-pin-simple-light.svg
+│   │           ├── push-pin-simple-slash-light.svg
+│   │           ├── push-pin-slash-light.svg
+│   │           ├── puzzle-piece-light.svg
+│   │           ├── qr-code-light.svg
+│   │           ├── question-light.svg
+│   │           ├── question-mark-light.svg
+│   │           ├── queue-light.svg
+│   │           ├── quotes-light.svg
+│   │           ├── rabbit-light.svg
+│   │           ├── racquet-light.svg
+│   │           ├── radical-light.svg
+│   │           ├── radio-button-light.svg
+│   │           ├── radio-light.svg
+│   │           ├── radioactive-light.svg
+│   │           ├── rainbow-cloud-light.svg
+│   │           ├── rainbow-light.svg
+│   │           ├── ranking-light.svg
+│   │           ├── read-cv-logo-light.svg
+│   │           ├── receipt-light.svg
+│   │           ├── receipt-x-light.svg
+│   │           ├── record-light.svg
+│   │           ├── rectangle-dashed-light.svg
+│   │           ├── rectangle-light.svg
+│   │           ├── recycle-light.svg
+│   │           ├── reddit-logo-light.svg
+│   │           ├── repeat-light.svg
+│   │           ├── repeat-once-light.svg
+│   │           ├── replit-logo-light.svg
+│   │           ├── resize-light.svg
+│   │           ├── rewind-circle-light.svg
+│   │           ├── rewind-light.svg
+│   │           ├── road-horizon-light.svg
+│   │           ├── robot-light.svg
+│   │           ├── rocket-launch-light.svg
+│   │           ├── rocket-light.svg
+│   │           ├── rows-light.svg
+│   │           ├── rows-plus-bottom-light.svg
+│   │           ├── rows-plus-top-light.svg
+│   │           ├── rss-light.svg
+│   │           ├── rss-simple-light.svg
+│   │           ├── rug-light.svg
+│   │           ├── ruler-light.svg
+│   │           ├── sailboat-light.svg
+│   │           ├── scales-light.svg
+│   │           ├── scan-light.svg
+│   │           ├── scan-smiley-light.svg
+│   │           ├── scissors-light.svg
+│   │           ├── scooter-light.svg
+│   │           ├── screencast-light.svg
+│   │           ├── screwdriver-light.svg
+│   │           ├── scribble-light.svg
+│   │           ├── scribble-loop-light.svg
+│   │           ├── scroll-light.svg
+│   │           ├── seal-check-light.svg
+│   │           ├── seal-light.svg
+│   │           ├── seal-percent-light.svg
+│   │           ├── seal-question-light.svg
+│   │           ├── seal-warning-light.svg
+│   │           ├── seat-light.svg
+│   │           ├── seatbelt-light.svg
+│   │           ├── security-camera-light.svg
+│   │           ├── selection-all-light.svg
+│   │           ├── selection-background-light.svg
+│   │           ├── selection-foreground-light.svg
+│   │           ├── selection-inverse-light.svg
+│   │           ├── selection-light.svg
+│   │           ├── selection-plus-light.svg
+│   │           ├── selection-slash-light.svg
+│   │           ├── shapes-light.svg
+│   │           ├── share-fat-light.svg
+│   │           ├── share-light.svg
+│   │           ├── share-network-light.svg
+│   │           ├── shield-check-light.svg
+│   │           ├── shield-checkered-light.svg
+│   │           ├── shield-chevron-light.svg
+│   │           ├── shield-light.svg
+│   │           ├── shield-plus-light.svg
+│   │           ├── shield-slash-light.svg
+│   │           ├── shield-star-light.svg
+│   │           ├── shield-warning-light.svg
+│   │           ├── shipping-container-light.svg
+│   │           ├── shirt-folded-light.svg
+│   │           ├── shooting-star-light.svg
+│   │           ├── shopping-bag-light.svg
+│   │           ├── shopping-bag-open-light.svg
+│   │           ├── shopping-cart-light.svg
+│   │           ├── shopping-cart-simple-light.svg
+│   │           ├── shovel-light.svg
+│   │           ├── shower-light.svg
+│   │           ├── shrimp-light.svg
+│   │           ├── shuffle-angular-light.svg
+│   │           ├── shuffle-light.svg
+│   │           ├── shuffle-simple-light.svg
+│   │           ├── sidebar-light.svg
+│   │           ├── sidebar-simple-light.svg
+│   │           ├── sigma-light.svg
+│   │           ├── sign-in-light.svg
+│   │           ├── sign-out-light.svg
+│   │           ├── signature-light.svg
+│   │           ├── signpost-light.svg
+│   │           ├── sim-card-light.svg
+│   │           ├── siren-light.svg
+│   │           ├── sketch-logo-light.svg
+│   │           ├── skip-back-circle-light.svg
+│   │           ├── skip-back-light.svg
+│   │           ├── skip-forward-circle-light.svg
+│   │           ├── skip-forward-light.svg
+│   │           ├── skull-light.svg
+│   │           ├── skype-logo-light.svg
+│   │           ├── slack-logo-light.svg
+│   │           ├── sliders-horizontal-light.svg
+│   │           ├── sliders-light.svg
+│   │           ├── slideshow-light.svg
+│   │           ├── smiley-angry-light.svg
+│   │           ├── smiley-blank-light.svg
+│   │           ├── smiley-light.svg
+│   │           ├── smiley-meh-light.svg
+│   │           ├── smiley-melting-light.svg
+│   │           ├── smiley-nervous-light.svg
+│   │           ├── smiley-sad-light.svg
+│   │           ├── smiley-sticker-light.svg
+│   │           ├── smiley-wink-light.svg
+│   │           ├── smiley-x-eyes-light.svg
+│   │           ├── snapchat-logo-light.svg
+│   │           ├── sneaker-light.svg
+│   │           ├── sneaker-move-light.svg
+│   │           ├── snowflake-light.svg
+│   │           ├── soccer-ball-light.svg
+│   │           ├── sock-light.svg
+│   │           ├── solar-panel-light.svg
+│   │           ├── solar-roof-light.svg
+│   │           ├── sort-ascending-light.svg
+│   │           ├── sort-descending-light.svg
+│   │           ├── soundcloud-logo-light.svg
+│   │           ├── spade-light.svg
+│   │           ├── sparkle-light.svg
+│   │           ├── speaker-hifi-light.svg
+│   │           ├── speaker-high-light.svg
+│   │           ├── speaker-low-light.svg
+│   │           ├── speaker-none-light.svg
+│   │           ├── speaker-simple-high-light.svg
+│   │           ├── speaker-simple-low-light.svg
+│   │           ├── speaker-simple-none-light.svg
+│   │           ├── speaker-simple-slash-light.svg
+│   │           ├── speaker-simple-x-light.svg
+│   │           ├── speaker-slash-light.svg
+│   │           ├── speaker-x-light.svg
+│   │           ├── speedometer-light.svg
+│   │           ├── sphere-light.svg
+│   │           ├── spinner-ball-light.svg
+│   │           ├── spinner-gap-light.svg
+│   │           ├── spinner-light.svg
+│   │           ├── spiral-light.svg
+│   │           ├── split-horizontal-light.svg
+│   │           ├── split-vertical-light.svg
+│   │           ├── spotify-logo-light.svg
+│   │           ├── spray-bottle-light.svg
+│   │           ├── square-half-bottom-light.svg
+│   │           ├── square-half-light.svg
+│   │           ├── square-light.svg
+│   │           ├── square-logo-light.svg
+│   │           ├── square-split-horizontal-light.svg
+│   │           ├── square-split-vertical-light.svg
+│   │           ├── squares-four-light.svg
+│   │           ├── stack-light.svg
+│   │           ├── stack-minus-light.svg
+│   │           ├── stack-overflow-logo-light.svg
+│   │           ├── stack-plus-light.svg
+│   │           ├── stack-simple-light.svg
+│   │           ├── stairs-light.svg
+│   │           ├── stamp-light.svg
+│   │           ├── standard-definition-light.svg
+│   │           ├── star-and-crescent-light.svg
+│   │           ├── star-four-light.svg
+│   │           ├── star-half-light.svg
+│   │           ├── star-light.svg
+│   │           ├── star-of-david-light.svg
+│   │           ├── steam-logo-light.svg
+│   │           ├── steering-wheel-light.svg
+│   │           ├── steps-light.svg
+│   │           ├── stethoscope-light.svg
+│   │           ├── sticker-light.svg
+│   │           ├── stool-light.svg
+│   │           ├── stop-circle-light.svg
+│   │           ├── stop-light.svg
+│   │           ├── storefront-light.svg
+│   │           ├── strategy-light.svg
+│   │           ├── stripe-logo-light.svg
+│   │           ├── student-light.svg
+│   │           ├── subset-of-light.svg
+│   │           ├── subset-proper-of-light.svg
+│   │           ├── subtitles-light.svg
+│   │           ├── subtitles-slash-light.svg
+│   │           ├── subtract-light.svg
+│   │           ├── subtract-square-light.svg
+│   │           ├── subway-light.svg
+│   │           ├── suitcase-light.svg
+│   │           ├── suitcase-rolling-light.svg
+│   │           ├── suitcase-simple-light.svg
+│   │           ├── sun-dim-light.svg
+│   │           ├── sun-horizon-light.svg
+│   │           ├── sun-light.svg
+│   │           ├── sunglasses-light.svg
+│   │           ├── superset-of-light.svg
+│   │           ├── superset-proper-of-light.svg
+│   │           ├── swap-light.svg
+│   │           ├── swatches-light.svg
+│   │           ├── swimming-pool-light.svg
+│   │           ├── sword-light.svg
+│   │           ├── synagogue-light.svg
+│   │           ├── syringe-light.svg
+│   │           ├── t-shirt-light.svg
+│   │           ├── table-light.svg
+│   │           ├── tabs-light.svg
+│   │           ├── tag-chevron-light.svg
+│   │           ├── tag-light.svg
+│   │           ├── tag-simple-light.svg
+│   │           ├── target-light.svg
+│   │           ├── taxi-light.svg
+│   │           ├── tea-bag-light.svg
+│   │           ├── telegram-logo-light.svg
+│   │           ├── television-light.svg
+│   │           ├── television-simple-light.svg
+│   │           ├── tennis-ball-light.svg
+│   │           ├── tent-light.svg
+│   │           ├── terminal-light.svg
+│   │           ├── terminal-window-light.svg
+│   │           ├── test-tube-light.svg
+│   │           ├── text-a-underline-light.svg
+│   │           ├── text-aa-light.svg
+│   │           ├── text-align-center-light.svg
+│   │           ├── text-align-justify-light.svg
+│   │           ├── text-align-left-light.svg
+│   │           ├── text-align-right-light.svg
+│   │           ├── text-b-light.svg
+│   │           ├── text-columns-light.svg
+│   │           ├── text-h-five-light.svg
+│   │           ├── text-h-four-light.svg
+│   │           ├── text-h-light.svg
+│   │           ├── text-h-one-light.svg
+│   │           ├── text-h-six-light.svg
+│   │           ├── text-h-three-light.svg
+│   │           ├── text-h-two-light.svg
+│   │           ├── text-indent-light.svg
+│   │           ├── text-italic-light.svg
+│   │           ├── text-outdent-light.svg
+│   │           ├── text-strikethrough-light.svg
+│   │           ├── text-subscript-light.svg
+│   │           ├── text-superscript-light.svg
+│   │           ├── text-t-light.svg
+│   │           ├── text-t-slash-light.svg
+│   │           ├── text-underline-light.svg
+│   │           ├── textbox-light.svg
+│   │           ├── thermometer-cold-light.svg
+│   │           ├── thermometer-hot-light.svg
+│   │           ├── thermometer-light.svg
+│   │           ├── thermometer-simple-light.svg
+│   │           ├── threads-logo-light.svg
+│   │           ├── three-d-light.svg
+│   │           ├── thumbs-down-light.svg
+│   │           ├── thumbs-up-light.svg
+│   │           ├── ticket-light.svg
+│   │           ├── tidal-logo-light.svg
+│   │           ├── tiktok-logo-light.svg
+│   │           ├── tilde-light.svg
+│   │           ├── timer-light.svg
+│   │           ├── tip-jar-light.svg
+│   │           ├── tipi-light.svg
+│   │           ├── tire-light.svg
+│   │           ├── toggle-left-light.svg
+│   │           ├── toggle-right-light.svg
+│   │           ├── toilet-light.svg
+│   │           ├── toilet-paper-light.svg
+│   │           ├── toolbox-light.svg
+│   │           ├── tooth-light.svg
+│   │           ├── tornado-light.svg
+│   │           ├── tote-light.svg
+│   │           ├── tote-simple-light.svg
+│   │           ├── towel-light.svg
+│   │           ├── tractor-light.svg
+│   │           ├── trademark-light.svg
+│   │           ├── trademark-registered-light.svg
+│   │           ├── traffic-cone-light.svg
+│   │           ├── traffic-sign-light.svg
+│   │           ├── traffic-signal-light.svg
+│   │           ├── train-light.svg
+│   │           ├── train-regional-light.svg
+│   │           ├── train-simple-light.svg
+│   │           ├── tram-light.svg
+│   │           ├── translate-light.svg
+│   │           ├── trash-light.svg
+│   │           ├── trash-simple-light.svg
+│   │           ├── tray-arrow-down-light.svg
+│   │           ├── tray-arrow-up-light.svg
+│   │           ├── tray-light.svg
+│   │           ├── treasure-chest-light.svg
+│   │           ├── tree-evergreen-light.svg
+│   │           ├── tree-light.svg
+│   │           ├── tree-palm-light.svg
+│   │           ├── tree-structure-light.svg
+│   │           ├── tree-view-light.svg
+│   │           ├── trend-down-light.svg
+│   │           ├── trend-up-light.svg
+│   │           ├── triangle-dashed-light.svg
+│   │           ├── triangle-light.svg
+│   │           ├── trolley-light.svg
+│   │           ├── trolley-suitcase-light.svg
+│   │           ├── trophy-light.svg
+│   │           ├── truck-light.svg
+│   │           ├── truck-trailer-light.svg
+│   │           ├── tumblr-logo-light.svg
+│   │           ├── twitch-logo-light.svg
+│   │           ├── twitter-logo-light.svg
+│   │           ├── umbrella-light.svg
+│   │           ├── umbrella-simple-light.svg
+│   │           ├── union-light.svg
+│   │           ├── unite-light.svg
+│   │           ├── unite-square-light.svg
+│   │           ├── upload-light.svg
+│   │           ├── upload-simple-light.svg
+│   │           ├── usb-light.svg
+│   │           ├── user-check-light.svg
+│   │           ├── user-circle-check-light.svg
+│   │           ├── user-circle-dashed-light.svg
+│   │           ├── user-circle-gear-light.svg
+│   │           ├── user-circle-light.svg
+│   │           ├── user-circle-minus-light.svg
+│   │           ├── user-circle-plus-light.svg
+│   │           ├── user-focus-light.svg
+│   │           ├── user-gear-light.svg
+│   │           ├── user-light.svg
+│   │           ├── user-list-light.svg
+│   │           ├── user-minus-light.svg
+│   │           ├── user-plus-light.svg
+│   │           ├── user-rectangle-light.svg
+│   │           ├── user-sound-light.svg
+│   │           ├── user-square-light.svg
+│   │           ├── user-switch-light.svg
+│   │           ├── users-four-light.svg
+│   │           ├── users-light.svg
+│   │           ├── users-three-light.svg
+│   │           ├── van-light.svg
+│   │           ├── vault-light.svg
+│   │           ├── vector-three-light.svg
+│   │           ├── vector-two-light.svg
+│   │           ├── vibrate-light.svg
+│   │           ├── video-camera-light.svg
+│   │           ├── video-camera-slash-light.svg
+│   │           ├── video-conference-light.svg
+│   │           ├── video-light.svg
+│   │           ├── vignette-light.svg
+│   │           ├── vinyl-record-light.svg
+│   │           ├── virtual-reality-light.svg
+│   │           ├── virus-light.svg
+│   │           ├── visor-light.svg
+│   │           ├── voicemail-light.svg
+│   │           ├── volleyball-light.svg
+│   │           ├── wall-light.svg
+│   │           ├── wallet-light.svg
+│   │           ├── warehouse-light.svg
+│   │           ├── warning-circle-light.svg
+│   │           ├── warning-diamond-light.svg
+│   │           ├── warning-light.svg
+│   │           ├── warning-octagon-light.svg
+│   │           ├── washing-machine-light.svg
+│   │           ├── watch-light.svg
+│   │           ├── wave-sawtooth-light.svg
+│   │           ├── wave-sine-light.svg
+│   │           ├── wave-square-light.svg
+│   │           ├── wave-triangle-light.svg
+│   │           ├── waveform-light.svg
+│   │           ├── waveform-slash-light.svg
+│   │           ├── waves-light.svg
+│   │           ├── webcam-light.svg
+│   │           ├── webcam-slash-light.svg
+│   │           ├── webhooks-logo-light.svg
+│   │           ├── wechat-logo-light.svg
+│   │           ├── whatsapp-logo-light.svg
+│   │           ├── wheelchair-light.svg
+│   │           ├── wheelchair-motion-light.svg
+│   │           ├── wifi-high-light.svg
+│   │           ├── wifi-low-light.svg
+│   │           ├── wifi-medium-light.svg
+│   │           ├── wifi-none-light.svg
+│   │           ├── wifi-slash-light.svg
+│   │           ├── wifi-x-light.svg
+│   │           ├── wind-light.svg
+│   │           ├── windmill-light.svg
+│   │           ├── windows-logo-light.svg
+│   │           ├── wine-light.svg
+│   │           ├── wrench-light.svg
+│   │           ├── x-circle-light.svg
+│   │           ├── x-light.svg
+│   │           ├── x-logo-light.svg
+│   │           ├── x-square-light.svg
+│   │           ├── yarn-light.svg
+│   │           ├── yin-yang-light.svg
+│   │           └── youtube-logo-light.svg
+│   ├── img
+│   │   └── no-image.svg
+│   ├── js
+│   │   ├── analysis-modal.js
+│   │   ├── artworks.js
+│   │   ├── edit_listing.js
+│   │   ├── gallery.js
+│   │   ├── main-overlay-test.js
+│   │   ├── main.js
+│   │   ├── new-main.js
+│   │   └── upload.js
+│   └── logos
+│       └── logo-vector.svg
+├── templates
+│   ├── 404.html
+│   ├── admin
+│   │   ├── dashboard.html
+│   │   ├── security.html
+│   │   └── users.html
+│   ├── artworks.html
+│   ├── codex-library
+│   │   ├── Full-Rundown-V02.txt
+│   │   └── Overlay-Menu-Design-Template
+│   │       ├── edit_prompts.html
+│   │       └── main-design-template.html
+│   ├── composites_preview.html
+│   ├── edit_listing.html
+│   ├── finalised.html
+│   ├── gallery.html
+│   ├── index.html
+│   ├── locked.html
+│   ├── login.html
+│   ├── main.html
+│   ├── mockup_selector.html
+│   ├── partials
+│   │   ├── footer.html
+│   │   └── topnav.html
+│   ├── review.html
+│   ├── sellbrite_csv_preview.html
+│   ├── sellbrite_exports.html
+│   ├── sellbrite_log.html
+│   ├── template-backups
+│   │   ├── artworks_overlay_test.html
+│   │   ├── edit_listing_overlay_test.html
+│   │   ├── main-overlay-test.html
+│   │   └── missing_endpoint.html
+│   ├── test_description.html
+│   ├── upload.html
+│   └── upload_results.html
+├── tests
+│   ├── test_analysis_status_file.py
+│   ├── test_analyze_artwork.py
+│   ├── test_registry.py
+│   ├── test_routes.py
+│   ├── test_session_limits.py
+│   ├── test_sku_assigner.py
+│   ├── test_sku_tracker.py
+│   ├── test_sku_utils.py
+│   ├── test_upload.py
+│   └── test_utils_cleaning.py
+├── tmp
+└── utils
+    ├── __init__.py
+    ├── security.py
+    ├── session_tracker.py
+    ├── sku_assigner.py
+    └── user_manager.py

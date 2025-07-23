@@ -1,0 +1,17 @@
+2025-07-23 15:33:56,389 - INFO - === DreamArtMachine Lite: OpenAI Analyzer Started ===
+2025-07-23 15:33:56,390 - INFO - Single-image mode: /home/art/art-processing/unanalysed-artwork/unanalysed-03/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-7d4402b1.jpg
+2025-07-23 15:33:56,401 - INFO - Aspect ratio for cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-7d4402b1.jpg: 4x5
+2025-07-23 15:33:56,402 - INFO - Selected 9 mockups from 4x5-categorised for 4x5
+2025-07-23 15:33:56,402 - INFO - Loaded generic text for 4x5
+[SKU DEBUG] Peeking tracker file: /home/art/settings/sku_tracker.json
+2025-07-23 15:33:59,351 - INFO - Optimized image saved for AI: cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-7d4402b1-OPTIMIZED.jpg (1920x2400, 1000093 bytes, Q=75)
+2025-07-23 15:34:19,576 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-23 15:34:19,580 - INFO - {"provider": "openai", "messages": [{"role": "system", "content": "<image data>"}, {"role": "user", "content": "<image data>"}], "response": "```json\n{\n  \"seo_filename\": \"Cassowary-Serenade-Artwork-by-Robin-Custance-RJC-0127.jpg\",\n  \"title\": \"High Resolution Digital Aboriginal Dot Art Cassowary | Robin Custance Download\",\n  \"description\": \"Aboriginal dot art cassowary print, Australian wildlife digital download, vibrant wall art, Robin Custance image. This captivating artwork by Robin Custance celebrates the majestic Southern Cassowary through intricate Aboriginal dot painting techniques. The use of vibrant, bold colors captures the e"}
+2025-07-23 15:34:19,581 - INFO - {"file": "/home/art/art-processing/unanalysed-artwork/unanalysed-03/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-7d4402b1.jpg", "user_id": "anonymous", "opt_image": "/home/art/art-processing/unanalysed-artwork/temp/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-7d4402b1-OPTIMIZED.jpg", "size_bytes": 1000093, "size_mb": 0.95, "dimensions": "1920x2400", "time_sent": "2025-07-23T06:03:59.352729+00:00", "provider": "openai", "status": "fail", "error": "OpenAI response not valid JSON", "error_type": "fallback", "time_responded": "2025-07-23T06:04:19.581838+00:00", "duration_sec": 20.229091}
+2025-07-23 15:34:19,582 - ERROR - Failed processing /home/art/art-processing/unanalysed-artwork/unanalysed-03/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-7d4402b1.jpg: OpenAI response not valid JSON
+2025-07-23 15:34:19,582 - ERROR - Traceback (most recent call last):
+  File "/home/art/scripts/analyze_artwork.py", line 647, in analyze_single
+    raise RuntimeError(err_msg)
+RuntimeError: OpenAI response not valid JSON
+
+null

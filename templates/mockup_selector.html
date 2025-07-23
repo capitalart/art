@@ -1,0 +1,44 @@
+{# Use blueprint-prefixed endpoints like 'artwork.home' in url_for #}
+{% extends "main.html" %}
+{% block title %}Select Mockups | ArtNarrator{% endblock %}
+{% block content %}
+<div class="container">
+<h1>🖼️ Select Your Mockup Lineup</h1>
+<div class="grid">
+  {% for slot, options in zipped %}
+  <div class="item">
+    {% if slot.image %}
+      <img src="{{ url_for('artwork.mockup_img', category=slot.category, filename=slot.image) }}" alt="{{ slot.category }}" />
+    {% else %}
+      <p>No images for {{ slot.category }}</p>
+    {% endif %}
+    <strong>{{ slot.category }}</strong>
+    <form method="post" action="{{ url_for('artwork.regenerate') }}">
+      <input type="hidden" name="slot" value="{{ loop.index0 }}" />
+      <button type="submit">🔄 Regenerate</button>
+    </form>
+    <form method="post" action="{{ url_for('artwork.swap') }}">
+      <input type="hidden" name="slot" value="{{ loop.index0 }}" />
+      <select name="new_category">
+        <!-- DEBUG: Options for slot {{ loop.index0 }}: {{ options|join(", ") }} -->
+        {% for c in options %}
+        <option value="{{ c }}" {% if c == slot.category %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">🔁 Swap</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+<form method="post" action="{{ url_for('artwork.proceed') }}">
+  <button class="composite-btn" type="submit">✅ Generate Composites</button>
+</form>
+<div style="text-align:center;margin-top:1em;">
+  {% if session.latest_seo_folder %}
+    <a href="{{ url_for('artwork.composites_specific', seo_folder=session.latest_seo_folder) }}" class="composite-btn" style="background:#666;">👁️ Preview Composites</a>
+  {% else %}
+    <a href="{{ url_for('artwork.composites_preview') }}" class="composite-btn" style="background:#666;">👁️ Preview Composites</a>
+  {% endif %}
+</div>
+</div>
+{% endblock %}

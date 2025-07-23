@@ -1,0 +1,8 @@
+{% extends "main.html" %}
+{% block title %}Export Log{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Export Log {{ log_filename }}</h1>
+<pre class="export-log">{{ log_text }}</pre>
+</div>
+{% endblock %}
