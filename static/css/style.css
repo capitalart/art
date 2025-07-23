@@ -1,0 +1,78 @@
+/* ========================================================
+   style.css – Globals, Variables & Universal Container
+   Defines theme-aware color variables for light and dark modes.
+   ======================================================== */
+
+:root {
+  --font-primary: monospace !important;
+  --color-background: #FFFFFF;
+  --color-text: #111111;
+  --color-card-bg: #f9f9f9;
+  --color-header-border: #eeeeee;
+  --color-footer-bg: #FFFFFF;
+  --color-footer-text: #111111;
+  --color-footer-border: #dddddd;
+  --header-bg: #ffffff;
+  --table-row-bg: #ffffff;
+  --table-row-alt-bg: #f4f4f4;
+  --dark-color-footer-bg: #181818;
+  --dark-color-footer-text: #FFFFFF;
+  --color-hover: #ffa52a;
+  --color-danger: #c8252d;
+  --color-hover-other: #000000;
+  --color-accent: #e76a25;
+  --color-accent-hover: #ff9933;
+  --card-border: #c8c7c7;
+  --workflow-icon-size: 2.1em;
+  --dark-color-background: #111111;
+  --dark-color-text: #FFFFFF;
+  --dark-color-card-bg: #1a1a1a;
+  --dark-card-border: #727272;
+  --light-card-border: #727272;
+}
+
+/* Dark theme variables applied when `.theme-dark` class is present on `html` or `body` */
+.theme-dark {
+  --color-background: var(--dark-color-background);
+  --color-text: var(--dark-color-text);
+  --color-card-bg: var(--dark-color-card-bg);
+  --card-border: var(--dark-card-border);
+  --color-footer-bg: var(--dark-color-footer-bg);
+  --color-footer-text: var(--dark-color-footer-text);
+  --header-bg: #111111;
+  --table-row-bg: #222222;
+  --table-row-alt-bg: #333333;
+}
+
+/* === Universal Base & Reset === */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-primary);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+a, button, input, h1, h2, h3, h4, p, div { font-family: var(--font-primary); font-weight: 400; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; padding: 0; margin: 0; }
+button { background: none; border: none; cursor: pointer; padding: 0; color: inherit; }
+main { flex-grow: 1; }
+
+/* === Universal Content Container === */
+.container {
+  max-width: 2400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  box-sizing: border-box;
+}
+@media (max-width: 1800px) { .container { max-width: 98vw; } }
+@media (max-width: 1400px) { .container { max-width: 99vw; } }
+@media (max-width: 1000px) { .container { padding: 1.8rem 1rem; } }
+@media (max-width: 700px)  { .container { padding: 1.2rem 0.5rem; } }

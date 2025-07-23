@@ -1,0 +1,10 @@
+[1;36m[INFO][0m Working in: /home/art
+[1;36m[INFO][0m Running Health/Dependency Checks...
+[1;33m[WARN][0m Health route failed
+[1;36m[INFO][0m Generating code stack / QA report...
+[1;33m[WARN][0m code-stacker.sh not found/skipped.
+[1;36m[INFO][0m Creating ZIP backup: backups/backup_Wed-23-Jul-2025-10-58-AM.zip
+[1;36m[INFO][0m Uploading backup to Google Drive...
+[1;32m[SUCCESS][0m GDrive backup uploaded.
+[1;36m[INFO][0m Creating local tar.gz backup: backups/backup_Wed-23-Jul-2025-11-00-AM.tar.gz
+[1;32m[SUCCESS][0m Local backup complete.

@@ -1,0 +1,10 @@
+2025-07-23 17:03:27,398 - INFO - === DreamArtMachine Lite: OpenAI Analyzer Started ===
+usage: analyze_artwork.py [-h] [--feedback FEEDBACK] [--verbose]
+                          [--provider {openai}] [--json-output]
+                          [image]
+analyze_artwork.py: error: argument --provider: invalid choice: 'google' (choose from 'openai')
+2025-07-23 17:03:56,642 - INFO - === DreamArtMachine Lite: OpenAI Analyzer Started ===
+usage: analyze_artwork.py [-h] [--feedback FEEDBACK] [--verbose]
+                          [--provider {openai}] [--json-output]
+                          [image]
+analyze_artwork.py: error: argument --provider: invalid choice: 'google' (choose from 'openai')

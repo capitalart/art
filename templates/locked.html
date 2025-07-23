@@ -1,0 +1,81 @@
+{# Gallery of all finalised artworks with edit and export actions. #}
+{% extends "main.html" %}
+{% block title %}Locked Artworks{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Locked Artworks</h1>
+<p class="help-tip">These artworks are locked and cannot be edited until unlocked.</p>
+<div class="view-toggle">
+  <button id="grid-view-btn" class="btn-small">Grid</button>
+  <button id="list-view-btn" class="btn-small">List</button>
+</div>
+<form method="post" action="{{ url_for('exports.run_sellbrite_export', locked=1) }}">
+  <button type="submit" class="btn-black">Export to CSV</button>
+</form>
+{% if not artworks %}
+  <p>No artworks have been finalised yet. Come back after you approve some beautiful pieces!</p>
+{% else %}
+<div class="finalised-grid" data-view-key="lockedView">
+  {% for art in artworks %}
+  <div class="final-card">
+    <div class="card-thumb">
+      {% if art.main_image %}
+      <a href="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="final-img-link" data-img="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=art.main_image) }}">
+        <img src="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="card-img-top" alt="{{ art.title }}">
+      </a>
+      {% else %}
+      <img src="{{ url_for('static', filename='img/no-image.svg') }}" class="card-img-top" alt="No image">
+      {% endif %}
+    </div>
+    <div class="card-details">
+      <div class="card-title">{{ art.title }}</div>
+      <div class="desc-snippet" title="{{ art.description }}">
+        {{ art.description[:200] }}{% if art.description|length > 200 %}...{% endif %}
+      </div>
+      <div>SKU: {{ art.sku }}</div>
+      <div>Price: {{ art.price }}</div>
+      <div>Colours: {{ art.primary_colour }} / {{ art.secondary_colour }}</div>
+      <div>SEO: {{ art.seo_filename }}</div>
+      <div>Tags: {{ art.tags|join(', ') }}</div>
+      <div>Materials: {{ art.materials|join(', ') }}</div>
+      {% if art.mockups %}
+      <div class="mini-mockup-grid">
+        {% for m in art.mockups %}
+        <img src="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=m.filename) }}" alt="mockup"/>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if art.images %}
+      <details class="img-urls">
+        <summary>Image URLs</summary>
+        <ul>
+          {% for img in art.images %}
+          <li>
+            <a href="{{ url_for('artwork.locked_image', seo_folder=art.seo_folder, filename=img.split('/')[-1]) }}" target="_blank">/{{ img }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
+    </div>
+  <div class="button-row">
+    <a class="art-btn disabled" aria-disabled="true">Edit</a>
+    <form method="post" action="{{ url_for('artwork.unlock_listing', aspect=art.aspect, filename=art.filename) }}">
+      <button type="submit" class="art-btn">Unlock</button>
+    </form>
+    <form method="post" action="{{ url_for('artwork.delete_finalised', aspect=art.aspect, filename=art.filename) }}" class="locked-delete-form">
+      <input type="hidden" name="confirm" value="">
+      <button type="submit" class="art-btn delete">Delete</button>
+    </form>
+  </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+<div id="final-modal-bg" class="modal-bg">
+  <button id="final-modal-close" class="modal-close" aria-label="Close modal">&times;</button>
+  <div class="modal-img"><img id="final-modal-img" src="" alt="Full image"/></div>
+</div>
+<script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{# Use blueprint-prefixed endpoints like 'artwork.home' in url_for #}
+{% extends "main.html" %}
+{% block title %}Missing Endpoint{% endblock %}
+{% block content %}
+<h1>Endpoint Error</h1>
+<p>{{ error }}</p>
+{% endblock %}

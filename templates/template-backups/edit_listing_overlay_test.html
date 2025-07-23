@@ -1,0 +1,175 @@
+{# Edit and finalise a single artwork listing with preview and metadata fields. #}
+{% extends "main.html" %}
+{% block title %}Edit Listing{% endblock %}
+{% block content %}
+
+<div class="review-artwork-grid row">
+  <!-- === Mockup Column === -->
+  <div class="col col-6 mockup-col">
+    <div class="main-thumb">
+      <a href="#" 
+    class="main-thumb-link" 
+    data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'.jpg') }}">
+    <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'-THUMB.jpg') }}" class="main-thumbnail-img" alt="thumbnail">
+  </a>
+<div class="thumb-note">Click thumbnail for full size</div>
+    </div>
+    <div>
+      <h3>Preview Mockups</h3>
+      <div class="mockup-preview-grid">
+        {% for m in mockups %}
+          <div class="mockup-card">
+            {% if m.exists %}
+              <a href="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}"
+                 class="mockup-img-link"
+                 data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}">
+                <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}" class="mockup-thumb-img" alt="mockup">
+              </a>
+            {% else %}
+              <div class="missing-img">Image Not Found</div>
+            {% endif %}
+            <form role="form" method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
+              <select name="new_category">
+                {% for c in categories %}
+                  <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn btn-sm">Swap</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- === Edit Fields Column === -->
+  <div class="col col-6 edit-listing-col">
+    <div class="page-title-row" >
+      <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="hero-step-icon" alt="Step 3: Edit Listing" />
+      <h1>Edit Listing</h1>
+    </div>
+    <!-- Status at Top -->
+    <p class="status-line {% if finalised %}status-finalised{% else %}status-pending{% endif %}">
+      Status: This artwork is {% if finalised %}<strong>finalised</strong>{% else %}<em>NOT yet finalised</em>{% endif %}
+      {% if locked %}<span class="locked-badge">Locked</span>{% endif %}
+    </p>
+    <!-- Validation errors -->
+    {% if errors %}
+      <div class="flash-error">
+        <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+      </div>
+    {% endif %}
+
+    <!-- Main Edit Form -->
+    <form role="form" id="edit-form" method="POST" autocomplete="off">
+      <label>Title:</label>
+      <textarea name="title" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.title|e }}</textarea>
+
+      <label>Description:</label>
+      <textarea name="description" rows="12" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.description|e }}</textarea>
+
+      <label>Tags (comma-separated):</label>
+      <textarea name="tags" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.tags|e }}</textarea>
+
+      <label>Materials (comma-separated):</label>
+      <textarea name="materials" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.materials|e }}</textarea>
+
+      <div class="row-inline" style="display:flex; gap:1em;">
+        <div style="flex:1;">
+          <label>Primary Colour:</label>
+          <select name="primary_colour" class="long-field" {% if not editable %}disabled{% endif %}>
+            {% for col in colour_options %}
+              <option value="{{ col }}" {% if artwork.primary_colour==col %}selected{% endif %}>{{ col }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label>Secondary Colour:</label>
+          <select name="secondary_colour" class="long-field" {% if not editable %}disabled{% endif %}>
+            {% for col in colour_options %}
+              <option value="{{ col }}" {% if artwork.secondary_colour==col %}selected{% endif %}>{{ col }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <label>SEO Filename:</label>
+      <input type="text" class="long-field" name="seo_filename" value="{{ artwork.seo_filename|e }}" {% if not editable %}disabled{% endif %}>
+
+      <div class="price-sku-row">
+        <div>
+          <label>Price:</label>
+          <input type="text" name="price" value="{{ artwork.price|e }}" class="long-field" {% if not editable %}disabled{% endif %}>
+        </div>
+        <div>
+          <label>SKU:</label>
+          <!-- SKU is assigned by the system and never user-editable -->
+          <input type="text" value="{{ artwork.sku|e }}" class="long-field" readonly disabled>
+        </div>
+      </div>
+
+      <label>Image URLs (one per line):</label>
+      <textarea name="images" rows="5" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.images|e }}</textarea>
+    </form>
+
+    <!-- Action Buttons -->
+    <div class="edit-actions-col">
+      <button form="edit-form" type="submit" name="action" value="save" class="btn btn-primary wide-btn" {% if not editable %}disabled{% endif %}>Save Changes</button>
+      <button form="edit-form" type="submit" name="action" value="delete" class="btn btn-danger wide-btn" onclick="return confirm('Delete this artwork and all files?');" {% if not editable %}disabled{% endif %}>Delete</button>
+      {% if not finalised %}
+        <form role='form' method="post" action="{{ url_for('artwork.finalise_artwork', aspect=aspect, filename=filename) }}" style="width:100%;">
+          <button type="submit" class="btn btn-primary wide-btn">Finalise</button>
+        </form>
+      {% endif %}
+      <form role='form' method="POST" action="{{ url_for('artwork.analyze_artwork', aspect=aspect, filename=filename) }}" style="width:100%;" class="analyze-form">
+        <button type="submit" class="btn btn-primary wide-btn" {% if locked %}disabled{% endif %}>Re-analyse Artwork</button>
+      </form>
+      {% if finalised and not locked %}
+        <form role='form' method="post" action="{{ url_for('artwork.lock_listing', aspect=aspect, filename=filename) }}" style="width:100%;">
+          <button type="submit" class="btn btn-primary wide-btn">Lock it in</button>
+        </form>
+      {% elif locked %}
+        <form role='form' method="post" action="{{ url_for('artwork.unlock_listing', aspect=aspect, filename=filename) }}" style="width:100%;">
+          <button type="submit" class="btn btn-primary wide-btn">Unlock</button>
+        </form>
+      {% endif %}
+      <form role='form' method="post" action="{{ url_for('artwork.reset_sku', aspect=aspect, filename=filename) }}" style="width:100%;">
+        <button type="submit" class="btn-primary wide-btn" {% if locked %}disabled{% endif %}>Reset SKU</button>
+      </form>
+    </div>
+    {% if openai_analysis %}
+      <div class="openai-details">
+        <h3>OpenAI Analysis Details</h3>
+        {% set entries = openai_analysis if openai_analysis is iterable and openai_analysis.__class__ != dict else [openai_analysis] %}
+        {% for info in entries %}
+        <table class="openai-table">
+          <tr><th>Original File</th><td>{{ info.original_file }}</td></tr>
+          <tr><th>Optimized File</th><td>{{ info.optimized_file }}</td></tr>
+          <tr><th>Size</th><td>{{ info.size_mb }} MB ({{ info.size_bytes }} bytes)</td></tr>
+          <tr><th>Dimensions</th><td>{{ info.dimensions }}</td></tr>
+          <tr><th>Time Sent</th><td>{{ info.time_sent }}</td></tr>
+          <tr><th>Time Responded</th><td>{{ info.time_responded }}</td></tr>
+          <tr><th>Duration</th><td>{{ info.duration_sec }} s</td></tr>
+          <tr><th>Status</th><td>{{ info.status }}</td></tr>
+          {% if info.api_response %}<tr><th>API Response</th><td>{{ info.api_response }}</td></tr>{% endif %}
+          {% if info.naming_method %}<tr><th>Naming Method</th><td>{{ info.naming_method }}{% if info.used_fallback_naming %} (fallback){% endif %}</td></tr>{% endif %}
+        </table>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Mockup carousel modal -->
+<div id="mockup-carousel" class="modal-bg" tabindex="-1">
+  <button id="carousel-close" class="modal-close" aria-label="Close">&times;</button>
+  <button id="carousel-prev" class="carousel-nav" aria-label="Previous">&#10094;</button>
+  <div class="modal-img">
+    <img id="carousel-img" src="" alt="Mockup Preview" />
+  </div>
+  <button id="carousel-next" class="carousel-nav" aria-label="Next">&#10095;</button>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/edit_listing.js') }}"></script>
+{% endblock %}

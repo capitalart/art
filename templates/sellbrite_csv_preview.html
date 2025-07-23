@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block title %}Preview {{ csv_filename }}{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Preview {{ csv_filename }}</h1>
+<p><a class="btn-black" href="{{ url_for('exports.download_sellbrite', csv_filename=csv_filename) }}">Download Full CSV</a></p>
+<div class="csv-preview">
+  <table class="exports-table">
+    <thead>
+      <tr>
+        {% for h in header %}<th>{{ h }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+{% endblock %}

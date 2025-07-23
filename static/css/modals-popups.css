@@ -1,0 +1,248 @@
+/* ========================================================
+   modals-popups.css – Modals, Popups, Alerts, Carousels
+   Added theme-aware table rows and select dropdown styles.
+   ======================================================== */
+
+/* --- Modals & Carousel --- */
+.analysis-modal,
+.modal-bg {
+  display: none; position: fixed; z-index: var(--z-modal, 99);
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  align-items: center; justify-content: center;
+}
+.analysis-modal.active,
+.modal-bg.active { display: flex !important; }
+.analysis-box {
+  background: var(--color-semantic-bg-primary);
+  border: var(--border-1);
+  padding: var(--space-4);
+  max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
+}
+.analysis-log {
+  font-family: var(--font-1); background: var(--color-semantic-bg-hover);
+  border: var(--border-1); padding: var(--space-2);
+  max-height: 60vh; overflow-y: auto; white-space: pre-wrap; font-size: var(--font-size-1);
+}
+.modal-img { background: transparent !important; padding: 0 !important; max-width: 94vw; max-height: 93vh; box-shadow: 0 5px 26px rgba(0,0,0,0.22);}
+.modal-img img { max-width: 88vw; max-height: 80vh; display: block;}
+.modal-close {
+  position: absolute; top: 2.3vh; right: 2.6vw;
+  font-size: 2em; color: var(--color-btn-text, #fff); background: none;
+  border: none; cursor: pointer; z-index: 101; text-shadow: 0 2px 6px #000;
+}
+.carousel-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: none; border: none; font-size: 2.5em; cursor: pointer; padding: 0 0.2em; color: #888; transition: color 0.2s;
+}
+body.dark-theme .carousel-nav { color: #fff;}
+.carousel-nav:hover { color: #e76a25 !important;}
+#carousel-prev { left: 1vw;}
+#carousel-next { right: 1vw;}
+
+/* --- Alerts & Flash --- */
+.alert-info, .template-info-msg {
+  background: #f4faff; color: #3b4051; border-left: 5px solid #8ac6ff; padding: 1.1em 1.3em; font-size: 1em; margin-bottom: 1.4em;
+}
+.template-error-msg { color: #c8252d; font-weight: bold; font-size: 1.1em; margin-bottom: 1.4em; font-family: monospace, monospace !important;}
+.flash, .flash-error {
+  background: #fbeaea; color: #a60000; border: 1px solid #f5b5b5; border-left: 5px solid #e10000; padding: 1em 1.4em; margin-bottom: 1.5em;
+}
+.flash ul { margin: 0; padding-left: 1.2em; }
+
+        /* --- Gemini Modal --- */
+        .gemini-modal {
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gemini-modal-content {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            margin: auto;
+            padding: 2rem;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .gemini-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .gemini-modal-body textarea {
+            width: 100%;
+            min-height: 200px;
+            margin-top: 1rem;
+            background-color: var(--color-card-bg);
+            color: var(--color-text);
+            border: 1px solid var(--color-header-border);
+            padding: 0.5rem;
+        }
+        
+        .gemini-modal-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid var(--color-hover);
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 2rem auto;
+        }
+
+/* --- OpenAI Analysis Table --- */
+.openai-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: monospace;
+  font-size: 1em;
+}
+.openai-analysis-table th,
+.openai-analysis-table td {
+  padding: 0.6em 0.8em;
+  border: 1px solid var(--card-border);
+}
+.openai-analysis-table thead th {
+  background: var(--table-row-alt-bg);
+  font-weight: bold;
+  text-align: left;
+}
+.openai-analysis-table tbody th {
+  font-weight: bold;
+  text-align: left;
+  min-width: 160px;
+  white-space: nowrap;
+}
+.openai-analysis-table tbody tr:nth-child(odd) {
+  background: var(--table-row-bg);
+}
+.openai-analysis-table tbody tr:nth-child(even) {
+  background: var(--table-row-alt-bg);
+}
+@media (max-width: 600px) {
+  .openai-analysis-table {
+    display: block;
+    overflow-x: auto;
+  }
+  .openai-analysis-table tbody,
+  .openai-analysis-table tr,
+  .openai-analysis-table th,
+  .openai-analysis-table td {
+    white-space: nowrap;
+  }
+}
+
+/* --- Dropdown & Select --- */
+select {
+  appearance: none;
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+  border: 1px solid var(--card-border);
+  padding: 0.4em 2.2em 0.4em 0.6em;
+  border-radius: 4px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 0.6em top 50%, right 0.3em top 50%;
+  background-size: 0.5em 0.5em;
+  background-repeat: no-repeat;
+}
+select:focus {
+  outline: none;
+  border-color: var(--color-hover);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.15);
+}
+
+/* --------- [ Analysis Progress Modal ] --------- */
+.analysis-modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.65);
+  align-items: center;
+  justify-content: center;
+}
+.theme-light .analysis-modal { background: rgba(255,255,255,0.6); }
+.theme-dark .analysis-modal { background: rgba(0,0,0,0.65); }
+.analysis-modal.active { display: flex; }
+
+.analysis-box {
+  background: #fff;
+  padding: 1.5em 1.2em;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  font-family: monospace;
+  text-align: center;
+}
+.theme-light .analysis-box { background: #000; color: #fff; }
+.theme-dark .analysis-box { background: #fff; color: #000; }
+.analysis-log {
+  font-family: monospace;
+  background: #fafbfc;
+  border: 1px solid #ddd;
+  padding: 0.6em;
+  max-height: 60vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-size: 0.92em;
+}
+.analysis-log .log-error { color: #b00; }
+.analysis-log .latest { background: #eef; }
+
+.analysis-progress {
+  background: #eee;
+  height: 10px;
+  margin: 0.5em 0;
+  width: 100%;
+}
+.analysis-progress-bar {
+  background: var(--accent);
+  height: 100%;
+  width: 0;
+  transition: width 0.3s ease;
+}
+.analysis-status {
+  font-size: 0.9em;
+  margin-bottom: 0.6em;
+}
+.analysis-friendly {
+  text-align: center;
+  font-size: 0.9em;
+  margin-top: 0.6em;
+  font-style: italic;
+}
+
+.progress-icon {
+  width: 48px;
+  margin: 0 auto 0.8em auto;
+  display: block;
+}

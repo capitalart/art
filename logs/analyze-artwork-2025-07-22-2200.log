@@ -1,0 +1,56 @@
+ROUTE START provider=openai file=forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-3-54690a34.jpg
+Using temporary uploaded file /home/art/art/art-processing/unanalysed-artwork/unanalysed-01/forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-3-54690a34.jpg
+Traceback (most recent call last):
+  File "/home/art/art/routes/artwork_routes.py", line 194, in _run_ai_analysis
+    try:
+         
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 2 (char 1)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/art/art/routes/artwork_routes.py", line 1630, in analyze_api
+    try:
+         
+  File "/home/art/art/routes/artwork_routes.py", line 197, in _run_ai_analysis
+    capture_output=True,
+        ^^^^^^^^^^^^^^^^^
+RuntimeError: AI analysis output could not be parsed.
+
+ROUTE START provider=openai file=coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a04aa990.jpg
+Using temporary uploaded file /home/art/art/art-processing/unanalysed-artwork/unanalysed-02/coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a04aa990.jpg
+Traceback (most recent call last):
+  File "/home/art/art/routes/artwork_routes.py", line 194, in _run_ai_analysis
+    try:
+         
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 2 (char 1)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/art/art/routes/artwork_routes.py", line 1630, in analyze_api
+    try:
+         
+  File "/home/art/art/routes/artwork_routes.py", line 197, in _run_ai_analysis
+    capture_output=True,
+        ^^^^^^^^^^^^^^^^^
+RuntimeError: AI analysis output could not be parsed.
+
+ROUTE START provider=google file=forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-3-54690a34.jpg
+Resolving processed image for forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-3-54690a34.jpg

@@ -1,0 +1,76 @@
+# Python/Jupyter/IDE
+venv/
+__pycache__/
+.pytest_cache/
+.cache/
+.local/
+.vscode/
+.vscode-server/
+.idea/
+.DS_Store
+Thumbs.db
+node_modules/
+
+# Linux/user
+.bash_history
+.bash_logout
+.bashrc
+.gitconfig
+.lesshst
+.profile
+.python_history
+.selected_editor
+.wget-hsts
+.ssh/
+.dotnet/
+.config/
+
+# Project/data
+backups/
+logs/
+art-logs/
+art-processing/
+outputs/
+inputs/
+tmp/
+reports/
+PREVIOUS-CODE-STACKS/
+code-stacks/
+CODEX-LOGS/
+data/
+
+# Sensitive/secret
+.env
+
+# Backup control files
+backup_excludes.txt
+
+# Optional: CSV/data dumps
+*.sqlite3
+*.csv
+*.tar.gz
+*.zip
+
+# Misc
+*.log
+*.bak
+*.tmp
+*.swp
+
+# Nginx/server
+nginx.conf
+
+# Remove these if you WANT to backup code!
+# cron-backup.sh
+# folder_structure.txt
+# generate_folder_tree.py
+# gunicorn.conf.py
+# LICENSE
+# package-lock.json
+# project-toolkit.sh
+# README.md
+# requirements.txt
+# sellbrite_template.csv
+
+
+# Only exclude your actual code/configs above if you *never* want them in the backup!
