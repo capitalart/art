@@ -200,32 +200,36 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
             text=True,
             timeout=300,
         )
-        logger.info("[DEBUG] Returncode: %s", result.returncode)
-        logger.info("[DEBUG] STDOUT: %s", result.stdout[:2000])
-        logger.info("[DEBUG] STDERR: %s", result.stderr[:2000])
+    except subprocess.TimeoutExpired:
+        logger.error("AI analysis subprocess timed out for %s", img_path)
+        raise RuntimeError("AI analysis timed out after 300 seconds")
+    except Exception as exc:  # noqa: BLE001 - unexpected OSError
+        logger.error("Subprocess execution failed: %s", exc)
+        raise RuntimeError(str(exc)) from exc
 
-        output = result.stdout
-        logger.info("AI Analysis Output: %s", output)
+    logger.info("[DEBUG] Returncode: %s", result.returncode)
+    logger.info("[DEBUG] STDOUT: %s", result.stdout[:2000])
+    logger.info("[DEBUG] STDERR: %s", result.stderr[:2000])
 
-        if result.returncode != 0:
-            try:
-                err = json.loads(result.stderr)
-                msg = err.get("error", "Unknown error")
-            except Exception:
-                msg = (result.stderr or "Unknown error").strip()
-            raise RuntimeError(f"AI analysis failed: {msg}")
+    output = result.stdout
+    logger.info("AI Analysis Output: %s", output)
 
-        if not output.strip():
-            raise RuntimeError("AI analysis failed. Please try again.")
-
+    if result.returncode != 0:
         try:
-            return json.loads(output)
-        except json.JSONDecodeError as e:
-            logger.error("JSON decode error: %s", e)
-            raise RuntimeError("AI analysis output could not be parsed.")
-    except Exception as e:  # noqa: BLE001
-        logger.error("AI analysis subprocess failed: %s", e)
-        raise
+            err = json.loads(result.stderr)
+            msg = err.get("error", "Unknown error")
+        except Exception:
+            msg = (result.stderr or "Unknown error").strip()
+        raise RuntimeError(f"AI analysis failed: {msg}")
+
+    if not output.strip():
+        raise RuntimeError("AI analysis failed. Please try again.")
+
+    try:
+        return json.loads(output)
+    except json.JSONDecodeError as e:
+        logger.error("JSON decode error: %s", e)
+        raise RuntimeError("AI analysis output could not be parsed.")
 
 
 def _generate_composites(seo_folder: str, log_id: str) -> None:
