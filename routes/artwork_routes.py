@@ -69,6 +69,7 @@ from .utils import (
     is_finalised_image,
     get_allowed_colours,
     load_json_file_safe,
+    generate_mockups_for_listing,
 )
 from utils.sku_assigner import peek_next_sku
 
@@ -202,19 +203,25 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
         logger.info("[DEBUG] STDOUT: %s", result.stdout[:2000])
         logger.info("[DEBUG] STDERR: %s", result.stderr[:2000])
 
-        if result.returncode == 0:
-            try:
-                return json.loads(result.stdout)
-            except Exception as e:  # noqa: BLE001
-                logger.error("Failed to parse analysis output: %s", e)
-                raise RuntimeError("AI analysis output could not be parsed.")
-        else:
+        output = result.stdout
+        logger.info("AI Analysis Output: %s", output)
+
+        if result.returncode != 0:
             try:
                 err = json.loads(result.stderr)
                 msg = err.get("error", "Unknown error")
             except Exception:
                 msg = (result.stderr or "Unknown error").strip()
             raise RuntimeError(f"AI analysis failed: {msg}")
+
+        if not output.strip():
+            raise RuntimeError("AI analysis failed. Please try again.")
+
+        try:
+            return json.loads(output)
+        except json.JSONDecodeError as e:
+            logger.error("JSON decode error: %s", e)
+            raise RuntimeError("AI analysis output could not be parsed.")
     except Exception as e:  # noqa: BLE001
         logger.error("AI analysis subprocess failed: %s", e)
         raise
@@ -1697,6 +1704,7 @@ def analyze_api(provider: str, filename: str):
         print("Generating composites for", seo_folder)
         _write_analysis_status("generating", 60, filename, status="analyzing")
         _generate_composites(seo_folder, log_id)
+        utils.generate_mockups_for_listing(seo_folder)
 
         utils.cleanup_unanalysed_folders()
 
@@ -1738,7 +1746,11 @@ def analyze_api(provider: str, filename: str):
             log.write(str(exc) + "\n" + tb)
         msg = exc.args[0] if exc.args else exc
         if isinstance(msg, (bytes, bytearray)):
-            msg = f"<{len(msg)} bytes>"
+            masked = f"<{len(msg)} bytes>"
+            if debug:
+                tb_mask = repr(msg)
+                tb = tb.replace(tb_mask, masked)
+            msg = masked
         error = str(msg)
         _write_analysis_status("failed", 100, filename, status="failed", error=error)
         if debug:

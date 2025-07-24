@@ -291,6 +291,8 @@
   box-sizing: border-box;
 }
 
+.status-line {margin-top:0px}
+
 /* Responsive: Stack columns on small screens */
 @media (max-width: 1100px) {
   .col-6 {

@@ -533,6 +533,55 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> bool:
         return False
 
 
+def _listing_json_path(seo_folder: str) -> Path:
+    """Return the listing JSON path for a SEO folder if it exists."""
+    for base in (PROCESSED_ROOT, FINALISED_ROOT, ARTWORK_VAULT_ROOT):
+        path = base / seo_folder / f"{seo_folder}-listing.json"
+        if path.exists():
+            return path
+    raise FileNotFoundError(f"Listing file for {seo_folder} not found")
+
+
+def get_mockups(seo_folder: str) -> list:
+    """Return mockup entries from the listing JSON."""
+    try:
+        listing = _listing_json_path(seo_folder)
+        with open(listing, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data.get("mockups", [])
+    except Exception as exc:  # noqa: BLE001
+        logging.error("Failed reading mockups for %s: %s", seo_folder, exc)
+        return []
+
+
+def create_default_mockups(seo_folder: str) -> None:
+    """Create a fallback mockup image and update the listing."""
+    dest = PROCESSED_ROOT / seo_folder
+    dest.mkdir(parents=True, exist_ok=True)
+    default_src = config.STATIC_DIR / "img" / "default-mockup.jpg"
+    target = dest / FILENAME_TEMPLATES["mockup"].format(seo_slug=seo_folder, num=1)
+    shutil.copy(default_src, target)
+    listing = _listing_json_path(seo_folder)
+    data = load_json_file_safe(listing)
+    data.setdefault("mockups", []).append(
+        {"category": "default", "source": "default", "composite": target.name}
+    )
+    with open(listing, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def generate_mockups_for_listing(seo_folder: str) -> bool:
+    """Ensure mockups exist for the listing, creating defaults if needed."""
+    try:
+        if not get_mockups(seo_folder):
+            create_default_mockups(seo_folder)
+            logging.info("Default mockups created for %s", seo_folder)
+        return True
+    except Exception as exc:  # noqa: BLE001
+        logging.error("Error generating mockups for %s: %s", seo_folder, exc)
+        return False
+
+
 def get_menu() -> List[Dict[str, str | None]]:
     """Return navigation items for templates."""
     from flask import url_for

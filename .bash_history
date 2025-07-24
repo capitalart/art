@@ -127,3 +127,8 @@ sudo systemctl restart gunicorn
 sudo journalctl -u gunicorn -f
 sudo lsof -i :7777
 sudo systemctl status gunicorn
+curl http://127.0.0.1:7777/health
+sudo nano /etc/systemd/system/gunicorn.service
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
