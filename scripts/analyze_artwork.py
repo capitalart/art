@@ -58,7 +58,10 @@ from utils.logger_utils import sanitize_blob_data
 Image.MAX_IMAGE_PIXELS = None
 
 load_dotenv()
-client = OpenAI()
+API_KEY = os.getenv("OPENAI_API_KEY")
+if not API_KEY:
+    raise RuntimeError("OPENAI_API_KEY not set in environment")
+client = OpenAI(api_key=API_KEY)
 
 
 # ======================= [ 1. CONFIGURATION & PATHS ] =======================
