@@ -72,7 +72,10 @@ build/
 # Ignore Nginx and server-related configurations
 nginx.conf
 
-# Or to ignore the entire .config directory
+# Ignore rclone.conf configuration file
+.config/rclone/rclone.conf
+
+# Or ignore the entire .config directory
 .config/
 
 # ===========================================
