@@ -72,6 +72,9 @@ build/
 # Ignore Nginx and server-related configurations
 nginx.conf
 
+# Or to ignore the entire .config directory
+.config/
+
 # ===========================================
 # End of .gitignore
 # ===========================================
