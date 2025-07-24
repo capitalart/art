@@ -1,4 +1,5 @@
-{# Edit and finalise a single artwork listing with preview and metadata fields. #}
+{# Edit and finalise a single artwork listing with preview and metadata fields.
+   Updated 2025-07-24: responsive thumbnails & cache busting #}
 {% extends "main.html" %}
 {% block title %}Edit Listing{% endblock %}
 {% block content %}
@@ -12,8 +13,8 @@
     <div class="main-thumb">
       <a href="#" 
     class="main-thumb-link" 
-    data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'.jpg') }}">
-    <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'-THUMB.jpg') }}" class="main-thumbnail-img" alt="thumbnail">
+    data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'.jpg') }}?t={{ cache_ts }}">
+    <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'-THUMB.jpg') }}?t={{ cache_ts }}" class="main-artwork-thumb" alt="Main artwork thumbnail for {{ seo_folder }}">
   </a>
 <div class="thumb-note">Click thumbnail for full size</div>
     </div>
@@ -23,13 +24,13 @@
         {% for m in mockups %}
           <div class="mockup-card">
             {% if m.exists %}
-              <a href="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}"
+              <a href="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}?t={{ cache_ts }}"
                  class="mockup-img-link"
-                 data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}">
-                <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}" class="mockup-thumb-img" alt="Mockup Preview" width="300" height="300">
+                 data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}?t={{ cache_ts }}">
+                <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}?t={{ cache_ts }}" class="mockup-thumb-img" alt="Mockup preview {{ loop.index }}">
               </a>
             {% else %}
-              <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}" class="mockup-thumb-img" alt="Default Mockup" width="300" height="300">
+              <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}" class="mockup-thumb-img" alt="Default mockup placeholder">
             {% endif %}
             <form role="form" method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
               <select name="new_category">

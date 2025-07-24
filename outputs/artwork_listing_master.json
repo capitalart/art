@@ -318,5 +318,45 @@
       }
     ],
     "upload_date": "2025-07-24T08:37:55.998124+00:00"
+  },
+  "a0293ec833ac4a14a4add144a69f2745": {
+    "seo_filename": "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-3b17b683.jpg",
+    "base": "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-3b17b683",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-06",
+    "assets": [
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-3b17b683.jpg",
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-3b17b683-thumb.jpg",
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-3b17b683-analyse.jpg",
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-3b17b683.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-06",
+        "timestamp": "2025-07-24T09:28:04.261219+00:00"
+      }
+    ],
+    "upload_date": "2025-07-24T09:28:04.261219+00:00"
+  },
+  "cef55e85550847048f96f6e2d3730b95": {
+    "seo_filename": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-9500c6b8.jpg",
+    "base": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-9500c6b8",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-07",
+    "assets": [
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-9500c6b8.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-9500c6b8-thumb.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-9500c6b8-analyse.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-9500c6b8.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-07",
+        "timestamp": "2025-07-24T11:29:37.357426+00:00"
+      }
+    ],
+    "upload_date": "2025-07-24T11:29:37.357426+00:00"
   }
 }

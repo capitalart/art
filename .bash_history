@@ -132,3 +132,99 @@ sudo nano /etc/systemd/system/gunicorn.service
 sudo systemctl daemon-reload
 sudo systemctl restart gunicorn
 sudo systemctl status gunicorn
+source venv/bin/activate
+sudo journalctl -u gunicorn -f
+pkill gunicorn
+sudo journalctl -u gunicorn -f
+curl http://127.0.0.1:7777/health
+curl --unix-socket /home/art/artnarrator.sock http://localhost/health
+source venv/bin/activate
+curl http://127.0.0.1:7777/health
+curl --unix-socket /home/art/artnarrator.sock http://localhost/health
+sudo netstat -tuln | grep 7777
+bash /home/art/project-toolkit.sh
+rclone config show
+rclone config
+bash /home/art/project-toolkit.sh
+ulimit -a
+ps -u art | grep python
+bash /home/art/project-toolkit.sh
+gunicorn app:app
+ulimit -a
+tail -f /home/art/logs/gunicorn-error.log
+sudo nano /etc/security/limits.conf
+sudo nano /etc/systemd/system.conf
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+chmod +x setup_gunicorn.sh
+./setup_gunicorn.sh
+curl http://127.0.0.1:7777/health
+sudo systemctl status gunicorn
+tail -f /home/art/logs/gunicorn-error.log
+ps aux | grep gunicorn
+sudo nano /etc/systemd/system/gunicorn.service
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+tail -f /home/art/logs/gunicorn-error.log
+sudo journalctl -u gunicorn -f
+ulimit -a
+sudo systemctl stop gunicorn
+/home/art/venv/bin/gunicorn --workers 2 --bind 127.0.0.1:7777 --bind unix:/home/art/artnarrator.sock --access-logfile /home/art/logs/gunicorn-access.log --error-logfile /home/art/logs/gunicorn-error.log
+sudo nano /etc/systemd/system/gunicorn.service
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+sudo nano /etc/security/limits.conf
+sudo reboot
+ulimit -n  # Check the max number of open files
+ulimit -u  # Check the max number of processes
+ulimit -n  # Check the max number of open files
+ulimit -u  # Check the max number of processes
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+sudo chown -R art:art /home/art/ezy /home/art/linuxbrew /home/art/linuxbrew/.linuxbrew /home/art/robin /home/art/thebigshed /home/art/.gitignore
+cd ..
+ls
+cd ~
+cd ..
+ls
+sudo chown -R art:art /home/ezy /home/linuxbrew /home/robin /home/thebigshed
+rm -rf /home/ezy /home/linuxbrew /home/robin /home/thebigshed
+ls -l /home/ezy /home/linuxbrew /home/robin /home/thebigshed
+sudo rm -rf /home/ezy /home/linuxbrew /home/robin /home/thebigshed
+mount | grep '/home/ezy\|/home/linuxbrew\|/home/robin\|/home/thebigshed'
+sudo umount /home/ezy /home/linuxbrew /home/robin /home/thebigshed
+lsattr /home/ezy /home/linuxbrew /home/robin /home/thebigshed
+ls /home
+source venv/bin/activate
+sudo lsof -i :7777
+sudo kill -9 3871 3872 3873
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+sudo lsof -i :7777
+sudo systemctl status gunicorn
+sudo journalctl -u gunicorn -f
+sudo systemctl status gunicorn
+tail -f /home/art/logs/gunicorn-error.log
+sudo nano /etc/systemd/system.conf
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+tail -f /home/art/logs/gunicorn-error.log
+sudo systemctl stop gunicorn
+sudo systemctl disable gunicorn
+sudo pip uninstall gunicorn
+source venv/bin/activate
+sudo pip uninstall gunicorn
+which python
+pip uninstall gunicorn
+pip list
+pip install gunicorn
+/home/art/venv/bin/gunicorn --workers 2 --bind 127.0.0.1:7777 --bind unix:/home/art/artnarrator.sock --access-logfile /home/art/logs/gunicorn-access.log --error-logfile /home/art/logs/gunicorn-error.log app:app
+sudo systemctl status gunicorn
+tail -f /home/art/logs/gunicorn/gunicorn-error.log
+sudo systemctl enable gunicorn
+source venv/bin/activate
+tail -f /home/art/logs/gunicorn/gunicorn-error.log
