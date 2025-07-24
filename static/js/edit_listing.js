@@ -85,3 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (imagesTextarea) imagesTextarea.addEventListener('input', toggleActionBtns);
   toggleActionBtns();
 });
+
+function swapMockup(category) {
+  console.log('Swapping mockup for category: ' + category);
+}

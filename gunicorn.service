@@ -1,0 +1,20 @@
+[Unit]
+Description=Gunicorn instance for ArtNarrator
+After=network.target
+
+[Service]
+User=art
+Group=art
+WorkingDirectory=/home/art
+Environment="PATH=/home/art/venv/bin"
+Environment="FLASK_APP=app"  # without the .py extension, Gunicorn will treat this as a module
+Environment="FLASK_ENV=production"
+ExecStart=/home/art/venv/bin/gunicorn --workers 4 --bind unix:/home/art/artnarrator.sock --access-logfile /home/art/logs/gunicorn-access.log --error-logfile /home/art/logs/gunicorn-error.log --timeout 120 --graceful-timeout 60 --max-requests 1000 --max-requests-jitter 100 --preload --chdir /home/art
+Restart=always
+RestartSec=5
+LimitNOFILE=65535
+LimitNPROC=100
+SyslogIdentifier=gunicorn-artnarrator
+
+[Install]
+WantedBy=multi-user.target

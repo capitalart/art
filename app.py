@@ -117,6 +117,14 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(test_bp)
 app.register_blueprint(api_bp)
 
+
+@app.after_request
+def apply_no_cache(response):
+    """Attach no-cache headers when admin mode requires it."""
+    if security.force_no_cache_enabled():
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return response
+
 @app.context_processor
 def inject_api_status():
     return dict(
