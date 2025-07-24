@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""DreamArtMachine Lite | analyze_artwork.py
+"""ART Narrator | analyze_artwork.py
 ===============================================================
 Professional, production-ready, fully sectioned and sub-sectioned
 Robbie Mode™ script for analyzing artworks with OpenAI.
@@ -126,7 +126,7 @@ sys.stdout = _Tee(sys.stdout, _log_fp)
 sys.stderr = _Tee(sys.stderr, _log_fp)
 
 
-logger.info("=== DreamArtMachine Lite: OpenAI Analyzer Started ===")
+logger.info("=== ART Narrator: OpenAI Analyzer Started ===")
 
 
 # ======================== [ 3. UTILITY FUNCTIONS ] ==========================
