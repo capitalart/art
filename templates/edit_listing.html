@@ -26,10 +26,10 @@
               <a href="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}"
                  class="mockup-img-link"
                  data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}">
-                <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}" class="mockup-thumb-img" alt="mockup">
+                <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}" class="mockup-thumb-img" alt="Mockup Preview" width="300" height="300">
               </a>
             {% else %}
-              <div class="missing-img">Image Not Found</div>
+              <img src="{{ url_for('static', filename='img/no-image.svg') }}" class="mockup-thumb-img" alt="Default Mockup" width="300" height="300">
             {% endif %}
             <form role="form" method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
               <select name="new_category">
