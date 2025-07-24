@@ -15,7 +15,6 @@ app.py
 backup_excludes.txt
 CHANGELOG.md
 code-stacker.sh
-CODEX-README.md
 config.py
 cron-backup.sh
 db.py
