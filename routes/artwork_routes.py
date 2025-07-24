@@ -18,6 +18,7 @@ import shutil
 import os
 import traceback
 import datetime
+import time
 from utils.logger_utils import log_action, strip_binary
 from config import (
     PROCESSED_ROOT,
@@ -995,6 +996,7 @@ def edit_listing(aspect, filename):
                 locked=data.get("locked", False),
                 editable=not data.get("locked", False),
                 openai_analysis=openai_info,
+                cache_ts=int(time.time()),
             )
 
         data.update(form_data)
@@ -1135,6 +1137,7 @@ def edit_listing(aspect, filename):
         locked=data.get("locked", False),
         editable=not data.get("locked", False),
         openai_analysis=openai_info,
+        cache_ts=int(time.time()),
     )
 
 
