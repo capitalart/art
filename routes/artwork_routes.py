@@ -69,6 +69,7 @@ from .utils import (
     is_finalised_image,
     get_allowed_colours,
     load_json_file_safe,
+    generate_mockups_for_listing,
 )
 from utils.sku_assigner import peek_next_sku
 
@@ -164,7 +165,12 @@ def analysis_status():
 def _run_ai_analysis(img_path: Path, provider: str) -> dict:
     """Run the AI analysis script and return its JSON output."""
     logger = logging.getLogger("art_analysis")
-    logger.info("[DEBUG] _run_ai_analysis: img_path=%s provider=%s cwd=%s", img_path, provider, os.getcwd())
+    logger.info(
+        "[DEBUG] _run_ai_analysis: img_path=%s provider=%s cwd=%s",
+        img_path,
+        provider,
+        os.getcwd(),
+    )
 
     # Log key environment variables with API keys masked
     safe_env = {k: ("***" if "KEY" in k else v) for k, v in os.environ.items()}
@@ -202,19 +208,26 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
         logger.info("[DEBUG] STDOUT: %s", result.stdout[:2000])
         logger.info("[DEBUG] STDERR: %s", result.stderr[:2000])
 
-        if result.returncode == 0:
-            try:
-                return json.loads(result.stdout)
-            except Exception as e:  # noqa: BLE001
-                logger.error("Failed to parse analysis output: %s", e)
-                raise RuntimeError("AI analysis output could not be parsed.")
-        else:
+        if result.returncode != 0:
             try:
                 err = json.loads(result.stderr)
                 msg = err.get("error", "Unknown error")
             except Exception:
                 msg = (result.stderr or "Unknown error").strip()
             raise RuntimeError(f"AI analysis failed: {msg}")
+
+        output = result.stdout
+        if not output.strip():
+            logger.error("AI returned empty output")
+            raise RuntimeError("AI analysis failed. Please try again.")
+
+        logger.info("AI Analysis Output: %s", output)
+
+        try:
+            return json.loads(output)
+        except json.JSONDecodeError as e:
+            logger.error("JSON decode error: %s", e)
+            raise RuntimeError("AI analysis output could not be parsed.")
     except Exception as e:  # noqa: BLE001
         logger.error("AI analysis subprocess failed: %s", e)
         raise
@@ -1099,6 +1112,9 @@ def edit_listing(aspect, filename):
         artwork.get("description", ""), data.get("generic_text", "")
     )
 
+    # Ensure at least one mockup exists for display
+    utils.generate_mockups_for_listing(seo_folder)
+
     mockups = []
     for idx, mp in enumerate(data.get("mockups", [])):
         if isinstance(mp, dict):
@@ -1610,12 +1626,26 @@ def analyze_api(provider: str, filename: str):
     if provider == "openai" and not current_app.config.get("OPENAI_CONFIGURED"):
         msg = "OpenAI API Key is not configured"
         _write_analysis_status("failed", 100, filename, status="failed", error=msg)
-        log_action("analyse-openai", filename, user, "analysis failed", status="fail", error=msg)
+        log_action(
+            "analyse-openai",
+            filename,
+            user,
+            "analysis failed",
+            status="fail",
+            error=msg,
+        )
         return jsonify({"success": False, "error": msg}), 400
     if provider == "google" and not current_app.config.get("GOOGLE_CONFIGURED"):
         msg = "Google API Key is not configured"
         _write_analysis_status("failed", 100, filename, status="failed", error=msg)
-        log_action("analyse-google", filename, user, "analysis failed", status="fail", error=msg)
+        log_action(
+            "analyse-google",
+            filename,
+            user,
+            "analysis failed",
+            status="fail",
+            error=msg,
+        )
         return jsonify({"success": False, "error": msg}), 400
 
     base = Path(filename).stem

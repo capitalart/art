@@ -84,6 +84,7 @@ for directory in [
 # JSON File Helpers
 # ============================================================================
 
+
 def load_json_file_safe(path: Path) -> dict:
     """Return JSON from ``path`` handling any errors gracefully."""
 
@@ -113,9 +114,11 @@ def load_json_file_safe(path: Path) -> dict:
         logger.error("Failed handling %s: %s", path, exc)
         return {}
 
+
 # ==============================
 # Utility Helpers
 # ==============================
+
 
 def get_mockup_categories(aspect_folder: Path | str) -> List[str]:
     """Return sorted list of category folder names under ``aspect_folder``.
@@ -126,9 +129,7 @@ def get_mockup_categories(aspect_folder: Path | str) -> List[str]:
     if not folder.exists():
         return []
     return sorted(
-        f.name
-        for f in folder.iterdir()
-        if f.is_dir() and not f.name.startswith(".")
+        f.name for f in folder.iterdir() if f.is_dir() and not f.name.startswith(".")
     )
 
 
@@ -161,7 +162,9 @@ def relative_to_base(path: Path | str) -> str:
     return str(Path(path).resolve().relative_to(BASE_DIR))
 
 
-def resize_image_for_long_edge(image: Image.Image, target_long_edge: int = 2000) -> Image.Image:
+def resize_image_for_long_edge(
+    image: Image.Image, target_long_edge: int = 2000
+) -> Image.Image:
     """Resize image maintaining aspect ratio."""
     width, height = image.size
     if width > height:
@@ -173,7 +176,9 @@ def resize_image_for_long_edge(image: Image.Image, target_long_edge: int = 2000)
     return image.resize((new_width, new_height), Image.LANCZOS)
 
 
-def apply_perspective_transform(art_img: Image.Image, mockup_img: Image.Image, dst_coords: list) -> Image.Image:
+def apply_perspective_transform(
+    art_img: Image.Image, mockup_img: Image.Image, dst_coords: list
+) -> Image.Image:
     """Overlay artwork onto mockup using perspective transform."""
     w, h = art_img.size
     src_points = np.float32([[0, 0], [w, 0], [w, h], [0, h]])
@@ -410,7 +415,9 @@ def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
             if not folder.is_dir():
                 continue
             slug = folder.name.removeprefix("LOCKED-")
-            listing_file = folder / FILENAME_TEMPLATES["listing_json"].format(seo_slug=slug)
+            listing_file = folder / FILENAME_TEMPLATES["listing_json"].format(
+                seo_slug=slug
+            )
             if not listing_file.exists():
                 continue
             try:
@@ -469,7 +476,12 @@ def regenerate_one_mockup(seo_folder: str, slot_idx: int) -> bool:
     try:
         with open(coords_path, "r", encoding="utf-8") as cf:
             c = json.load(cf)["corners"]
-        dst = [[c[0]["x"], c[0]["y"]], [c[1]["x"], c[1]["y"]], [c[3]["x"], c[3]["y"]], [c[2]["x"], c[2]["y"]]]
+        dst = [
+            [c[0]["x"], c[0]["y"]],
+            [c[1]["x"], c[1]["y"]],
+            [c[3]["x"], c[3]["y"]],
+            [c[2]["x"], c[2]["y"]],
+        ]
         art_img = Image.open(art_path).convert("RGBA")
         art_img = resize_image_for_long_edge(art_img)
         mock_img = Image.open(new_mockup).convert("RGBA")
@@ -514,7 +526,12 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> bool:
     try:
         with open(coords_path, "r", encoding="utf-8") as cf:
             c = json.load(cf)["corners"]
-        dst = [[c[0]["x"], c[0]["y"]], [c[1]["x"], c[1]["y"]], [c[3]["x"], c[3]["y"]], [c[2]["x"], c[2]["y"]]]
+        dst = [
+            [c[0]["x"], c[0]["y"]],
+            [c[1]["x"], c[1]["y"]],
+            [c[3]["x"], c[3]["y"]],
+            [c[2]["x"], c[2]["y"]],
+        ]
         art_img = Image.open(art_path).convert("RGBA")
         art_img = resize_image_for_long_edge(art_img)
         mock_img = Image.open(new_mockup).convert("RGBA")
@@ -533,6 +550,39 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> bool:
         return False
 
 
+def get_mockups(seo_folder: str) -> list[Path]:
+    """Return list of composite mockup image paths for ``seo_folder``."""
+    folder = PROCESSED_ROOT / seo_folder
+    if not folder.exists():
+        folder = FINALISED_ROOT / seo_folder
+    if not folder.exists():
+        return []
+    return sorted(p for p in folder.glob(f"{seo_folder}-MU-*.jpg") if p.is_file())
+
+
+def create_default_mockups(seo_folder: str) -> None:
+    """Create a basic placeholder mockup set for ``seo_folder``."""
+    folder = PROCESSED_ROOT / seo_folder
+    folder.mkdir(parents=True, exist_ok=True)
+    default_src = Path(config.STATIC_DIR) / "img" / "no-image.svg"
+    dest = folder / f"{seo_folder}-MU-01.jpg"
+    if default_src.exists():
+        shutil.copy(default_src, dest)
+
+
+def generate_mockups_for_listing(seo_folder: str) -> bool:
+    """Ensure mockups exist for the artwork listing."""
+    try:
+        existing = get_mockups(seo_folder)
+        if not existing:
+            create_default_mockups(seo_folder)
+            logging.info("Default mockups created for %s", seo_folder)
+        return True
+    except Exception as exc:  # pragma: no cover - unexpected IO
+        logging.error("Error generating mockups for %s: %s", seo_folder, exc)
+        return False
+
+
 def get_menu() -> List[Dict[str, str | None]]:
     """Return navigation items for templates."""
     from flask import url_for
@@ -544,10 +594,16 @@ def get_menu() -> List[Dict[str, str | None]]:
     ]
     latest = latest_analyzed_artwork()
     if latest:
-        menu.append({
-            "name": "Review Latest Listing",
-            "url": url_for("artwork.edit_listing", aspect=latest["aspect"], filename=latest["filename"]),
-        })
+        menu.append(
+            {
+                "name": "Review Latest Listing",
+                "url": url_for(
+                    "artwork.edit_listing",
+                    aspect=latest["aspect"],
+                    filename=latest["filename"],
+                ),
+            }
+        )
     else:
         menu.append({"name": "Review Latest Listing", "url": None})
     return menu
@@ -609,7 +665,9 @@ def update_listing_paths(listing: Path, old_base: Path, new_base: Path) -> None:
             data[key] = _swap(data[key])
 
     if isinstance(data.get("images"), list):
-        data["images"] = [_swap(img) if isinstance(img, str) else img for img in data["images"]]
+        data["images"] = [
+            _swap(img) if isinstance(img, str) else img for img in data["images"]
+        ]
 
     with open(listing, "w", encoding="utf-8") as lf:
         json.dump(data, lf, indent=2, ensure_ascii=False)
@@ -722,7 +780,10 @@ def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str,
         if folder.exists() and not filename:
             # Look for an image whose stem matches the folder name
             for p in folder.iterdir():
-                if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == seo_folder.lower():
+                if (
+                    p.suffix.lower() in {".jpg", ".jpeg", ".png"}
+                    and p.stem.lower() == seo_folder.lower()
+                ):
                     filename = p.name
                     break
 
@@ -734,7 +795,10 @@ def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str,
             if not disk_file.exists():
                 stem = Path(filename).stem.lower()
                 for p in folder.iterdir():
-                    if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == stem:
+                    if (
+                        p.suffix.lower() in {".jpg", ".jpeg", ".png"}
+                        and p.stem.lower() == stem
+                    ):
                         filename = p.name
                         break
             return aspect, filename
@@ -781,7 +845,9 @@ def assign_or_get_sku(
                 with open(listing_json_path, "w", encoding="utf-8") as lf:
                     json.dump(data, lf, indent=2, ensure_ascii=False)
             except Exception as exc:  # pragma: no cover - unexpected IO
-                logger.error("Failed writing SEO filename to %s: %s", listing_json_path, exc)
+                logger.error(
+                    "Failed writing SEO filename to %s: %s", listing_json_path, exc
+                )
                 raise
         return existing
 
@@ -885,8 +951,14 @@ def _save_registry(reg: dict) -> None:
 
 def create_unanalysed_subfolder() -> Path:
     UNANALYSED_ROOT.mkdir(parents=True, exist_ok=True)
-    existing = [p for p in UNANALYSED_ROOT.iterdir() if p.is_dir() and p.name.startswith("unanalysed-")]
-    nums = [int(p.name.split("-")[-1]) for p in existing if p.name.split("-")[-1].isdigit()]
+    existing = [
+        p
+        for p in UNANALYSED_ROOT.iterdir()
+        if p.is_dir() and p.name.startswith("unanalysed-")
+    ]
+    nums = [
+        int(p.name.split("-")[-1]) for p in existing if p.name.split("-")[-1].isdigit()
+    ]
     next_num = max(nums, default=0) + 1
     folder = UNANALYSED_ROOT / f"unanalysed-{next_num:02d}"
     folder.mkdir(parents=True, exist_ok=True)
@@ -902,7 +974,9 @@ def cleanup_unanalysed_folders() -> None:
             continue
         try:
             folder_resolved = folder.resolve()
-            if folder_resolved.is_relative_to(root) and not any(folder_resolved.iterdir()):
+            if folder_resolved.is_relative_to(root) and not any(
+                folder_resolved.iterdir()
+            ):
                 shutil.rmtree(folder_resolved, ignore_errors=True)
         except Exception as exc:  # pragma: no cover - unexpected IO
             logging.getLogger(__name__).error("Failed cleaning %s: %s", folder, exc)
@@ -913,11 +987,13 @@ def move_and_log(src: Path, dest: Path, uid: str, status: str) -> None:
     shutil.move(str(src), str(dest))
     reg = _load_registry()
     rec = reg.get(uid, {})
-    rec.setdefault("history", []).append({
-        "status": status,
-        "folder": str(dest.parent),
-        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-    })
+    rec.setdefault("history", []).append(
+        {
+            "status": status,
+            "folder": str(dest.parent),
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        }
+    )
     rec["current_folder"] = str(dest.parent)
     rec["status"] = status
     assets = set(rec.get("assets", []))
@@ -932,18 +1008,27 @@ def update_status(uid: str, folder: Path, status: str) -> None:
     rec = reg.get(uid)
     if not rec:
         return
-    rec.setdefault("history", []).append({
-        "status": status,
-        "folder": str(folder),
-        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-    })
+    rec.setdefault("history", []).append(
+        {
+            "status": status,
+            "folder": str(folder),
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        }
+    )
     rec["current_folder"] = str(folder)
     rec["status"] = status
     reg[uid] = rec
     _save_registry(reg)
 
 
-def register_new_artwork(uid: str, seo_filename: str, folder: Path, asset_files: list[str], status: str, base: str | None = None) -> None:
+def register_new_artwork(
+    uid: str,
+    seo_filename: str,
+    folder: Path,
+    asset_files: list[str],
+    status: str,
+    base: str | None = None,
+) -> None:
     ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
     reg = _load_registry()
     reg[uid] = {
@@ -966,10 +1051,11 @@ def get_record_by_base(base: str) -> tuple[str, dict] | tuple[None, None]:
     return None, None
 
 
-def get_record_by_seo_filename(seo_filename: str) -> tuple[str, dict] | tuple[None, None]:
+def get_record_by_seo_filename(
+    seo_filename: str,
+) -> tuple[str, dict] | tuple[None, None]:
     reg = _load_registry()
     for uid, rec in reg.items():
         if rec.get("seo_filename") == seo_filename:
             return uid, rec
     return None, None
-
