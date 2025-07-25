@@ -35,6 +35,7 @@ PORT = int(os.getenv("PORT", "7777"))
 # 2. AI/PLATFORM/API MODELS
 # -----------------------------------------------------------------------------
 # --- OpenAI ---
+OPENAI_PROJECT_ID = os.getenv("OPENAI_PROJECT_ID")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
 OPENAI_MODEL_FALLBACK = os.getenv("OPENAI_MODEL_FALLBACK", "gpt-4-turbo")
@@ -43,6 +44,7 @@ OPENAI_IMAGE_MODEL = os.getenv("OPENAI_IMAGE_MODEL", "dall-e-3")
 
 # --- Google Cloud ---
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GOOGLE_PROJECT_ID = os.getenv("GOOGLE_PROJECT_ID", "art-narrator")
 GOOGLE_VISION_MODEL_NAME = os.getenv("GOOGLE_VISION_MODEL_NAME", "builtin/stable")
 GOOGLE_GEMINI_PRO_VISION_MODEL_NAME = os.getenv("GOOGLE_GEMINI_PRO_VISION_MODEL_NAME", "gemini-pro-vision")
@@ -50,6 +52,8 @@ GOOGLE_GEMINI_PRO_VISION_MODEL_NAME = os.getenv("GOOGLE_GEMINI_PRO_VISION_MODEL_
 # --- Other Integrations ---
 RCLONE_REMOTE_NAME = os.getenv("RCLONE_REMOTE_NAME", "gdrive")
 RCLONE_REMOTE_PATH = os.getenv("RCLONE_REMOTE_PATH", "art-backups")
+SELLBRITE_ACCOUNT_TOKEN = os.getenv("SELLBRITE_ACCOUNT_TOKEN")  # <-- ADDED
+SELLBRITE_SECRET_KEY = os.getenv("SELLBRITE_SECRET_KEY")      # <-- ADDED
 SELLBRITE_API_BASE_URL = os.getenv("SELLBRITE_API_BASE_URL", "https://api.sellbrite.com/v1")
 ETSY_SHOP_URL = os.getenv("ETSY_SHOP_URL", "https://www.robincustance.etsy.com")
 
@@ -69,6 +73,8 @@ SELLBRITE_DIR = OUTPUTS_DIR / "sellbrite"
 SIGNED_DIR = OUTPUTS_DIR / "signed"
 
 MOCKUPS_INPUT_DIR = Path(os.getenv("MOCKUPS_INPUT_DIR", BASE_DIR / "inputs" / "mockups"))
+MOCKUPS_STAGING_DIR = MOCKUPS_INPUT_DIR / "uncategorised"
+MOCKUPS_CATEGORISED_DIR = MOCKUPS_INPUT_DIR / "categorised"
 SIGNATURES_DIR = Path(os.getenv("SIGNATURES_DIR", BASE_DIR / "inputs" / "signatures"))
 GENERIC_TEXTS_DIR = Path(os.getenv("GENERIC_TEXTS_DIR", BASE_DIR / "generic_texts"))
 COORDS_DIR = Path(os.getenv("COORDS_DIR", BASE_DIR / "inputs" / "Coordinates"))
@@ -82,6 +88,10 @@ TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", BASE_DIR / "templates"))
 DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
 DB_PATH = DATA_DIR / "artnarrator.sqlite3"
 
+DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
+GDWS_CONTENT_DIR = DATA_DIR / "gdws_content"  # <-- ADD THIS LINE
+DB_PATH = DATA_DIR / "artnarrator.sqlite3"
+
 # -----------------------------------------------------------------------------
 # 4. HELPER/REGISTRY FILES (ONLY WHAT'S USED)
 # -----------------------------------------------------------------------------
@@ -89,6 +99,7 @@ SKU_TRACKER = SETTINGS_DIR / "sku_tracker.json"
 ANALYSIS_STATUS_FILE = LOGS_DIR / "analysis_status.json"
 ONBOARDING_PATH = SETTINGS_DIR / "Master-Etsy-Listing-Description-Writing-Onboarding.txt"
 OUTPUT_JSON = ART_PROCESSING_DIR / "master-artwork-paths.json"
+MOCKUP_CATEGORISATION_LOG = LOGS_DIR / "mockup_categorisation.log"
 
 # -----------------------------------------------------------------------------
 # 5. FILE/FILENAME TEMPLATES

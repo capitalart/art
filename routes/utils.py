@@ -18,6 +18,7 @@ from flask import session
 from PIL import Image
 import cv2
 import numpy as np
+import config
 
 from config import (
     BASE_DIR,
@@ -1022,3 +1023,34 @@ def get_record_by_seo_filename(seo_filename: str) -> tuple[str, dict] | tuple[No
             return uid, rec
     return None, None
 
+def assemble_gdws_description(aspect_ratio: str) -> str:
+    """
+    Assembles a full description by randomly selecting one variation from each
+    paragraph type within the specified aspect ratio folder in the GDWS.
+    """
+    logger = logging.getLogger(__name__)
+    description_parts = []
+    aspect_path = config.GDWS_CONTENT_DIR / aspect_ratio
+
+    if not aspect_path.exists():
+        logger.warning(f"GDWS content for aspect ratio '{aspect_ratio}' not found.")
+        return ""
+
+    # Get all paragraph type folders (e.g., about_the_artist, printing_tips)
+    paragraph_folders = sorted([p for p in aspect_path.iterdir() if p.is_dir()])
+
+    for folder_path in paragraph_folders:
+        variations = list(folder_path.glob("*.json"))
+        if variations:
+            # Pick one random variation file
+            chosen_variation_path = random.choice(variations)
+            try:
+                with open(chosen_variation_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    if data.get("content"):
+                        description_parts.append(data["content"])
+            except Exception as e:
+                logger.error(f"Failed to load or parse GDWS variation {chosen_variation_path}: {e}")
+
+    logger.info(f"Assembled description from {len(description_parts)} GDWS paragraphs for '{aspect_ratio}'.")
+    return "\n\n".join(description_parts)

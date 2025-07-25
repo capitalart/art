@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+{% block title %}Invalid Link{% endblock %}
+{% block content %}
+<div class="container" style="text-align: center;">
+    <h1>Oops! A Link is Broken</h1>
+    <p>The link or button you clicked points to a page that doesn't exist.</p>
+    <p>This is usually a small typo in the code. I've logged the details so it can be fixed.</p>
+    <div style="background: #eee; color: #333; padding: 1em; margin: 1em 0; text-align: left; font-family: monospace;">
+        <strong>Error Details:</strong><br>
+        {{ error }}
+    </div>
+    <a href="{{ url_for('artwork.home') }}" class="btn btn-primary">Return to Homepage</a>
+</div>
+{% endblock %}

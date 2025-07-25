@@ -65,6 +65,7 @@
                 <h3>Workflow &amp; Tools</h3>
                 <ul>
                     <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
+                    <li><a href="{{ url_for('mockup_admin.dashboard') }}">Mockup Admin</a></li> </ul>
                     <li><a href="{{ url_for('artwork.select') }}">Mockup Selector</a></li>
                 </ul>
             </div>
@@ -74,7 +75,7 @@
                     <li><a href="{{ url_for('exports.sellbrite_exports') }}">Sellbrite Exports</a></li>
                     <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
                     <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
-                    {# Removed broken menu link: Admin Users (no such route exists) #}
+                    <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
                     <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                 </ul>
             </div>
@@ -153,6 +154,7 @@
                     <li><a href="{{ url_for('exports.sellbrite_exports') }}">Sellbrite Exports</a></li>
                     <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
                     <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
+                    <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
                     {# Removed broken menu link: Admin Users (no such route exists) #}
                 </ul>
             </div>

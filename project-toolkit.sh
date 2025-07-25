@@ -62,6 +62,7 @@ main_menu() {
   echo "  [5] SYSTEM ACTIONS"
   echo "  [6] DRY RUN: See What Will Be Backed Up"
   echo "  [7] Run AI Artwork Analysis Self-Test"
+  echo "  [8] Test API Connections"
   echo "  [0] Exit"
   read -rp "Select: " sel
   case "$sel" in
@@ -72,6 +73,7 @@ main_menu() {
     5) sys_menu ;;
     6) backup_dryrun_menu ;;
     7) ai_selftest_menu ;;
+    8) run_connection_tests ;;
     0) exit 0 ;;
     *) echo "Invalid selection." ;;
   esac
@@ -204,6 +206,7 @@ quick_git_push() {
 # --------------- FULL ACTIONS --------------------------------------------
 full_pull() {
   health_and_deps_check
+  check_api_connections
   run_code_stack
   gdrive_backup
   local_backup
@@ -213,6 +216,7 @@ full_pull() {
 }
 full_push() {
   health_and_deps_check
+  check_api_connections
   run_code_stack
   gdrive_backup
   local_backup
@@ -311,6 +315,46 @@ ai_selftest_menu() {
     *) echo "Invalid selection." ;;
   esac
   ai_selftest_menu
+}
+
+# --------------- CONNECTION TEST -----------------------------------------
+run_connection_tests() {
+  log INFO "Running API Connection Test Script..."
+  local test_script="scripts/test_connections.py"
+  if [[ -f "$test_script" ]]; then
+    if [[ ! -d venv ]]; then die "Python venv not found!"; fi
+    source venv/bin/activate || die "Could not activate venv!"
+    python3 "$test_script"
+    log SUCCESS "Connection test script finished."
+  else
+    log WARN "Connection test script ($test_script) not found. Skipping."
+  fi
+}
+
+check_api_connections() {
+  log INFO "Verifying API connections before proceeding..."
+  local test_script="scripts/test_connections.py"
+  if [[ ! -f "$test_script" ]]; then
+    log WARN "Connection test script ($test_script) not found. Skipping check."
+    return
+  fi
+
+  if [[ ! -d venv ]]; then die "Python venv not found!"; fi
+  source venv/bin/activate || die "Could not activate venv!"
+
+  # Run the script and capture its output
+  local test_output
+  test_output=$(python3 "$test_script")
+  
+  # Echo the output so the user sees it, and log it
+  echo -e "$test_output" | tee -a "$LOG_FILE"
+
+  # Check for the failure symbol in the output
+  if echo "$test_output" | grep -q "❌"; then
+    die "One or more API connection tests failed. Please fix credentials in the .env file and restart."
+  else
+    log SUCCESS "All API connections are OK."
+  fi
 }
 
 # --------------- MENUS (PULL / PUSH etc) ---------------------------------

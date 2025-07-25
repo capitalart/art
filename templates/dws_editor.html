@@ -1,0 +1,306 @@
+{% extends "main.html" %}
+{% block title %}Guided Description Editor{% endblock %}
+
+{% block content %}
+<style>
+  /* --- Page Layout --- */
+  .gdws-container { display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start; }
+  .gdws-main-content { flex: 1; min-width: 60%; }
+  .gdws-sidebar { width: 280px; position: sticky; top: 100px; padding: 1.5rem; background-color: var(--color-card-bg); border: 1px solid var(--card-border); }
+  .gdws-sidebar h3 { margin-top: 0; text-align: center; margin-bottom: 1.5rem; }
+  .gdws-sidebar button { width: 100%; margin-bottom: 1rem; }
+
+  /* --- Block Styles --- */
+  .paragraph-block { background-color: var(--color-card-bg); border: 1px solid var(--card-border); padding: 1.5rem; margin-bottom: 1.5rem; cursor: grab; }
+  .paragraph-block:active { cursor: grabbing; }
+  .paragraph-block h3, .paragraph-block .block-title { margin-top: 0; font-size: 1.2em; }
+  .paragraph-block .block-title { width: 100%; padding: 0.5rem; border: 1px solid transparent; background-color: transparent; font-family: inherit; font-weight: bold; }
+  .paragraph-block .block-title:focus { border-color: var(--card-border); background-color: var(--color-background); }
+  .paragraph-block textarea { width: 100%; min-height: 150px; background-color: var(--color-background); color: var(--color-text); border: 1px solid var(--card-border); padding: 0.5rem; }
+  .block-actions { margin-top: 1rem; display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+  .title-actions { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .btn-regenerate-title { font-size: 0.8em; padding: 0.3em 0.6em; min-width: auto; }
+  .sortable-ghost { opacity: 0.4; background: #888; border: 2px dashed var(--color-accent); }
+  .pinned { background-color: #f0f0f0; border-left: 4px solid #007bff; cursor: not-allowed; }
+  .theme-dark .pinned { background-color: #2a2a2a; border-left-color: #4e9fef; }
+  .instructions-modal { display: none; }
+</style>
+
+<div class="container">
+  <h1>Guided Description Editor</h1>
+  <p>Select an aspect ratio to load its base paragraphs. You can edit content, regenerate with AI, and modify the instructions for each section. Paragraphs in the middle section can be reordered via drag-and-drop.</p>
+  
+  <div class="gdws-container">
+    <div class="gdws-main-content">
+      <div class="form-group">
+        <label for="aspect-ratio-selector">Select Aspect Ratio:</label>
+        <select id="aspect-ratio-selector">
+          <option value="">-- Choose --</option>
+          {% for ar in aspect_ratios %}
+          <option value="{{ ar }}">{{ ar }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div id="editor-wrapper" style="margin-top: 2rem;">
+        <div id="start-blocks"></div>
+        <div id="middle-blocks"></div>
+        <div id="end-blocks"></div>
+      </div>
+    </div>
+
+    <aside class="gdws-sidebar">
+      <h3>Global Actions</h3>
+      <button id="save-order-btn" class="btn btn-primary wide-btn" disabled>Save Order</button>
+      <button id="regenerate-all-btn" class="btn btn-secondary wide-btn" disabled>Regenerate All Content</button>
+      <button id="reset-all-btn" class="btn btn-secondary wide-btn" disabled>Reset All to Base</button>
+    </aside>
+  </div>
+</div>
+
+<div id="instructions-modal" class="analysis-modal instructions-modal" role="dialog" aria-modal="true">
+    <div class="analysis-box" tabindex="-1">
+        <button class="modal-close" aria-label="Close">&times;</button>
+        <h3 id="instructions-title">Instructions</h3>
+        <textarea id="instructions-text" rows="8" style="width: 100%;"></textarea>
+        <div class="block-actions" style="justify-content: flex-end;">
+            <button id="save-instructions-btn" class="btn btn-primary">Save Instructions</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const arSelector = document.getElementById('aspect-ratio-selector');
+    const startBlocksContainer = document.getElementById('start-blocks');
+    const middleBlocksContainer = document.getElementById('middle-blocks');
+    const endBlocksContainer = document.getElementById('end-blocks');
+    const editorWrapper = document.getElementById('editor-wrapper');
+    
+    const regenerateAllBtn = document.getElementById('regenerate-all-btn');
+    const resetAllBtn = document.getElementById('reset-all-btn');
+    const saveOrderBtn = document.getElementById('save-order-btn');
+    
+    const instructionsModal = document.getElementById('instructions-modal');
+    const instructionsTitle = document.getElementById('instructions-title');
+    const instructionsText = document.getElementById('instructions-text');
+    const saveInstructionsBtn = document.getElementById('save-instructions-btn');
+    const closeInstructionsBtn = instructionsModal.querySelector('.modal-close');
+    let currentBlockForInstructions = null;
+    
+    let sortable = null;
+    // CORRECTED: Load the server-rendered JSON into JS variables
+    const PINNED_START_TITLES = JSON.parse('{{ PINNED_START_TITLES | tojson | safe }}');
+    const PINNED_END_TITLES = JSON.parse('{{ PINNED_END_TITLES | tojson | safe }}');
+
+    async function loadTemplate(aspectRatio) {
+        if (!aspectRatio) {
+            startBlocksContainer.innerHTML = '<p>Please select an aspect ratio to begin.</p>';
+            middleBlocksContainer.innerHTML = '';
+            endBlocksContainer.innerHTML = '';
+            [regenerateAllBtn, resetAllBtn, saveOrderBtn].forEach(b => b.disabled = true);
+            return;
+        }
+        startBlocksContainer.innerHTML = '<p>Loading...</p>';
+        middleBlocksContainer.innerHTML = '';
+        endBlocksContainer.innerHTML = '';
+
+        const response = await fetch(`/admin/gdws/template/${aspectRatio}`);
+        const data = await response.json();
+        
+        startBlocksContainer.innerHTML = '';
+
+        data.blocks.forEach(block => {
+            const isStart = PINNED_START_TITLES.includes(block.title);
+            const isEnd = PINNED_END_TITLES.includes(block.title);
+            const container = isStart ? startBlocksContainer : (isEnd ? endBlocksContainer : middleBlocksContainer);
+            renderBlock(block, container, !isStart && !isEnd);
+        });
+        
+        if (sortable) sortable.destroy();
+        sortable = new Sortable(middleBlocksContainer, {
+            animation: 150,
+            ghostClass: 'sortable-ghost'
+        });
+
+        [regenerateAllBtn, resetAllBtn, saveOrderBtn].forEach(b => b.disabled = false);
+    }
+
+    function renderBlock(block, container, isDraggable) {
+        const blockEl = document.createElement('div');
+        blockEl.className = 'paragraph-block';
+        if (!isDraggable) blockEl.classList.add('pinned');
+        
+        blockEl.dataset.id = block.title; 
+        blockEl.dataset.originalTitle = block.title;
+        blockEl.dataset.instructions = block.instructions || '';
+
+        blockEl.innerHTML = `
+            <div class="title-actions">
+                <input type="text" class="block-title" value="${block.title}">
+                <button class="btn btn-sm btn-regenerate-title" title="Regenerate Title with AI">AI Title</button>
+            </div>
+            <textarea>${block.content}</textarea>
+            <div class="block-actions">
+                <button class="btn btn-secondary btn-instructions">View/Edit Instructions</button>
+                <div>
+                    <button class="btn btn-secondary btn-regenerate">Regenerate Content</button>
+                    <button class="btn btn-primary btn-save-base">Update Base</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(blockEl);
+    }
+
+    // --- Event Listeners ---
+
+    arSelector.addEventListener('change', () => loadTemplate(arSelector.value));
+
+    resetAllBtn.addEventListener('click', () => {
+        const currentAspect = arSelector.value;
+        if (currentAspect && confirm('Are you sure? This will discard all unsaved changes and reload the saved base text.')) {
+            loadTemplate(currentAspect);
+        }
+    });
+
+    saveOrderBtn.addEventListener('click', async () => {
+        const order = Array.from(middleBlocksContainer.children).map(el => el.dataset.originalTitle);
+        
+        saveOrderBtn.textContent = 'Saving...';
+        saveOrderBtn.disabled = true;
+        await fetch('/admin/gdws/save-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ aspect_ratio: arSelector.value, order: order }),
+        });
+        saveOrderBtn.textContent = 'Save Order';
+        saveOrderBtn.disabled = false;
+        alert('New order has been saved!');
+    });
+
+    regenerateAllBtn.addEventListener('click', async () => {
+        const allBlocks = document.querySelectorAll('.paragraph-block');
+        if (!allBlocks.length || !confirm(`This will regenerate content for all ${allBlocks.length} paragraphs. Are you sure?`)) return;
+
+        regenerateAllBtn.textContent = 'Regenerating...';
+        regenerateAllBtn.disabled = true;
+
+        for (const blockEl of allBlocks) {
+            if (blockEl.closest('#middle-blocks') || blockEl.closest('#start-blocks') || blockEl.closest('#end-blocks')) {
+                const btn = blockEl.querySelector('.btn-regenerate');
+                await handleRegenerate(blockEl, btn);
+            }
+        }
+
+        regenerateAllBtn.textContent = 'Regenerate All Content';
+        regenerateAllBtn.disabled = false;
+    });
+
+    async function handleRegenerate(blockEl, buttonEl) {
+        const textarea = blockEl.querySelector('textarea');
+        const instructions = blockEl.dataset.instructions;
+        
+        buttonEl.textContent = '...';
+        buttonEl.disabled = true;
+        
+        const response = await fetch('/admin/gdws/regenerate-paragraph', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ current_text: textarea.value, instructions: instructions }),
+        });
+        const result = await response.json();
+        textarea.value = result.new_content;
+        
+        buttonEl.textContent = 'Regenerate Content';
+        buttonEl.disabled = false;
+    }
+    
+    editorWrapper.addEventListener('click', async (e) => {
+        const blockEl = e.target.closest('.paragraph-block');
+        if (!blockEl) return;
+
+        const originalTitle = blockEl.dataset.originalTitle;
+        let instructions = blockEl.dataset.instructions;
+        const titleInput = blockEl.querySelector('.block-title');
+        const textarea = blockEl.querySelector('textarea');
+        const aspectRatio = arSelector.value;
+
+        if (e.target.classList.contains('btn-regenerate-title')) {
+            e.target.textContent = '...';
+            const response = await fetch('/admin/gdws/regenerate-title', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ content: textarea.value })
+            });
+            const result = await response.json();
+            titleInput.value = result.new_title;
+            e.target.textContent = 'AI Title';
+        }
+
+        if (e.target.classList.contains('btn-save-base')) {
+            e.target.textContent = 'Updating...';
+            const response = await fetch('/admin/gdws/save-base-paragraph', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    aspect_ratio: aspectRatio, 
+                    original_title: originalTitle,
+                    new_title: titleInput.value,
+                    content: textarea.value, 
+                    instructions: instructions 
+                }),
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                blockEl.dataset.originalTitle = titleInput.value;
+                blockEl.dataset.id = titleInput.value;
+            } else {
+                alert(`Error: ${result.message}`);
+                titleInput.value = originalTitle;
+            }
+            e.target.textContent = 'Update Base';
+        }
+        
+        if (e.target.classList.contains('btn-regenerate')) {
+            await handleRegenerate(blockEl, e.target);
+        }
+
+        if (e.target.classList.contains('btn-instructions')) {
+            currentBlockForInstructions = blockEl;
+            instructionsTitle.textContent = `Instructions for: ${titleInput.value}`;
+            instructionsText.value = instructions;
+            instructionsModal.classList.add('active');
+        }
+    });
+
+    // Modal close logic
+    closeInstructionsBtn.addEventListener('click', () => instructionsModal.classList.remove('active'));
+    saveInstructionsBtn.addEventListener('click', async () => {
+        if (currentBlockForInstructions) {
+            const title = currentBlockForInstructions.querySelector('.block-title').value;
+            const content = currentBlockForInstructions.querySelector('textarea').value;
+            const aspectRatio = arSelector.value;
+            const newInstructions = instructionsText.value;
+
+            saveInstructionsBtn.textContent = 'Saving...';
+            await fetch('/admin/gdws/save-base-paragraph', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    aspect_ratio: aspectRatio, 
+                    original_title: currentBlockForInstructions.dataset.originalTitle,
+                    new_title: title,
+                    content: content, 
+                    instructions: newInstructions 
+                }),
+            });
+            currentBlockForInstructions.dataset.instructions = newInstructions;
+            saveInstructionsBtn.textContent = 'Save Instructions';
+            instructionsModal.classList.remove('active');
+        }
+    });
+});
+</script>
+{% endblock %}

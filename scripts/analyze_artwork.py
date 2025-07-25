@@ -5,17 +5,6 @@
 ===============================================================
 Professional, production-ready, fully sectioned and sub-sectioned
 Robbie Mode™ script for analyzing artworks with OpenAI.
-
-This revision adds comprehensive logging, robust error handling and
-optional feedback injection for AI analysis. All activity is written to
-``artnarrator/logs/analyze-artwork-YYYY-MM-DD-HHMM.log``.
-
-**New:** ``--verbose`` / ``VERBOSE=1`` enables real-time progress
-printing to stdout while the script runs. When not enabled, output is
-silent except for the final summary.
-
-Output JSON logic, filename conventions and colour detection remain
-compatible with the previous version.
 """
 # This file now references all path, directory, and filename variables strictly from config.py. No local or hardcoded path constants remain.
 
@@ -45,15 +34,16 @@ from config import (
     BASE_DIR,
     UNANALYSED_ROOT,
     MOCKUPS_INPUT_DIR as MOCKUPS_DIR,
-    GENERIC_TEXTS_DIR,
     ONBOARDING_PATH,
-    OUTPUT_JSON,
     PROCESSED_ROOT,
     LOGS_DIR,
     SKU_TRACKER,
+    OUTPUT_JSON,
 )
 import config
 from utils.logger_utils import sanitize_blob_data
+# UPDATED IMPORT: We need the new assembler function
+from routes.utils import assemble_gdws_description
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -61,7 +51,10 @@ load_dotenv()
 API_KEY = os.getenv("OPENAI_API_KEY")
 if not API_KEY:
     raise RuntimeError("OPENAI_API_KEY not set in environment")
-client = OpenAI(api_key=API_KEY)
+client = OpenAI(
+    api_key=API_KEY,
+    project=config.OPENAI_PROJECT_ID,
+)
 
 
 # ======================= [ 1. CONFIGURATION & PATHS ] =======================
@@ -108,7 +101,6 @@ USER_ID = os.getenv("USER_ID", "anonymous")
 
 class _Tee:
     """Simple tee to duplicate stdout/stderr to the log file."""
-
     def __init__(self, original, log_file):
         self._original = original
         self._log = log_file
@@ -122,14 +114,6 @@ class _Tee:
     def flush(self):
         self._original.flush()
         self._log.flush()
-
-
-_log_fp = open(LOG_FILE, "a", encoding="utf-8")
-sys.stdout = _Tee(sys.stdout, _log_fp)
-sys.stderr = _Tee(sys.stderr, _log_fp)
-
-
-logger.info("=== ART Narrator: OpenAI Analyzer Started ===")
 
 
 # ======================== [ 3. UTILITY FUNCTIONS ] ==========================
@@ -168,16 +152,6 @@ def pick_mockups(aspect: str, max_count: int = 8) -> list:
     selection = [str(f.resolve()) for f in candidates[:max_count]]
     logger.info(f"Selected {len(selection)} mockups from {use_dir.name} for {aspect}")
     return selection
-
-
-def read_generic_text(aspect: str) -> str:
-    txt_path = GENERIC_TEXTS_DIR / f"{aspect}.txt"
-    if txt_path.exists():
-        logger.info(f"Loaded generic text for {aspect}")
-        return txt_path.read_text(encoding="utf-8")
-    logger.warning(f"No generic text found for {aspect}")
-    return ""
-
 
 def read_onboarding_prompt() -> str:
     return Path(ONBOARDING_PATH).read_text(encoding="utf-8")
@@ -341,14 +315,7 @@ def make_optimized_image_for_ai(
     min_quality: int = 60,
     verbose: bool = False,
 ) -> Path:
-    """Return path to optimized JPEG for AI analysis.
-
-    The image is resized so the longest edge is ``max_edge`` pixels if larger.
-    It is then saved as JPEG, reducing quality in steps until the file is under
-    ``target_bytes`` or ``min_quality`` is reached. This keeps OpenAI vision
-    inputs small without obvious artefacts.
-    """
-
+    """Return path to optimized JPEG for AI analysis."""
     out_dir.mkdir(parents=True, exist_ok=True)
     if verbose:
         print("- Optimizing image for AI input...", end="", flush=True)
@@ -462,9 +429,6 @@ def generate_ai_listing(
 ) -> tuple[dict | None, bool, str, str, str]:
     """Call the selected AI provider and return listing data."""
     if provider == "google":
-        # This provider is now handled by an external script.
-        # This function should not be called with provider="google".
-        # However, we'll raise an error to make this clear.
         raise NotImplementedError("Google provider logic has been moved to a separate script.")
 
     try:
@@ -502,15 +466,17 @@ def generate_ai_listing(
                 max_tokens=2100,
                 temperature=0.92,
                 timeout=60,
+                response_format={"type": "json_object"},
             )
             content = response.choices[0].message.content.strip()
             safe_msg = sanitize_blob_data(messages)
             openai_logger.info(json.dumps({"provider": "openai", "messages": safe_msg, "response": content[:500]}))
             if verbose:
                 print(f"- OpenAI response received (length {len(content)} chars). Parsing...")
+            
             try:
                 return json.loads(content), True, content, "ok", ""
-            except Exception:
+            except json.JSONDecodeError:
                 fallback = parse_text_fallback(content)
                 return fallback, False, content, "fallback", "OpenAI response not valid JSON"
         except Exception as exc:
@@ -586,7 +552,8 @@ def analyze_single(
         # ----------------------------------------------------------------------
         aspect = get_aspect_ratio(image_path)
         mockups = pick_mockups(aspect, MOCKUPS_PER_LISTING)
-        generic_text = read_generic_text(aspect)
+        # UPDATED: Use the new GDWS assembler function
+        generic_text = assemble_gdws_description(aspect)
         fallback_base = image_path.stem
         assigned_sku = peek_next_sku(SKU_TRACKER)
 
@@ -692,11 +659,11 @@ def analyze_single(
         # Description and tags/materials filling
         desc = ai_listing.get("description", "") if isinstance(ai_listing, dict) else ""
         if desc:
-            desc = re.sub(r"\[Generic block here\]\s*$", "", desc, flags=re.IGNORECASE).rstrip()
             if generic_text and not desc.endswith(generic_text.strip()):
                 desc = desc.rstrip() + "\n\n" + generic_text.strip()
         else:
             desc = generic_text.strip()
+            
         if isinstance(ai_listing, dict):
             ai_listing["description"] = desc
 
@@ -781,7 +748,7 @@ def analyze_single(
         logger.error(traceback.format_exc())
         if verbose:
             print(f"- Error: {e}")
-        return None
+        raise
 
     finally:
         with contextlib.suppress(Exception):
@@ -790,7 +757,7 @@ def analyze_single(
         statuses.append(status)
         if verbose:
             print("[OK]" if status["success"] else "[FAIL]")
-            
+
 
 # ============================= [ 7. MAIN ENTRY ] ==============================
 
@@ -820,14 +787,16 @@ def main() -> None:
     args = parse_args()
     provider = args.provider
     json_output = args.json_output
-    if provider == "google":
-        raise NotImplementedError(
-            "Google provider logic has been moved to a separate script."
-        )
+    
     if not json_output:
-        print(
-            f"\n===== DreamArtMachine Lite: {provider.capitalize()} Analyzer =====\n"
-        )
+        _log_fp = open(LOG_FILE, "a", encoding="utf-8")
+        sys.stdout = _Tee(sys.stdout, _log_fp)
+        sys.stderr = _Tee(sys.stderr, _log_fp)
+        logger.info("=== ART Narrator: OpenAI Analyzer Started (Interactive Mode) ===")
+        print(f"\n===== DreamArtMachine Lite: {provider.capitalize()} Analyzer =====\n")
+    else:
+        logger.info("=== ART Narrator: OpenAI Analyzer Started (JSON Output Mode) ===")
+
 
     TEMP_DIR = UNANALYSED_ROOT / "temp"
     shutil.rmtree(TEMP_DIR, ignore_errors=True)
@@ -841,7 +810,8 @@ def main() -> None:
     except Exception as e:
         logger.error(f"Could not read onboarding prompt: {e}")
         logger.error(traceback.format_exc())
-        print(f"Error: Could not read onboarding prompt. See log at {LOG_FILE}")
+        if not json_output:
+            print(f"Error: Could not read onboarding prompt. See log at {LOG_FILE}")
         sys.exit(1)
 
     # --------------------------------------------------------------------------
@@ -849,7 +819,7 @@ def main() -> None:
     # --------------------------------------------------------------------------
     env_verbose = os.getenv("VERBOSE") == "1"
     verbose = args.verbose or env_verbose
-    if verbose:
+    if verbose and not json_output:
         print("Verbose mode enabled\n")
     feedback_text = None
     if args.feedback:
@@ -882,14 +852,16 @@ def main() -> None:
                 provider,
             )
             if json_output:
-                sys.stdout.write(json.dumps(entry, indent=2))
+                original_stdout = sys.stdout._original if isinstance(sys.stdout, _Tee) else sys.stdout
+                original_stdout.write(json.dumps(entry, indent=2))
                 sys.exit(0)
             if entry:
                 results.append(entry)
         except Exception as e:  # noqa: BLE001
             if json_output:
                 error_payload = {"success": False, "error": str(e), "traceback": traceback.format_exc()}
-                sys.stderr.write(json.dumps(error_payload, indent=2))
+                original_stderr = sys.stderr._original if isinstance(sys.stderr, _Tee) else sys.stderr
+                original_stderr.write(json.dumps(error_payload, indent=2))
                 sys.exit(1)
             raise
     else:
@@ -907,6 +879,8 @@ def main() -> None:
     # [7.5] WRITE MASTER OUTPUT
     # --------------------------------------------------------------------------
     if results:
+        # NOTE: This writes a master list for batch runs, may not be needed
+        # for single-file runs via the web UI.
         OUTPUT_JSON.parent.mkdir(exist_ok=True)
         with open(OUTPUT_JSON, "w", encoding="utf-8") as out_f:
             json.dump(results, out_f, indent=2, ensure_ascii=False)
@@ -935,5 +909,11 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        sys.stderr.write(json.dumps({"error": str(e)}))
+        is_json_output = "--json-output" in sys.argv
+        if is_json_output:
+            error_payload = {"success": False, "error": str(e), "traceback": traceback.format_exc()}
+            original_stderr = sys.stderr._original if isinstance(sys.stderr, _Tee) else sys.stderr
+            original_stderr.write(json.dumps(error_payload, indent=2))
+        else:
+            print(f"\nFATAL ERROR: {e}", file=sys.stderr)
         sys.exit(1)

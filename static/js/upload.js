@@ -1,83 +1,90 @@
 /* ================================
-   ArtNarrator Upload JS (Fetch)
+   ArtNarrator Upload JS (XMLHttpRequest for Progress)
    ================================ */
 
-const dropzone = document.getElementById('dropzone');
-const fileInput = document.getElementById('file-input');
-const list = document.getElementById('upload-list');
+document.addEventListener('DOMContentLoaded', () => {
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('file-input');
+  
+  // Modal elements
+  const modal = document.getElementById('upload-modal');
+  const progressBar = document.getElementById('upload-bar');
+  const statusEl = document.getElementById('upload-status');
+  const filenameEl = document.getElementById('upload-filename');
 
-function createRow(file) {
-  const li = document.createElement('li');
-  li.textContent = file.name + ' ';
-  const barWrap = document.createElement('div');
-  barWrap.className = 'upload-progress';
-  const bar = document.createElement('div');
-  bar.className = 'upload-progress-bar';
-  barWrap.appendChild(bar);
-  const txt = document.createElement('span');
-  txt.className = 'upload-percent';
-  li.appendChild(barWrap);
-  li.appendChild(txt);
-  list.appendChild(li);
-  return {li, bar, txt};
-}
+  function uploadFile(file) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      formData.append('images', file);
 
-async function uploadFile(file) {
-  const {li, bar, txt} = createRow(file);
-  const data = new FormData();
-  data.append('images', file);
-  try {
-    const resp = await fetch('/upload', {
-      method: 'POST',
-      body: data,
-      headers: {'Accept': 'application/json'}
+      xhr.upload.addEventListener('progress', e => {
+        if (e.lengthComputable) {
+          const percentComplete = Math.round((e.loaded / e.total) * 100);
+          progressBar.style.width = percentComplete + '%';
+          statusEl.textContent = `${percentComplete}%`;
+        }
+      });
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(xhr.responseText);
+        } else {
+          reject(new Error(`Upload failed: ${xhr.statusText}`));
+        }
+      });
+
+      xhr.addEventListener('error', () => reject(new Error('Upload failed due to a network error.')));
+      xhr.addEventListener('abort', () => reject(new Error('Upload was aborted.')));
+
+      xhr.open('POST', '/upload', true);
+      xhr.setRequestHeader('Accept', 'application/json');
+      xhr.send(formData);
     });
-    let arr, res;
-    try { arr = await resp.json(); res = arr[0] || {}; } catch { res = {}; }
-    if (resp.ok && res.success) {
-      li.classList.add('success');
-      bar.style.width = '100%';
-      txt.textContent = 'Uploaded!';
-    } else {
-      li.classList.add('error');
-      txt.textContent = res.error || ('Error ' + resp.status);
-    }
-  } catch (err) {
-    li.classList.add('error');
-    txt.textContent = err.message || 'Upload failed';
   }
-}
 
-async function uploadFiles(files) {
-  if (!files || !files.length) return;
-  list.innerHTML = '';
-  for (const f of Array.from(files)) {
-    await uploadFile(f);
-  }
-  if (list.querySelector('li.success')) {
+  async function uploadFiles(files) {
+    if (!files || !files.length) return;
+    
+    modal.classList.add('active');
+
+    for (const file of Array.from(files)) {
+      filenameEl.textContent = `Uploading: ${file.name}`;
+      progressBar.style.width = '0%';
+      statusEl.textContent = '0%';
+      
+      try {
+        await uploadFile(file);
+        statusEl.textContent = 'Complete!';
+      } catch (error) {
+        statusEl.textContent = `Error: ${error.message}`;
+        await new Promise(res => setTimeout(res, 2000)); // Show error for 2s
+      }
+    }
+
+    // Redirect after all files are processed
+    modal.classList.remove('active');
     window.location.href = '/artworks';
   }
-}
 
-if (dropzone) {
-  ['dragenter', 'dragover'].forEach(evt => {
-    dropzone.addEventListener(evt, e => {
+  if (dropzone) {
+    ['dragenter', 'dragover'].forEach(evt => {
+      dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(evt => {
+      dropzone.addEventListener(evt, () => dropzone.classList.remove('dragover'));
+    });
+    dropzone.addEventListener('drop', e => {
       e.preventDefault();
-      dropzone.classList.add('dragover');
+      uploadFiles(e.dataTransfer.files);
     });
-  });
-  ['dragleave', 'drop'].forEach(evt => {
-    dropzone.addEventListener(evt, () => {
-      dropzone.classList.remove('dragover');
-    });
-  });
-  dropzone.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadFiles(e.dataTransfer.files);
-  });
-  dropzone.addEventListener('click', () => fileInput.click());
-}
+    dropzone.addEventListener('click', () => fileInput.click());
+  }
 
-if (fileInput) {
-  fileInput.addEventListener('change', () => uploadFiles(fileInput.files));
-}
+  if (fileInput) {
+    fileInput.addEventListener('change', () => uploadFiles(fileInput.files));
+  }
+});

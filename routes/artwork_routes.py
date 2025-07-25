@@ -1724,6 +1724,22 @@ def analyze_api(provider: str, filename: str):
             aspect, seo_file = edit_info
             edit_url = url_for("artwork.edit_listing", aspect=aspect, filename=seo_file)
 
+            # --- ADD THIS BLOCK TO WAIT FOR THE THUMBNAIL ---
+            try:
+                thumb_filename = config.FILENAME_TEMPLATES["thumbnail"].format(seo_slug=seo_folder)
+                thumb_path = config.PROCESSED_ROOT / seo_folder / thumb_filename
+
+                timeout = 5  # seconds
+                start_time = time.time()
+                while not thumb_path.exists():
+                    if time.time() - start_time > timeout:
+                        logger.warning(f"Timeout waiting for thumbnail: {thumb_path}")
+                        break
+                    time.sleep(0.2) # Check every 200ms
+            except Exception as e:
+                logger.error(f"Error while waiting for thumbnail: {e}")
+            # --- END OF NEW BLOCK ---
+
         # Build response with URL to the edit page. Clients using JavaScript
         # (fetch/XHR) expect JSON and will handle the redirect manually. A
         # normal form POST should receive an HTTP redirect.

@@ -4,6 +4,7 @@
 import json
 from pathlib import Path
 import threading
+import sys
 
 SKU_PREFIX = "RJC-"
 SKU_DIGITS = 4  # e.g., 0122 for 122
@@ -12,7 +13,6 @@ _LOCK = threading.Lock()  # for thread/process safety
 
 def get_next_sku(tracker_path: Path) -> str:
     """Safely increment and return the next sequential SKU."""
-    print("[SKU DEBUG] Using tracker file:", tracker_path)
     with _LOCK:
         # 1. Load or create tracker file
         if tracker_path.exists():
@@ -35,7 +35,6 @@ def get_next_sku(tracker_path: Path) -> str:
 
 def peek_next_sku(tracker_path: Path) -> str:
     """Return what the next SKU would be without incrementing."""
-    print("[SKU DEBUG] Peeking tracker file:", tracker_path)
     if tracker_path.exists():
         with open(tracker_path, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -46,4 +45,3 @@ def peek_next_sku(tracker_path: Path) -> str:
     next_sku_num = last_sku + 1
     next_sku_str = f"{SKU_PREFIX}{next_sku_num:0{SKU_DIGITS}d}"
     return next_sku_str
-

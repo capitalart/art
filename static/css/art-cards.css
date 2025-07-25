@@ -89,6 +89,16 @@
   margin-right: 8px;
   animation: spin 0.8s linear infinite;
 }
+
+.category-badge.uncategorised {
+  color: #e10000; /* A strong red color */
+  font-weight: bold;
+}
+
+.theme-dark .category-badge.uncategorised {
+  color: #ff5c5c; /* A lighter red for dark mode */
+}
+
 @keyframes spin { to { transform: rotate(360deg); } }
 .status-icon {
   position: absolute;

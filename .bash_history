@@ -249,3 +249,84 @@ git pull --no-rebase
 bash /home/art/project-toolkit.sh
 source venv/bin/activate
 bash /home/art/project-toolkit.sh
+source venv/bin/activate bash /home/art/project-toolkit
+source venv/bin/activate
+bash /home/art/project-toolkit.sh
+sudo nano /etc/systemd/system/gunicorn.service
+sudo systemctl edit --full gunicorn
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+bash /home/art/project-toolkit.sh
+source /home/art/venv/bin/activate
+/home/art/venv/bin/python
+source /home/art/venv/bin/activate
+sudo systemctl status gunicorn
+sudo journalctl -u gunicorn -f
+ps aux | grep gunicorn
+pkill gunicorn
+ps aux | grep gunicorn
+pkill gunicorn
+ps aux | grep gunicorn
+sudo systemctl stop gunicorn
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+source venv/bin/activate
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+chmod +x scripts/test_connections.py
+python3 scripts/test_connections.py
+bash /home/art/project-toolkit.sh
+python3 scripts/test_connections.py
+source /home/art/venv/bin/activate
+python3 scripts/test_connections.py
+sudo systemctl restart gunicorn
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo systemctl status gunicorn
+sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn
+sudo chown -R art:art /home/art/logs
+sudo systemctl start gunicorn
+sudo systemctl stop gunicorn
+sudo chown -R art:art /home/art/logs
+sudo systemctl stop gunicorn
+sudo chown -R art:art /home/art/logs
+sudo systemctl restart gunicorn
+sudo systemctl stop gunicorn
+sudo systemctl restart gunicorn
+sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl status gunicorn
+sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+python3 scripts/populate_gdws.py
+sudo systemctl restart gunicorn
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo systemctl status gunicorn
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn
+pip install imagehash
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn
+sudo systemctl stop gunicorn
+sudo chown -R art:art /home/art/logs
+sudo systemctl restart gunicorn
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn
+sudo systemctl restart gunicorn
+sudo journalctl -u gunicorn -f

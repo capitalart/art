@@ -2,16 +2,29 @@
 {% block title %}Upload Artwork{% endblock %}
 {% block content %}
 <div class="container">
-<div class="home-hero" >
-<h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="hero-step-icon" alt="Step 1: Upload" />Upload New Artwork</h1>
-</div>
-<form id="upload-form" method="post" enctype="multipart/form-data">
-  <input id="file-input" type="file" name="images" accept="image/*" multiple hidden>
-  <div id="dropzone" class="upload-dropzone">
-    Drag & Drop images here or click to choose files
+  <div class="home-hero" >
+    <h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="hero-step-icon" alt="Step 1: Upload" />Upload New Artwork</h1>
   </div>
-  <ul id="upload-list" class="upload-list"></ul>
-</form>
-<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+  <form id="upload-form" method="post" enctype="multipart/form-data">
+    <input id="file-input" type="file" name="images" accept="image/*" multiple hidden>
+    <div id="dropzone" class="upload-dropzone">
+      Drag & Drop images here or click to choose files
+    </div>
+    <ul id="upload-list" class="upload-list"></ul>
+  </form>
 </div>
+
+<div id="upload-modal" class="analysis-modal" role="dialog" aria-modal="true">
+  <div class="analysis-box" tabindex="-1">
+    <img src="{{ url_for('static', filename='icons/svg/light/upload-light.svg') }}" class="progress-icon" alt="">
+    <h3>Uploading...</h3>
+    <div id="upload-filename" style="margin-bottom: 0.5em; font-size: 0.9em; color: #555;"></div>
+    <div class="analysis-progress" aria-label="upload progress">
+        <div id="upload-bar" class="analysis-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+    </div>
+    <div id="upload-status" class="analysis-status" aria-live="polite">0%</div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 {% endblock %}
