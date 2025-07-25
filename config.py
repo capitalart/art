@@ -88,7 +88,7 @@ DB_PATH = DATA_DIR / "artnarrator.sqlite3"
 SKU_TRACKER = SETTINGS_DIR / "sku_tracker.json"
 ANALYSIS_STATUS_FILE = LOGS_DIR / "analysis_status.json"
 ONBOARDING_PATH = SETTINGS_DIR / "Master-Etsy-Listing-Description-Writing-Onboarding.txt"
-OUTPUT_JSON = OUTPUTS_DIR / "artwork_listing_master.json"
+OUTPUT_JSON = ART_PROCESSING_DIR / "master-artwork-paths.json"
 
 # -----------------------------------------------------------------------------
 # 5. FILE/FILENAME TEMPLATES

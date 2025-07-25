@@ -211,7 +211,7 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
     logger.info("[DEBUG] STDOUT: %s", result.stdout[:2000])
     logger.info("[DEBUG] STDERR: %s", result.stderr[:2000])
 
-    output = result.stdout
+    output = result.stdout.strip()
     logger.info("AI Analysis Output: %s", output)
 
     if result.returncode != 0:
@@ -222,7 +222,7 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
             msg = (result.stderr or "Unknown error").strip()
         raise RuntimeError(f"AI analysis failed: {msg}")
 
-    if not output.strip():
+    if not output:
         raise RuntimeError("AI analysis failed. Please try again.")
 
     try:

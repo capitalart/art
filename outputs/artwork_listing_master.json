@@ -378,5 +378,45 @@
       }
     ],
     "upload_date": "2025-07-24T12:27:34.282019+00:00"
+  },
+  "ce6ec28bc8dd45108039edee3f089bb3": {
+    "seo_filename": "banksia-flower-generate-an-aboriginal-dot-painting-of-a-banksia-flower-cone-and-leaves-focusing-on-t-61ed62d0.jpg",
+    "base": "banksia-flower-generate-an-aboriginal-dot-painting-of-a-banksia-flower-cone-and-leaves-focusing-on-t-61ed62d0",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-08",
+    "assets": [
+      "banksia-flower-generate-an-aboriginal-dot-painting-of-a-banksia-flower-cone-and-leaves-focusing-on-t-61ed62d0.jpg",
+      "banksia-flower-generate-an-aboriginal-dot-painting-of-a-banksia-flower-cone-and-leaves-focusing-on-t-61ed62d0-thumb.jpg",
+      "banksia-flower-generate-an-aboriginal-dot-painting-of-a-banksia-flower-cone-and-leaves-focusing-on-t-61ed62d0-analyse.jpg",
+      "banksia-flower-generate-an-aboriginal-dot-painting-of-a-banksia-flower-cone-and-leaves-focusing-on-t-61ed62d0.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-08",
+        "timestamp": "2025-07-25T00:45:10.205774+00:00"
+      }
+    ],
+    "upload_date": "2025-07-25T00:45:10.205774+00:00"
+  },
+  "69d5e25c8b6f433fbc3dbd5f9e5a9bc2": {
+    "seo_filename": "moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-1-fe2f9df8.jpg",
+    "base": "moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-1-fe2f9df8",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-09",
+    "assets": [
+      "moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-1-fe2f9df8.jpg",
+      "moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-1-fe2f9df8-thumb.jpg",
+      "moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-1-fe2f9df8-analyse.jpg",
+      "moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-1-fe2f9df8.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-09",
+        "timestamp": "2025-07-25T00:56:23.208799+00:00"
+      }
+    ],
+    "upload_date": "2025-07-25T00:56:23.208799+00:00"
   }
 }
