@@ -228,3 +228,24 @@ tail -f /home/art/logs/gunicorn/gunicorn-error.log
 sudo systemctl enable gunicorn
 source venv/bin/activate
 tail -f /home/art/logs/gunicorn/gunicorn-error.log
+source venv/bin/activate
+curl http://127.0.0.1:7777/health
+sudo systemctl status gunicorn
+sudo nano /etc/systemd/system/gunicorn.service
+sudo systemctl daemon-reload
+sudo systemctl status gunicorn
+sudo nano /etc/systemd/system/gunicorn.service
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+sudo chown -R art:art /home/art/logs/gunicorn
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+tail -f /home/art/logs/gunicorn/gunicorn-access.log
+source venv/bin/activate
+bash /home/art/project-toolkit.sh
+git pull origin main
+git pull --no-rebase
+bash /home/art/project-toolkit.sh
+source venv/bin/activate
+bash /home/art/project-toolkit.sh
