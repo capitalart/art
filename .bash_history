@@ -330,3 +330,16 @@ source /home/art/venv/bin/activate
 sudo systemctl stop gunicorn
 sudo systemctl restart gunicorn
 sudo journalctl -u gunicorn -f
+source venv/bin/activate
+bash /home/art/project-toolkit.sh
+git rev-list --objects --all | grep 2a2f9c4f352145d48b18da40b0ef7e1e1633d587
+git filter-repo --path .env --invert-paths
+sudo apt update
+sudo apt install git-filter-repo
+git filter-repo --help
+git filter-repo --path .env --invert-paths
+git filter-repo --path .env --invert-paths --force
+git push --force
+git remote add origin https://github.com/capitalart/art.git
+git remote -v
+git push --force origin main
