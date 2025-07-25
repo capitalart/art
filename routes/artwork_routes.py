@@ -1607,7 +1607,7 @@ def push_sellbrite_placeholder(aspect, filename):
     return redirect(url_for("artwork.finalised_gallery"))
 
 
-@bp.post("/analyze/<provider>/<filename>")
+@bp.post("/analyze-<provider>/<filename>")
 def analyze_api(provider: str, filename: str):
     """Analyze an artwork then redirect or return JSON for editing."""
 
