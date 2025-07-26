@@ -41,11 +41,14 @@
         {% for m in mockups %}
           <div class="mockup-card">
             {% if m.exists %}
-              {% set img_name = m.thumb.name if m.thumb_exists else m.path.name %}
               <a href="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}?t={{ cache_ts }}"
                  class="mockup-img-link"
                  data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}?t={{ cache_ts }}">
-                <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=img_name) }}?t={{ cache_ts }}" class="mockup-thumb-img" alt="Mockup preview {{ loop.index }}">
+                {% if m.thumb_exists %}
+                  <img src="{{ url_for('artwork.serve_mockup_thumb', seo_folder=seo_folder, filename=m.thumb.name) }}?t={{ cache_ts }}" class="mockup-thumb-img" alt="Mockup preview {{ loop.index }}">
+                {% else %}
+                  <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) }}?t={{ cache_ts }}" class="mockup-thumb-img" alt="Mockup preview {{ loop.index }}">
+                {% endif %}
               </a>
             {% else %}
               <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}" class="mockup-thumb-img" alt="Default mockup placeholder">
