@@ -359,8 +359,22 @@ def validate_listing_fields(data: dict, generic_text: str) -> list[str]:
 
 def get_categories_for_aspect(aspect: str) -> list[str]:
     """Return list of mockup categories available for the given aspect."""
+
+    logger = logging.getLogger(__name__)
+    logger.debug("[DEBUG] get_categories_for_aspect: aspect=%s", aspect)
+
     base = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised"
-    return [c for c in config.get_mockup_categories() if (base / c).is_dir()]
+    if not base.exists():
+        logger.warning("[DEBUG] Category folder missing: %s", base)
+        base = config.MOCKUPS_CATEGORISED_DIR / "4x5-categorised"
+        if not base.exists():
+            logger.error("[DEBUG] Default category folder also missing: %s", base)
+            return []
+
+    cats = [f.name for f in base.iterdir() if f.is_dir()]
+    cats = sorted(cats)[:25]
+    logger.debug("[DEBUG] categories resolved: %s", cats)
+    return cats
 
 
 @bp.app_context_processor
