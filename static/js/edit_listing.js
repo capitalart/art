@@ -86,6 +86,3 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleActionBtns();
 });
 
-function swapMockup(category) {
-  console.log('Swapping mockup for category: ' + category);
-}
