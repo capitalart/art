@@ -433,5 +433,45 @@
       }
     ],
     "upload_date": "2025-07-26T09:22:03.376187+00:00"
+  },
+  "89998b1ca201402eaaaed8a0919bb5b1": {
+    "seo_filename": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-1-aa1232d3.jpg",
+    "base": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-1-aa1232d3",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+    "assets": [
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-1-aa1232d3.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-1-aa1232d3-thumb.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-1-aa1232d3-analyse.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-1-aa1232d3.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+        "timestamp": "2025-07-26T10:43:50.119202+00:00"
+      }
+    ],
+    "upload_date": "2025-07-26T10:43:50.119202+00:00"
+  },
+  "0ca23b3ec592421db9d91d16f3bfa204": {
+    "seo_filename": "night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-2039a093.jpg",
+    "base": "night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-2039a093",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+    "assets": [
+      "night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-2039a093.jpg",
+      "night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-2039a093-thumb.jpg",
+      "night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-2039a093-analyse.jpg",
+      "night-seeds-rebirth-beneath-the-stars-desert-flora-sprouting-from-fire-country-under-a-swirling-star-2039a093.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+        "timestamp": "2025-07-26T11:30:44.700170+00:00"
+      }
+    ],
+    "upload_date": "2025-07-26T11:30:44.700170+00:00"
   }
 }
