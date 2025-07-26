@@ -357,6 +357,12 @@ def validate_listing_fields(data: dict, generic_text: str) -> list[str]:
         return errors
 
 
+def get_categories_for_aspect(aspect: str) -> list[str]:
+    """Return list of mockup categories available for the given aspect."""
+    base = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised"
+    return [c for c in config.get_mockup_categories() if (base / c).is_dir()]
+
+
 @bp.app_context_processor
 def inject_latest_artwork():
     latest = utils.latest_analyzed_artwork()
@@ -980,8 +986,17 @@ def edit_listing(aspect, filename):
                     p = Path(mp)
                     out = folder / f"{seo_folder}-{p.stem}.jpg"
                     cat = p.parent.name
+                tid = re.search(r"(\d+)$", out.stem)
+                thumb = folder / "THUMBS" / f"{seo_folder}-{aspect}-mockup-thumb-{tid.group(1) if tid else idx}.jpg"
                 mockups.append(
-                    {"path": out, "category": cat, "exists": out.exists(), "index": idx}
+                    {
+                        "path": out,
+                        "category": cat,
+                        "exists": out.exists(),
+                        "index": idx,
+                        "thumb": thumb,
+                        "thumb_exists": thumb.exists(),
+                    }
                 )
             return render_template(
                 "edit_listing.html",
@@ -993,9 +1008,7 @@ def edit_listing(aspect, filename):
                 mockups=mockups,
                 menu=utils.get_menu(),
                 colour_options=get_allowed_colours(),
-                categories=utils.get_mockup_categories(
-                    config.MOCKUPS_INPUT_DIR / f"{aspect}-categorised"
-                ),
+                categories=get_categories_for_aspect(aspect),
                 finalised=finalised,
                 locked=data.get("locked", False),
                 editable=not data.get("locked", False),
@@ -1121,8 +1134,17 @@ def edit_listing(aspect, filename):
             p = Path(mp)
             out = folder / f"{seo_folder}-{p.stem}.jpg"
             cat = p.parent.name
+        tid = re.search(r"(\d+)$", out.stem)
+        thumb = folder / "THUMBS" / f"{seo_folder}-{aspect}-mockup-thumb-{tid.group(1) if tid else idx}.jpg"
         mockups.append(
-            {"path": out, "category": cat, "exists": out.exists(), "index": idx}
+            {
+                "path": out,
+                "category": cat,
+                "exists": out.exists(),
+                "index": idx,
+                "thumb": thumb,
+                "thumb_exists": thumb.exists(),
+            }
         )
     return render_template(
         "edit_listing.html",
@@ -1134,9 +1156,7 @@ def edit_listing(aspect, filename):
         menu=utils.get_menu(),
         errors=None,
         colour_options=get_allowed_colours(),
-        categories=utils.get_mockup_categories(
-            config.MOCKUPS_INPUT_DIR / f"{aspect}-categorised"
-        ),
+        categories=get_categories_for_aspect(aspect),
         finalised=finalised,
         locked=data.get("locked", False),
         editable=not data.get("locked", False),

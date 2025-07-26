@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 import random
+import re
 from pathlib import Path
 from PIL import Image, ImageDraw
 import cv2
@@ -107,34 +108,61 @@ def main():
         art_img = Image.open(img_path)
         mockup_entries = []
         
-        categories = sorted([d for d in mockups_cat_dir.iterdir() if d.is_dir()])
-        for category_dir in categories:
-            png_mockups = list(category_dir.glob("*.png"))
-            if not png_mockups: continue
-            
-            selected_mockup = random.choice(png_mockups)
-            coord_path = coords_base_dir / category_dir.name / f"{selected_mockup.stem}.json"
-            
+        categories = [d for d in mockups_cat_dir.iterdir() if d.is_dir()]
+        selections = []
+        for cat in categories:
+            pngs = list(cat.glob("*.png"))
+            if pngs:
+                selections.append((cat, random.choice(pngs)))
+
+        if not selections:
+            print(f"⚠️ No mockups found for aspect {aspect}")
+            remove_from_queue(str(img_path), QUEUE_FILE)
+            continue
+
+        random.shuffle(selections)
+        if len(selections) >= 9:
+            selections = random.sample(selections, 9)
+        else:
+            while len(selections) < 9:
+                cat = random.choice(categories)
+                pngs = list(cat.glob("*.png"))
+                if pngs:
+                    selections.append((cat, random.choice(pngs)))
+            print(f"⚠️ Only {len(categories)} unique categories available; duplicates used to reach 9")
+
+        for cat_dir, mockup_file in selections:
+            coord_path = coords_base_dir / cat_dir.name / f"{mockup_file.stem}.json"
             if not coord_path.exists():
-                print(f"⚠️ Missing coordinates for {selected_mockup.name} ({aspect}/{category_dir.name})")
+                print(f"⚠️ Missing coordinates for {mockup_file.name} ({aspect}/{cat_dir.name})")
                 continue
 
             with open(coord_path, "r", encoding="utf-8") as f:
                 coords_data = json.load(f)
 
-            mockup_img = Image.open(selected_mockup)
+            mockup_img = Image.open(mockup_file)
             composite = apply_perspective_transform(art_img, mockup_img, coords_data["corners"])
 
-            output_filename = f"{seo_name}-{selected_mockup.stem}.jpg"
+            output_filename = f"{seo_name}-{mockup_file.stem}.jpg"
             output_path = folder / output_filename
             composite.convert("RGB").save(output_path, "JPEG", quality=90)
-            
+
+            tid = re.search(r"(\d+)$", mockup_file.stem)
+            thumb_dir = folder / "THUMBS"
+            thumb_dir.mkdir(parents=True, exist_ok=True)
+            thumb_filename = f"{seo_name}-{aspect}-mockup-thumb-{tid.group(1) if tid else '0'}.jpg"
+            thumb_path = thumb_dir / thumb_filename
+            if not thumb_path.exists():
+                thumb_img = composite.copy()
+                thumb_img.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
+                thumb_img.convert("RGB").save(thumb_path, "JPEG", quality=85)
+
             mockup_entries.append({
-                "category": category_dir.name,
-                "source": str(selected_mockup.relative_to(config.MOCKUPS_INPUT_DIR)),
+                "category": cat_dir.name,
+                "source": str(mockup_file.relative_to(config.MOCKUPS_INPUT_DIR)),
                 "composite": output_filename,
             })
-            print(f"   - Mockup created: {output_filename} ({category_dir.name})")
+            print(f"   - Mockup created: {output_filename} ({cat_dir.name})")
 
         listing_data = entry
         listing_data["mockups"] = mockup_entries
