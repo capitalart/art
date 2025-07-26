@@ -847,54 +847,23 @@ def review_regenerate_mockup(aspect, filename, slot_idx):
     return redirect(url_for("artwork.finalised_gallery"))
 
 
-@bp.route("/review/<seo_folder>/swap/<int:slot_idx>", methods=["POST"])
+
+@bp.route("/review-swap-mockup/<seo_folder>/<int:slot_idx>", methods=["POST"])
+@bp.route("/review/<seo_folder>/swap/<int:slot_idx>", methods=["POST"])  # legacy
 def review_swap_mockup(seo_folder, slot_idx):
-    new_cat = request.form["new_category"]
-    success = utils.swap_one_mockup(seo_folder, slot_idx, new_cat)
-
-    info = utils.find_aspect_filename_from_seo_folder(seo_folder)
-
-    if (
-        request.headers.get("X-Requested-With") == "XMLHttpRequest"
-        or request.accept_mimetypes.best == "application/json"
-    ):
-        img_url = ""
-        if success and info:
-            aspect, _filename = info
-            folder = utils.PROCESSED_ROOT / seo_folder
-            listing = folder / f"{seo_folder}-listing.json"
-            if not listing.exists():
-                folder = utils.FINALISED_ROOT / seo_folder
-                listing = folder / f"{seo_folder}-listing.json"
-            try:
-                data = utils.load_json_file_safe(listing)
-                mp = data.get("mockups", [])[slot_idx]
-                if isinstance(mp, dict):
-                    comp = mp.get("composite")
-                    if comp:
-                        img_url = url_for(
-                            "artwork.processed_image",
-                            seo_folder=seo_folder,
-                            filename=comp,
-                        )
-            except Exception:  # noqa: BLE001
-                img_url = ""
-        return jsonify({"success": success, "img_url": img_url})
-
-    if not success:
+    """Swap a mockup to a new category and redirect back to the edit page."""
+    new_category = request.form.get("new_category")
+    logger = logging.getLogger(__name__)
+    logger.info("Swapping mockup %s slot %s to %s", seo_folder, slot_idx, new_category)
+    success = utils.swap_one_mockup(seo_folder, slot_idx, new_category)
+    if success:
+        flash(f"Mockup slot {slot_idx} swapped to {new_category}", "success")
+    else:
         flash("Failed to swap mockup", "danger")
 
-    if info:
-        aspect, filename = info
-        return redirect(
-            url_for("artwork.edit_listing", aspect=aspect, filename=filename)
-        )
-
-    flash(
-        "Could not locate the correct artwork for editing after swap. Please check the gallery.",
-        "warning",
+    return redirect(
+        url_for("artwork.edit_listing", aspect="4x5", filename=f"{seo_folder}.jpg")
     )
-    return redirect(url_for("artwork.finalised_gallery"))
 
 
 @bp.route("/edit-listing/<aspect>/<filename>", methods=["GET", "POST"])
