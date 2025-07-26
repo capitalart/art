@@ -28,6 +28,7 @@ from routes.export_routes import bp as exports_bp
 from routes.auth_routes import bp as auth_bp
 from routes.admin_security import bp as admin_bp
 from routes.mockup_admin_routes import bp as mockup_admin_bp
+from routes.coordinate_admin_routes import bp as coordinate_admin_bp
 from routes.gdws_admin_routes import bp as gdws_admin_bp
 from routes.test_routes import test_bp
 from routes.api_routes import bp as api_bp
@@ -117,6 +118,7 @@ app.register_blueprint(sellbrite_bp)
 app.register_blueprint(exports_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(mockup_admin_bp)
+app.register_blueprint(coordinate_admin_bp)
 app.register_blueprint(gdws_admin_bp)
 app.register_blueprint(test_bp)
 app.register_blueprint(api_bp)

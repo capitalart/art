@@ -343,3 +343,10 @@ git push --force
 git remote add origin https://github.com/capitalart/art.git
 git remote -v
 git push --force origin main
+source venv/bin/activate
+bash /home/art/project-toolkit.sh
+source venv/bin/activate
+python3 scripts/test_sellbrite_add_listing.py --dry-run
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn
+sudo journalctl -u gunicorn -f
