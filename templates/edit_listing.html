@@ -11,11 +11,25 @@
     <h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="hero-step-icon" alt="Step 3: Edit Listing" />Edit Listing</h1>
   </div>
 
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+      <div class="flash-block">
+        {% for cat, msg in msgs %}
+          <div class="flash-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
   <div class="review-artwork-grid row">
     <div class="col col-6 mockup-col">
       <div class="main-thumb">
-        <a href="#" class="main-thumb-link" data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'.jpg') }}?t={{ cache_ts }}">
-          <img src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder+'-THUMB.jpg') }}?t={{ cache_ts }}" class="main-artwork-thumb" alt="Main artwork thumbnail for {{ seo_folder }}">
+        {% set m_thumb = 'art-processing/processed-artwork/' + seo_folder + '/THUMBS/' + seo_folder + '-thumb.jpg' %}
+        {% set m_full = 'art-processing/processed-artwork/' + seo_folder + '/' + seo_folder + '.jpg' %}
+        <a href="#" class="main-thumb-link" data-img="{{ url_for('static', filename=m_full) }}?t={{ cache_ts }}">
+          <img src="{{ url_for('static', filename=m_thumb) }}?t={{ cache_ts }}"
+               onerror="this.onerror=null; this.src='{{ url_for('static', filename=m_full) }}?t={{ cache_ts }}';"
+               class="main-artwork-thumb" alt="Main artwork thumbnail for {{ seo_folder }}">
         </a>
         <div class="thumb-note">Click thumbnail for full size</div>
       </div>

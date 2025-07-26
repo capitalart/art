@@ -42,36 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (e.key === 'ArrowRight') show(idx + 1);
   });
 
+
   /* --------- [ EL2. Swap Mockup Forms ] --------- */
-  document.querySelectorAll('.swap-form').forEach(form => {
-    form.addEventListener('submit', ev => {
-      ev.preventDefault();
-      const sel = form.querySelector('select[name="new_category"]');
-      const data = new FormData();
-      data.append('new_category', sel.value);
-      fetch(form.action, {
-        method: 'POST',
-        body: data,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-      })
-      .then(r => r.json())
-      .then(d => {
-        if (d.success && d.img_url) {
-          const card = form.closest('.mockup-card');
-          const img = card.querySelector('.mockup-thumb-img');
-          if (img) img.src = d.img_url + '?t=' + Date.now();
-          const link = card.querySelector('.mockup-img-link');
-          if (link) {
-            link.href = d.img_url;
-            link.dataset.img = d.img_url;
-          }
-        } else {
-          window.location.reload();
-        }
-      })
-      .catch(() => window.location.reload());
-    });
-  });
+  // Legacy AJAX swap disabled; form now submits normally to backend
 
   /* --------- [ EL3. Enable Action Buttons ] --------- */
   function toggleActionBtns() {
