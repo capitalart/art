@@ -15,7 +15,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 
 # -----------------------------------------------------------------------------
-# 1. ENV/BRANDING/ADMIN
+# 1. ENV/BRANDING/ADMINcat /home/art/logs/composites-workflow.log
 # -----------------------------------------------------------------------------
 BRAND_NAME = os.getenv("BRAND_NAME", "Art Narrator")
 BRAND_TAGLINE = os.getenv("BRAND_TAGLINE", "Create. Automate. Sell Art.")
