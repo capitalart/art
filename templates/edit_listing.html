@@ -28,6 +28,15 @@
     </div>
     <div>
       <h3>Preview Mockups</h3>
+      {# Debug: list categories passed in #}
+      <div class="debug-categories">
+        <strong>Categories:</strong>
+        {% if categories %}
+          {{ categories | join(', ') }}
+        {% else %}
+          none
+        {% endif %}
+      </div>
       <div class="mockup-preview-grid">
         {% for m in mockups %}
           <div class="mockup-card">
@@ -41,14 +50,18 @@
             {% else %}
               <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}" class="mockup-thumb-img" alt="Default mockup placeholder">
             {% endif %}
-            <form role="form" method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
-              <select name="new_category" aria-label="Swap mockup category for mockup {{ loop.index }}">
-                {% for c in categories %}
-                  <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
-                {% endfor %}
-              </select>
-              <button type="submit" class="btn btn-sm" onclick="swapMockup('{{ m.category }}')">Swap</button>
-            </form>
+            {% if categories %}
+              <form role="form" method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
+                <select name="new_category" aria-label="Swap mockup category for mockup {{ loop.index }}">
+                  {% for c in categories %}
+                    <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-sm" onclick="swapMockup('{{ m.category }}')">Swap</button>
+              </form>
+            {% else %}
+              <div class="no-categories-warning">No categories found.</div>
+            {% endif %}
           </div>
         {% endfor %}
       </div>
