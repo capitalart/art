@@ -1213,6 +1213,13 @@ def locked_image(seo_folder, filename):
     return send_from_directory(folder, filename)
 
 
+@bp.route("/thumbs/<seo_folder>/<filename>")
+def serve_mockup_thumb(seo_folder: str, filename: str):
+    """Serve mockup thumbnails from the THUMBS directory."""
+    thumb_folder = utils.PROCESSED_ROOT / seo_folder / "THUMBS"
+    return send_from_directory(thumb_folder, filename)
+
+
 @bp.route("/artwork-img/<aspect>/<filename>")
 def artwork_image(aspect, filename):
     folder = utils.UNANALYSED_ROOT / aspect
