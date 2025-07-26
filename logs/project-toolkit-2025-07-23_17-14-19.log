@@ -1,7 +1,0 @@
-[1;36m[INFO][0m Working in: /home/art
-[1;36m[INFO][0m [SelfTest] Running OpenAI Artwork Analysis Self-Test
-[1;36m[INFO][0m Testing OpenAI analysis on: tests/opneai-analysys-tests/test-artwork-analysis-01/test-image-01-for-analyse.jpg
-[1;32m[SUCCESS][0m OpenAI artwork analysis succeeded! Output: tests/opneai-analysys-tests/test-artwork-analysis-01/test-image-01-for-analyse-openai-2025-07-23_17-14-32.json
-[1;36m[INFO][0m [SelfTest] Running OpenAI Artwork Analysis Self-Test
-[1;36m[INFO][0m Testing OpenAI analysis on: tests/opneai-analysys-tests/test-artwork-analysis-02/test-image-02-for-analyse.jpg
-[1;31m[ERROR][0m OpenAI analysis failed! See tests/opneai-analysys-tests/test-artwork-analysis-02/test-image-02-for-analyse-openai-2025-07-23_17-15-00.json

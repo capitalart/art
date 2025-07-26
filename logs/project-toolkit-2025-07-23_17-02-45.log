@@ -1,6 +1,0 @@
-[1;36m[INFO][0m Working in: /home/art
-[1;36m[INFO][0m [SelfTest] Running OpenAI Artwork Analysis Self-Test
-[1;36m[INFO][0m Testing OpenAI analysis on: tests/opneai-analysys-tests/test-artwork-analysis-01/test-image-01-for-analyse.jpg
-[1;32m[SUCCESS][0m OpenAI artwork analysis succeeded! Output: tests/opneai-analysys-tests/test-artwork-analysis-01/test-image-01-for-analyse-openai-2025-07-23_17-02-58.json
-[1;36m[INFO][0m [SelfTest] Running Google Artwork Analysis Self-Test
-[1;36m[INFO][0m Testing Google analysis on: tests/google-analysys-tests/test-artwork-analysis-03/test-image-03-for-analyse.jpg

@@ -350,3 +350,45 @@ python3 scripts/test_sellbrite_add_listing.py --dry-run
 source /home/art/venv/bin/activate
 sudo systemctl stop gunicorn && sudo systemctl start gunicorn
 sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+bash /home/art/project-toolkit.sh
+sudo systemctl status gunicorn
+ps aux | grep gunicorn
+sudo systemctl stop gunicorn
+ps aux | grep gunicorn
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+pkill gunicorn
+ps aux | grep gunicorn
+pkill gunicorn
+ps aux | grep gunicorn
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn 
+pkill gunicorn
+ps aux | grep gunicorn
+ps aux | grep 'gunicorn: master'
+sudo kill -9 85319
+sudo systemctl status gunicorn
+sudo systemctl restart gunicorn
+ps aux | grep 'gunicorn: master'
+sudo kill -9 87210
+pkill gunicorn
+sudo systemctl stop gunicorn
+ps aux | grep gunicorn
+sudo systemctl start gunicorn
+sudo journalctl -u gunicorn.service --since "5 minutes ago"
+sudo journalctl -u gunicorn.service --since "5 minutes ago" --no-pager
+sudo systemctl stop gunicorn.service
+source /home/art/venv/bin/activate
+gunicorn --workers 1 --bind 127.0.0.1:8000 app:app
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+sudo systemctl stop gunicorn.service
+deactivate
+source /home/art/venv/bin/activate
+gunicorn --config /home/art/gunicorn.conf.py app:app
+source /home/art/venv/bin/activate
+python3 scripts/run_coordinate_generator.py
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+sudo journalctl -u gunicorn -f
+mkdir -p /home/art/logs/gunicorn/
+sudo systemctl restart gunicorn.service
