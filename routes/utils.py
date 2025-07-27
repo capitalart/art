@@ -1080,3 +1080,16 @@ def assemble_gdws_description(aspect_ratio: str) -> str:
 
     logger.info(f"Assembled description from {len(description_parts)} GDWS paragraphs for '{aspect_ratio}'.")
     return "\n\n".join(description_parts)
+
+def remove_record_from_registry(uid: str) -> bool:
+    """Safely remove a record from the master JSON registry by its UID."""
+    if not uid:
+        return False
+    
+    reg = _load_registry()
+    if uid in reg:
+        del reg[uid]
+        _save_registry(reg)
+        logging.getLogger(__name__).info(f"Removed record {uid} from registry.")
+        return True
+    return False

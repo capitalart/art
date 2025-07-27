@@ -7,24 +7,48 @@ document.addEventListener('DOMContentLoaded', function() {
   const bar = document.getElementById('analysis-bar');
   const statusEl = document.getElementById('analysis-status');
   const closeBtn = document.getElementById('analysis-close');
+  const timerEl = document.getElementById('analysis-timer'); // Get the timer element
   const statusUrl = document.body.dataset.analysisStatusUrl;
-  let pollStatus;
 
+  let pollStatus;
+  let timerInterval;
+  let secondsElapsed = 0;
+
+  // --- Timer Functions ---
+  function startTimer() {
+    if (timerEl) {
+        secondsElapsed = 0;
+        timerEl.textContent = '0s';
+        timerInterval = setInterval(() => {
+            secondsElapsed++;
+            timerEl.textContent = `${secondsElapsed}s`;
+        }, 1000);
+    }
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+  }
+
+  // --- Modal Control Functions ---
   function openModal(opts = {}) {
     modal.classList.add('active');
+    statusEl.textContent = 'Starting...';
+    bar.style.width = '0%';
+    startTimer(); // Start the timer when the modal opens
+    
     if (opts.message) {
       statusEl.textContent = opts.message;
-      if(bar) bar.style.width = '0%';
+      stopTimer(); // Stop timer if it's just a message
     } else {
       fetchStatus();
-      pollStatus = setInterval(fetchStatus, 1000);
+      pollStatus = setInterval(fetchStatus, 1500);
     }
-    // Corrected to find the right element to focus on
-    modal.querySelector('.modal-box').focus();
   }
 
   function closeModal() {
     modal.classList.remove('active');
+    stopTimer(); // Stop the timer when the modal closes
     clearInterval(pollStatus);
   }
 
@@ -34,80 +58,39 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(r => r.json())
       .then(d => {
         const pct = d.percent || 0;
-        if (bar) {
-            bar.style.width = pct + '%';
-            bar.setAttribute('aria-valuenow', pct);
-        }
-        if (statusEl) {
-            if (d.status === 'failed') {
-              statusEl.textContent = 'FAILED: ' + (d.error || 'Unknown error');
-              clearInterval(pollStatus);
-            } else if (d.status === 'complete') {
-              statusEl.textContent = 'Complete';
-              clearInterval(pollStatus);
-            } else {
-              statusEl.textContent = d.step || 'Analyzing';
-            }
+        bar.style.width = pct + '%';
+        
+        if (d.status === 'failed') {
+          statusEl.textContent = 'FAILED: ' + (d.error || 'Unknown error');
+          stopTimer();
+          clearInterval(pollStatus);
+        } else if (d.status === 'complete') {
+          statusEl.textContent = 'Complete';
+          stopTimer();
+          clearInterval(pollStatus);
+        } else {
+          statusEl.textContent = d.step || 'Analyzing...';
         }
       });
   }
+  
+  function setMessage(msg) {
+      if(statusEl) statusEl.textContent = msg;
+      stopTimer();
+      clearInterval(pollStatus);
+  }
 
+  // --- Event Listeners ---
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
   
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeModal();
-    }
+    if (e.target === modal) closeModal();
   });
 
   modal.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
   });
 
-  // This selector was incorrect. It now correctly finds all analysis forms.
-  document.querySelectorAll('.btn-analyze').forEach(button => {
-    button.addEventListener('click', function(ev) {
-      ev.preventDefault();
-      
-      // Manually find the form data instead of relying on a wrapping form element
-      const card = button.closest('.gallery-card');
-      const filename = card.dataset.filename;
-      const provider = button.dataset.provider;
-      const actionUrl = `/analyze-${provider}/${encodeURIComponent(filename)}`;
-      
-      openModal();
-
-      fetch(actionUrl, {
-          method: 'POST',
-          headers: {
-              'X-Requested-With': 'XMLHttpRequest'
-          }
-      })
-      .then(resp => {
-        if (!resp.ok) {
-            // Handle HTTP errors
-            return resp.json().then(err => Promise.reject(err));
-        }
-        return resp.json();
-      })
-      .then(data => {
-        if (data.success && data.edit_url) {
-            statusEl.textContent = 'Complete! Redirecting...';
-            setTimeout(() => {
-                window.location.href = data.edit_url;
-            }, 1000);
-        } else {
-            throw new Error(data.error || 'Analysis failed to return a valid URL.');
-        }
-      })
-      .catch(error => {
-        console.error('Analysis fetch error:', error);
-        statusEl.textContent = `Error: ${error.error || 'A server error occurred.'}`;
-        clearInterval(pollStatus);
-      });
-    });
-  });
-
-  // Make the modal functions globally accessible if needed by other scripts
-  window.AnalysisModal = { open: openModal, close: closeModal };
+  // Make the modal functions globally accessible
+  window.AnalysisModal = { open: openModal, close: closeModal, setMessage: setMessage };
 });

@@ -1359,7 +1359,7 @@ def finalise_artwork(aspect, filename):
         listing_file = final_dir / f"{seo_folder}-listing.json"
         if listing_file.exists():
             # Always allocate a fresh SKU on finalisation
-            utils.assign_or_get_sku(listing_file, config.SKU_TRACKER, force=True)
+            utils.assign_or_get_sku(listing_file, config.SKU_TRACKER)
             listing_data = utils.load_json_file_safe(listing_file)
             listing_data.setdefault("locked", False)
 
@@ -1851,52 +1851,60 @@ def analyze_google(filename: str):
     return analyze_api("google", filename)
 
 
+# In routes/artwork_routes.py
+
 @bp.post("/delete/<filename>")
 def delete_artwork(filename: str):
-    """Delete all files for an artwork."""
+    """Delete all files and registry entries for an artwork."""
     logger = logging.getLogger(__name__)
-    base = Path(filename).stem
+    user = session.get("username", "unknown")
+    
     try:
-        deleted = False
+        # --- THE FIX: Find the correct seo_folder first ---
+        # This resolves the bug where the wrong folder name was being used.
+        seo_folder, _, _, _ = utils.resolve_listing_paths("", filename)
+        
+        # Now, delete the folder from all possible locations using the correct name
+        shutil.rmtree(config.PROCESSED_ROOT / seo_folder, ignore_errors=True)
+        shutil.rmtree(config.FINALISED_ROOT / seo_folder, ignore_errors=True)
+        shutil.rmtree(config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}", ignore_errors=True)
+        logger.info(f"Deleted artwork folders for: {seo_folder}")
+
+        # Delete the original source file from the unanalysed directory
+        base = Path(filename).stem
         for p in config.UNANALYSED_ROOT.rglob(f"{base}*"):
             p.unlink(missing_ok=True)
-            deleted = True
-        try:
-            seo_folder, folder, listing_path, _ = utils.resolve_listing_paths(
-                "", filename
-            )
-            with open(listing_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            aspect = data.get("aspect_ratio", "")
-            for target in [
-                utils.PROCESSED_ROOT / seo_folder,
-                utils.FINALISED_ROOT / seo_folder,
-                utils.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}",
-            ]:
-                shutil.rmtree(target, ignore_errors=True)
-            if aspect:
-                try:
-                    os.remove(utils.UNANALYSED_ROOT / aspect / filename)
-                except Exception:
-                    pass
-            deleted = True
-        except FileNotFoundError:
-            pass
-        if deleted:
-            utils.cleanup_unanalysed_folders()
-            logger.info("Deleted artwork %s", filename)
-            return jsonify({"success": True})
-        return jsonify({"success": False, "error": "Artwork not found"}), 404
-    except Exception as exc:  # noqa: BLE001
+
+        # Remove the record from the master JSON registry
+        uid, _ = utils.get_record_by_seo_filename(filename)
+        if uid:
+            utils.remove_record_from_registry(uid)
+            log_action("delete", filename, user, f"Deleted files and registry record UID {uid}")
+        else:
+            log_action("delete", filename, user, "Deleted files, no registry record found")
+
+        utils.cleanup_unanalysed_folders()
+        logger.info("Successfully deleted all assets for %s", filename)
+        return jsonify({"success": True})
+
+    except FileNotFoundError:
+        # This can happen if the listing.json is gone but some files remain.
+        # Still attempt to clean up what's left.
+        base = Path(filename).stem
+        for p in config.UNANALYSED_ROOT.rglob(f"{base}*"):
+            p.unlink(missing_ok=True)
+        logger.warning(f"Could not find listing for {filename}, but cleaned up unanalysed files.")
+        return jsonify({"success": True, "message": "Partial cleanup performed."})
+
+    except Exception as exc:
         tb = traceback.format_exc()
         logger.error("Delete error for %s: %s", filename, exc)
         logger.error(tb)
-        debug = config.DEBUG
         error = str(exc)
-        if debug:
+        if config.DEBUG:
             error += "\n" + tb
         return jsonify({"success": False, "error": error}), 500
-
+    
 
 @bp.route("/logs/openai")
 @bp.route("/logs/openai/<date>")

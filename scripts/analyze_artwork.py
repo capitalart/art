@@ -118,6 +118,14 @@ class _Tee:
 
 # ======================== [ 3. UTILITY FUNCTIONS ] ==========================
 
+def log_process_time(process_name, duration_seconds, artwork_filename):
+    """Logs the duration of a specific process to a dedicated log file."""
+    log_file = config.LOGS_DIR / "timer_log.log"
+    timestamp = _dt.datetime.now(_dt.timezone.utc).isoformat()
+    log_message = f"{timestamp} - PROCESS: {process_name}, DURATION: {duration_seconds:.2f}s, ARTWORK: {artwork_filename}\n"
+    with open(log_file, "a", encoding="utf-8") as f:
+        f.write(log_message)
+
 def get_aspect_ratio(image_path: Path) -> str:
     """Return closest aspect ratio label for given image."""
     with Image.open(image_path) as img:
@@ -164,7 +172,7 @@ def slugify(text: str) -> str:
 
 
 # Use the central SKU assigner for all SKU operations
-from utils.sku_assigner import get_next_sku, peek_next_sku
+from utils.sku_assigner import get_next_sku
 
 
 def sync_filename_with_sku(seo_filename: str, sku: str) -> str:
@@ -552,10 +560,9 @@ def analyze_single(
         # ----------------------------------------------------------------------
         aspect = get_aspect_ratio(image_path)
         mockups = pick_mockups(aspect, MOCKUPS_PER_LISTING)
-        # UPDATED: Use the new GDWS assembler function
         generic_text = assemble_gdws_description(aspect)
         fallback_base = image_path.stem
-        assigned_sku = peek_next_sku(SKU_TRACKER)
+        assigned_sku = get_next_sku(SKU_TRACKER)
 
         # ----------------------------------------------------------------------
         # [6.5] OPTIMIZE IMAGE FOR AI
@@ -577,6 +584,8 @@ def analyze_single(
             "provider": provider,
         }
         start_ts = _dt.datetime.now(_dt.timezone.utc)
+        log_process_time("Analysis Start", 0, image_path.name)
+
         analysis_entry = {
             "original_file": str(image_path),
             "user_id": USER_ID,
@@ -594,6 +603,7 @@ def analyze_single(
         ai_listing, was_json, raw_response, err_type, err_msg = generate_ai_listing(
             provider, system_prompt, opt_img, aspect, assigned_sku, feedback_text, verbose=verbose,
         )
+        log_process_time("AI API Call", (_dt.datetime.now(_dt.timezone.utc) - start_ts).total_seconds(), image_path.name)
 
         # ----------------------------------------------------------------------
         # [6.7] ERROR HANDLING (LOGGING, FAIL EARLY)
@@ -644,6 +654,8 @@ def analyze_single(
         main_jpg, orig_jpg, thumb_jpg, folder_path = save_finalised_artwork(
             image_path, seo_name, PROCESSED_ROOT, verbose=verbose,
         )
+        log_process_time("File Processing", (_dt.datetime.now(_dt.timezone.utc) - start_ts).total_seconds(), image_path.name)
+        
         primary_colour, secondary_colour = get_dominant_colours(Path(main_jpg), 2)
 
         end_ts = _dt.datetime.now(_dt.timezone.utc)
@@ -697,7 +709,7 @@ def analyze_single(
 
         if not existing_sku:
             existing_sku = assigned_sku
-            logger.info(f"Previewing SKU {existing_sku} for {seo_name} (not yet assigned)")
+            logger.info(f"Using newly assigned SKU {existing_sku} for {seo_name}")
 
         if isinstance(ai_listing, dict):
             ai_listing["sku"] = existing_sku

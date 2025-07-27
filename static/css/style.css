@@ -5,16 +5,16 @@
 
 :root {
   --font-primary: monospace !important;
-  --color-background: #FFFFFF;
+  --color-background: #bbbbbb;
   --color-text: #111111;
-  --color-card-bg: #f9f9f9;
+  --color-card-bg: #bbbbbb;
   --color-header-border: #eeeeee;
-  --color-footer-bg: #FFFFFF;
+  --color-footer-bg: #bbbbbb;
   --color-footer-text: #111111;
   --color-footer-border: #dddddd;
-  --header-bg: #ffffff;
-  --table-row-bg: #ffffff;
-  --table-row-alt-bg: #f4f4f4;
+  --header-bg: #bbbbbb;
+  --table-row-bg: #bbbbbb;
+  --table-row-alt-bg: #adadad;
   --dark-color-footer-bg: #181818;
   --dark-color-footer-text: #FFFFFF;
   --color-hover: #ffa52a;
@@ -24,9 +24,9 @@
   --color-accent-hover: #ff9933;
   --card-border: #c8c7c7;
   --workflow-icon-size: 2.1em;
-  --dark-color-background: #111111;
+  --dark-color-background: #333333;
   --dark-color-text: #FFFFFF;
-  --dark-color-card-bg: #1a1a1a;
+  --dark-color-card-bg: #727272;
   --dark-card-border: #727272;
   --light-card-border: #727272;
 }
@@ -35,7 +35,7 @@
 .theme-dark {
   --color-background: var(--dark-color-background);
   --color-text: var(--dark-color-text);
-  --color-card-bg: var(--dark-color-card-bg);
+  --color-card-bg: #bbbbbb;
   --card-border: var(--dark-card-border);
   --color-footer-bg: var(--dark-color-footer-bg);
   --color-footer-text: var(--dark-color-footer-text);

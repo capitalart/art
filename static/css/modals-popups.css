@@ -98,7 +98,6 @@
 }
 
 /* --- Carousel Specific Styles --- */
-/* --- Carousel Specific Styles --- */
 .carousel-modal .modal-box {
   background: transparent;
   box-shadow: none;
@@ -115,6 +114,12 @@
   width: auto;        /* Maintain aspect ratio */
   height: auto;       /* Maintain aspect ratio */
   box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+}
+
+.modal-timer {
+  font-size: 0.9em;
+  color: #999;
+  margin-bottom: 0.5rem;
 }
 
 .carousel-nav {

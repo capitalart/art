@@ -4,7 +4,6 @@
 
 {% block content %}
 <div class="container">
-  <!-- === [ edit-listing-html-2: Page Header ] === -->
   <div class="home-hero">
     <h1>
       <img
@@ -15,7 +14,6 @@
     </h1>
   </div>
 
-  <!-- === [ edit-listing-html-3: Flash Messages ] === -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="flash-message-block">
@@ -26,16 +24,14 @@
     {% endif %}
   {% endwith %}
 
-  <!-- === [ edit-listing-html-4: Main Grid Layout ] === -->
   <div class="review-artwork-grid row">
-    <!-- === [ 4a: Left Column - Artwork & Mockups ] === -->
     <div class="col col-6 mockup-col">
       <div class="main-thumb">
-        <a
-          href="#"
-          class="main-thumb-link"
-          data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '.jpg') }}?t={{ cache_ts }}"
-        >
+          <a
+            href="#"
+            class="main-thumb-link"
+            data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '-ANALYSE.jpg') }}?t={{ cache_ts }}"
+          >
           <img
             src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '-THUMB.jpg') }}?t={{ cache_ts }}"
             class="main-artwork-thumb"
@@ -46,32 +42,30 @@
       </div>
 
       <h3>Preview Mockups</h3>
-       <div class="mockup-preview-grid">
+      <div class="mockup-preview-grid">
         {% for m in mockups %}
           <div class="mockup-card" id="mockup-card-{{ m.index }}">
-            {% if m.exists %}
+            {% if m.exists and m.thumb_exists %}
               {% set thumb_url = url_for('artwork.serve_mockup_thumb', seo_folder=seo_folder, filename=m.thumb.name) %}
               {% set full_url = url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) %}
-              {# In templates/edit_listing.html #}
-                  <a
-                    href="{{ full_url ~ '?t=' ~ cache_ts }}"
-                    class="mockup-img-link"
-                    id="mockup-link-{{ m.index }}"
-                    data-img="{{ full_url ~ '?t=' ~ cache_ts }}"
-                  >
-                    <img
-                      id="mockup-img-{{ m.index }}"
-                      src="{{ thumb_url ~ '?t=' ~ cache_ts }}"
-                      data-fallback="{{ full_url ~ '?t=' ~ cache_ts }}"
-                      class="mockup-thumb-img"
-                      alt="Mockup preview {{ loop.index }}"
-                    />
+              <a
+                href="{{ full_url ~ '?t=' ~ cache_ts }}"
+                class="mockup-img-link"
+                id="mockup-link-{{ m.index }}"
+                data-img="{{ full_url ~ '?t=' ~ cache_ts }}"
+              >
+                <img
+                  id="mockup-img-{{ m.index }}"
+                  src="{{ thumb_url ~ '?t=' ~ cache_ts }}"
+                  data-fallback="{{ full_url ~ '?t=' ~ cache_ts }}"
+                  class="mockup-thumb-img"
+                  alt="Mockup preview {{ loop.index }}"
+                />
                 <div class="mockup-overlay">
                   <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="spinner-icon" alt="Loading...">
                 </div>
-                <div class="thumb-note">Click for full-size</div>
               </a>
-              
+              <div class="thumb-note">Click to preview full-size</div>
             {% else %}
               <img
                 src="{{ url_for('static', filename='img/default-mockup.jpg') }}"
@@ -90,7 +84,6 @@
                 </select>
                 <div class="swap-btn-container">
                   <button type="button" class="btn btn-sm swap-btn" data-index="{{ m.index }}">Swap</button>
-                  <div class="swap-spinner"></div>
                 </div>
               </div>
             {% else %}
@@ -99,10 +92,7 @@
           </div>
         {% endfor %}
       </div>
-    </div>
-
-    <!-- === [ 4b: Right Column - Metadata Form & Actions ] === -->
-    <div class="col col-6 edit-listing-col">
+    </div> <div class="col col-6 edit-listing-col">
       <p class="status-line {% if finalised %}status-finalised{% else %}status-pending{% endif %}">
         Status: This artwork is {% if finalised %}<strong>finalised</strong>{% else %}<em>NOT yet finalised</em>{% endif %}
         {% if locked %}<span class="locked-badge">Locked</span>{% endif %}
@@ -214,8 +204,8 @@
                 <tr><th>Time Responded</th><td>{{ info.time_responded }}</td></tr>
                 <tr><th>Duration</th><td>{{ info.duration_sec }} s</td></tr>
                 <tr><th>Status</th><td>{{ info.status }}</td></tr>
-                {% if info.api_response %}<tr><th>API Response</th><td>{{ info.api_response }}</td></tr>{% endif %}
-                {% if info.naming_method %}<tr><th>Naming Method</th><td>{{ info.naming_method }}{% if info.used_fallback_naming %} (fallback){% endif %}</td></tr>{% endif %}
+                {% if info.api_response %}<th>API Response</th><td>{{ info.api_response }}</td>{% endif %}
+                {% if info.naming_method %}<th>Naming Method</th><td>{{ info.naming_method }}{% if info.used_fallback_naming %} (fallback){% endif %}</td>{% endif %}
               </tbody>
             </table>
           {% endfor %}
@@ -224,7 +214,6 @@
     </div>
   </div>
 
-  <!-- === [ edit-listing-html-5: Modal Carousel ] === -->
   <div id="mockup-carousel" class="modal-bg" tabindex="-1">
     <button id="carousel-close" class="modal-close" aria-label="Close">&times;</button>
     <button id="carousel-prev" class="carousel-nav" aria-label="Previous">&#10094;</button>
@@ -233,7 +222,6 @@
   </div>
 </div>
 
-<!-- === [ edit-listing-html-6: JavaScript Includes ] === -->
 <script>
   // Pass necessary info from Flask/Jinja2 to the JavaScript file
   window.EDIT_INFO = {
