@@ -1,17 +1,21 @@
 {# templates/edit_listing.html #}
 {% extends "main.html" %}
 {% block title %}Edit Listing{% endblock %}
-{% block content %}
-<style>
-  .action-form { width: 100%; }
-  .form-col { flex: 1; }
-</style>
 
+{% block content %}
 <div class="container">
+  <!-- === [ edit-listing-html-2: Page Header ] === -->
   <div class="home-hero">
-    <h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="hero-step-icon" alt="Step 3: Edit Listing" />Edit Listing</h1>
+    <h1>
+      <img
+        src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}"
+        class="hero-step-icon"
+        alt="Step 3: Edit Listing"
+      />Edit Listing
+    </h1>
   </div>
 
+  <!-- === [ edit-listing-html-3: Flash Messages ] === -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="flash-message-block">
@@ -22,68 +26,77 @@
     {% endif %}
   {% endwith %}
 
+  <!-- === [ edit-listing-html-4: Main Grid Layout ] === -->
   <div class="review-artwork-grid row">
+    <!-- === [ 4a: Left Column - Artwork & Mockups ] === -->
     <div class="col col-6 mockup-col">
-    <div class="main-thumb">
-      <a href="#"
-        class="main-thumb-link"
-        data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '.jpg') }}?t={{ cache_ts }}">
-        <img 
-          src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '-THUMB.jpg') }}?t={{ cache_ts }}"
-          class="main-artwork-thumb"
-          alt="Main artwork thumbnail for {{ seo_folder }}">
-      </a>
-      <div class="thumb-note">Click thumbnail for full size</div>
-    </div>
-
-      <h3>Preview Mockups</h3>
-      <div class="debug-categories">
-        <strong>Categories:</strong>
-        {{ categories | join(', ') if categories else 'none' }}
+      <div class="main-thumb">
+        <a
+          href="#"
+          class="main-thumb-link"
+          data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '.jpg') }}?t={{ cache_ts }}"
+        >
+          <img
+            src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '-THUMB.jpg') }}?t={{ cache_ts }}"
+            class="main-artwork-thumb"
+            alt="Main artwork thumbnail for {{ seo_folder }}"
+          />
+        </a>
+        <div class="thumb-note">Click thumbnail for full size</div>
       </div>
 
-<div class="mockup-preview-grid">
-  {% for m in mockups %}
-    <div class="mockup-card">
-      {% if m.exists %}
-        {# -- Precompute image paths -- #}
-        {% set thumb_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/THUMBS/' ~ m.thumb.name %}
-        {% set full_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/' ~ m.path.name %}
-        <a href="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
-           class="mockup-img-link"
-           id="mockup-link-{{ m.index }}"
-           data-img="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}">
-          <img
-            id="mockup-img-{{ m.index }}"
-            src="{{ url_for('static', filename=thumb_rel) ~ '?t=' ~ cache_ts }}"
-            onerror="this.onerror=null; this.src='{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}';"
-            class="mockup-thumb-img"
-            alt="Mockup preview {{ loop.index }}">
-        </a>
-        <div class="thumb-note">Click to preview full-size</div>
-      {% else %}
-        <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}"
-             class="mockup-thumb-img"
-             alt="Default mockup placeholder">
-        <div class="thumb-note">Mockup not found</div>
-      {% endif %}
+      <h3>Preview Mockups</h3>
+      <div class="mockup-preview-grid">
+        {% for m in mockups %}
+          <div class="mockup-card" id="mockup-card-{{ m.index }}">
+            {% if m.exists %}
+              {% set thumb_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/THUMBS/' ~ m.thumb.name %}
+              {% set full_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/' ~ m.path.name %}
+              <a
+                href="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
+                class="mockup-img-link"
+                id="mockup-link-{{ m.index }}"
+                data-img="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
+              >
+                <img
+                  id="mockup-img-{{ m.index }}"
+                  src="{{ url_for('static', filename=thumb_rel) ~ '?t=' ~ cache_ts }}"
+                  data-fallback="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
+                  class="mockup-thumb-img"
+                  alt="Mockup preview {{ loop.index }}"
+                />
+              </a>
+              <div class="thumb-note">Click to preview full-size</div>
+            {% else %}
+              <img
+                src="{{ url_for('static', filename='img/default-mockup.jpg') }}"
+                class="mockup-thumb-img"
+                alt="Default mockup placeholder"
+              />
+              <div class="thumb-note">Mockup not found</div>
+            {% endif %}
 
-      {% if categories %}
-        <form id="swap-form-{{ m.index }}" class="swap-form" data-file="{{ m.path.name }}">
-          <select name="new_category" aria-label="Swap mockup category for slot {{ m.index }}">
-            {% for c in categories %}
-              <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
-            {% endfor %}
-          </select>
-          <button type="button" class="btn btn-sm swap-btn">Swap</button>
-        </form>
-      {% else %}
-        <div class="no-categories-warning">No categories found.</div>
-      {% endif %}
+            {% if categories %}
+              <form class="swap-form">
+                <select name="new_category" aria-label="Swap mockup category for slot {{ m.index }}">
+                  {% for c in categories %}
+                    <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
+                  {% endfor %}
+                </select>
+                <div class="swap-btn-container">
+                  <button type="button" class="btn btn-sm swap-btn" data-index="{{ m.index }}">Swap</button>
+                  <div class="swap-spinner"></div>
+                </div>
+              </form>
+            {% else %}
+              <div class="no-categories-warning">No categories found.</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
     </div>
-  {% endfor %}
-</div>
 
+    <!-- === [ 4b: Right Column - Metadata Form & Actions ] === -->
     <div class="col col-6 edit-listing-col">
       <p class="status-line {% if finalised %}status-finalised{% else %}status-pending{% endif %}">
         Status: This artwork is {% if finalised %}<strong>finalised</strong>{% else %}<em>NOT yet finalised</em>{% endif %}
@@ -91,7 +104,11 @@
       </p>
 
       {% if errors %}
-        <div class="flash-error"><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>
+        <div class="flash-error">
+          <ul>
+            {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+        </div>
       {% endif %}
 
       <form role="form" id="edit-form" method="POST" autocomplete="off">
@@ -202,6 +219,7 @@
     </div>
   </div>
 
+  <!-- === [ edit-listing-html-5: Modal Carousel ] === -->
   <div id="mockup-carousel" class="modal-bg" tabindex="-1">
     <button id="carousel-close" class="modal-close" aria-label="Close">&times;</button>
     <button id="carousel-prev" class="carousel-nav" aria-label="Previous">&#10094;</button>
@@ -210,7 +228,9 @@
   </div>
 </div>
 
+<!-- === [ edit-listing-html-6: JavaScript Includes ] === -->
 <script>
+  // Pass necessary info from Flask/Jinja2 to the JavaScript file
   window.EDIT_INFO = {
     seoFolder: '{{ seo_folder }}',
     aspect: '{{ aspect }}'

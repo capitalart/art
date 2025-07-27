@@ -1,0 +1,41 @@
+ /* --- [ edit-listing-html-1a: Local Styles ] --- */
+  .action-form {
+    width: 100%;
+  }
+  .form-col {
+    flex: 1;
+  }
+  .swap-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .swap-btn-container {
+    position: relative;
+  }
+  .swap-spinner {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .theme-dark .swap-spinner {
+    border-top-color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  /* When swapping, hide button text and show spinner */
+  .swapping .swap-btn {
+    color: transparent;
+  }
+  .swapping .swap-spinner {
+    display: block;
+  }

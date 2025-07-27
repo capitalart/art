@@ -440,3 +440,8 @@ sudo journalctl -u gunicorn -f
 sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
 source /home/art/venv/bin/activate
 sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+./code-stacker.sh
+bash /home/art/project-toolkit.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f

@@ -233,7 +233,15 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
 
 
 def _generate_composites(seo_folder: str, log_id: str) -> None:
-    cmd = ["python3", str(utils.GENERATE_SCRIPT_PATH), seo_folder]
+    """
+    Triggers the composite generation script.
+
+    NOTE: The script runs in queue-based mode and does not require the
+    seo_folder as an argument. This call was corrected to remove the argument.
+    """
+    # CORRECTED: The generate_composites.py script is queue-based and
+    # does not accept a folder name argument.
+    cmd = ["python3", str(utils.GENERATE_SCRIPT_PATH)]
     result = subprocess.run(
         cmd,
         stdout=subprocess.PIPE,

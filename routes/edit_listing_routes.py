@@ -1,35 +1,56 @@
-"""Routes for interactive edit-listing actions."""
+# routes/edit_listing_routes.py
 
+# === [ 1. IMPORTS ] ===
 from __future__ import annotations
+import logging
+from flask import Blueprint, jsonify, request, url_for
+from . import utils
+import config
 
-from flask import Blueprint, request, jsonify, url_for
+# === [ 2. BLUEPRINT SETUP ] ===
+bp = Blueprint("edit_listing", __name__, url_prefix="/edit")
+logger = logging.getLogger(__name__)
 
-from routes import utils
+# === [ 3. API ROUTES ] ===
+# --- [ 3a. Swap Mockup API Endpoint | edit-listing-routes-py-3a ] ---
+@bp.post("/swap-mockup-api")
+def swap_mockup_api():
+    """
+    Handles an asynchronous request to swap a single mockup.
+    Accepts JSON payload and returns JSON with new image URLs.
+    """
+    data = request.json
+    seo_folder = data.get("seo_folder")
+    slot_idx = data.get("slot_index")
+    new_category = data.get("new_category")
+    aspect = data.get("aspect")
 
-bp = Blueprint("edit_listing", __name__)
+    if not all([seo_folder, isinstance(slot_idx, int), new_category, aspect]):
+        return jsonify({"success": False, "error": "Missing required data."}), 400
 
+    try:
+        success, new_mockup_name, new_thumb_name = utils.swap_one_mockup(
+            seo_folder, slot_idx, new_category
+        )
 
-@bp.route("/swap-mockup", methods=["POST"])
-def swap_mockup():
-    """Swap a mockup via AJAX and return new file paths."""
-    data = request.get_json(silent=True) or {}
-    seo = data.get("seo_filename", "").strip()
-    aspect = data.get("aspect_ratio", "").strip()
-    slot = int(data.get("slot_index", 0))
-    category = data.get("category", "").strip()
+        if not success:
+            raise RuntimeError("The swap_one_mockup utility failed.")
 
-    if not seo or not aspect or not category:
-        return jsonify(success=False, error="Invalid parameters"), 400
+        # Construct the full URLs for the new images
+        new_mockup_url = url_for(
+            'artwork.processed_image', seo_folder=seo_folder, filename=new_mockup_name
+        )
+        new_thumb_url = url_for(
+            'artwork.serve_mockup_thumb', seo_folder=seo_folder, filename=new_thumb_name
+        )
 
-    success, new_mockup, new_thumb = utils.swap_one_mockup(seo, slot, category)
-    if not success:
-        return jsonify(success=False, error="Swap failed"), 500
+        return jsonify({
+            "success": True,
+            "message": "Mockup swapped successfully.",
+            "new_mockup_url": new_mockup_url,
+            "new_thumb_url": new_thumb_url
+        })
 
-    thumb_path = f"art-processing/processed-artwork/{seo}/THUMBS/{new_thumb}"
-    full_path = f"art-processing/processed-artwork/{seo}/{new_mockup}"
-
-    return jsonify(
-        success=True,
-        new_full=url_for("static", filename=full_path),
-        new_thumb=url_for("static", filename=thumb_path),
-    )
+    except Exception as e:
+        logger.error(f"Failed to swap mockup for {seo_folder}: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
