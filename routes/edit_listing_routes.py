@@ -24,19 +24,20 @@ def swap_mockup_api():
     slot_idx = data.get("slot_index")
     new_category = data.get("new_category")
     aspect = data.get("aspect")
+    current_mockup_src = data.get("current_mockup_src") # Get the new parameter
 
     if not all([seo_folder, isinstance(slot_idx, int), new_category, aspect]):
         return jsonify({"success": False, "error": "Missing required data."}), 400
 
     try:
+        # Pass the new parameter to the utility function
         success, new_mockup_name, new_thumb_name = utils.swap_one_mockup(
-            seo_folder, slot_idx, new_category
+            seo_folder, slot_idx, new_category, current_mockup_src
         )
 
         if not success:
             raise RuntimeError("The swap_one_mockup utility failed.")
 
-        # Construct the full URLs for the new images
         new_mockup_url = url_for(
             'artwork.processed_image', seo_folder=seo_folder, filename=new_mockup_name
         )
@@ -52,5 +53,5 @@ def swap_mockup_api():
         })
 
     except Exception as e:
-        logger.error(f"Failed to swap mockup for {seo_folder}: {e}")
+        logging.getLogger(__name__).error(f"Failed to swap mockup for {seo_folder}: {e}")
         return jsonify({"success": False, "error": str(e)}), 500

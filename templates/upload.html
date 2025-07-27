@@ -14,15 +14,15 @@
   </form>
 </div>
 
-<div id="upload-modal" class="analysis-modal" role="dialog" aria-modal="true">
-  <div class="analysis-box" tabindex="-1">
-    <img src="{{ url_for('static', filename='icons/svg/light/upload-light.svg') }}" class="progress-icon" alt="">
+<div id="upload-modal" class="modal-bg" role="dialog" aria-modal="true">
+  <div class="modal-box" tabindex="-1">
+    <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Uploading...">
     <h3>Uploading...</h3>
-    <div id="upload-filename" style="margin-bottom: 0.5em; font-size: 0.9em; color: #555;"></div>
-    <div class="analysis-progress" aria-label="upload progress">
-        <div id="upload-bar" class="analysis-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+    <div id="upload-filename" class="modal-status"></div>
+    <div class="modal-progress" aria-label="upload progress">
+        <div id="upload-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0"></div>
     </div>
-    <div id="upload-status" class="analysis-status" aria-live="polite">0%</div>
+    <div id="upload-status" class="modal-friendly-text" aria-live="polite">0%</div>
   </div>
 </div>
 

@@ -884,7 +884,7 @@ def edit_listing(aspect, filename):
 
     try:
         data = utils.load_json_file_safe(listing_path)
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         flash(f"Error loading listing: {e}", "danger")
         return redirect(url_for("artwork.artworks"))
 
@@ -964,27 +964,38 @@ def edit_listing(aspect, filename):
             form_data["images"] = "\n".join(form_data.get("images", []))
             form_data["tags"] = join_csv_list(form_data.get("tags", []))
             form_data["materials"] = join_csv_list(form_data.get("materials", []))
-            mockups = []
-            for idx, mp in enumerate(data.get("mockups", [])):
-                if isinstance(mp, dict):
-                    out = folder / mp.get("composite", "")
-                    cat = mp.get("category", "")
+        mockups = []
+        for idx, mp in enumerate(data.get("mockups", [])):
+            if isinstance(mp, dict):
+                out = folder / mp.get("composite", "")
+                cat = mp.get("category", "")
+                
+                # THE FIX: Prioritize the saved thumbnail name, with a fallback
+                thumb_name = mp.get("thumbnail") 
+                if thumb_name:
+                    thumb = folder / "THUMBS" / thumb_name
                 else:
-                    p = Path(mp)
-                    out = folder / f"{seo_folder}-{p.stem}.jpg"
-                    cat = p.parent.name
+                    # Fallback for older data that doesn't have the key saved
+                    tid = re.search(r"(\d+)$", out.stem)
+                    thumb = folder / "THUMBS" / f"{seo_folder}-{aspect}-mockup-thumb-{tid.group(1) if tid else idx}.jpg"
+            else:
+                # This handles very old data before mockups were dicts
+                p = Path(mp)
+                out = folder / f"{seo_folder}-{p.stem}.jpg"
+                cat = p.parent.name
                 tid = re.search(r"(\d+)$", out.stem)
                 thumb = folder / "THUMBS" / f"{seo_folder}-{aspect}-mockup-thumb-{tid.group(1) if tid else idx}.jpg"
-                mockups.append(
-                    {
-                        "path": out,
-                        "category": cat,
-                        "exists": out.exists(),
-                        "index": idx,
-                        "thumb": thumb,
-                        "thumb_exists": thumb.exists(),
-                    }
-                )
+                
+            mockups.append(
+                {
+                    "path": out,
+                    "category": cat,
+                    "exists": out.exists(),
+                    "index": idx,
+                    "thumb": thumb,
+                    "thumb_exists": thumb.exists(),
+                }
+            )
             return render_template(
                 "edit_listing.html",
                 artwork=form_data,
@@ -1188,9 +1199,32 @@ def locked_image(seo_folder, filename):
 
 @bp.route("/thumbs/<seo_folder>/<filename>")
 def serve_mockup_thumb(seo_folder: str, filename: str):
-    """Serve mockup thumbnails from the THUMBS directory."""
-    thumb_folder = utils.PROCESSED_ROOT / seo_folder / "THUMBS"
-    return send_from_directory(thumb_folder, filename)
+    """
+    Serve mockup thumbnails from the correct directory (processed, finalised, or locked).
+    """
+    try:
+        # THE FIX: Use the utility function to find the artwork's current location
+        _seo, folder, _listing, _finalised = utils.resolve_listing_paths(
+            "", seo_folder 
+        )
+        
+        # Construct the path to the THUMBS directory within that location
+        thumb_folder = folder / "THUMBS"
+        
+        # Securely serve the file from the resolved directory
+        if thumb_folder.exists() and (thumb_folder / filename).exists():
+            return send_from_directory(thumb_folder, filename)
+        
+    except FileNotFoundError:
+        # This will be logged if the artwork folder itself doesn't exist
+        current_app.logger.error(f"Could not resolve path for SEO folder: {seo_folder}")
+        pass
+    except Exception as e:
+        current_app.logger.error(f"Error serving thumbnail {filename}: {e}")
+        pass
+
+    # If anything fails, return a 404
+    abort(404)
 
 
 @bp.route("/artwork-img/<aspect>/<filename>")

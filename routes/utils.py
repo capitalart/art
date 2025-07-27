@@ -1,4 +1,5 @@
 # This file now references all path, directory, and filename variables strictly from config.py. No local or hardcoded path constants remain.
+import time
 import os
 import json
 import random
@@ -30,6 +31,7 @@ from config import (
     ARTWORK_VAULT_ROOT,
     LOGS_DIR,
     MOCKUPS_INPUT_DIR,
+    MOCKUPS_CATEGORISED_DIR,
     ANALYSE_MAX_DIM,
     GENERIC_TEXTS_DIR,
     COORDS_DIR,
@@ -489,73 +491,72 @@ def regenerate_one_mockup(seo_folder: str, slot_idx: int) -> bool:
         return False
 
 
-def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> tuple[bool, str, str]:
-    """Swap a mockup to a new category and regenerate.
-
-    Returns ``(success, new_mockup_name, new_thumb_name)``.
-    """
-    folder = PROCESSED_ROOT / seo_folder
+def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_mockup_src: str | None = None) -> tuple[bool, str, str]:
+    """Swap a mockup to a new category and regenerate."""
+    folder = config.PROCESSED_ROOT / seo_folder
     listing_file = folder / f"{seo_folder}-listing.json"
     if not listing_file.exists():
-        folder = FINALISED_ROOT / seo_folder
+        folder = config.FINALISED_ROOT / seo_folder
         listing_file = folder / f"{seo_folder}-listing.json"
-        if not listing_file.exists():
-            return False
-    with open(listing_file, "r", encoding="utf-8") as f:
-        data = json.load(f)
+        if not listing_file.exists(): return False, "", ""
+            
+    with open(listing_file, "r", encoding="utf-8") as f: data = json.load(f)
     mockups = data.get("mockups", [])
-    if slot_idx < 0 or slot_idx >= len(mockups):
-        return False
+    if not (0 <= slot_idx < len(mockups)): return False, "", ""
+
     aspect = data.get("aspect_ratio")
-    mockup_root = MOCKUPS_CATEGORISED_DIR / aspect / new_category
+    mockup_root = config.MOCKUPS_CATEGORISED_DIR / aspect / new_category
     mockup_files = list(mockup_root.glob("*.png"))
-    if not mockup_files:
-        return False
-    new_mockup = random.choice(mockup_files)
-    coords_path = COORDS_DIR / aspect / new_category / f"{new_mockup.stem}.json"
+    
+    current_mockup_name = None
+    if isinstance(mockups[slot_idx], dict):
+        composite_name = mockups[slot_idx].get("composite", "")
+        match = re.search(r'-(mockup-\d+)(?:-\d+)?\.jpg$', composite_name)
+        if match: current_mockup_name = f"{match.group(1)}.png"
+    
+    choices = [f for f in mockup_files if f.name != current_mockup_name]
+    if not choices: choices = mockup_files
+    if not choices: return False, "", ""
+    new_mockup = random.choice(choices)
+    
+    timestamp = int(time.time())
+    
+    coords_path = config.COORDS_DIR / aspect / new_category / f"{new_mockup.stem}.json"
     art_path = folder / f"{seo_folder}.jpg"
-    output_path = folder / f"{seo_folder}-{new_mockup.stem}.jpg"
+    
+    output_filename = f"{seo_folder}-{new_mockup.stem}-{timestamp}.jpg"
+    output_path = folder / output_filename
+
     try:
-        # Remove previous composite and thumbnail
         old = mockups[slot_idx]
         if isinstance(old, dict):
-            old_path = folder / old.get("composite", "")
-        else:
-            old_p = Path(old)
-            old_path = folder / f"{seo_folder}-{old_p.stem}.jpg"
-        tid = re.search(r"(\d+)$", old_path.stem)
-        old_thumb = folder / "THUMBS" / f"{seo_folder}-{aspect}-mockup-thumb-{tid.group(1) if tid else slot_idx}.jpg"
-        old_path.unlink(missing_ok=True)
-        old_thumb.unlink(missing_ok=True)
+            if old.get("composite"): (folder / old["composite"]).unlink(missing_ok=True)
+            if old.get("thumbnail"): (folder / "THUMBS" / old["thumbnail"]).unlink(missing_ok=True)
 
-        with open(coords_path, "r", encoding="utf-8") as cf:
-            c = json.load(cf)["corners"]
+        with open(coords_path, "r", encoding="utf-8") as cf: c = json.load(cf)["corners"]
         dst = [[c[0]["x"], c[0]["y"]], [c[1]["x"], c[1]["y"]], [c[3]["x"], c[3]["y"]], [c[2]["x"], c[2]["y"]]]
-        art_img = Image.open(art_path).convert("RGBA")
-        art_img = resize_image_for_long_edge(art_img)
-        mock_img = Image.open(new_mockup).convert("RGBA")
-        composite = apply_perspective_transform(art_img, mock_img, dst)
+        with Image.open(art_path) as art_img, Image.open(new_mockup) as mock_img:
+            art_img = resize_image_for_long_edge(art_img.convert("RGBA"))
+            composite = apply_perspective_transform(art_img, mock_img.convert("RGBA"), dst)
         composite.convert("RGB").save(output_path, "JPEG", quality=85)
 
-        thumb_dir = folder / "THUMBS"
-        thumb_dir.mkdir(parents=True, exist_ok=True)
-        tid_new = re.search(r"(\d+)$", new_mockup.stem)
-        thumb_name = f"{seo_folder}-{aspect}-mockup-thumb-{tid_new.group(1) if tid_new else slot_idx}.jpg"
+        thumb_dir = folder / "THUMBS"; thumb_dir.mkdir(parents=True, exist_ok=True)
+        thumb_name = f"{seo_folder}-{new_mockup.stem}-thumb-{timestamp}.jpg"
         thumb_path = thumb_dir / thumb_name
-        thumb_img = composite.copy()
-        thumb_img.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
-        thumb_img.convert("RGB").save(thumb_path, "JPEG", quality=85)
-
+        with composite.copy() as thumb_img:
+            thumb_img.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
+            thumb_img.convert("RGB").save(thumb_path, "JPEG", quality=85)
+            
         data.setdefault("mockups", [])[slot_idx] = {
             "category": new_category,
             "source": f"{new_category}/{new_mockup.name}",
             "composite": output_path.name,
+            "thumbnail": thumb_name,
         }
-        with open(listing_file, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+        with open(listing_file, "w", encoding="utf-8") as f: json.dump(data, f, indent=2)
         return True, output_path.name, thumb_name
     except Exception as e:
-        logging.error("Swap error: %s", e)
+        logging.getLogger(__name__).error(f"Swap error: {e}")
         return False, "", ""
 
 
