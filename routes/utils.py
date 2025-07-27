@@ -489,8 +489,11 @@ def regenerate_one_mockup(seo_folder: str, slot_idx: int) -> bool:
         return False
 
 
-def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> bool:
-    """Swap a mockup to a new category and regenerate."""
+def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> tuple[bool, str, str]:
+    """Swap a mockup to a new category and regenerate.
+
+    Returns ``(success, new_mockup_name, new_thumb_name)``.
+    """
     folder = PROCESSED_ROOT / seo_folder
     listing_file = folder / f"{seo_folder}-listing.json"
     if not listing_file.exists():
@@ -504,15 +507,27 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> bool:
     if slot_idx < 0 or slot_idx >= len(mockups):
         return False
     aspect = data.get("aspect_ratio")
-    mockup_root = MOCKUPS_INPUT_DIR / f"{aspect}-categorised"
-    mockup_files = list((mockup_root / new_category).glob("*.png"))
+    mockup_root = MOCKUPS_CATEGORISED_DIR / aspect / new_category
+    mockup_files = list(mockup_root.glob("*.png"))
     if not mockup_files:
         return False
     new_mockup = random.choice(mockup_files)
-    coords_path = COORDS_DIR / aspect / f"{new_mockup.stem}.json"
+    coords_path = COORDS_DIR / aspect / new_category / f"{new_mockup.stem}.json"
     art_path = folder / f"{seo_folder}.jpg"
     output_path = folder / f"{seo_folder}-{new_mockup.stem}.jpg"
     try:
+        # Remove previous composite and thumbnail
+        old = mockups[slot_idx]
+        if isinstance(old, dict):
+            old_path = folder / old.get("composite", "")
+        else:
+            old_p = Path(old)
+            old_path = folder / f"{seo_folder}-{old_p.stem}.jpg"
+        tid = re.search(r"(\d+)$", old_path.stem)
+        old_thumb = folder / "THUMBS" / f"{seo_folder}-{aspect}-mockup-thumb-{tid.group(1) if tid else slot_idx}.jpg"
+        old_path.unlink(missing_ok=True)
+        old_thumb.unlink(missing_ok=True)
+
         with open(coords_path, "r", encoding="utf-8") as cf:
             c = json.load(cf)["corners"]
         dst = [[c[0]["x"], c[0]["y"]], [c[1]["x"], c[1]["y"]], [c[3]["x"], c[3]["y"]], [c[2]["x"], c[2]["y"]]]
@@ -521,6 +536,16 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> bool:
         mock_img = Image.open(new_mockup).convert("RGBA")
         composite = apply_perspective_transform(art_img, mock_img, dst)
         composite.convert("RGB").save(output_path, "JPEG", quality=85)
+
+        thumb_dir = folder / "THUMBS"
+        thumb_dir.mkdir(parents=True, exist_ok=True)
+        tid_new = re.search(r"(\d+)$", new_mockup.stem)
+        thumb_name = f"{seo_folder}-{aspect}-mockup-thumb-{tid_new.group(1) if tid_new else slot_idx}.jpg"
+        thumb_path = thumb_dir / thumb_name
+        thumb_img = composite.copy()
+        thumb_img.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
+        thumb_img.convert("RGB").save(thumb_path, "JPEG", quality=85)
+
         data.setdefault("mockups", [])[slot_idx] = {
             "category": new_category,
             "source": f"{new_category}/{new_mockup.name}",
@@ -528,10 +553,10 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str) -> bool:
         }
         with open(listing_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
-        return True
+        return True, output_path.name, thumb_name
     except Exception as e:
         logging.error("Swap error: %s", e)
-        return False
+        return False, "", ""
 
 
 def _listing_json_path(seo_folder: str) -> Path:

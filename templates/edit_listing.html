@@ -46,19 +46,17 @@
   {% for m in mockups %}
     <div class="mockup-card">
       {% if m.exists %}
-        {# -- Precompute full and thumb image paths -- #}
-        {% set thumb_name = m.path.stem + '-thumb.jpg' %}
-        {% set thumb_path = 'art-processing/processed-artwork/' + seo_folder + '/THUMBS/' + thumb_name %}
-        {% set full_path = 'art-processing/processed-artwork/' + seo_folder + '/' + m.path.name %}
-        {% set full_img = url_for('static', filename=full_path) ~ '?t=' ~ cache_ts %}
-        {% set thumb_img = url_for('static', filename=thumb_path) ~ '?t=' ~ cache_ts %}
-
-        <a href="{{ full_img }}"
+        {# -- Precompute image paths -- #}
+        {% set thumb_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/THUMBS/' ~ m.thumb.name %}
+        {% set full_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/' ~ m.path.name %}
+        <a href="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
            class="mockup-img-link"
-           data-img="{{ full_img }}">
-          <img 
-            src="{{ thumb_img }}"
-            onerror="this.onerror=null; this.src='{{ full_img }}';"
+           id="mockup-link-{{ m.index }}"
+           data-img="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}">
+          <img
+            id="mockup-img-{{ m.index }}"
+            src="{{ url_for('static', filename=thumb_rel) ~ '?t=' ~ cache_ts }}"
+            onerror="this.onerror=null; this.src='{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}';"
             class="mockup-thumb-img"
             alt="Mockup preview {{ loop.index }}">
         </a>
@@ -71,16 +69,13 @@
       {% endif %}
 
       {% if categories %}
-        <form method="post"
-              action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}"
-              class="swap-form">
-          <select name="new_category"
-                  aria-label="Swap mockup category for slot {{ m.index }}">
+        <form id="swap-form-{{ m.index }}" class="swap-form" data-file="{{ m.path.name }}">
+          <select name="new_category" aria-label="Swap mockup category for slot {{ m.index }}">
             {% for c in categories %}
               <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
             {% endfor %}
           </select>
-          <button type="submit" class="btn btn-sm">Swap</button>
+          <button type="button" class="btn btn-sm swap-btn">Swap</button>
         </form>
       {% else %}
         <div class="no-categories-warning">No categories found.</div>
@@ -215,5 +210,11 @@
   </div>
 </div>
 
+<script>
+  window.EDIT_INFO = {
+    seoFolder: '{{ seo_folder }}',
+    aspect: '{{ aspect }}'
+  };
+</script>
 <script src="{{ url_for('static', filename='js/edit_listing.js') }}"></script>
 {% endblock %}

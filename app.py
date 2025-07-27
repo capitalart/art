@@ -32,6 +32,7 @@ from routes.coordinate_admin_routes import bp as coordinate_admin_bp
 from routes.gdws_admin_routes import bp as gdws_admin_bp
 from routes.test_routes import test_bp
 from routes.api_routes import bp as api_bp
+from routes.edit_listing_routes import bp as edit_listing_bp
 
 # ---- Initialize Flask App ----
 app = Flask(__name__)
@@ -122,6 +123,7 @@ app.register_blueprint(coordinate_admin_bp)
 app.register_blueprint(gdws_admin_bp)
 app.register_blueprint(test_bp)
 app.register_blueprint(api_bp)
+app.register_blueprint(edit_listing_bp)
 
 
 @app.after_request
