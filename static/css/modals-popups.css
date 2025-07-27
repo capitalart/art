@@ -98,6 +98,7 @@
 }
 
 /* --- Carousel Specific Styles --- */
+/* --- Carousel Specific Styles --- */
 .carousel-modal .modal-box {
   background: transparent;
   box-shadow: none;
@@ -105,10 +106,17 @@
   max-width: 95vw;
   padding: 0;
 }
-.carousel-modal .modal-img {
-  max-width: 90vw;
-  max-height: 90vh;
+
+/* ADD THE NEW RULE HERE */
+.modal-img img {
+  display: block;
+  max-width: 90vw;    /* Never wider than 90% of the viewport width */
+  max-height: 90vh;   /* Never taller than 90% of the viewport height */
+  width: auto;        /* Maintain aspect ratio */
+  height: auto;       /* Maintain aspect ratio */
+  box-shadow: 0 5px 25px rgba(0,0,0,0.3);
 }
+
 .carousel-nav {
   position: absolute;
   top: 50%;
@@ -122,6 +130,7 @@
   text-shadow: 0 1px 4px rgba(0,0,0,0.5);
   transition: color 0.2s;
 }
+
 .carousel-nav:hover {
   color: var(--color-accent);
 }
