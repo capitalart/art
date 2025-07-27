@@ -3,6 +3,7 @@ import json
 import shutil
 import random
 import re
+import argparse
 from pathlib import Path
 from PIL import Image, ImageDraw
 import cv2
@@ -20,6 +21,56 @@ DEBUG_MODE = False
 
 # ======================= [ 1. CONFIG & PATHS ] =======================
 QUEUE_FILE = config.PROCESSED_ROOT / "pending_mockups.json"
+
+# =============== [ 2b. SINGLE MODE HELPERS ] ==================
+
+def generate_single(art_path: Path, aspect: str, category: str) -> tuple[str, str]:
+    """Generate one composite and thumbnail for ``art_path``."""
+    folder = art_path.parent
+    seo_name = art_path.stem
+    listing = folder / f"{seo_name}-listing.json"
+    if not listing.exists():
+        raise FileNotFoundError(listing)
+    with open(listing, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    aspect = aspect or data.get("aspect_ratio")
+    src_dir = config.MOCKUPS_CATEGORISED_DIR / aspect / category
+    coords_dir = config.COORDS_DIR / aspect / category
+    files = list(src_dir.glob("*.png"))
+    if not files:
+        raise FileNotFoundError(f"No mockups in {src_dir}")
+    mockup_file = random.choice(files)
+    coord_path = coords_dir / f"{mockup_file.stem}.json"
+    with open(coord_path, "r", encoding="utf-8") as cf:
+        coords = json.load(cf)["corners"]
+
+    art_img = Image.open(art_path)
+    mock_img = Image.open(mockup_file)
+    composite = apply_perspective_transform(art_img, mock_img, coords)
+
+    output_name = f"{seo_name}-{mockup_file.stem}.jpg"
+    output_path = folder / output_name
+    composite.convert("RGB").save(output_path, "JPEG", quality=90)
+
+    thumb_dir = folder / "THUMBS"
+    thumb_dir.mkdir(parents=True, exist_ok=True)
+    tid = re.search(r"(\d+)$", mockup_file.stem)
+    thumb_name = f"{seo_name}-{aspect}-mockup-thumb-{tid.group(1) if tid else '0'}.jpg"
+    thumb_path = thumb_dir / thumb_name
+    thumb_img = composite.copy()
+    thumb_img.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
+    thumb_img.convert("RGB").save(thumb_path, "JPEG", quality=85)
+
+    data.setdefault("mockups", []).append({
+        "category": category,
+        "source": f"{category}/{mockup_file.name}",
+        "composite": output_name,
+    })
+    with open(listing, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    return output_name, thumb_name
 
 # ======================= [ 2. UTILITIES ] =========================
 
@@ -176,4 +227,18 @@ def main():
     print(f"\n✅ Done. {processed_count} artwork(s) processed and removed from queue.\n")
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Generate mockup composites")
+    parser.add_argument("--single-mode", action="store_true", help="Generate a single composite")
+    parser.add_argument("--artwork", help="Path to artwork image")
+    parser.add_argument("--aspect", help="Aspect ratio")
+    parser.add_argument("--category", help="Mockup category")
+    args = parser.parse_args()
+
+    if args.single_mode:
+        if not args.artwork or not args.category:
+            raise SystemExit("--artwork and --category required for single mode")
+        art = Path(args.artwork)
+        out, thumb = generate_single(art, args.aspect, args.category)
+        print(json.dumps({"mockup": out, "thumb": thumb}))
+    else:
+        main()
