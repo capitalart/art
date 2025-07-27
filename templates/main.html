@@ -110,16 +110,17 @@
     </div>
 
     <!-- Analysis Progress Modal -->
-    <div id="analysis-modal" class="analysis-modal" role="dialog" aria-modal="true">
-        <div class="analysis-box" tabindex="-1">
+    <div id="analysis-modal" class="modal-bg" role="dialog" aria-modal="true">
+        <div class="modal-box" tabindex="-1">
             <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
-            <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" class="progress-icon" alt="">
+            <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Processing...">
             <h3>Analyzing Artwork...</h3>
-            <div class="analysis-progress" aria-label="analysis progress">
-                <div id="analysis-bar" class="analysis-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+            <div id="analysis-status" class="modal-status" aria-live="polite">Starting...</div>
+            <div class="modal-progress" aria-label="analysis progress">
+                <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0"></div>
             </div>
-            <div id="analysis-status" class="analysis-status" aria-live="polite"></div>
-            <div class="analysis-friendly">This can take up to a couple of minutes. Go have a coffee while the AI works its magic! ☕️</div>
+            <div class="modal-friendly-text">Grab a coffee while AI works it's magic!<br>Usually only takes a minute or two!</div>
+            <img src="{{ url_for('static', filename='icons/svg/light/coffee-light.svg') }}" class="coffee-icon icon" alt="Coffee break">
         </div>
     </div>
 

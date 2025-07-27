@@ -148,7 +148,7 @@ def main():
         
         print(f"\n[{processed_count+1}/{len(queue)}] Processing: {img_path.name} [{aspect}]")
 
-        mockups_cat_dir = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised"
+        mockups_cat_dir = config.MOCKUPS_CATEGORISED_DIR / aspect
         coords_base_dir = config.COORDS_DIR / aspect
         
         if not mockups_cat_dir.exists() or not coords_base_dir.exists():

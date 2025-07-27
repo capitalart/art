@@ -46,27 +46,32 @@
       </div>
 
       <h3>Preview Mockups</h3>
-      <div class="mockup-preview-grid">
+       <div class="mockup-preview-grid">
         {% for m in mockups %}
           <div class="mockup-card" id="mockup-card-{{ m.index }}">
             {% if m.exists %}
-              {% set thumb_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/THUMBS/' ~ m.thumb.name %}
-              {% set full_rel = 'art-processing/processed-artwork/' ~ seo_folder ~ '/' ~ m.path.name %}
-              <a
-                href="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
-                class="mockup-img-link"
-                id="mockup-link-{{ m.index }}"
-                data-img="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
-              >
-                <img
-                  id="mockup-img-{{ m.index }}"
-                  src="{{ url_for('static', filename=thumb_rel) ~ '?t=' ~ cache_ts }}"
-                  data-fallback="{{ url_for('static', filename=full_rel) ~ '?t=' ~ cache_ts }}"
-                  class="mockup-thumb-img"
-                  alt="Mockup preview {{ loop.index }}"
-                />
+              {% set thumb_url = url_for('artwork.serve_mockup_thumb', seo_folder=seo_folder, filename=m.thumb.name) %}
+              {% set full_url = url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) %}
+              {# In templates/edit_listing.html #}
+                  <a
+                    href="{{ full_url ~ '?t=' ~ cache_ts }}"
+                    class="mockup-img-link"
+                    id="mockup-link-{{ m.index }}"
+                    data-img="{{ full_url ~ '?t=' ~ cache_ts }}"
+                  >
+                    <img
+                      id="mockup-img-{{ m.index }}"
+                      src="{{ thumb_url ~ '?t=' ~ cache_ts }}"
+                      data-fallback="{{ full_url ~ '?t=' ~ cache_ts }}"
+                      class="mockup-thumb-img"
+                      alt="Mockup preview {{ loop.index }}"
+                    />
+                <div class="mockup-overlay">
+                  <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="spinner-icon" alt="Loading...">
+                </div>
+                <div class="thumb-note">Click for full-size</div>
               </a>
-              <div class="thumb-note">Click to preview full-size</div>
+              
             {% else %}
               <img
                 src="{{ url_for('static', filename='img/default-mockup.jpg') }}"
@@ -77,7 +82,7 @@
             {% endif %}
 
             {% if categories %}
-              <form class="swap-form">
+              <div class="swap-controls">
                 <select name="new_category" aria-label="Swap mockup category for slot {{ m.index }}">
                   {% for c in categories %}
                     <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
@@ -87,7 +92,7 @@
                   <button type="button" class="btn btn-sm swap-btn" data-index="{{ m.index }}">Swap</button>
                   <div class="swap-spinner"></div>
                 </div>
-              </form>
+              </div>
             {% else %}
               <div class="no-categories-warning">No categories found.</div>
             {% endif %}

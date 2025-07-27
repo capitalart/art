@@ -99,6 +99,40 @@
   color: #ff5c5c; /* A lighter red for dark mode */
 }
 
+/* --- Mockup Swapping Overlay --- */
+
+/* Add relative positioning to the link to contain the overlay */
+.mockup-img-link {
+  position: relative;
+  display: block;
+}
+
+.mockup-overlay {
+  position: absolute;
+  inset: 0; /* A shorthand for top, right, bottom, left = 0 */
+  background-color: rgba(0, 0, 0, 0.5); /* 50% opaque dark background */
+  display: none; /* Hide the overlay by default */
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px; /* Match the card's border radius */
+}
+
+/* Show the overlay when the card is in a swapping state */
+.mockup-card.swapping .mockup-overlay {
+  display: flex;
+}
+
+.mockup-overlay .spinner-icon {
+  width: 48px;
+  height: 48px;
+  animation: spin 1.5s linear infinite;
+}
+
+/* Invert icon color for dark theme */
+.mockup-overlay .spinner-icon {
+  filter: invert(1);
+}
+
 @keyframes spin { to { transform: rotate(360deg); } }
 .status-icon {
   position: absolute;

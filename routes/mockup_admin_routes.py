@@ -47,7 +47,7 @@ def dashboard(aspect):
 
     all_mockups = []
     
-    categorised_path = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised"
+    categorised_path = config.MOCKUPS_CATEGORISED_DIR / aspect
     categorised_path.mkdir(parents=True, exist_ok=True)
     all_categories = sorted([d.name for d in categorised_path.iterdir() if d.is_dir()])
     
@@ -106,7 +106,7 @@ def mockup_image(aspect, category, filename):
     if category == "Uncategorised":
         image_path = config.MOCKUPS_STAGING_DIR / aspect
     else:
-        image_path = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised" / category
+        image_path = config.MOCKUPS_CATEGORISED_DIR / aspect / category
     return send_from_directory(image_path, filename)
 
 @bp.route("/upload/<aspect>", methods=["POST"])
@@ -132,7 +132,7 @@ def find_duplicates(aspect):
     
     staging_path = config.MOCKUPS_STAGING_DIR / aspect
     all_paths.extend(p for p in staging_path.glob("*.*") if p.suffix.lower() in ['.png', '.jpg', '.jpeg'])
-    categorised_path = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised"
+    categorised_path = config.MOCKUPS_CATEGORISED_DIR / aspect
     all_paths.extend(p for p in categorised_path.rglob("*.*") if p.suffix.lower() in ['.png', '.jpg', '.jpeg'])
 
     for path in all_paths:
@@ -152,7 +152,7 @@ def find_duplicates(aspect):
 def create_category(aspect):
     category_name = request.form.get("category_name", "").strip()
     if category_name:
-        new_dir = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised" / category_name
+        new_dir = config.MOCKUPS_CATEGORISED_DIR / aspect / category_name
         new_dir.mkdir(exist_ok=True)
         flash(f"Category '{category_name}' created.", "success")
     else:
@@ -184,9 +184,9 @@ def move_mockup():
     if original_category == "Uncategorised":
         source_path = config.MOCKUPS_STAGING_DIR / aspect / filename
     else:
-        source_path = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised" / original_category / filename
+        source_path = config.MOCKUPS_CATEGORISED_DIR / aspect / original_category / filename
     
-    dest_dir = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised" / new_category
+    dest_dir = config.MOCKUPS_CATEGORISED_DIR / aspect / new_category
     dest_dir.mkdir(parents=True, exist_ok=True)
     
     try:
@@ -203,7 +203,7 @@ def delete_mockup():
     if category == "Uncategorised":
         path_to_delete = config.MOCKUPS_STAGING_DIR / aspect / filename
     else:
-        path_to_delete = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised" / category / filename
+        path_to_delete = config.MOCKUPS_CATEGORISED_DIR / aspect / category / filename
 
     try:
         if path_to_delete.is_file():

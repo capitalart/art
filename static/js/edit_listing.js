@@ -6,9 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     img.addEventListener('error', function handleError() {
       if (this.dataset.fallback && this.src !== this.dataset.fallback) {
         this.src = this.dataset.fallback;
-      } else {
-        // Uncomment below if you want a default fallback as LAST resort
-        // this.src = '/static/img/default-mockup.jpg';
       }
       this.onerror = null; // Prevent loop
     });
@@ -28,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function hideCarousel() {
+    carousel.classList.remove('active');
+  }
+
   images.forEach((link, index) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -36,14 +37,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if (carousel) {
-    carousel.querySelector('#carousel-close').addEventListener('click', () => carousel.classList.remove('active'));
+    carousel.querySelector('#carousel-close').addEventListener('click', hideCarousel);
     carousel.querySelector('#carousel-prev').addEventListener('click', () => showImage((currentIndex - 1 + images.length) % images.length));
     carousel.querySelector('#carousel-next').addEventListener('click', () => showImage((currentIndex + 1) % images.length));
+    
+    carousel.addEventListener('click', (e) => {
+        if (e.target === carousel) {
+            hideCarousel();
+        }
+    });
+
     document.addEventListener('keydown', (e) => {
       if (carousel.classList.contains('active')) {
         if (e.key === 'ArrowLeft') showImage((currentIndex - 1 + images.length) % images.length);
         if (e.key === 'ArrowRight') showImage((currentIndex + 1) % images.length);
-        if (e.key === 'Escape') carousel.classList.remove('active');
+        if (e.key === 'Escape') hideCarousel();
       }
     });
   }
@@ -53,16 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', async (event) => {
       event.preventDefault();
 
-      const btnContainer = button.parentElement;
-      if (btnContainer.classList.contains('swapping')) return; // Prevent double-clicks
+      const mockupCard = button.closest('.mockup-card'); // Get the parent card
+      if (mockupCard.classList.contains('swapping')) return; // Prevent double clicks
 
       const slotIndex = parseInt(button.dataset.index, 10);
-      const form = button.closest('.swap-form');
-      const select = form.querySelector('select[name="new_category"]');
+      const controlsContainer = button.closest('.swap-controls');
+      const select = controlsContainer.querySelector('select[name="new_category"]');
       const newCategory = select.value;
+      
+      const currentImg = document.getElementById(`mockup-img-${slotIndex}`);
+      const currentSrc = currentImg ? currentImg.src : '';
 
-      // Start loading state
-      btnContainer.classList.add('swapping');
+      // MODIFIED: Add swapping class to the card to show the overlay
+      mockupCard.classList.add('swapping');
 
       try {
         const response = await fetch('/edit/swap-mockup-api', {
@@ -72,7 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
             seo_folder: window.EDIT_INFO.seoFolder,
             slot_index: slotIndex,
             new_category: newCategory,
-            aspect: window.EDIT_INFO.aspect
+            aspect: window.EDIT_INFO.aspect,
+            current_mockup_src: currentSrc.split('/').pop().split('?')[0]
           }),
         });
 
@@ -82,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error(data.error || 'Failed to swap mockup.');
         }
 
-        // Update the image and link on success
         const timestamp = new Date().getTime();
         const mockupImg = document.getElementById(`mockup-img-${slotIndex}`);
         const mockupLink = document.getElementById(`mockup-link-${slotIndex}`);
@@ -100,8 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Swap failed:', error);
         alert(`Error: ${error.message}`);
       } finally {
-        // End loading state
-        btnContainer.classList.remove('swapping');
+        // MODIFIED: Remove swapping class from the card to hide the overlay
+        mockupCard.classList.remove('swapping');
       }
     });
   });
