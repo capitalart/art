@@ -1,16 +1,27 @@
+// In static/js/artworks.js
+
 document.addEventListener('DOMContentLoaded', () => {
+  // --- Event Listener for all "Analyze" buttons ---
   document.querySelectorAll('.btn-analyze').forEach(btn => {
     btn.addEventListener('click', ev => {
       ev.preventDefault();
       const card = btn.closest('.gallery-card');
       if (!card) return;
+      
       const provider = btn.dataset.provider;
       const filename = card.dataset.filename;
-      if (!filename) return;
+      
+      if (!filename || !provider) {
+        alert('Error: Missing filename or provider information.');
+        return;
+      }
+      
+      // Call the function to run the analysis
       runAnalyze(card, provider, filename);
     });
   });
 
+  // --- Event Listener for all "Delete" buttons ---
   document.querySelectorAll('.btn-delete').forEach(btn => {
     btn.addEventListener('click', ev => {
       ev.preventDefault();
@@ -18,23 +29,25 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!card) return;
       const filename = card.dataset.filename;
       if (!filename) return;
-      if (!confirm('Are you sure?')) return;
+      if (!confirm(`Are you sure you want to delete "${filename}"?`)) return;
+
       showOverlay(card, 'Deleting…');
-      fetch(`/delete/${encodeURIComponent(filename)}`, {method: 'POST'})
+      fetch(`/delete/${encodeURIComponent(filename)}`, { method: 'POST' })
         .then(r => r.json())
         .then(d => {
-          hideOverlay(card);
           if (d.success) {
             card.remove();
           } else {
+            hideOverlay(card);
             alert(d.error || 'Delete failed');
           }
         })
-        .catch(() => { hideOverlay(card); alert('Delete failed'); });
+        .catch(() => { hideOverlay(card); alert('An error occurred during deletion.'); });
     });
   });
 });
 
+// --- Helper function to show a loading overlay on a card ---
 function showOverlay(card, text) {
   let ov = card.querySelector('.card-overlay');
   if (!ov) {
@@ -46,91 +59,52 @@ function showOverlay(card, text) {
   ov.classList.remove('hidden');
 }
 
+// --- Helper function to hide a loading overlay ---
 function hideOverlay(card) {
   const ov = card.querySelector('.card-overlay');
   if (ov) ov.classList.add('hidden');
 }
 
-// Request backend analysis for an artwork. If the server responds with
-// an edit_url we immediately redirect the browser there. This keeps
-// both XHR and non-XHR flows consistent with the Flask route.
-// Trigger analysis for ``filename`` via the chosen provider. The backend may
-// respond with JSON (listing data) or an image blob. Blob responses are
-// displayed directly while JSON results update the card and/or redirect.
-const FRIENDLY_AI_ERROR =
-  'Sorry, we could not analyze this artwork due to an AI error. Please try again or switch provider.';
-
+// --- Main function to handle the analysis process ---
 function runAnalyze(card, provider, filename) {
-  const openaiOk = document.body.dataset.openaiOk === 'true';
-  const googleOk = document.body.dataset.googleOk === 'true';
-  if ((provider === 'openai' && !openaiOk) || (provider === 'google' && !googleOk)) {
-    const msg = provider === 'openai' ? 'OpenAI API Key is not configured. Please contact admin.' : 'Google API Key is not configured. Please contact admin.';
-    if (window.AnalysisModal) window.AnalysisModal.open({message: msg});
+  // Check if the provider API is configured
+  const isConfigured = document.body.dataset[`${provider}Ok`] === 'true';
+  if (!isConfigured) {
+    alert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} API Key is not configured. Please contact the administrator.`);
     return;
   }
+
+  // Show the analysis modal and the card overlay
   if (window.AnalysisModal) window.AnalysisModal.open();
-  showOverlay(card, `Analyzing with ${provider}…`);
-  fetch(`/analyze-${provider}/${encodeURIComponent(filename)}`, {
+  showOverlay(card, `Analyzing…`);
+
+  const actionUrl = `/analyze-${provider}/${encodeURIComponent(filename)}`;
+
+  fetch(actionUrl, {
     method: 'POST',
-    headers: {'X-Requested-With': 'XMLHttpRequest'}
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
   })
-    .then(async r => {
-      const type = r.headers.get('Content-Type') || '';
-      if (!r.ok) {
-        let msg = 'HTTP ' + r.status;
-        if (type.includes('application/json')) {
-          try { const j = await r.json(); msg = j.error || msg; } catch {}
-        }
-        throw new Error(msg);
-      }
-      if (type.startsWith('image/')) {
-        const blob = await r.blob();
-        const url = URL.createObjectURL(blob);
-        const img = card.querySelector('.card-img-top');
-        if (img) img.src = url;
-        return {success: true};
-      }
-      return r.json();
-    })
-    .then(d => {
-      hideOverlay(card);
-      if (window.AnalysisModal) window.AnalysisModal.close();
-      if (d.success) {
-        if (d.edit_url) {
-          window.location.href = d.edit_url;
-          return;
-        }
-        updateCard(card, d);
-        setStatus(card, true);
-      } else {
-        setStatus(card, false);
-        if (window.AnalysisModal) window.AnalysisModal.open({message: FRIENDLY_AI_ERROR});
-      }
-    })
-    .catch(err => {
-      hideOverlay(card);
-      setStatus(card, false);
-      if (window.AnalysisModal) {
-        window.AnalysisModal.open({message: FRIENDLY_AI_ERROR});
-      }
-    });
-}
-
-function setStatus(card, ok) {
-  const icon = card.querySelector('.status-icon');
-  if (!icon) return;
-  icon.textContent = ok ? '✅' : '❌';
-}
-
-function updateCard(card, data) {
-  const listing = data.listing || {};
-  const titleEl = card.querySelector('.card-title');
-  if (listing.title && titleEl) titleEl.textContent = listing.title;
-  const descEl = card.querySelector('.desc-snippet');
-  if (listing.description && descEl) descEl.textContent = listing.description.slice(0, 160);
-  if (data.seo_folder) {
-    const img = card.querySelector('.card-img-top');
-    // Update thumbnail to the processed location
-    if (img) img.src = `/static/art-processing/processed-artwork/${data.seo_folder}/${data.seo_folder}-THUMB.jpg?t=` + Date.now();
-  }
+  .then(resp => {
+    if (!resp.ok) {
+      return resp.json().then(errData => Promise.reject(errData));
+    }
+    return resp.json();
+  })
+  .then(data => {
+    if (data.success && data.edit_url) {
+      if (window.AnalysisModal) window.AnalysisModal.setMessage('Complete! Redirecting...');
+      // Wait a moment before redirecting so the user sees the "Complete" message
+      setTimeout(() => {
+        window.location.href = data.edit_url;
+      }, 1200);
+    } else {
+      throw new Error(data.error || 'Analysis failed to return a valid redirect URL.');
+    }
+  })
+  .catch(error => {
+    console.error('Analysis fetch error:', error);
+    // Display the error inside the modal for the user
+    if (window.AnalysisModal) window.AnalysisModal.setMessage(`Error: ${error.error || 'A server error occurred.'}`);
+    hideOverlay(card);
+  });
 }

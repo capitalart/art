@@ -72,7 +72,7 @@ ETSY_COLOURS = {
 
 
 # ====================== [ 2. LOGGING CONFIGURATION ] ========================
-START_TS = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d-%H%M")
+START_TS = _dt.datetime.now(_dt.timezone.utc).strftime("%a-%d-%b-%Y-%I-%M-%p").upper()
 LOGS_DIR.mkdir(exist_ok=True)
 LOG_FILE = LOGS_DIR / f"analyze-artwork-{START_TS}.log"
 

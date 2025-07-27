@@ -14,7 +14,6 @@
     
 </head>
 <body data-analysis-status-url="{{ url_for('artwork.analysis_status') }}" data-openai-ok="{{ 'true' if openai_configured else 'false' }}" data-google-ok="{{ 'true' if google_configured else 'false' }}">
-    <!-- Site Header -->
     <header class="site-header">
         <div class="header-left">
             <a href="{{ url_for('artwork.home') }}" class="site-logo">
@@ -35,7 +34,6 @@
         </div>
     </header>
 
-    <!-- Overlay Menu -->
     <div id="overlay-menu" class="overlay-menu">
         <div class="overlay-header">
             <div class="header-left">
@@ -65,8 +63,8 @@
                 <h3>Workflow &amp; Tools</h3>
                 <ul>
                     <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
-                    <li><a href="{{ url_for('mockup_admin.dashboard') }}">Mockup Admin</a></li> </ul>
-                    <li><a href="{{ url_for('coordinate_admin.dashboard') }}">Coordinate Generator</a></li> </ul>
+                    <li><a href="{{ url_for('mockup_admin.dashboard') }}">Mockup Admin</a></li>
+                    <li><a href="{{ url_for('coordinate_admin.dashboard') }}">Coordinate Generator</a></li>
                     <li><a href="{{ url_for('artwork.select') }}">Mockup Selector</a></li>
                 </ul>
             </div>
@@ -83,7 +81,6 @@
         </nav>
     </div>
 
-    <!-- Main Content -->
     <main>
         <div class="container">
             {% with messages = get_flashed_messages() %}
@@ -97,34 +94,31 @@
         </div>
     </main>
 
-    <!-- Gemini Modal -->
-    <div id="gemini-modal" class="gemini-modal">
-        <div class="gemini-modal-content">
-            <span class="gemini-modal-close">&times;</span>
+    <div id="gemini-modal" class="modal-bg">
+        <div class="modal-box">
+            <button class="modal-close">&times;</button>
             <h3 id="gemini-modal-title">AI Generation</h3>
-            <div id="gemini-modal-body" class="gemini-modal-body"></div>
-            <div class="gemini-modal-actions">
-                <button id="gemini-copy-btn" class="btn-action">Copy</button>
+            <div id="gemini-modal-body" class="modal-status"></div>
+            <div class="modal-actions">
+                <button id="gemini-copy-btn" class="btn btn-secondary">Copy</button>
             </div>
         </div>
     </div>
 
-    <!-- Analysis Progress Modal -->
     <div id="analysis-modal" class="modal-bg" role="dialog" aria-modal="true">
         <div class="modal-box" tabindex="-1">
             <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
             <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Processing...">
             <h3>Analyzing Artwork...</h3>
             <div id="analysis-status" class="modal-status" aria-live="polite">Starting...</div>
-            <div class="modal-progress" aria-label="analysis progress">
-                <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0"></div>
+            <div class="modal-progress" aria-label="Analysis progress bar container">
+                <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0" aria-label="Analysis progress"></div>
             </div>
-            <div class="modal-friendly-text">Grab a coffee while AI works it's magic!<br>Usually only takes a minute or two!</div>
+            <div class="modal-friendly-text">Go have a coffee while the AI works its magic!</div>
             <img src="{{ url_for('static', filename='icons/svg/light/coffee-light.svg') }}" class="coffee-icon icon" alt="Coffee break">
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-grid">
             <div class="footer-column">
@@ -157,8 +151,8 @@
                     <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
                     <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
                     <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
-                    {# Removed broken menu link: Admin Users (no such route exists) #}
                 </ul>
+                {# Removed broken menu link: Admin Users (no such route exists) #}
             </div>
         </div>
         <div class="copyright-bar">
@@ -166,7 +160,6 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/main-overlay-test.js') }}"></script>
     <script src="{{ url_for('static', filename='js/analysis-modal.js') }}"></script>
 </body>

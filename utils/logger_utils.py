@@ -82,7 +82,7 @@ def log_action(
     """Append a formatted line to the audit log for ``action``."""
 
     log_dir = _log_path(action)
-    stamp = datetime.utcnow().strftime("%Y-%m-%d_%H")
+    stamp = datetime.utcnow().strftime("%a-%d-%b-%Y-%I-%M-%p").upper()
     log_file = log_dir / f"{stamp}.log"
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     user_id = user or "unknown"
