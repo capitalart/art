@@ -42,55 +42,52 @@
         {{ categories | join(', ') if categories else 'none' }}
       </div>
 
-      <div class="mockup-preview-grid">
-        {% for m in mockups %}
-          <div class="mockup-card">
-            {% if m.exists %}
-              {# ----- Generate full and thumb image paths ----- #}
-              {% set thumb_name = m.path.stem + '-thumb.jpg' %}
-              {% set thumb_path = 'art-processing/processed-artwork/' + seo_folder + '/THUMBS/' + thumb_name %}
-              {% set full_path = 'art-processing/processed-artwork/' + seo_folder + '/' + m.path.name %}
-              {% set thumb_img = url_for('static', filename=thumb_path) ~ '?t=' ~ cache_ts %}
-              {% set full_img = url_for('static', filename=full_path) ~ '?t=' ~ cache_ts %}
+<div class="mockup-preview-grid">
+  {% for m in mockups %}
+    <div class="mockup-card">
+      {% if m.exists %}
+        {# -- Precompute full and thumb image paths -- #}
+        {% set thumb_name = m.path.stem + '-thumb.jpg' %}
+        {% set thumb_path = 'art-processing/processed-artwork/' + seo_folder + '/THUMBS/' + thumb_name %}
+        {% set full_path = 'art-processing/processed-artwork/' + seo_folder + '/' + m.path.name %}
+        {% set full_img = url_for('static', filename=full_path) ~ '?t=' ~ cache_ts %}
+        {% set thumb_img = url_for('static', filename=thumb_path) ~ '?t=' ~ cache_ts %}
 
-              {# ----- Display image with JS-safe onerror fallback ----- #}
-              <a href="{{ full_img }}"
-                 class="mockup-img-link"
-                 data-img="{{ full_img }}">
-                <img 
-                  src="{{ thumb_img }}"
-                  onerror="this.onerror=null; this.src='{{ full_img }}';"
-                  class="mockup-thumb-img"
-                  alt="Mockup preview {{ loop.index }}">
-              </a>
-              <div class="thumb-note">Click to preview full-size</div>
+        <a href="{{ full_img }}"
+           class="mockup-img-link"
+           data-img="{{ full_img }}">
+          <img 
+            src="{{ thumb_img }}"
+            onerror="this.onerror=null; this.src='{{ full_img }}';"
+            class="mockup-thumb-img"
+            alt="Mockup preview {{ loop.index }}">
+        </a>
+        <div class="thumb-note">Click to preview full-size</div>
+      {% else %}
+        <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}"
+             class="mockup-thumb-img"
+             alt="Default mockup placeholder">
+        <div class="thumb-note">Mockup not found</div>
+      {% endif %}
 
-            {% else %}
-              <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}"
-                   class="mockup-thumb-img"
-                   alt="Default mockup placeholder">
-              <div class="thumb-note">Mockup not found</div>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-
-            {% if categories %}
-              <form method="post" action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}" class="swap-form">
-                <select name="new_category" aria-label="Swap mockup category for slot {{ m.index }}">
-                  {% for c in categories %}
-                    <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
-                  {% endfor %}
-                </select>
-                <button type="submit" class="btn btn-sm">Swap</button>
-              </form>
-            {% else %}
-              <div class="no-categories-warning">No categories found.</div>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
+      {% if categories %}
+        <form method="post"
+              action="{{ url_for('artwork.review_swap_mockup', seo_folder=seo_folder, slot_idx=m.index) }}"
+              class="swap-form">
+          <select name="new_category"
+                  aria-label="Swap mockup category for slot {{ m.index }}">
+            {% for c in categories %}
+              <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-sm">Swap</button>
+        </form>
+      {% else %}
+        <div class="no-categories-warning">No categories found.</div>
+      {% endif %}
     </div>
+  {% endfor %}
+</div>
 
     <div class="col col-6 edit-listing-col">
       <p class="status-line {% if finalised %}status-finalised{% else %}status-pending{% endif %}">

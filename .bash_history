@@ -392,3 +392,51 @@ sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl
 sudo journalctl -u gunicorn -f
 mkdir -p /home/art/logs/gunicorn/
 sudo systemctl restart gunicorn.service
+source /home/art/venv/bin/activate
+sudo systemctl restart gunicorn.service
+sudo systemctl status gunicorn.service
+sudo systemctl restart gunicorn.service
+sudo systemctl status gunicorn.service
+sudo journalctl -u gunicorn.service -n 100 --no-pager
+cat /home/art/logs/gunicorn/gunicorn-error.log
+gunicorn app:app
+ps aux | grep gunicorn
+cat /home/art/logs/gunicorn/gunicorn-error.log
+sudo systemctl status gunicorn
+cat /home/art/logs/gunicorn/gunicorn-error.log
+bash /home/art/project-toolkit.sh
+git pull
+bash /home/art/project-toolkit.sh
+0
+deactivate
+source venv/bin/activate
+sudo systemctl stop gunicorn
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+sudo systemctl status gunicorn.service
+cat /home/art/logs/composites-workflow.log
+sudo touch /home/art/logs/composites-workflow.log
+sudo chown art:art /home/art/logs
+sudo chown art:art /home/art/logs/composites-workflow.log
+sudo systemctl restart gunicorn
+bash /home/art/project-toolkit.sh
+0
+bash /home/art/project-toolkit.sh
+git pull
+git pull origin main
+git branch --set-upstream-to=origin/main main
+git pull origin codex/fix-dynamic-category-dropdown-on-edit-page
+git fetch origin
+git checkout main
+git reset --hard origin/main
+git pull
+bash /home/art/project-toolkit.sh
+git stash push -m "Temporary save before pull"
+git pull
+git stash pop
+bash /home/art/project-toolkit.sh
+source /home/art/venv/bin/activate
+sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f

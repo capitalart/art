@@ -473,5 +473,25 @@
       }
     ],
     "upload_date": "2025-07-26T11:30:44.700170+00:00"
+  },
+  "bdbb62f3cddc4492a530879d91c5a97b": {
+    "seo_filename": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-73bdceba.jpg",
+    "base": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-73bdceba",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+    "assets": [
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-73bdceba.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-73bdceba-thumb.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-73bdceba-analyse.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-73bdceba.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+        "timestamp": "2025-07-26T11:35:29.165201+00:00"
+      }
+    ],
+    "upload_date": "2025-07-26T11:35:29.165201+00:00"
   }
 }
