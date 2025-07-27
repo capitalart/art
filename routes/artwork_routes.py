@@ -363,16 +363,12 @@ def get_categories_for_aspect(aspect: str) -> list[str]:
     logger = logging.getLogger(__name__)
     logger.debug("[DEBUG] get_categories_for_aspect: aspect=%s", aspect)
 
-    base = config.MOCKUPS_CATEGORISED_DIR / f"{aspect}-categorised"
+    base = config.MOCKUPS_CATEGORISED_DIR / aspect
     if not base.exists():
         logger.warning("[DEBUG] Category folder missing: %s", base)
-        base = config.MOCKUPS_CATEGORISED_DIR / "4x5-categorised"
-        if not base.exists():
-            logger.error("[DEBUG] Default category folder also missing: %s", base)
-            return []
+        return []
 
-    cats = [f.name for f in base.iterdir() if f.is_dir()]
-    cats = sorted(cats)[:25]
+    cats = sorted([f.name for f in base.iterdir() if f.is_dir()])
     logger.debug("[DEBUG] categories resolved: %s", cats)
     return cats
 
@@ -855,7 +851,7 @@ def review_swap_mockup(seo_folder, slot_idx):
     new_category = request.form.get("new_category")
     logger = logging.getLogger(__name__)
     logger.info("Swapping mockup %s slot %s to %s", seo_folder, slot_idx, new_category)
-    success = utils.swap_one_mockup(seo_folder, slot_idx, new_category)
+    success, *_ = utils.swap_one_mockup(seo_folder, slot_idx, new_category)
     if success:
         flash(f"Mockup slot {slot_idx} swapped to {new_category}", "success")
     else:
