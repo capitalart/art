@@ -106,17 +106,21 @@
     </div>
 
     <div id="analysis-modal" class="modal-bg" role="dialog" aria-modal="true">
-        <div class="modal-box" tabindex="-1">
-            <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
-            <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Processing...">
-            <h3>Analyzing Artwork...</h3>
-            <div id="analysis-status" class="modal-status" aria-live="polite">Starting...</div>
-            <div class="modal-progress" aria-label="Analysis progress bar container">
-                <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0" aria-label="Analysis progress"></div>
-            </div>
-            <div class="modal-friendly-text">Go have a coffee while the AI works its magic!</div>
-            <img src="{{ url_for('static', filename='icons/svg/light/coffee-light.svg') }}" class="coffee-icon icon" alt="Coffee break">
+    <div class="modal-box" tabindex="-1">
+        <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
+        <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Processing...">
+        <h3>Analyzing Artwork...</h3>
+        <div class="modal-timer" id="analysis-timer">0s</div>
+        <div id="analysis-status" class="modal-status" aria-live="polite">Starting...</div>
+        <div class="modal-progress" aria-label="Analysis progress bar container">
+        <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0" aria-label="Analysis progress"></div>
         </div>
+        <div class="modal-friendly-text">
+        Grab a coffee while AI works its magic!<br>
+        It usually only takes a minute or two!
+        </div>
+        <img src="{{ url_for('static', filename='icons/svg/light/coffee-light.svg') }}" class="coffee-icon icon" alt="Coffee break">
+    </div>
     </div>
 
     <footer class="site-footer">
