@@ -189,12 +189,12 @@
         </form>
       </div>
 
-      {% if openai_analysis %}
+{% if openai_analysis %}
         <div class="openai-details">
+          <h3>OpenAI Analysis Details</h3>
           {% set entries = openai_analysis if openai_analysis is iterable and openai_analysis.__class__ != dict else [openai_analysis] %}
           {% for info in entries %}
             <table class="openai-analysis-table">
-              <thead><tr><th colspan="2">OpenAI Analysis Details</th></tr></thead>
               <tbody>
                 <tr><th>Original File</th><td>{{ info.original_file }}</td></tr>
                 <tr><th>Optimized File</th><td>{{ info.optimized_file }}</td></tr>
@@ -204,8 +204,12 @@
                 <tr><th>Time Responded</th><td>{{ info.time_responded }}</td></tr>
                 <tr><th>Duration</th><td>{{ info.duration_sec }} s</td></tr>
                 <tr><th>Status</th><td>{{ info.status }}</td></tr>
-                {% if info.api_response %}<th>API Response</th><td>{{ info.api_response }}</td>{% endif %}
-                {% if info.naming_method %}<th>Naming Method</th><td>{{ info.naming_method }}{% if info.used_fallback_naming %} (fallback){% endif %}</td>{% endif %}
+                {% if info.api_response %}
+                <tr><th>API Response</th><td>{{ info.api_response }}</td></tr>
+                {% endif %}
+                {% if info.naming_method %}
+                <tr><th>Naming Method</th><td>{{ info.naming_method }}{% if info.used_fallback_naming %} (fallback){% endif %}</td></tr>
+                {% endif %}
               </tbody>
             </table>
           {% endfor %}
