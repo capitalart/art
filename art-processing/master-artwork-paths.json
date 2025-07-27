@@ -1,42 +1,42 @@
 {
-  "e3d9d31b93e14184a7ae107451f7508c": {
-    "seo_filename": "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-ec242de7.jpg",
-    "base": "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-ec242de7",
+  "e9d712eada624d5a9c8cac97e632089b": {
+    "seo_filename": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75.jpg",
+    "base": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75",
     "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
     "assets": [
-      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-ec242de7.jpg",
-      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-ec242de7-thumb.jpg",
-      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-ec242de7-analyse.jpg",
-      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-ec242de7.qc.json"
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75-thumb.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75-analyse.jpg",
+      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
         "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
-        "timestamp": "2025-07-27T13:49:55.879660+00:00"
+        "timestamp": "2025-07-27T15:12:46.161660+00:00"
       }
     ],
-    "upload_date": "2025-07-27T13:49:55.879660+00:00"
+    "upload_date": "2025-07-27T15:12:46.161660+00:00"
   },
-  "d735e3f77e9c427489e2b5f25f4e362b": {
-    "seo_filename": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9f1230f8.jpg",
-    "base": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9f1230f8",
+  "ec6e433361044cd2bb520f35022743f7": {
+    "seo_filename": "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894.jpg",
+    "base": "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894",
     "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
     "assets": [
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9f1230f8.jpg",
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9f1230f8-thumb.jpg",
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9f1230f8-analyse.jpg",
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9f1230f8.qc.json"
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894.jpg",
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894-thumb.jpg",
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894-analyse.jpg",
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
         "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
-        "timestamp": "2025-07-27T14:15:43.890520+00:00"
+        "timestamp": "2025-07-27T15:37:06.268083+00:00"
       }
     ],
-    "upload_date": "2025-07-27T14:15:43.890520+00:00"
+    "upload_date": "2025-07-27T15:37:06.268083+00:00"
   }
 }

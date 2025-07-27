@@ -10,15 +10,13 @@ from werkzeug.routing import BuildError
 from datetime import datetime
 import config
 
-# Ensure logs directory and session registry files exist before logging
+# Ensure logs directory and session registry file exist before logging
 LOGS_DIR = config.LOGS_DIR
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 registry_json = LOGS_DIR / "session_registry.json"
-registry_tmp = LOGS_DIR / "session_registry.tmp"
 if not registry_json.exists():
     registry_json.write_text("{}")
-if not registry_tmp.exists():
-    registry_tmp.write_text("{}")
+# The .tmp file is ephemeral and managed by the session tracker; it should not be pre-created.
 
 # ---- Modular Imports ----
 from routes import utils
@@ -170,7 +168,7 @@ if __name__ == "__main__":
     debug = config.DEBUG
     if debug and host not in {"127.0.0.1", "localhost"}:
         raise RuntimeError("Refusing to run debug mode on a public interface")
-    print(f"\U0001f3a8 Starting ArtNarrator UI at http://{host}:{port}/ ...")
+    print(f"🎨 Starting ArtNarrator UI at http://{host}:{port}/ ...")
     try:
         app.run(debug=debug, host=host, port=port)
     finally:

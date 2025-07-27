@@ -67,5 +67,59 @@
 }
 
 .theme-dark .thumb-note {
-  color: rgba(0, 0, 0, 0.65); /* Muted dark color for light mode */
+  color: rgba(255, 255, 255, 0.65); /* Muted light color for dark mode */
+}
+
+/* --- OpenAI Analysis Details Table --- */
+.openai-details {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.openai-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  margin-bottom: 1rem;
+  table-layout: fixed; /* Ensures column widths are respected */
+}
+
+.openai-analysis-table thead th {
+  font-size: 1.1em;
+  font-weight: 600;
+  padding: 0.8em 0.5em;
+  text-align: left;
+  background-color: var(--color-card-bg);
+  border-bottom: 2px solid var(--card-border);
+}
+
+.openai-analysis-table tbody th,
+.openai-analysis-table tbody td {
+  padding: 0.6em 0.5em;
+  vertical-align: top;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.openai-analysis-table tbody th {
+  font-weight: 600;
+  text-align: left;
+  width: 30%;
+  color: var(--color-text);
+  opacity: 0.8;
+  word-break: break-word; /* Allow labels to wrap if needed */
+}
+
+.openai-analysis-table tbody td {
+  width: 70%;
+  text-align: left;
+  word-break: break-all; /* Crucial for long file paths */
+}
+
+.openai-analysis-table tbody tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.theme-dark .openai-analysis-table tbody tr:nth-of-type(even) {
+  background-color: rgba(255, 255, 255, 0.04);
 }
