@@ -1,74 +1,105 @@
-from __future__ import annotations
+# utils/logger_utils.py
+"""
+Utility for structured and centralized application logging.
 
-"""Utility for structured audit logging.
+This module provides the `setup_logger` function, which is the primary
+method for creating dedicated, timestamped log files for different parts
+of the application based on the central LOG_CONFIG.
 
-This module provides the :func:`log_action` helper used by routes to
-record user actions in hour-based log files under ``config.LOGS_DIR``.
+INDEX
+-----
+1.  Imports
+2.  Data Sanitization Helpers
+3.  Core Logging Setup
+4.  Legacy Audit Logger
 """
 
-import contextlib
-import fcntl
+# ===========================================================================
+# 1. Imports
+# ===========================================================================
+from __future__ import annotations
+import logging
 from pathlib import Path
 from datetime import datetime
-import os
 from typing import Any
-
 import config
 
 
-_ACTION_DIRS = {
-    "upload": "upload",
-    "analyse-openai": "analyse-openai",
-    "analyse-google": "analyse-google",
-    "edits": "edits",
-    "finalise": "finalise",
-    "lock": "lock",
-    "sellbrite-exports": "sellbrite-exports",
-}
-
+# ===========================================================================
+# 2. Data Sanitization Helpers
+# ===========================================================================
 
 def strip_binary(obj: Any) -> Any:
-    """Recursively remove bytes objects from ``obj`` for safe logging."""
+    """Recursively removes bytes/bytearray objects from a data structure."""
     if isinstance(obj, dict):
-        return {
-            k: strip_binary(v)
-            for k, v in obj.items()
-            if not isinstance(v, (bytes, bytearray))
-        }
+        return {k: strip_binary(v) for k, v in obj.items() if not isinstance(v, (bytes, bytearray))}
     if isinstance(obj, list):
         return [strip_binary(v) for v in obj if not isinstance(v, (bytes, bytearray))]
     if isinstance(obj, (bytes, bytearray)):
-        return f"<{len(obj)} bytes>"
+        return f"<stripped {len(obj)} bytes>"
     return obj
 
 
 def sanitize_blob_data(obj: Any) -> Any:
-    """Return ``obj`` with any obvious binary or base64 blobs summarised."""
-
+    """Recursively summarizes binary or long base64 strings for safe logging."""
     if isinstance(obj, dict):
-        clean = {}
-        for k, v in obj.items():
-            if k in {"image", "image_url", "image_data", "content"}:
-                clean[k] = "<image data>"
-            else:
-                clean[k] = sanitize_blob_data(v)
-        return clean
+        return {k: sanitize_blob_data(v) for k, v in obj.items()}
     if isinstance(obj, list):
         return [sanitize_blob_data(v) for v in obj]
     if isinstance(obj, (bytes, bytearray)):
-        return f"<{len(obj)} bytes>"
+        return f"<stripped {len(obj)} bytes>"
     if isinstance(obj, str) and len(obj) > 300 and "base64" in obj:
-        return "<base64 data>"
+        return f"<base64 data stripped, length={len(obj)}>"
     return obj
 
 
-def _log_path(action: str) -> Path:
-    """Return folder path for the given action."""
-    folder = _ACTION_DIRS.get(action, action)
-    path = config.LOGS_DIR / folder
-    path.mkdir(parents=True, exist_ok=True)
-    return path
+# ===========================================================================
+# 3. Core Logging Setup
+# ===========================================================================
 
+def setup_logger(logger_name: str, log_key: str, level: int = logging.INFO) -> logging.Logger:
+    """
+    Configures and returns a logger with a timestamped file handler.
+
+    Uses LOG_CONFIG from config.py to determine the subfolder and filename format.
+
+    Args:
+        logger_name: The name of the logger (e.g., __name__).
+        log_key: The key from config.LOG_CONFIG (e.g., "ANALYZE_OPENAI").
+        level: The logging level (e.g., logging.INFO).
+
+    Returns:
+        A configured logging.Logger instance.
+    """
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(level)
+
+    # Prevent duplicate handlers if logger is already configured
+    if logger.hasHandlers():
+        return logger
+
+    # Get folder and filename details from config
+    log_folder_name = config.LOG_CONFIG.get(log_key, config.LOG_CONFIG["DEFAULT"])
+    log_dir = config.LOGS_DIR / log_folder_name
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now().strftime(config.LOG_TIMESTAMP_FORMAT).upper()
+    log_filename = f"{timestamp}-{log_key}.log"
+    log_filepath = log_dir / log_filename
+    
+    # Create and configure file handler
+    handler = logging.FileHandler(log_filepath, encoding='utf-8')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    
+    logger.addHandler(handler)
+    
+    return logger
+
+
+# ===========================================================================
+# 4. Legacy Audit Logger
+# ===========================================================================
 
 def log_action(
     action: str,
@@ -79,28 +110,37 @@ def log_action(
     status: str = "success",
     error: str | None = None,
 ) -> None:
-    """Append a formatted line to the audit log for ``action``."""
+    """
+    Appends a formatted line to an action-specific audit log.
+    Note: This creates hourly log files for high-frequency actions.
+    """
+    log_folder_name = config.LOG_CONFIG.get(action.upper(), action)
+    log_dir = config.LOGS_DIR / log_folder_name
+    log_dir.mkdir(parents=True, exist_ok=True)
 
-    log_dir = _log_path(action)
-    stamp = datetime.utcnow().strftime("%a-%d-%b-%Y-%I-%M-%p").upper()
+    stamp = datetime.utcnow().strftime("%Y-%m-%d_%H") # Hourly log file
     log_file = log_dir / f"{stamp}.log"
-    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    
     user_id = user or "unknown"
-
     parts = [
         timestamp,
         f"user: {user_id}",
         f"action: {action}",
         f"file: {filename}",
         f"status: {status}",
+        f"detail: {details}",
     ]
-    if details:
-        parts.append(f"detail: {details}")
     if error:
         parts.append(f"error: {error}")
-    line = " | ".join(parts)
-
-    with open(log_file, "a", encoding="utf-8") as f:
-        with contextlib.suppress(OSError):
-            fcntl.flock(f, fcntl.LOCK_EX)
-        f.write(line + "\n")
+        
+    line = " | ".join(parts) + "\n"
+    
+    try:
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(line)
+    except Exception as e:
+        # Fallback to main logger if file write fails
+        fallback_logger = logging.getLogger(__name__)
+        fallback_logger.error(f"Failed to write to action log {log_file}: {e}")
+        fallback_logger.error(f"Log line was: {line}")

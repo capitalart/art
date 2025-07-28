@@ -1,112 +1,137 @@
+# scripts/test_sellbrite_add_listing.py
 """
-Sellbrite Add Listing Test Script
-This utility posts a test product to Sellbrite using credentials from config.py and a sample JSON input.
-Run this as a CLI script or from VSCode to verify the integration works.
+A command-line utility to post a test product to Sellbrite.
 
-Robbie Mode™ – Stable, Deterministic, and Logged.
+This script loads a sample JSON listing, authenticates with the Sellbrite API
+using credentials from the config, and attempts to create a new product.
+It is intended for verifying that the API integration is functional.
+
+INDEX
+-----
+1.  Imports
+2.  Configuration & Setup
+3.  Core Functions
+4.  Main Execution Logic
+5.  Command-Line Interface (CLI)
 """
 
-"""
-Sellbrite Add Listing Test Script
-"""
-
+# ===========================================================================
+# 1. Imports
+# ===========================================================================
+from __future__ import annotations
 import sys
-from pathlib import Path
-
-# --- Ensure project root is in sys.path ---
-ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(str(ROOT_DIR))
-
 import json
 import logging
+import base64
+from pathlib import Path
+
 import requests
 from dotenv import load_dotenv
-from config import (
-    SELLBRITE_ACCOUNT_TOKEN,
-    SELLBRITE_SECRET_KEY,
-    SELLBRITE_API_BASE_URL,
-    DATA_DIR,
-    LOGS_DIR,
-)
 
-# -----------------------------------------------------------------------------
-# 1. Setup & Constants
-# -----------------------------------------------------------------------------
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+import config
+from utils.logger_utils import setup_logger
+
+# ===========================================================================
+# 2. Configuration & Setup
+# ===========================================================================
 load_dotenv()
-TEST_JSON_PATH = DATA_DIR / "sellbrite" / "test_sellbrite_listing.json"
-RESPONSE_LOG_PATH = LOGS_DIR / "sellbrite_test_response.json"
-API_ENDPOINT = f"{SELLBRITE_API_BASE_URL}/products"
+logger = setup_logger(__name__, "SELLBRITE_API")
 
-# -----------------------------------------------------------------------------
-# 2. Auth Headers
-# -----------------------------------------------------------------------------
-def get_auth_headers() -> dict:
-    if not SELLBRITE_ACCOUNT_TOKEN or not SELLBRITE_SECRET_KEY:
-        raise ValueError("Sellbrite credentials are not properly set in .env or config.py")
+TEST_JSON_PATH = config.DATA_DIR / "sellbrite" / "test_sellbrite_listing.json"
+API_ENDPOINT = f"{config.SELLBRITE_API_BASE_URL}/products"
+
+
+# ===========================================================================
+# 3. Core Functions
+# ===========================================================================
+
+def get_auth_header() -> dict[str, str]:
+    """
+    Constructs the Basic Authentication header for the Sellbrite API.
+    
+    MODIFIED: This now matches the authentication method used in the main
+    sellbrite_service.py for consistency.
+    """
+    token = config.SELLBRITE_ACCOUNT_TOKEN
+    secret = config.SELLBRITE_SECRET_KEY
+    if not token or not secret:
+        raise ValueError("Sellbrite credentials (TOKEN, SECRET) are not set in config.")
+    
+    creds = f"{token}:{secret}".encode("utf-8")
+    encoded_creds = base64.b64encode(creds).decode("utf-8")
     return {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {SELLBRITE_ACCOUNT_TOKEN}",
-        "X-SB-API-KEY": SELLBRITE_SECRET_KEY,
+        "Authorization": f"Basic {encoded_creds}"
     }
 
-# -----------------------------------------------------------------------------
-# 3. Load Test Payload
-# -----------------------------------------------------------------------------
+
 def load_test_payload(path: Path) -> dict:
+    """Loads the test listing data from a JSON file."""
     if not path.exists():
-        raise FileNotFoundError(f"❌ Test JSON file not found: {path}")
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        raise FileNotFoundError(f"Test JSON file not found: {path}")
+    logger.info(f"Loading test payload from {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
 
-# -----------------------------------------------------------------------------
-# 4. Post to Sellbrite
-# -----------------------------------------------------------------------------
-def post_listing(payload: dict, dry_run: bool = False) -> requests.Response | None:
-    if dry_run:
-        print("🧪 DRY RUN: Would send this JSON to Sellbrite:")
-        print(json.dumps(payload, indent=2))
-        return None
 
-    headers = get_auth_headers()
-    try:
-        response = requests.post(API_ENDPOINT, headers=headers, json=payload, timeout=10)
-        return response
-    except requests.RequestException as e:
-        print(f"❌ Request failed: {e}")
-        return None
+def post_listing(payload: dict) -> requests.Response:
+    """Sends the listing payload to the Sellbrite API."""
+    headers = get_auth_header()
+    logger.info(f"Sending POST request to {API_ENDPOINT} for SKU {payload.get('sku')}")
+    response = requests.post(API_ENDPOINT, headers=headers, json=payload, timeout=20)
+    return response
 
-# -----------------------------------------------------------------------------
-# 5. Main CLI Logic
-# -----------------------------------------------------------------------------
+
+# ===========================================================================
+# 4. Main Execution Logic
+# ===========================================================================
+
 def main():
+    """Main function to run the Sellbrite listing test."""
     dry_run = "--dry-run" in sys.argv
-    print("🚀 Sellbrite Listing Test Started...")
+    print("🚀 Sellbrite Add Listing Test Started...")
+    logger.info("Sellbrite test script initiated.")
 
     try:
         payload = load_test_payload(TEST_JSON_PATH)
     except Exception as e:
+        logger.critical(f"Failed to load test payload: {e}", exc_info=True)
         print(f"❌ Failed to load test payload: {e}")
         return
 
-    response = post_listing(payload, dry_run=dry_run)
-
-    if response is None:
+    if dry_run:
+        print("🧪 DRY RUN: Would send this JSON payload to Sellbrite:")
+        print(json.dumps(payload, indent=2))
+        logger.info("Dry run executed. Payload displayed but not sent.")
         return
 
-    if response.status_code == 201:
-        print("✅ Listing successfully created in Sellbrite.")
-    else:
-        print(f"❌ Failed with status {response.status_code}: {response.text}")
-
     try:
-        with open(RESPONSE_LOG_PATH, "w", encoding="utf-8") as log_file:
-            json.dump(response.json(), log_file, indent=2)
-            print(f"📝 Response saved to: {RESPONSE_LOG_PATH}")
-    except Exception as e:
-        print(f"⚠️ Could not save response JSON: {e}")
+        response = post_listing(payload)
+        
+        if response.status_code == 201:
+            print("✅ Listing successfully created in Sellbrite.")
+            logger.info(f"SUCCESS: Sellbrite responded with status {response.status_code}.")
+        else:
+            print(f"❌ Failed with status {response.status_code}: {response.text}")
+            logger.error(f"FAILURE: Sellbrite responded with status {response.status_code}: {response.text}")
 
-# -----------------------------------------------------------------------------
-# 6. Entrypoint
-# -----------------------------------------------------------------------------
+        try:
+            response_json = response.json()
+            logger.info("--- Sellbrite API Response ---")
+            logger.info(json.dumps(response_json, indent=2))
+            print("📝 Full API response has been saved to the log file.")
+        except json.JSONDecodeError:
+            logger.info("--- Sellbrite API Response (Raw Text) ---")
+            logger.info(response.text)
+            
+    except Exception as e:
+        logger.critical(f"An unexpected error occurred during the API call: {e}", exc_info=True)
+        print(f"❌ An unexpected error occurred: {e}")
+
+
+# ===========================================================================
+# 5. Command-Line Interface (CLI)
+# ===========================================================================
+
 if __name__ == "__main__":
     main()

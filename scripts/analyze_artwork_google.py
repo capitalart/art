@@ -1,17 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-DreamArtMachine Lite | analyze_artwork_google.py
+ArtNarrator | analyze_artwork_google.py
 ===============================================================
 Dedicated script for analyzing artworks with Google's Gemini Pro Vision.
-This script is designed to be called via subprocess.
+This script is designed to be called via subprocess from the main application.
 
 - Receives a single image path as a command-line argument.
 - Prints the final JSON analysis to stdout on success.
 - Prints a JSON error object to stderr on failure.
+
+INDEX
+-----
+1.  Imports
+2.  Configuration & Setup
+3.  Utility Functions
+4.  Main Analysis Logic
+5.  Command-Line Interface (CLI)
 """
 
-# ============================== [ Imports ] ===============================
+# ===========================================================================
+# 1. Imports
+# ===========================================================================
+from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
@@ -22,48 +33,49 @@ import sys
 import traceback
 from pathlib import Path
 
+# Third-party imports
+from PIL import Image
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+# Local application imports
 # Ensure project root is on sys.path for `config` import
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-from PIL import Image
-import google.generativeai as genai
-from dotenv import load_dotenv
-
 import config
-from config import (
-    LOGS_DIR,
-    ONBOARDING_PATH,
-    SKU_TRACKER,
-    UNANALYSED_ROOT,
-)
 from utils.logger_utils import sanitize_blob_data
 from utils.sku_assigner import peek_next_sku
 
 Image.MAX_IMAGE_PIXELS = None
 load_dotenv()
 
-# ====================== [ 1. Configuration & Setup ] ========================
 
-# Configure Google API
+# ===========================================================================
+# 2. Configuration & Setup
+# ===========================================================================
+
+# --- [ 2.1: Configure Google API Client ] ---
 try:
-    genai.configure(api_key=os.getenv("GOOGLE_API_KEY", ""))
+    genai.configure(api_key=config.GEMINI_API_KEY or config.GOOGLE_API_KEY)
 except Exception as e:
     sys.stderr.write(json.dumps({"success": False, "error": f"Failed to configure Google API: {e}"}))
     sys.exit(1)
 
-# Configure Logging
-LOGS_DIR.mkdir(exist_ok=True)
-google_log_path = LOGS_DIR / (
-    "analyze-google-calls-" + _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d") + ".log"
-)
+# --- [ 2.2: Configure Logging ] ---
+config.LOGS_DIR.mkdir(exist_ok=True)
+google_log_path = config.LOGS_DIR / f"analyse-google/google-api-calls-{_dt.datetime.now(_dt.timezone.utc).strftime('%Y-%m-%d')}.log"
+google_log_path.parent.mkdir(exist_ok=True)
+
 google_logger = logging.getLogger("google_analysis")
 if not google_logger.handlers:
     handler = logging.FileHandler(google_log_path, encoding="utf-8")
-    handler.setFormatter(logging.Formatter("%(message)s"))
+    handler.setFormatter(logging.Formatter("%(asctime)s - %(message)s"))
     google_logger.addHandler(handler)
     google_logger.setLevel(logging.INFO)
 
-# ======================== [ 2. Utility Functions ] ==========================
+
+# ===========================================================================
+# 3. Utility Functions
+# ===========================================================================
 
 def get_aspect_ratio(image_path: Path) -> str:
     """Return closest aspect ratio label for a given image."""
@@ -78,9 +90,11 @@ def get_aspect_ratio(image_path: Path) -> str:
     best = min(aspect_map, key=lambda tup: abs(ar - tup[1]))
     return best[0]
 
+
 def parse_text_fallback(text: str) -> dict:
-    """Extract key fields from a non-JSON AI response."""
+    """Extracts key fields from a non-JSON AI response."""
     data = {"fallback_text": text}
+    # Simplified regex for demonstration; a production version could be more robust
     title_match = re.search(r"(?:Title|Artwork Title)\s*[:\-]\s*(.+)", text, re.IGNORECASE)
     if title_match:
         data["title"] = title_match.group(1).strip()
@@ -88,6 +102,7 @@ def parse_text_fallback(text: str) -> dict:
     if tag_match:
         data["tags"] = [t.strip() for t in tag_match.group(1).split(",") if t.strip()]
     return data
+
 
 def make_optimized_image_for_ai(src_path: Path, out_dir: Path) -> Path:
     """Return path to an optimized JPEG, creating it if necessary."""
@@ -99,89 +114,73 @@ def make_optimized_image_for_ai(src_path: Path, out_dir: Path) -> Path:
         im.save(out_path, "JPEG", quality=85, optimize=True)
     return out_path
 
-# ========================= [ 3. Main Analysis Logic ] =========================
+
+# ===========================================================================
+# 4. Main Analysis Logic
+# ===========================================================================
 
 def analyze_with_google(image_path: Path):
-    """Analyze an image using Google Gemini."""
+    """Analyzes an image using Google Gemini and returns a result dictionary."""
     start_ts = _dt.datetime.now(_dt.timezone.utc)
-    log_entry = {
-        "file": str(image_path),
-        "provider": "google",
-        "time_sent": start_ts.isoformat(),
-    }
-
+    log_entry = { "file": str(image_path), "provider": "google", "time_sent": start_ts.isoformat() }
+    
+    opt_img_path = None
     try:
         if not image_path.is_file():
             raise FileNotFoundError(f"Image file not found: {image_path}")
 
-        temp_dir = UNANALYSED_ROOT / "temp"
+        google_logger.info(f"Starting Google analysis for {image_path.name}")
+        temp_dir = config.UNANALYSED_ROOT / "temp"
         opt_img_path = make_optimized_image_for_ai(image_path, temp_dir)
-        aspect = get_aspect_ratio(opt_img_path)
-        assigned_sku = peek_next_sku(SKU_TRACKER)
-        system_prompt = Path(ONBOARDING_PATH).read_text(encoding="utf-8")
-
-        with open(opt_img_path, "rb") as f:
-            img_bytes = f.read()
-
+        
+        system_prompt = Path(config.ONBOARDING_PATH).read_text(encoding="utf-8")
+        assigned_sku = peek_next_sku(config.SKU_TRACKER)
+        
         prompt = (
-            system_prompt.strip()
-            + f"\n\nThe SKU for this artwork is {assigned_sku}. "
-            + "NEVER invent a SKU, ALWAYS use the provided assigned_sku for the 'sku' and filename fields."
+            system_prompt.strip() +
+            f"\n\nThe assigned SKU for this artwork is {assigned_sku}. "
+            "You MUST use this SKU in the 'sku' field and in the 'seo_filename'."
         )
-
-        model_name = config.GOOGLE_GEMINI_PRO_VISION_MODEL_NAME
-        parts = [
-            prompt,
-            f"Artwork filename: {image_path.name}\nAspect ratio: {aspect}\n" "Describe and analyze the artwork visually, then generate the listing as per the instructions above.",
-            img_bytes,
-        ]
-
-        response = genai.GenerativeModel(model_name).generate_content(
-            parts,
-            generation_config={"temperature": 0.92},
-            stream=False,
-        )
+        
+        model = genai.GenerativeModel(config.GOOGLE_GEMINI_PRO_VISION_MODEL_NAME)
+        
+        google_logger.info("Sending request to Gemini API...")
+        response = model.generate_content([prompt, Image.open(opt_img_path)])
         content = response.text.strip()
-
-        safe_parts_for_log = [p for p in parts if not isinstance(p, bytes)]
-        log_entry["prompt"] = safe_parts_for_log
-        log_entry["response_preview"] = content[:500]
+        google_logger.info(f"Received response from Gemini API for {image_path.name}")
 
         try:
             ai_listing = json.loads(content)
-            was_json = True
-            err_msg = ""
+            result = {"ai_listing": ai_listing, "was_json": True, "raw_response": content}
         except json.JSONDecodeError:
+            google_logger.warning(f"Gemini response for {image_path.name} was not valid JSON. Using fallback.")
             ai_listing = parse_text_fallback(content)
-            was_json = False
-            err_msg = "Google response not valid JSON"
+            result = {"ai_listing": ai_listing, "was_json": False, "raw_response": content}
 
-        log_entry.update({
-            "status": "success" if was_json else "fallback",
-            "error": err_msg,
-            "duration_sec": (_dt.datetime.now(_dt.timezone.utc) - start_ts).total_seconds(),
-        })
+        log_entry.update({"status": "success", "duration_sec": (_dt.datetime.now(_dt.timezone.utc) - start_ts).total_seconds()})
         google_logger.info(json.dumps(sanitize_blob_data(log_entry)))
-
-        return {"ai_listing": ai_listing, "was_json": was_json, "raw_response": content, "error_type": "fallback" if not was_json else "ok", "error_message": err_msg}
+        
+        return result
 
     except Exception as e:
         tb = traceback.format_exc()
         log_entry.update({
-            "status": "fail",
-            "error": str(e),
-            "traceback": tb,
+            "status": "fail", "error": str(e), "traceback": tb,
             "duration_sec": (_dt.datetime.now(_dt.timezone.utc) - start_ts).total_seconds(),
         })
-        google_logger.info(json.dumps(sanitize_blob_data(log_entry)))
+        google_logger.error(json.dumps(sanitize_blob_data(log_entry)))
         raise RuntimeError(f"Google analysis failed: {e}") from e
     finally:
-        if 'opt_img_path' in locals() and opt_img_path.exists():
+        if opt_img_path and opt_img_path.exists():
             opt_img_path.unlink()
 
 
-# ============================= [ 4. Main Entry ] ==============================
+# ===========================================================================
+# 5. Command-Line Interface (CLI)
+# ===========================================================================
+
 def main():
+    """Parses CLI arguments and runs the analysis."""
     parser = argparse.ArgumentParser(description="Analyze a single artwork with Google Gemini.")
     parser.add_argument("image", help="Path to the image file to process.")
     args = parser.parse_args()
@@ -197,9 +196,6 @@ def main():
         sys.stderr.write(json.dumps(error_payload, indent=2))
         sys.exit(1)
 
+
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        sys.stderr.write(json.dumps({"error": str(e)}))
-        sys.exit(1)
+    main()

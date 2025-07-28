@@ -16,34 +16,38 @@ Field mapping between our artwork JSON and Sellbrite's Listings API:
 | images           | images          |
 """
 
-from __future__ import annotations
+# routes/sellbrite_export.py
+"""
+Utilities for exporting listings to Sellbrite.
+"""
 
+from __future__ import annotations
 from typing import Any, Dict
 import config
 
 
 def generate_sellbrite_json(data: Dict[str, Any]) -> Dict[str, Any]:
     """Return a dictionary formatted for the Sellbrite Listings API with absolute image URLs."""
-    # Construct the base URL for public images from config [cite: 753]
-    base_url = f"https://{config.BRAND_DOMAIN}"
+    # Construct the public base URL for images from config
+    base_url = config.BASE_URL
     
-    # Get relative image paths from the listing data
     relative_image_paths = data.get("images", [])
     
-    # Convert relative paths to full, public URLs
-    # The static URL path is the relative path prefixed with '/static/'
-    absolute_image_urls = [f"{base_url}/static/{path}" for path in relative_image_paths]
+    # Convert relative paths from the project root to full, public URLs
+    absolute_image_urls = [f"{base_url}/{path}" for path in relative_image_paths]
 
     sb = {
         "sku": data.get("sku"),
         "name": data.get("title"),
         "description": data.get("description"),
         "price": data.get("price"),
+        "quantity": 25, # <-- MODIFIED: Added default quantity
         "tags": data.get("tags", []),
         "materials": data.get("materials", []),
         "primary_colour": data.get("primary_colour"),
         "secondary_colour": data.get("secondary_colour"),
         "seo_filename": data.get("seo_filename"),
-        "images": absolute_image_urls,  # Use the new absolute URLs
+        "images": absolute_image_urls,
     }
+    # Clean out any empty fields before sending
     return {k: v for k, v in sb.items() if v not in (None, "", [])}
