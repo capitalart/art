@@ -30,80 +30,43 @@ INDEX
 # the initial setup of the Flask Blueprint and logging.
 # ===========================================================================
 
-# This file now references all path, directory, and filename variables strictly from config.py. No local or hardcoded path constants remain.
+# This file now references all path, directory, and filename variables strictly from config.py.
 from __future__ import annotations
-
-import json
-import subprocess
-import uuid
-import random
-import logging
+import json, subprocess, uuid, random, logging, shutil, os, traceback, datetime, time
 from pathlib import Path
-import shutil
-import os
-import traceback
-import datetime
-import time
+
+# --- Local Application Imports ---
 from utils.logger_utils import log_action, strip_binary
+from utils.sku_assigner import peek_next_sku
+from utils import ai_services
+from routes import sellbrite_service
+import config
 from config import (
-    PROCESSED_ROOT,
-    FINALISED_ROOT,
-    UNANALYSED_ROOT,
-    ARTWORK_VAULT_ROOT,
-    BASE_DIR,
-    ANALYSIS_STATUS_FILE,
-    # --- MODIFIED: Import new URL config variables ---
-    PROCESSED_URL_PATH,
-    FINALISED_URL_PATH,
-    LOCKED_URL_PATH,
-    UNANALYSED_IMG_URL_PREFIX,
-    MOCKUP_THUMB_URL_PREFIX,
+    PROCESSED_ROOT, FINALISED_ROOT, UNANALYSED_ROOT, ARTWORK_VAULT_ROOT,
+    BASE_DIR, ANALYSIS_STATUS_FILE, PROCESSED_URL_PATH, FINALISED_URL_PATH,
+    LOCKED_URL_PATH, UNANALYSED_IMG_URL_PREFIX, MOCKUP_THUMB_URL_PREFIX,
     COMPOSITE_IMG_URL_PREFIX,
 )
-import config
+import scripts.analyze_artwork as aa
 
-# Initialise module logger immediately so early failures are captured
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
-
+# --- Third-Party Imports ---
 from PIL import Image
 import io
-import scripts.analyze_artwork as aa
 import google.generativeai as genai
-
 from flask import (
-    Blueprint,
-    current_app,
-    render_template,
-    request,
-    redirect,
-    url_for,
-    session,
-    flash,
-    send_from_directory,
-    abort,
-    Response,
-    jsonify,
+    Blueprint, current_app, render_template, request, redirect, url_for,
+    session, flash, send_from_directory, abort, Response, jsonify,
 )
 import re
 
+# --- Local Route-Specific Imports ---
 from . import utils
 from .utils import (
-    ALLOWED_COLOURS_LOWER,
-    relative_to_base,
-    parse_csv_list,
-    join_csv_list,
-    read_generic_text,
-    clean_terms,
-    infer_sku_from_filename,
-    sync_filename_with_sku,
-    is_finalised_image,
-    get_allowed_colours,
-    load_json_file_safe,
-    generate_mockups_for_listing,
+    ALLOWED_COLOURS_LOWER, relative_to_base, parse_csv_list, join_csv_list,
+    read_generic_text, clean_terms, infer_sku_from_filename,
+    sync_filename_with_sku, is_finalised_image, get_allowed_colours,
+    load_json_file_safe, generate_mockups_for_listing,
 )
-from utils.sku_assigner import peek_next_sku
 
 bp = Blueprint("artwork", __name__)
 
@@ -774,9 +737,9 @@ def locked_gallery():
 
 @bp.post("/finalise/delete/<aspect>/<filename>")
 def delete_finalised(aspect, filename):
-    """Delete a finalised or locked artwork folder."""
+    # ... (function remains the same)
     try:
-        seo_folder, folder, listing_file, _ = utils.resolve_listing_paths(aspect, filename)
+        _, folder, listing_file, _ = utils.resolve_listing_paths(aspect, filename)
         info = utils.load_json_file_safe(listing_file)
         if info.get("locked") and request.form.get("confirm") != "DELETE":
             flash("Type DELETE to confirm deletion of a locked item.", "warning")
@@ -794,15 +757,15 @@ def delete_finalised(aspect, filename):
 
 @bp.post("/lock/<aspect>/<filename>")
 def lock_listing(aspect, filename):
-    """Mark a finalised artwork as locked and move it to the vault."""
+    # ... (function remains the same)
     try:
         seo, folder, listing_path, finalised = utils.resolve_listing_paths(aspect, filename)
         if not finalised:
             flash("Artwork must be finalised before locking.", "danger")
             return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
         
-        target = utils.ARTWORK_VAULT_ROOT / f"LOCKED-{seo}"
-        utils.ARTWORK_VAULT_ROOT.mkdir(parents=True, exist_ok=True)
+        target = config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo}"
+        config.ARTWORK_VAULT_ROOT.mkdir(parents=True, exist_ok=True)
         if target.exists(): shutil.rmtree(target)
         shutil.move(str(folder), str(target))
 
@@ -823,25 +786,41 @@ def lock_listing(aspect, filename):
 
 @bp.post("/unlock/<aspect>/<filename>")
 def unlock_listing(aspect, filename):
-    """Unlock a previously locked artwork, moving it back to finalised."""
+    """
+    Unlock a previously locked artwork.
+    MODIFIED: Now requires 'UNLOCK' confirmation and only changes the JSON
+    flag, leaving the files in the artwork-vault.
+    """
+    # 1. Check for confirmation text
+    if request.form.get("confirm_unlock") != "UNLOCK":
+        flash("Incorrect confirmation text. Please type UNLOCK to proceed.", "warning")
+        return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
     try:
-        seo, folder, listing_path, _ = utils.resolve_listing_paths(aspect, filename, allow_locked=True)
-        target = utils.FINALISED_ROOT / seo
-        if target.exists(): shutil.rmtree(target)
-        shutil.move(str(folder), str(target))
-        
-        new_listing_path = target / listing_path.name
-        with open(new_listing_path, "r+", encoding="utf-8") as f:
+        # 2. Resolve paths, ensuring we are looking in the vault
+        _, _, listing_path, _ = utils.resolve_listing_paths(aspect, filename, allow_locked=True)
+        if config.ARTWORK_VAULT_ROOT not in listing_path.parents:
+            flash("Cannot unlock an item that is not in the vault.", "danger")
+            return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+        # 3. Read the file, change the flag, and save it back in place
+        with open(listing_path, "r+", encoding="utf-8") as f:
             data = json.load(f)
             data["locked"] = False
             f.seek(0)
             json.dump(data, f, indent=2, ensure_ascii=False)
             f.truncate()
-        utils.update_listing_paths(new_listing_path, folder, target)
-        flash("Artwork unlocked.", "success")
+        
         log_action("unlock", filename, session.get("username"), "unlocked artwork")
+        flash("Artwork unlocked and is now editable. File paths remain unchanged.", "success")
+    
+    except FileNotFoundError:
+        flash("Locked artwork not found.", "danger")
+        return redirect(url_for("artwork.artworks"))
     except Exception as exc:
+        log_action("unlock", filename, session.get("username"), "unlock failed", status="fail", error=str(exc))
         flash(f"Failed to unlock: {exc}", "danger")
+        
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
 
@@ -865,11 +844,11 @@ def update_links(aspect, filename):
         with open(listing_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         msg = "Image links updated"
-        if wants_json: return {"success": True, "message": msg, "images": data["images"]}
+        if wants_json: return jsonify({"success": True, "message": msg, "images": data["images"]})
         flash(msg, "success")
     except Exception as e:
         msg = f"Failed to update links: {e}"
-        if wants_json: return {"success": False, "message": msg, "images": []}, 500
+        if wants_json: return jsonify({"success": False, "message": msg, "images": []}), 500
         flash(msg, "danger")
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
@@ -891,17 +870,14 @@ def delete_artwork(filename: str):
     """Delete all files and registry entries for an artwork via API call."""
     logger, user = logging.getLogger(__name__), session.get("username", "unknown")
     try:
-        # Attempt to find listing to get seo_folder
         seo_folder, _, _, _ = utils.resolve_listing_paths("", filename)
         shutil.rmtree(config.PROCESSED_ROOT / seo_folder, ignore_errors=True)
         shutil.rmtree(config.FINALISED_ROOT / seo_folder, ignore_errors=True)
         shutil.rmtree(config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}", ignore_errors=True)
     except FileNotFoundError:
-        # If no listing, just clean up unanalysed files
         pass
     
-    # Clean up unanalysed files regardless
-    base = Path(filename).stem.rsplit('-', 1)[0] # Heuristic to get base name
+    base = Path(filename).stem.rsplit('-', 1)[0]
     for p in config.UNANALYSED_ROOT.rglob(f"{base}*"):
         p.unlink(missing_ok=True)
 
@@ -910,6 +886,38 @@ def delete_artwork(filename: str):
     
     log_action("delete", filename, user, "Deleted all files and registry record")
     return jsonify({"success": True})
+
+
+# --- NEW ENDPOINT FOR REWORDING GENERIC TEXT ---
+@bp.post("/api/reword-generic-text")
+def reword_generic_text_api():
+    """
+    Handles an asynchronous request to reword the generic part of a description.
+    Accepts the main description and generic text, returns reworded text.
+    """
+    logger = logging.getLogger(__name__)
+    data = request.json
+
+    provider = data.get("provider")
+    artwork_desc = data.get("artwork_description")
+    generic_text = data.get("generic_text")
+
+    if not all([provider, artwork_desc, generic_text]):
+        logger.error("Reword API call missing required data.")
+        return jsonify({"success": False, "error": "Missing required data."}), 400
+
+    try:
+        reworded_text = ai_services.call_ai_to_reword_text(
+            provider=provider,
+            artwork_description=artwork_desc,
+            generic_text=generic_text
+        )
+        logger.info(f"Successfully reworded text using {provider}.")
+        return jsonify({"success": True, "reworded_text": reworded_text})
+
+    except Exception as e:
+        logger.error(f"Failed to reword generic text: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 # ===========================================================================

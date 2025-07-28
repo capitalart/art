@@ -1,58 +1,83 @@
 #!/usr/bin/env python3
 # ==============================================================================
-# File: run_coordinate_generator.py (ArtNarrator Coordinate Generation Orchestrator)
-# Purpose: This script orchestrates the generation of coordinate data for all
-#          categorised mockup aspect ratios by calling the worker script.
+# SCRIPT: run_coordinate_generator.py
+#
+# PURPOSE:
+#   This script orchestrates the interactive generation of coordinate data.
+#   It iterates through all categorized mockup aspect ratio folders and calls
+#   the `generate_coordinates_for_ratio.py` worker script for each one.
+#
+# INDEX
+# -----
+# 1.  Imports
+# 2.  Configuration & Logging
+# 3.  Main Execution Logic
+# 4.  Command-Line Interface (CLI)
 # ==============================================================================
-import subprocess
-import pathlib
+
+# ===========================================================================
+# 1. Imports
+# ===========================================================================
+from __future__ import annotations
 import logging
+import subprocess
 import sys
+from pathlib import Path
 
-# Ensure project root is on sys.path for config import
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+# Local application imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import config
+from utils.logger_utils import setup_logger
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(filename)s:%(lineno)d - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-logger = logging.getLogger(__name__)
+# ===========================================================================
+# 2. Configuration & Logging
+# ===========================================================================
+logger = setup_logger(__name__, "DEFAULT")
 
-SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
-COORDINATE_GENERATOR_SCRIPT = SCRIPT_DIR / "generate_coordinates_for_ratio.py"
-MOCKUPS_INPUT_BASE_DIR = config.MOCKUPS_CATEGORISED_DIR
+
+# ===========================================================================
+# 3. Main Execution Logic
+# ===========================================================================
 
 def run_coordinate_generation_for_all_ratios():
-    logger.info(f"Starting coordinate generation using base directory: {MOCKUPS_INPUT_BASE_DIR}")
-    if not COORDINATE_GENERATOR_SCRIPT.is_file():
-        logger.critical(f"🔴 CRITICAL ERROR: Worker script not found at '{COORDINATE_GENERATOR_SCRIPT}'.")
-        return
-
-    if not MOCKUPS_INPUT_BASE_DIR.is_dir():
-        logger.critical(f"🔴 CRITICAL ERROR: Mockups directory not found: '{MOCKUPS_INPUT_BASE_DIR}'.")
-        return
-
-    # Dynamically find aspect ratio folders
-    aspect_ratio_folders = [d.name for d in MOCKUPS_INPUT_BASE_DIR.iterdir() if d.is_dir()]
+    """
+    Finds all aspect ratio folders and runs the interactive coordinate
+    generator script for each one.
+    """
+    logger.info("Starting coordinate generation orchestrator script...")
     
-    for ratio_folder_name in aspect_ratio_folders:
-        aspect_ratio_path = MOCKUPS_INPUT_BASE_DIR / ratio_folder_name
-        logger.info(f"Processing aspect ratio: {ratio_folder_name}")
+    worker_script = config.COORDINATE_GENERATOR_RATIO_SCRIPT_PATH
+    if not worker_script.is_file():
+        logger.critical(f"Worker script not found at '{worker_script}'. Aborting.")
+        return
+
+    mockups_base_dir = config.MOCKUPS_CATEGORISED_DIR
+    if not mockups_base_dir.is_dir():
+        logger.critical(f"Mockups directory not found at '{mockups_base_dir}'. Aborting.")
+        return
+
+    aspect_ratio_folders = [d for d in mockups_base_dir.iterdir() if d.is_dir()]
+    
+    for aspect_path in aspect_ratio_folders:
+        logger.info(f"--- Processing aspect ratio: {aspect_path.name} ---")
         try:
             command = [
                 sys.executable,
-                str(COORDINATE_GENERATOR_SCRIPT),
-                "--aspect_ratio_path", str(aspect_ratio_path)
+                str(worker_script),
+                "--aspect_ratio_path", str(aspect_path)
             ]
-            logger.info(f"Executing: {' '.join(command)}")
+            logger.info(f"Executing command: {' '.join(command)}")
             subprocess.run(command, check=True)
-            logger.info(f"✅ Successfully processed aspect ratio: {ratio_folder_name}")
+            logger.info(f"Successfully processed aspect ratio: {aspect_path.name}")
         except Exception as e:
-            logger.error(f"🔴 An unexpected error occurred while processing {ratio_folder_name}: {e}", exc_info=True)
-        logger.info("-" * 50)
+            logger.error(f"An error occurred while processing {aspect_path.name}: {e}", exc_info=True)
+        
     logger.info("🏁 Finished processing all aspect ratios.")
+
+
+# ===========================================================================
+# 4. Command-Line Interface (CLI)
+# ===========================================================================
 
 if __name__ == "__main__":
     run_coordinate_generation_for_all_ratios()

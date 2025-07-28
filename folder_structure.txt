@@ -1,108 +1,640 @@
 art
 ├── .env
+├── .gitconfig
 ├── .gitignore
 ├── CHANGELOG.md
 ├── CODEX-LOGS
+│   ├── 2025-07-21-CODEX-LOG.md
+│   ├── 2025-07-21-CODEX-LOG2.md
+│   ├── 2025-07-22-CODEX-LOG.md
+│   ├── 2025-07-22-CODEX-LOG2.md
+│   ├── 2025-07-22-CODEX-LOG3.md
+│   ├── 2025-07-22-CODEX-LOG4.md
+│   ├── 2025-07-22-CODEX-LOG5.md
+│   ├── 2025-07-24-CODEX-LOG.md
+│   ├── 2025-07-24-CODEX-LOG2.md
+│   ├── 2025-07-24-CODEX-LOG3.md
+│   ├── 2025-07-26-CODEX-LOG.md
+│   ├── 2025-07-26-CODEX-LOG2.md
+│   ├── 2025-07-26-CODEX-LOG3.md
+│   ├── 2025-07-26-CODEX-LOG4.md
+│   ├── 2025-07-27-CODEX-LOG.md
+│   ├── 2025-07-28-CODEX-LOG.md
+│   └── CODEX-PATCH-2025-07-21.md
 ├── CODEX-README.md
 ├── LICENSE
+├── Pip
 ├── README.md
 ├── app.py
 ├── art-logs
 ├── art-processing
+│   ├── .gitkeep
 │   ├── artwork-vault
+│   │   ├── .gitkeep
+│   │   └── LOCKED-fern-gully-creek-artwork-by-robin-custance-rjc-0147
+│   │       ├── THUMBS
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-05.jpg
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-106.jpg
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-122.jpg
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-13.jpg
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-14.jpg
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-20.jpg
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-50.jpg
+│   │       │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-63.jpg
+│   │       │   └── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-thumb-75.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-05.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-106.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-122.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-13.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-14.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-20.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-50.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-63.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-4x5-mockup-75.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-ANALYSE.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-THUMB.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-listing.json
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147.jpg
+│   │       ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147.qc.json
+│   │       ├── finalised.txt
+│   │       └── original-fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-1d026e29.jpg
 │   ├── finalised-artwork
+│   │   ├── .gitkeep
+│   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145
+│   │   │   ├── THUMBS
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-107.jpg
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-116.jpg
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-118.jpg
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-125.jpg
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-126.jpg
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-14.jpg
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-61.jpg
+│   │   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-63.jpg
+│   │   │   │   └── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-thumb-95.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-107.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-116.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-118.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-125.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-126.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-14.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-61.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-63.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-4x5-mockup-95.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-ANALYSE.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-THUMB.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-listing.json
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145.jpg
+│   │   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145.qc.json
+│   │   │   ├── finalised.txt
+│   │   │   └── original-baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894.jpg
+│   │   └── koala-gumtree-artwork-by-robin-custance-rjc-0146
+│   │       ├── THUMBS
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-107.jpg
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-127.jpg
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-14.jpg
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-47.jpg
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-48.jpg
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-59.jpg
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-75.jpg
+│   │       │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-79.jpg
+│   │       │   └── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-thumb-81.jpg
+│   │       ├── finalised.txt
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-107.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-127.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-14.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-47.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-48.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-59.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-75.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-79.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-4x5-mockup-81.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-ANALYSE.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-THUMB.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-listing.json
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146.jpg
+│   │       ├── koala-gumtree-artwork-by-robin-custance-rjc-0146.qc.json
+│   │       └── original-baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-1-38a7b884.jpg
+│   ├── master-artwork-paths.json
 │   ├── processed-artwork
+│   │   ├── .gitkeep
+│   │   └── pending_mockups.json
 │   └── unanalysed-artwork
+│       ├── .gitkeep
+│       ├── temp
+│       ├── unanalysed-02
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c-analyse.jpg
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c-thumb.jpg
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c.jpg
+│       │   └── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c.qc.json
+│       ├── unanalysed-03
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f-analyse.jpg
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f-thumb.jpg
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f.jpg
+│       │   └── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f.qc.json
+│       ├── unanalysed-04
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24-analyse.jpg
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24-thumb.jpg
+│       │   ├── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24.jpg
+│       │   └── generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24.qc.json
+│       ├── unanalysed-05
+│       │   ├── gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7-analyse.jpg
+│       │   ├── gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7-thumb.jpg
+│       │   ├── gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7.jpg
+│       │   └── gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7.qc.json
+│       ├── unanalysed-07
+│       │   ├── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6-analyse.jpg
+│       │   ├── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6-thumb.jpg
+│       │   ├── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6.jpg
+│       │   └── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6.qc.json
+│       ├── unanalysed-08
+│       │   ├── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb-analyse.jpg
+│       │   ├── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb-thumb.jpg
+│       │   ├── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb.jpg
+│       │   └── eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb.qc.json
+│       ├── unanalysed-09
+│       │   ├── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841-analyse.jpg
+│       │   ├── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841-thumb.jpg
+│       │   ├── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841.jpg
+│       │   └── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841.qc.json
+│       ├── unanalysed-10
+│       │   ├── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53-analyse.jpg
+│       │   ├── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53-thumb.jpg
+│       │   ├── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53.jpg
+│       │   └── estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53.qc.json
+│       ├── unanalysed-11
+│       │   ├── coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c-analyse.jpg
+│       │   ├── coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c-thumb.jpg
+│       │   ├── coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c.jpg
+│       │   └── coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c.qc.json
+│       └── unanalysed-12
+│           ├── native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770-analyse.jpg
+│           ├── native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770-thumb.jpg
+│           ├── native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770.jpg
+│           └── native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770.qc.json
 ├── artnarrator-report.sh
+├── artnarrator.sock
 ├── backup_excludes.txt
+├── backup_includes.txt
 ├── backups
-│   ├── ALLINONE-Sat-19-Jul-2025-05-51-AM.zip
-│   ├── ALLINONE-Sat-19-Jul-2025-06-02-AM.zip
-│   ├── ALLINONE-Sat-19-Jul-2025-06-08-AM.zip
-│   ├── ALLINONE-Sat-19-Jul-2025-09-14-AM.zip
-│   ├── END-Sun-20-Jul-2025-03-47-PM.zip
-│   ├── backup-Fri-18-Jul-2025-0153PM.tar.gz
-│   ├── backup-Fri-18-Jul-2025-0217PM.tar.gz
-│   ├── backup-Sun-20-Jul-2025-0410PM.tar.gz
-│   ├── backup-Sun-20-Jul-2025-0557PM.tar.gz
-│   ├── backup-Sun-20-Jul-2025-0804PM.tar.gz
-│   ├── backup-Sun-20-Jul-2025-0920AM.tar.gz
-│   ├── backup-Sun-20-Jul-2025-1217PM.tar.gz
-│   ├── backup-Thu-17-Jul-2025-0632PM.tar.gz
-│   ├── backup-Thu-17-Jul-2025-0634PM.tar.gz
-│   ├── backup-Thu-17-Jul-2025-0653PM.tar.gz
-│   ├── backup-Thu-17-Jul-2025-0729PM.tar.gz
-│   ├── backup_.zip
-│   ├── backup_2025-07-18_09-31-32.zip
-│   ├── backup_2025-07-18_09-50-56.zip
-│   ├── backup_2025-07-18_10-19-39.zip
-│   ├── backup_2025-07-18_11-30-35.zip
-│   ├── backup_2025-07-18_13-54-10.zip
-│   ├── backup_Mon-21-Jul-2025-02-47-AM.zip
-│   ├── backup_Mon-21-Jul-2025-02-48-AM.zip
-│   ├── backup_Mon-21-Jul-2025-03-26-AM.zip
-│   ├── backup_Mon-21-Jul-2025-09-03-AM.zip
-│   ├── backup_Sat-19-Jul-2025-08-36-AM.zip
-│   ├── backup_Sun-20-Jul-2025-02-13-PM.zip
-│   ├── backup_Sun-20-Jul-2025-04-27-PM.zip
-│   ├── backup_Sun-20-Jul-2025-04-40-AM.zip
-│   ├── backup_Sun-20-Jul-2025-04-50-PM.zip
-│   ├── backup_Sun-20-Jul-2025-05-05-PM.zip
-│   ├── backup_Sun-20-Jul-2025-05-25-AM.zip
-│   ├── backup_Sun-20-Jul-2025-05-37-AM.zip
-│   ├── backup_Sun-20-Jul-2025-05-57-PM.zip
-│   ├── backup_Sun-20-Jul-2025-06-14-PM.zip
-│   ├── backup_Sun-20-Jul-2025-06-30-PM.zip
-│   ├── backup_Sun-20-Jul-2025-07-01-PM.zip
-│   ├── backup_Sun-20-Jul-2025-07-31-PM.zip
-│   ├── backup_Sun-20-Jul-2025-07-36-PM.zip
-│   ├── backup_Sun-20-Jul-2025-07-37-PM.zip
-│   ├── backup_Sun-20-Jul-2025-08-02-PM.zip
-│   ├── backup_Sun-20-Jul-2025-09-17-PM.zip
-│   ├── backup_Sun-20-Jul-2025-10-41-AM.zip
-│   ├── backup_Sun-20-Jul-2025-11-50-AM.zip
-│   ├── codex-git-backup_2025-07-20_16-32-11.zip
-│   └── older-scripts
-│       ├── ai-jpeg-reset.sh
-│       ├── backup_mockup_generator.sh
-│       ├── backup_mockup_structure.sh
-│       ├── compatible-image-generator.jsx
-│       ├── dupe-png-files-and-rename.py
-│       ├── export-artwork-layers.jsx
-│       ├── find-matching-png-files.py
-│       ├── fix_srgb_profiles.py
-│       ├── gather_mockup_code_to_text.sh
-│       ├── generate_all_coordinates.py
-│       ├── generate_composites.py
-│       ├── generate_folder_structure.py
-│       ├── google_vision_basic_analyzer.py
-│       ├── openai_vision_test.py
-│       ├── organise-jpg-and-png-files.py
-│       ├── rename-4x5-mockup-layers.jsx
-│       ├── utils.py
-│       └── write_all_composite_generators.py
+│   ├── backup_Mon-28-Jul-2025-01-20-AM.tar.gz
+│   ├── backup_Mon-28-Jul-2025-01-20-AM.zip
+│   ├── backup_Mon-28-Jul-2025-12-40-PM.tar.gz
+│   ├── backup_Mon-28-Jul-2025-12-40-PM.zip
+│   ├── backup_Sun-27-Jul-2025-01-25-PM.tar.gz
+│   ├── backup_Sun-27-Jul-2025-01-25-PM.zip
+│   ├── backup_Sun-27-Jul-2025-07-19-PM.tar.gz
+│   ├── backup_Sun-27-Jul-2025-07-19-PM.zip
+│   ├── backup_Sun-27-Jul-2025-09-06-PM.tar.gz
+│   ├── backup_Sun-27-Jul-2025-09-06-PM.zip
+│   ├── backup_Sun-27-Jul-2025-11-50-PM.tar.gz
+│   ├── backup_Sun-27-Jul-2025-11-50-PM.zip
+│   ├── backup_Sun-27-Jul-2025-12-15-PM.tar.gz
+│   └── backup_Sun-27-Jul-2025-12-15-PM.zip
 ├── code-stacker.sh
 ├── code-stacks
 │   ├── full-code-stack
-│   │   └── code-stack-MON-21-JULY-2025-09-50-AM.md
+│   │   ├── code-stack-MON-28-JULY-2025-01-20-AM.md
+│   │   ├── code-stack-MON-28-JULY-2025-12-40-PM.md
+│   │   ├── code-stack-SUN-27-JULY-2025-01-25-PM.md
+│   │   ├── code-stack-SUN-27-JULY-2025-07-19-PM.md
+│   │   ├── code-stack-SUN-27-JULY-2025-09-06-PM.md
+│   │   ├── code-stack-SUN-27-JULY-2025-11-00-AM.md
+│   │   ├── code-stack-SUN-27-JULY-2025-11-12-AM.md
+│   │   ├── code-stack-SUN-27-JULY-2025-11-50-PM.md
+│   │   └── code-stack-SUN-27-JULY-2025-12-15-PM.md
 │   └── root-files-code-stack
-│       └── root-files-code-stack-MON-21-JULY-2025-09-50-AM.md
+│       ├── root-files-code-stack-MON-28-JULY-2025-01-20-AM.md
+│       ├── root-files-code-stack-MON-28-JULY-2025-12-40-PM.md
+│       ├── root-files-code-stack-SUN-27-JULY-2025-01-25-PM.md
+│       ├── root-files-code-stack-SUN-27-JULY-2025-07-19-PM.md
+│       ├── root-files-code-stack-SUN-27-JULY-2025-09-06-PM.md
+│       ├── root-files-code-stack-SUN-27-JULY-2025-11-00-AM.md
+│       ├── root-files-code-stack-SUN-27-JULY-2025-11-12-AM.md
+│       ├── root-files-code-stack-SUN-27-JULY-2025-11-50-PM.md
+│       └── root-files-code-stack-SUN-27-JULY-2025-12-15-PM.md
 ├── config.py
 ├── cron-backup.sh
+├── data
+│   ├── artnarrator.sqlite3
+│   ├── gdws_content
+│   │   ├── 16x9
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 1x1
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 2x3
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 3x2
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 3x4
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── australian_stories_through_art
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── order.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 4x3
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 4x5
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── artistic_journey_unveiled
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── order.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 5x4
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 5x7
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 7x5
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── 9x16
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── A-Series-Horizontal
+│   │   │   ├── about_art_style
+│   │   │   │   └── base.json
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── A-Series-Vertical
+│   │   │   ├── about_the_artist
+│   │   │   │   └── base.json
+│   │   │   ├── explore_my_work
+│   │   │   │   └── base.json
+│   │   │   ├── file_details
+│   │   │   │   └── base.json
+│   │   │   ├── frequently_asked_questions
+│   │   │   │   └── base.json
+│   │   │   ├── how_to_buy_print
+│   │   │   │   └── base.json
+│   │   │   ├── ideal_uses_for_the
+│   │   │   │   └── base.json
+│   │   │   ├── important_notes
+│   │   │   │   └── base.json
+│   │   │   ├── lets_create_something_beautiful_together
+│   │   │   │   └── base.json
+│   │   │   ├── printing_tips
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_from_my_studio_to_your_home
+│   │   │   │   └── base.json
+│   │   │   ├── thank_you_stay_connected
+│   │   │   │   └── base.json
+│   │   │   ├── top_10_print_on_demand_services_for_wall_art_art_prints
+│   │   │   │   └── base.json
+│   │   │   └── why_youll_love_this_artwork
+│   │   │       └── base.json
+│   │   ├── about_art_style
+│   │   │   └── variation_01.json
+│   │   ├── about_artist
+│   │   │   ├── variation_01.json
+│   │   │   └── variation_02.json
+│   │   ├── artwork_benefits
+│   │   │   └── variation_01.json
+│   │   ├── aspect_ratio_intro
+│   │   │   └── variation_01.json
+│   │   ├── call_to_action
+│   │   │   └── variation_01.json
+│   │   ├── closing_statement
+│   │   │   └── variation_01.json
+│   │   ├── faq
+│   │   │   ├── variation_01.json
+│   │   │   └── variation_02.json
+│   │   ├── file_details
+│   │   │   └── variation_01.json
+│   │   ├── gelato_pod_service
+│   │   │   └── var_1751915996089.json
+│   │   ├── ideal_uses
+│   │   │   └── variation_01.json
+│   │   ├── important_notes
+│   │   │   └── variation_01.json
+│   │   ├── max_print_size
+│   │   │   └── variation_01.json
+│   │   ├── pod_services
+│   │   │   └── variation_01.json
+│   │   ├── printing_tips
+│   │   │   ├── variation_01.json
+│   │   │   └── variation_02.json
+│   │   └── thank_you
+│   │       └── variation_01.json
+│   └── sellbrite
+│       └── test_sellbrite_listing.json
+├── db.py
 ├── descriptions
 │   ├── artworks.json
 │   ├── autojourney_downloader_export_26_06_2025_15_02_55.csv
 │   └── autojourney_downloader_export_26_06_2025_15_03_12.json
-├── file-storage
-│   ├── PREVIOUS-CODE-STACKS.zip
-│   ├── artnarrator.py
-│   ├── codex-merge.sh
-│   ├── mockup_categoriser.py
-│   ├── rename_artnarrator_to_artnarrator.py
-│   ├── run_codex_patch.py
-│   ├── smart_sign_artwork.py
-│   ├── smart_sign_test01.py
-│   └── sort_and_prepare_midjourney_images.py
+├── files-to-backup.txt
 ├── folder_structure.txt
 ├── generate_folder_tree.py
 ├── generic_texts
@@ -121,6 +653,7 @@ art
 │   └── A-Series-Verical.txt
 ├── git-update-pull.sh
 ├── git-update-push.sh
+├── gunicorn.conf.py
 ├── inputs
 │   ├── Coordinates
 │   │   ├── 16x9
@@ -252,7 +785,18 @@ art
 │   │   │   ├── 1x1-Mockup-73.json
 │   │   │   ├── 1x1-Mockup-74.json
 │   │   │   ├── 1x1-Mockup-8.json
-│   │   │   └── 1x1-Mockup-9.json
+│   │   │   ├── 1x1-Mockup-9.json
+│   │   │   ├── Bedroom
+│   │   │   ├── Closeup
+│   │   │   ├── Dining-Room
+│   │   │   ├── Display
+│   │   │   ├── Gallery-Wall
+│   │   │   ├── Gift
+│   │   │   ├── Hallway
+│   │   │   ├── Living Room
+│   │   │   ├── Nursery
+│   │   │   ├── Office
+│   │   │   └── Outdoors
 │   │   ├── 2x3
 │   │   │   ├── 2x3-Mockup-1.json
 │   │   │   ├── 2x3-Mockup-10.json
@@ -417,7 +961,135 @@ art
 │   │   │   ├── 4x5-mockup-75.json
 │   │   │   ├── 4x5-mockup-76.json
 │   │   │   ├── 4x5-mockup-77.json
-│   │   │   └── 4x5-mockup-78.json
+│   │   │   ├── 4x5-mockup-78.json
+│   │   │   ├── Bedroom
+│   │   │   │   ├── 4x5-mockup-10.json
+│   │   │   │   ├── 4x5-mockup-11.json
+│   │   │   │   ├── 4x5-mockup-12.json
+│   │   │   │   ├── 4x5-mockup-121.json
+│   │   │   │   ├── 4x5-mockup-126.json
+│   │   │   │   ├── 4x5-mockup-127.json
+│   │   │   │   └── 4x5-mockup-13.json
+│   │   │   ├── Closeup
+│   │   │   │   ├── 4x5-mockup-06.json
+│   │   │   │   ├── 4x5-mockup-07.json
+│   │   │   │   ├── 4x5-mockup-08.json
+│   │   │   │   ├── 4x5-mockup-09.json
+│   │   │   │   ├── 4x5-mockup-103.json
+│   │   │   │   ├── 4x5-mockup-109.json
+│   │   │   │   ├── 4x5-mockup-118.json
+│   │   │   │   ├── 4x5-mockup-119.json
+│   │   │   │   ├── 4x5-mockup-120.json
+│   │   │   │   ├── 4x5-mockup-16.json
+│   │   │   │   ├── 4x5-mockup-17.json
+│   │   │   │   ├── 4x5-mockup-18.json
+│   │   │   │   ├── 4x5-mockup-19.json
+│   │   │   │   ├── 4x5-mockup-20.json
+│   │   │   │   ├── 4x5-mockup-58.json
+│   │   │   │   ├── 4x5-mockup-65.json
+│   │   │   │   ├── 4x5-mockup-74.json
+│   │   │   │   ├── 4x5-mockup-79.json
+│   │   │   │   ├── 4x5-mockup-80.json
+│   │   │   │   └── 4x5-mockup-94.json
+│   │   │   ├── Dining-Room
+│   │   │   │   └── 4x5-mockup-75.json
+│   │   │   ├── Display
+│   │   │   │   ├── 4x5-mockup-59.json
+│   │   │   │   ├── 4x5-mockup-60.json
+│   │   │   │   ├── 4x5-mockup-61.json
+│   │   │   │   └── 4x5-mockup-69.json
+│   │   │   ├── Gallery-Wall
+│   │   │   │   ├── 4x5-mockup-63.json
+│   │   │   │   └── 4x5-mockup-64.json
+│   │   │   ├── Gift
+│   │   │   │   ├── 4x5-mockup-100.json
+│   │   │   │   ├── 4x5-mockup-101.json
+│   │   │   │   ├── 4x5-mockup-102.json
+│   │   │   │   ├── 4x5-mockup-110.json
+│   │   │   │   ├── 4x5-mockup-111.json
+│   │   │   │   ├── 4x5-mockup-112.json
+│   │   │   │   ├── 4x5-mockup-113.json
+│   │   │   │   ├── 4x5-mockup-114.json
+│   │   │   │   ├── 4x5-mockup-22.json
+│   │   │   │   ├── 4x5-mockup-23.json
+│   │   │   │   ├── 4x5-mockup-64.json
+│   │   │   │   ├── 4x5-mockup-66.json
+│   │   │   │   ├── 4x5-mockup-68.json
+│   │   │   │   ├── 4x5-mockup-70.json
+│   │   │   │   ├── 4x5-mockup-71.json
+│   │   │   │   ├── 4x5-mockup-72.json
+│   │   │   │   ├── 4x5-mockup-81.json
+│   │   │   │   ├── 4x5-mockup-82.json
+│   │   │   │   ├── 4x5-mockup-83.json
+│   │   │   │   ├── 4x5-mockup-84.json
+│   │   │   │   ├── 4x5-mockup-85.json
+│   │   │   │   ├── 4x5-mockup-93.json
+│   │   │   │   ├── 4x5-mockup-95.json
+│   │   │   │   └── 4x5-mockup-99.json
+│   │   │   ├── Hallway
+│   │   │   │   ├── 4x5-mockup-108.json
+│   │   │   │   ├── 4x5-mockup-115.json
+│   │   │   │   ├── 4x5-mockup-122.json
+│   │   │   │   ├── 4x5-mockup-123.json
+│   │   │   │   ├── 4x5-mockup-124.json
+│   │   │   │   ├── 4x5-mockup-125.json
+│   │   │   │   ├── 4x5-mockup-48.json
+│   │   │   │   └── 4x5-mockup-57.json
+│   │   │   ├── Kitchen
+│   │   │   │   ├── 4x5-mockup-106.json
+│   │   │   │   └── 4x5-mockup-107.json
+│   │   │   ├── Living Room
+│   │   │   │   ├── 4x5-mockup-01.json
+│   │   │   │   ├── 4x5-mockup-02.json
+│   │   │   │   ├── 4x5-mockup-04.json
+│   │   │   │   ├── 4x5-mockup-117.json
+│   │   │   │   ├── 4x5-mockup-21.json
+│   │   │   │   ├── 4x5-mockup-25.json
+│   │   │   │   ├── 4x5-mockup-27.json
+│   │   │   │   ├── 4x5-mockup-28.json
+│   │   │   │   ├── 4x5-mockup-39.json
+│   │   │   │   ├── 4x5-mockup-40.json
+│   │   │   │   ├── 4x5-mockup-41.json
+│   │   │   │   ├── 4x5-mockup-42.json
+│   │   │   │   ├── 4x5-mockup-43.json
+│   │   │   │   ├── 4x5-mockup-45.json
+│   │   │   │   ├── 4x5-mockup-46.json
+│   │   │   │   ├── 4x5-mockup-47.json
+│   │   │   │   ├── 4x5-mockup-49.json
+│   │   │   │   ├── 4x5-mockup-50.json
+│   │   │   │   ├── 4x5-mockup-51.json
+│   │   │   │   ├── 4x5-mockup-52.json
+│   │   │   │   ├── 4x5-mockup-53.json
+│   │   │   │   ├── 4x5-mockup-54.json
+│   │   │   │   ├── 4x5-mockup-55.json
+│   │   │   │   ├── 4x5-mockup-56.json
+│   │   │   │   ├── 4x5-mockup-62.json
+│   │   │   │   ├── 4x5-mockup-63.json
+│   │   │   │   ├── 4x5-mockup-67.json
+│   │   │   │   ├── 4x5-mockup-73.json
+│   │   │   │   ├── 4x5-mockup-78.json
+│   │   │   │   └── 4x5-mockup-92.json
+│   │   │   ├── Nursery
+│   │   │   │   ├── 4x5-mockup-03.json
+│   │   │   │   ├── 4x5-mockup-05.json
+│   │   │   │   ├── 4x5-mockup-104.json
+│   │   │   │   ├── 4x5-mockup-105.json
+│   │   │   │   ├── 4x5-mockup-26.json
+│   │   │   │   └── 4x5-mockup-76.json
+│   │   │   ├── Office
+│   │   │   │   ├── 4x5-mockup-14.json
+│   │   │   │   └── 4x5-mockup-15.json
+│   │   │   └── Outdoors
+│   │   │       ├── 4x5-mockup-116.json
+│   │   │       ├── 4x5-mockup-24.json
+│   │   │       ├── 4x5-mockup-29.json
+│   │   │       ├── 4x5-mockup-31.json
+│   │   │       ├── 4x5-mockup-33.json
+│   │   │       ├── 4x5-mockup-34.json
+│   │   │       ├── 4x5-mockup-35.json
+│   │   │       ├── 4x5-mockup-36.json
+│   │   │       ├── 4x5-mockup-37.json
+│   │   │       └── 4x5-mockup-38.json
 │   │   ├── 5x4
 │   │   │   ├── 5x4-Mockup-1.json
 │   │   │   ├── 5x4-Mockup-10.json
@@ -466,168 +1138,356 @@ art
 │   │       ├── 9x16-Mockup-7.json
 │   │       ├── 9x16-Mockup-8.json
 │   │       └── 9x16-Mockup-9.json
-│   ├── artworks
-│   │   ├── 4x5-artworks
-│   │   └── sample.jpg
 │   ├── mockups
-│   │   └── 4x5-categorised
-│   │       ├── Bedroom
-│   │       │   ├── 4x5-mockup-10.png
-│   │       │   ├── 4x5-mockup-11.png
-│   │       │   ├── 4x5-mockup-12.png
-│   │       │   └── 4x5-mockup-13.png
-│   │       ├── Closeup
-│   │       │   ├── 4x5-mockup-06.png
-│   │       │   ├── 4x5-mockup-07.png
-│   │       │   ├── 4x5-mockup-08.png
-│   │       │   ├── 4x5-mockup-09.png
-│   │       │   ├── 4x5-mockup-16.png
-│   │       │   ├── 4x5-mockup-17.png
-│   │       │   ├── 4x5-mockup-18.png
-│   │       │   ├── 4x5-mockup-19.png
-│   │       │   ├── 4x5-mockup-20.png
-│   │       │   ├── 4x5-mockup-22.png
-│   │       │   ├── 4x5-mockup-23.png
-│   │       │   ├── 4x5-mockup-46.png
-│   │       │   ├── 4x5-mockup-48.png
-│   │       │   ├── 4x5-mockup-49.png
-│   │       │   ├── 4x5-mockup-50.png
-│   │       │   ├── 4x5-mockup-59.png
-│   │       │   ├── 4x5-mockup-65.png
-│   │       │   └── 4x5-mockup-72.png
-│   │       ├── Dining-Room
-│   │       │   ├── 4x5-mockup-75.png
-│   │       │   └── 4x5-mockup-76.png
-│   │       ├── Gallery-Wall
-│   │       │   ├── 4x5-mockup-63.png
-│   │       │   └── 4x5-mockup-64.png
-│   │       ├── Hallway
-│   │       │   ├── 4x5-mockup-25.png
-│   │       │   ├── 4x5-mockup-55.png
-│   │       │   ├── 4x5-mockup-60.png
-│   │       │   └── 4x5-mockup-70.png
-│   │       ├── Living Room
-│   │       │   ├── 4x5-mockup-01.png
-│   │       │   ├── 4x5-mockup-02.png
-│   │       │   ├── 4x5-mockup-04.png
-│   │       │   ├── 4x5-mockup-21.png
-│   │       │   ├── 4x5-mockup-26.png
-│   │       │   ├── 4x5-mockup-27.png
-│   │       │   ├── 4x5-mockup-28.png
-│   │       │   ├── 4x5-mockup-39.png
-│   │       │   ├── 4x5-mockup-40.png
-│   │       │   ├── 4x5-mockup-41.png
-│   │       │   ├── 4x5-mockup-42.png
-│   │       │   ├── 4x5-mockup-43.png
-│   │       │   ├── 4x5-mockup-45.png
-│   │       │   ├── 4x5-mockup-47.png
-│   │       │   ├── 4x5-mockup-51.png
-│   │       │   ├── 4x5-mockup-52.png
-│   │       │   ├── 4x5-mockup-53.png
-│   │       │   ├── 4x5-mockup-54.png
-│   │       │   ├── 4x5-mockup-56.png
-│   │       │   ├── 4x5-mockup-66.png
-│   │       │   ├── 4x5-mockup-67.png
-│   │       │   ├── 4x5-mockup-71.png
-│   │       │   ├── 4x5-mockup-73.png
-│   │       │   ├── 4x5-mockup-74.png
-│   │       │   └── 4x5-mockup-78.png
-│   │       ├── Nursery
-│   │       │   ├── 4x5-mockup-03.png
-│   │       │   └── 4x5-mockup-05.png
-│   │       ├── Office
-│   │       │   ├── 4x5-mockup-14.png
-│   │       │   ├── 4x5-mockup-15.png
-│   │       │   ├── 4x5-mockup-57.png
-│   │       │   ├── 4x5-mockup-58.png
-│   │       │   ├── 4x5-mockup-61.png
-│   │       │   ├── 4x5-mockup-62.png
-│   │       │   ├── 4x5-mockup-68.png
-│   │       │   ├── 4x5-mockup-69.png
-│   │       │   └── 4x5-mockup-77.png
-│   │       └── Outdoors
-│   │           ├── 4x5-mockup-24.png
-│   │           ├── 4x5-mockup-29.png
-│   │           ├── 4x5-mockup-30.png
-│   │           ├── 4x5-mockup-31.png
-│   │           ├── 4x5-mockup-32.png
-│   │           ├── 4x5-mockup-33.png
-│   │           ├── 4x5-mockup-34.png
-│   │           ├── 4x5-mockup-35.png
-│   │           ├── 4x5-mockup-36.png
-│   │           ├── 4x5-mockup-37.png
-│   │           └── 4x5-mockup-38.png
+│   │   ├── .thumbnails
+│   │   │   └── 4x5
+│   │   │       ├── 4x5-mockup-01.png
+│   │   │       ├── 4x5-mockup-02.png
+│   │   │       ├── 4x5-mockup-03.png
+│   │   │       ├── 4x5-mockup-04.png
+│   │   │       ├── 4x5-mockup-05.png
+│   │   │       ├── 4x5-mockup-06.png
+│   │   │       ├── 4x5-mockup-07.png
+│   │   │       ├── 4x5-mockup-08.png
+│   │   │       ├── 4x5-mockup-09.png
+│   │   │       ├── 4x5-mockup-10.png
+│   │   │       ├── 4x5-mockup-100.png
+│   │   │       ├── 4x5-mockup-101.png
+│   │   │       ├── 4x5-mockup-102.png
+│   │   │       ├── 4x5-mockup-103.png
+│   │   │       ├── 4x5-mockup-104.png
+│   │   │       ├── 4x5-mockup-105.png
+│   │   │       ├── 4x5-mockup-106.png
+│   │   │       ├── 4x5-mockup-107.png
+│   │   │       ├── 4x5-mockup-108.png
+│   │   │       ├── 4x5-mockup-109.png
+│   │   │       ├── 4x5-mockup-11.png
+│   │   │       ├── 4x5-mockup-110.png
+│   │   │       ├── 4x5-mockup-111.png
+│   │   │       ├── 4x5-mockup-112.png
+│   │   │       ├── 4x5-mockup-113.png
+│   │   │       ├── 4x5-mockup-114.png
+│   │   │       ├── 4x5-mockup-115.png
+│   │   │       ├── 4x5-mockup-116.png
+│   │   │       ├── 4x5-mockup-117.png
+│   │   │       ├── 4x5-mockup-118.png
+│   │   │       ├── 4x5-mockup-119.png
+│   │   │       ├── 4x5-mockup-12.png
+│   │   │       ├── 4x5-mockup-120.png
+│   │   │       ├── 4x5-mockup-121.png
+│   │   │       ├── 4x5-mockup-122.png
+│   │   │       ├── 4x5-mockup-123.png
+│   │   │       ├── 4x5-mockup-124.png
+│   │   │       ├── 4x5-mockup-125.png
+│   │   │       ├── 4x5-mockup-126.png
+│   │   │       ├── 4x5-mockup-127.png
+│   │   │       ├── 4x5-mockup-13.png
+│   │   │       ├── 4x5-mockup-14.png
+│   │   │       ├── 4x5-mockup-15.png
+│   │   │       ├── 4x5-mockup-16.png
+│   │   │       ├── 4x5-mockup-17.png
+│   │   │       ├── 4x5-mockup-18.png
+│   │   │       ├── 4x5-mockup-19.png
+│   │   │       ├── 4x5-mockup-20.png
+│   │   │       ├── 4x5-mockup-21.png
+│   │   │       ├── 4x5-mockup-22.png
+│   │   │       ├── 4x5-mockup-23.png
+│   │   │       ├── 4x5-mockup-24.png
+│   │   │       ├── 4x5-mockup-25.png
+│   │   │       ├── 4x5-mockup-26.png
+│   │   │       ├── 4x5-mockup-27.png
+│   │   │       ├── 4x5-mockup-28.png
+│   │   │       ├── 4x5-mockup-29.png
+│   │   │       ├── 4x5-mockup-31.png
+│   │   │       ├── 4x5-mockup-33.png
+│   │   │       ├── 4x5-mockup-34.png
+│   │   │       ├── 4x5-mockup-35.png
+│   │   │       ├── 4x5-mockup-36.png
+│   │   │       ├── 4x5-mockup-37.png
+│   │   │       ├── 4x5-mockup-38.png
+│   │   │       ├── 4x5-mockup-39.png
+│   │   │       ├── 4x5-mockup-40.png
+│   │   │       ├── 4x5-mockup-41.png
+│   │   │       ├── 4x5-mockup-42.png
+│   │   │       ├── 4x5-mockup-43.png
+│   │   │       ├── 4x5-mockup-45.png
+│   │   │       ├── 4x5-mockup-46.png
+│   │   │       ├── 4x5-mockup-47.png
+│   │   │       ├── 4x5-mockup-48.png
+│   │   │       ├── 4x5-mockup-49.png
+│   │   │       ├── 4x5-mockup-50.png
+│   │   │       ├── 4x5-mockup-51.png
+│   │   │       ├── 4x5-mockup-52.png
+│   │   │       ├── 4x5-mockup-53.png
+│   │   │       ├── 4x5-mockup-54.png
+│   │   │       ├── 4x5-mockup-55.png
+│   │   │       ├── 4x5-mockup-56.png
+│   │   │       ├── 4x5-mockup-57.png
+│   │   │       ├── 4x5-mockup-58.png
+│   │   │       ├── 4x5-mockup-59.png
+│   │   │       ├── 4x5-mockup-60.png
+│   │   │       ├── 4x5-mockup-61.png
+│   │   │       ├── 4x5-mockup-62.png
+│   │   │       ├── 4x5-mockup-63.png
+│   │   │       ├── 4x5-mockup-64.png
+│   │   │       ├── 4x5-mockup-65.png
+│   │   │       ├── 4x5-mockup-66.png
+│   │   │       ├── 4x5-mockup-67.png
+│   │   │       ├── 4x5-mockup-68.png
+│   │   │       ├── 4x5-mockup-69.png
+│   │   │       ├── 4x5-mockup-70.png
+│   │   │       ├── 4x5-mockup-71.png
+│   │   │       ├── 4x5-mockup-72.png
+│   │   │       ├── 4x5-mockup-73.png
+│   │   │       ├── 4x5-mockup-74.png
+│   │   │       ├── 4x5-mockup-75.png
+│   │   │       ├── 4x5-mockup-76.png
+│   │   │       ├── 4x5-mockup-78.png
+│   │   │       ├── 4x5-mockup-79.png
+│   │   │       ├── 4x5-mockup-80.png
+│   │   │       ├── 4x5-mockup-81.png
+│   │   │       ├── 4x5-mockup-82.png
+│   │   │       ├── 4x5-mockup-83.png
+│   │   │       ├── 4x5-mockup-84.png
+│   │   │       ├── 4x5-mockup-85.png
+│   │   │       ├── 4x5-mockup-92.png
+│   │   │       ├── 4x5-mockup-93.png
+│   │   │       ├── 4x5-mockup-94.png
+│   │   │       ├── 4x5-mockup-95.png
+│   │   │       └── 4x5-mockup-99.png
+│   │   ├── categorised
+│   │   │   ├── 1x1
+│   │   │   │   ├── Bedroom
+│   │   │   │   ├── Closeup
+│   │   │   │   ├── Dining-Room
+│   │   │   │   ├── Display
+│   │   │   │   ├── Gallery-Wall
+│   │   │   │   ├── Gift
+│   │   │   │   ├── Hallway
+│   │   │   │   ├── Living Room
+│   │   │   │   ├── Nursery
+│   │   │   │   ├── Office
+│   │   │   │   └── Outdoors
+│   │   │   └── 4x5
+│   │   │       ├── Bedroom
+│   │   │       │   ├── 4x5-mockup-10.png
+│   │   │       │   ├── 4x5-mockup-11.png
+│   │   │       │   ├── 4x5-mockup-12.png
+│   │   │       │   ├── 4x5-mockup-121.png
+│   │   │       │   ├── 4x5-mockup-126.png
+│   │   │       │   ├── 4x5-mockup-127.png
+│   │   │       │   └── 4x5-mockup-13.png
+│   │   │       ├── Closeup
+│   │   │       │   ├── 4x5-mockup-06.png
+│   │   │       │   ├── 4x5-mockup-07.png
+│   │   │       │   ├── 4x5-mockup-08.png
+│   │   │       │   ├── 4x5-mockup-09.png
+│   │   │       │   ├── 4x5-mockup-103.png
+│   │   │       │   ├── 4x5-mockup-109.png
+│   │   │       │   ├── 4x5-mockup-118.png
+│   │   │       │   ├── 4x5-mockup-119.png
+│   │   │       │   ├── 4x5-mockup-120.png
+│   │   │       │   ├── 4x5-mockup-16.png
+│   │   │       │   ├── 4x5-mockup-17.png
+│   │   │       │   ├── 4x5-mockup-18.png
+│   │   │       │   ├── 4x5-mockup-19.png
+│   │   │       │   ├── 4x5-mockup-20.png
+│   │   │       │   ├── 4x5-mockup-58.png
+│   │   │       │   ├── 4x5-mockup-65.png
+│   │   │       │   ├── 4x5-mockup-74.png
+│   │   │       │   ├── 4x5-mockup-79.png
+│   │   │       │   ├── 4x5-mockup-80.png
+│   │   │       │   └── 4x5-mockup-94.png
+│   │   │       ├── Dining-Room
+│   │   │       │   └── 4x5-mockup-75.png
+│   │   │       ├── Display
+│   │   │       │   ├── 4x5-mockup-59.png
+│   │   │       │   ├── 4x5-mockup-60.png
+│   │   │       │   ├── 4x5-mockup-61.png
+│   │   │       │   └── 4x5-mockup-69.png
+│   │   │       ├── Gallery-Wall
+│   │   │       │   ├── 4x5-mockup-63.png
+│   │   │       │   └── 4x5-mockup-64.png
+│   │   │       ├── Gift
+│   │   │       │   ├── 4x5-mockup-100.png
+│   │   │       │   ├── 4x5-mockup-101.png
+│   │   │       │   ├── 4x5-mockup-102.png
+│   │   │       │   ├── 4x5-mockup-110.png
+│   │   │       │   ├── 4x5-mockup-111.png
+│   │   │       │   ├── 4x5-mockup-112.png
+│   │   │       │   ├── 4x5-mockup-113.png
+│   │   │       │   ├── 4x5-mockup-114.png
+│   │   │       │   ├── 4x5-mockup-22.png
+│   │   │       │   ├── 4x5-mockup-23.png
+│   │   │       │   ├── 4x5-mockup-64.png
+│   │   │       │   ├── 4x5-mockup-66.png
+│   │   │       │   ├── 4x5-mockup-68.png
+│   │   │       │   ├── 4x5-mockup-70.png
+│   │   │       │   ├── 4x5-mockup-71.png
+│   │   │       │   ├── 4x5-mockup-72.png
+│   │   │       │   ├── 4x5-mockup-81.png
+│   │   │       │   ├── 4x5-mockup-82.png
+│   │   │       │   ├── 4x5-mockup-83.png
+│   │   │       │   ├── 4x5-mockup-84.png
+│   │   │       │   ├── 4x5-mockup-85.png
+│   │   │       │   ├── 4x5-mockup-93.png
+│   │   │       │   ├── 4x5-mockup-95.png
+│   │   │       │   └── 4x5-mockup-99.png
+│   │   │       ├── Hallway
+│   │   │       │   ├── 4x5-mockup-108.png
+│   │   │       │   ├── 4x5-mockup-115.png
+│   │   │       │   ├── 4x5-mockup-122.png
+│   │   │       │   ├── 4x5-mockup-123.png
+│   │   │       │   ├── 4x5-mockup-124.png
+│   │   │       │   ├── 4x5-mockup-125.png
+│   │   │       │   ├── 4x5-mockup-48.png
+│   │   │       │   └── 4x5-mockup-57.png
+│   │   │       ├── Kitchen
+│   │   │       │   ├── 4x5-mockup-106.png
+│   │   │       │   └── 4x5-mockup-107.png
+│   │   │       ├── Living Room
+│   │   │       │   ├── 4x5-mockup-01.png
+│   │   │       │   ├── 4x5-mockup-02.png
+│   │   │       │   ├── 4x5-mockup-04.png
+│   │   │       │   ├── 4x5-mockup-117.png
+│   │   │       │   ├── 4x5-mockup-21.png
+│   │   │       │   ├── 4x5-mockup-25.png
+│   │   │       │   ├── 4x5-mockup-27.png
+│   │   │       │   ├── 4x5-mockup-28.png
+│   │   │       │   ├── 4x5-mockup-39.png
+│   │   │       │   ├── 4x5-mockup-40.png
+│   │   │       │   ├── 4x5-mockup-41.png
+│   │   │       │   ├── 4x5-mockup-42.png
+│   │   │       │   ├── 4x5-mockup-43.png
+│   │   │       │   ├── 4x5-mockup-45.png
+│   │   │       │   ├── 4x5-mockup-46.png
+│   │   │       │   ├── 4x5-mockup-47.png
+│   │   │       │   ├── 4x5-mockup-49.png
+│   │   │       │   ├── 4x5-mockup-50.png
+│   │   │       │   ├── 4x5-mockup-51.png
+│   │   │       │   ├── 4x5-mockup-52.png
+│   │   │       │   ├── 4x5-mockup-53.png
+│   │   │       │   ├── 4x5-mockup-54.png
+│   │   │       │   ├── 4x5-mockup-55.png
+│   │   │       │   ├── 4x5-mockup-56.png
+│   │   │       │   ├── 4x5-mockup-62.png
+│   │   │       │   ├── 4x5-mockup-63.png
+│   │   │       │   ├── 4x5-mockup-67.png
+│   │   │       │   ├── 4x5-mockup-73.png
+│   │   │       │   ├── 4x5-mockup-78.png
+│   │   │       │   └── 4x5-mockup-92.png
+│   │   │       ├── Nursery
+│   │   │       │   ├── 4x5-mockup-03.png
+│   │   │       │   ├── 4x5-mockup-05.png
+│   │   │       │   ├── 4x5-mockup-104.png
+│   │   │       │   ├── 4x5-mockup-105.png
+│   │   │       │   ├── 4x5-mockup-26.png
+│   │   │       │   └── 4x5-mockup-76.png
+│   │   │       ├── Office
+│   │   │       │   ├── 4x5-mockup-14.png
+│   │   │       │   └── 4x5-mockup-15.png
+│   │   │       └── Outdoors
+│   │   │           ├── 4x5-mockup-116.png
+│   │   │           ├── 4x5-mockup-24.png
+│   │   │           ├── 4x5-mockup-29.png
+│   │   │           ├── 4x5-mockup-31.png
+│   │   │           ├── 4x5-mockup-33.png
+│   │   │           ├── 4x5-mockup-34.png
+│   │   │           ├── 4x5-mockup-35.png
+│   │   │           ├── 4x5-mockup-36.png
+│   │   │           ├── 4x5-mockup-37.png
+│   │   │           └── 4x5-mockup-38.png
+│   │   └── uncategorised
+│   │       └── 4x5
 │   └── signatures
 ├── instructions
+│   └── CODEX-README.md
 ├── logs
+│   ├── analyse-google
+│   ├── analyse-openai
 │   ├── analysis_status.json
 │   ├── crops
-│   │   ├── banksia-flower-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
-│   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
-│   │   ├── first-artwork-crop.jpg
-│   │   ├── forest-reflection-fire-artwork-by-robin-custance-rjc-0122-crop.jpg
-│   │   ├── gang-gang-cockatoo-artwork-by-robin-custance-rjc-0127-crop.jpg
-│   │   ├── great-barrier-reef-dot-artwork-by-robin-custance-rjc-0122-crop.jpg
-│   │   ├── outback-billabong-dot-artwork-by-robin-custance-rjc-0123-crop.jpg
-│   │   ├── outback-billabong-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
-│   │   ├── owl-dotart-gaze-artwork-by-robin-custance-rjc-0123-crop.jpg
-│   │   ├── second-artwork-crop.jpg
-│   │   └── sulphur-crested-cockatoo-dot-artwork-by-robin-custance-rjc-0127-crop.jpg
-│   └── session_registry.json
+│   │   ├── baby-koala-artwork-by-robin-custance-rjc-0145-crop.jpg
+│   │   ├── banksia-flower-artwork-by-robin-custance-rjc-0131-crop.jpg
+│   │   ├── banksia-flower-artwork-by-robin-custance-rjc-0136-crop.jpg
+│   │   ├── cassowary-dot-artwork-by-robin-custance-rjc-0131-crop.jpg
+│   │   ├── cockatoo-dot-artwork-by-robin-custance-rjc-0131-crop.jpg
+│   │   ├── coral-patterns-artwork-by-robin-custance-rjc-0131-crop.jpg
+│   │   ├── eucalypt-forest-artwork-by-robin-custance-rjc-0134-crop.jpg
+│   │   ├── eucalypt-woodland-artwork-by-robin-custance-rjc-0141-crop.jpg
+│   │   ├── fern-gully-creek-artwork-by-robin-custance-rjc-0147-crop.jpg
+│   │   ├── great-barrier-reef-artwork-by-robin-custance-rjc-0131-crop.jpg
+│   │   ├── great-barrier-reef-artwork-by-robin-custance-rjc-0140-crop.jpg
+│   │   ├── great-barrier-reef-artwork-by-robin-custance-rjc-0144-crop.jpg
+│   │   ├── koala-gumtree-artwork-by-robin-custance-rjc-0146-crop.jpg
+│   │   ├── mangrove-estuary-artwork-by-robin-custance-rjc-0142-crop.jpg
+│   │   ├── native-hibiscus-artwork-by-robin-custance-rjc-0138-crop.jpg
+│   │   ├── outback-billabong-artwork-by-robin-custance-rjc-0143-crop.jpg
+│   │   ├── sulphur-crested-cockatoo-artwork-by-robin-custance-rjc-0139-crop.jpg
+│   │   ├── tawny-frogmouth-dot-artwork-by-robin-custance-rjc-0131-crop.jpg
+│   │   └── tawny-frogmouth-dot-artwork-by-robin-custance-rjc-0137-crop.jpg
+│   ├── delete
+│   ├── edits
+│   ├── finalise
+│   ├── gunicorn
+│   ├── lock
+│   ├── session_registry.json
+│   └── upload
+├── manage_folders.py
 ├── outputs
 │   ├── artwork_listing_master.json
 │   ├── composites
+│   ├── selections
+│   │   └── 7943a386-e87d-4ddc-96dc-f8e17d4a6451.json
 │   ├── sellbrite
 │   │   ├── sellbrite_2025-07-06T04-52-26_locked.csv
 │   │   └── sellbrite_2025-07-17T02-37-11_all.csv
 │   └── signed
 ├── package-lock.json
+├── project-push.sh
+├── project-toolkit.sh
 ├── reports
-│   ├── report-ALLINONE-Sat-19-Jul-2025-05-51-AM
-│   │   ├── code-dump.md
-│   │   ├── folder-structure.txt
-│   │   └── system-health.txt
-│   ├── report-ALLINONE-Sat-19-Jul-2025-06-02-AM
-│   │   ├── code-dump.md
-│   │   ├── filelist.txt
-│   │   ├── folder-structure.txt
-│   │   └── system-health.txt
-│   ├── report-ALLINONE-Sat-19-Jul-2025-06-08-AM
-│   │   ├── code-dump.md
-│   │   ├── filelist.txt
-│   │   ├── folder-structure.txt
-│   │   └── system-health.txt
-│   ├── report-ALLINONE-Sat-19-Jul-2025-09-07-AM
-│   └── report-ALLINONE-Sat-19-Jul-2025-09-14-AM
-│       ├── code-dump.md
-│       ├── filelist.txt
-│       ├── folder-structure.txt
-│       └── system-health.txt
 ├── requirements.txt
 ├── routes
 │   ├── __init__.py
 │   ├── admin_security.py
+│   ├── api_routes.py
 │   ├── artwork_routes.py
 │   ├── auth_routes.py
+│   ├── coordinate_admin_routes.py
+│   ├── edit_listing_routes.py
 │   ├── export_routes.py
+│   ├── gdws_admin_routes.py
+│   ├── mockup_admin_routes.py
 │   ├── sellbrite_export.py
 │   ├── sellbrite_service.py
 │   ├── test_routes.py
 │   └── utils.py
 ├── scripts
 │   ├── analyze_artwork.py
+│   ├── analyze_artwork_google.py
 │   ├── dev_cycle.sh
 │   ├── generate_composites.py
-│   └── sellbrite_csv_export.py
+│   ├── generate_coordinates.py
+│   ├── generate_coordinates_for_ratio.py
+│   ├── mockup_categoriser.py
+│   ├── populate_gdws.py
+│   ├── run_coordinate_generator.py
+│   ├── sellbrite_csv_export.py
+│   ├── test_connections.py
+│   └── test_sellbrite_add_listing.py
 ├── sellbrite_template.csv
 ├── settings
 │   ├── Master-Etsy-Listing-Description-Writing-Onboarding.txt
 │   ├── security_settings.json
 │   ├── sku_tracker.json
 │   └── users.json
+├── setup_gunicorn.sh
+├── sku_assigner.py
 ├── static
 │   ├── css
 │   │   ├── 404.css
+│   │   ├── GDWS-style.css
 │   │   ├── art-cards.css
 │   │   ├── backup-css
 │   │   │   ├── 404.css
@@ -644,6 +1504,8 @@ art
 │   │   │   ├── style-bk3.css
 │   │   │   └── style.css
 │   │   ├── buttons.css
+│   │   ├── documentation.css
+│   │   ├── edit_listing.css
 │   │   ├── icons.css
 │   │   ├── layout.css
 │   │   ├── main.css
@@ -663,7 +1525,9 @@ art
 │   │   ├── Inter-VariableFont_opsz,wght.ttf
 │   │   ├── Montserrat-Italic-VariableFont_wght.ttf
 │   │   ├── Montserrat-VariableFont_wght.ttf
-│   │   └── QA_REPORT.md
+│   │   ├── QA_REPORT.md
+│   │   ├── Urbanist-Italic-VariableFont_wght.ttf
+│   │   └── Urbanist-VariableFont_wght.ttf
 │   ├── icons
 │   │   └── svg
 │   │       ├── dark
@@ -2182,6 +3046,7 @@ art
 │   │           ├── yin-yang-light.svg
 │   │           └── youtube-logo-light.svg
 │   ├── img
+│   │   ├── default-mockup.jpg
 │   │   └── no-image.svg
 │   ├── js
 │   │   ├── analysis-modal.js
@@ -2190,14 +3055,18 @@ art
 │   │   ├── gallery.js
 │   │   ├── main-overlay-test.js
 │   │   ├── main.js
+│   │   ├── mockup-admin.js
 │   │   ├── new-main.js
 │   │   └── upload.js
 │   └── logos
 │       └── logo-vector.svg
 ├── templates
 │   ├── 404.html
+│   ├── 500.html
 │   ├── admin
+│   │   ├── coordinates.html
 │   │   ├── dashboard.html
+│   │   ├── mockups.html
 │   │   ├── security.html
 │   │   └── users.html
 │   ├── artworks.html
@@ -2207,6 +3076,7 @@ art
 │   │       ├── edit_prompts.html
 │   │       └── main-design-template.html
 │   ├── composites_preview.html
+│   ├── dws_editor.html
 │   ├── edit_listing.html
 │   ├── finalised.html
 │   ├── gallery.html
@@ -2214,6 +3084,7 @@ art
 │   ├── locked.html
 │   ├── login.html
 │   ├── main.html
+│   ├── missing_endpoint.html
 │   ├── mockup_selector.html
 │   ├── partials
 │   │   ├── footer.html
@@ -2222,6 +3093,8 @@ art
 │   ├── sellbrite_csv_preview.html
 │   ├── sellbrite_exports.html
 │   ├── sellbrite_log.html
+│   ├── sellbrite_management.html
+│   ├── sellbrite_sync_preview.html
 │   ├── template-backups
 │   │   ├── artworks_overlay_test.html
 │   │   ├── edit_listing_overlay_test.html
@@ -2231,8 +3104,28 @@ art
 │   ├── upload.html
 │   └── upload_results.html
 ├── tests
+│   ├── google-analysys-tests
+│   │   ├── test-artwork-analysis-01
+│   │   │   └── test-image-01-for-analyse.jpg
+│   │   ├── test-artwork-analysis-02
+│   │   │   ├── test-image-02-for-analyse-google-2025-07-23_17-03-56.json
+│   │   │   └── test-image-02-for-analyse.jpg
+│   │   └── test-artwork-analysis-03
+│   │       ├── test-image-03-for-analyse-google-2025-07-23_17-03-26.json
+│   │       └── test-image-03-for-analyse.jpg
+│   ├── opneai-analysys-tests
+│   │   ├── test-artwork-analysis-01
+│   │   │   ├── test-image-01-for-analyse-openai-2025-07-23_17-02-58.json
+│   │   │   └── test-image-01-for-analyse-openai-2025-07-23_17-14-32.json
+│   │   ├── test-artwork-analysis-02
+│   │   │   └── test-image-02-for-analyse-openai-2025-07-23_18-19-45.json
+│   │   └── test-artwork-analysis-03
+│   │       └── test-image-03-for-analyse.jpg
+│   ├── test_admin_security.py
 │   ├── test_analysis_status_file.py
+│   ├── test_analyze_api.py
 │   ├── test_analyze_artwork.py
+│   ├── test_logger_utils.py
 │   ├── test_registry.py
 │   ├── test_routes.py
 │   ├── test_session_limits.py
@@ -2241,9 +3134,42 @@ art
 │   ├── test_sku_utils.py
 │   ├── test_upload.py
 │   └── test_utils_cleaning.py
-├── tmp
+├── tests-bk
+│   ├── google-analysys-tests
+│   │   ├── test-artwork-analysis-01
+│   │   │   └── test-image-01-for-analyse.jpg
+│   │   ├── test-artwork-analysis-02
+│   │   │   ├── test-image-02-for-analyse-google-2025-07-23_17-03-56.json
+│   │   │   └── test-image-02-for-analyse.jpg
+│   │   └── test-artwork-analysis-03
+│   │       ├── test-image-03-for-analyse-google-2025-07-23_17-03-26.json
+│   │       └── test-image-03-for-analyse.jpg
+│   ├── opneai-analysys-tests
+│   │   ├── test-artwork-analysis-01
+│   │   │   ├── test-image-01-for-analyse-openai-2025-07-23_17-02-58.json
+│   │   │   └── test-image-01-for-analyse.jpg
+│   │   ├── test-artwork-analysis-02
+│   │   │   └── test-image-02-for-analyse.jpg
+│   │   └── test-artwork-analysis-03
+│   │       └── test-image-03-for-analyse.jpg
+│   ├── test_admin_security.py
+│   ├── test_analysis_status_file.py
+│   ├── test_analyze_api.py
+│   ├── test_analyze_artwork.py
+│   ├── test_logger_utils.py
+│   ├── test_registry.py
+│   ├── test_routes.py
+│   ├── test_session_limits.py
+│   ├── test_sku_assigner.py
+│   ├── test_sku_tracker.py
+│   ├── test_sku_utils.py
+│   ├── test_upload.py
+│   └── test_utils_cleaning.py
 └── utils
     ├── __init__.py
+    ├── ai_services.py
+    ├── auth_decorators.py
+    ├── logger_utils.py
     ├── security.py
     ├── session_tracker.py
     ├── sku_assigner.py

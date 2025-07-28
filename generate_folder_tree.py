@@ -8,10 +8,17 @@ ROOT_DIR = BASE_DIR
 OUTPUT_FILE = "folder_structure.txt"
 
 # Folders or files to ignore (case insensitive)
+# MODIFIED: Added user-specific and tool-specific dotfiles/folders to ignore
 IGNORE_NAMES = {
+    # Standard dev/tooling ignores
     ".git", "__pycache__", ".venv", "venv", "env", ".idea", ".DS_Store",
-    "node_modules", ".nojekyll", ".pytest_cache", ".mypy_cache", 
-    ".ipynb_checkpoints", ".history"
+    "node_modules", ".nojekyll", ".pytest_cache", ".mypy_cache",
+    ".ipynb_checkpoints", ".history", ".cache",
+    # User-specific shell/config files from home directory
+    ".bash_history", ".bash_logout", ".bashrc", ".profile", ".lesshst",
+    ".python_history", ".selected_editor", ".wget-hsts",
+    # Tool-specific config/cache folders
+    ".codegpt", ".config", ".dotnet", ".local", ".sdkman", ".ssh", ".vscode-server"
 }
 
 # File extensions to ignore (add as needed, e.g., '.log', '.tmp')
