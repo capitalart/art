@@ -1,42 +1,277 @@
 {
-  "e9d712eada624d5a9c8cac97e632089b": {
-    "seo_filename": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75.jpg",
-    "base": "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
-    "assets": [
-      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75.jpg",
-      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75-thumb.jpg",
-      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75-analyse.jpg",
-      "great-barrier-reef-coral-patterns-generate-an-aboriginal-dot-painting-of-the-great-barrier-reef-focu-2-cfea2c75.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
-        "timestamp": "2025-07-27T15:12:46.161660+00:00"
-      }
-    ],
-    "upload_date": "2025-07-27T15:12:46.161660+00:00"
-  },
   "ec6e433361044cd2bb520f35022743f7": {
     "seo_filename": "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894.jpg",
     "base": "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+    "current_folder": "/home/art/art-processing/finalised-artwork/baby-koala-artwork-by-robin-custance-rjc-0145",
     "assets": [
       "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894.jpg",
       "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894-thumb.jpg",
       "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894-analyse.jpg",
       "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-f2a34894.qc.json"
     ],
-    "status": "unanalysed",
+    "status": "finalised",
     "history": [
       {
         "status": "unanalysed",
         "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
         "timestamp": "2025-07-27T15:37:06.268083+00:00"
+      },
+      {
+        "status": "finalised",
+        "folder": "/home/art/art-processing/finalised-artwork/baby-koala-artwork-by-robin-custance-rjc-0145",
+        "timestamp": "2025-07-27T17:19:00.432209+00:00"
       }
     ],
     "upload_date": "2025-07-27T15:37:06.268083+00:00"
+  },
+  "1b204c4cc37a4eb2b505c2d98ce94b65": {
+    "seo_filename": "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-1-38a7b884.jpg",
+    "base": "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-1-38a7b884",
+    "current_folder": "/home/art/art-processing/finalised-artwork/koala-gumtree-artwork-by-robin-custance-rjc-0146",
+    "assets": [
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-1-38a7b884.jpg",
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-1-38a7b884-thumb.jpg",
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-1-38a7b884-analyse.jpg",
+      "baby-koala-generate-an-aboriginal-dot-painting-of-a-baby-koala-holding-onto-a-gumtree-branch-focusin-1-38a7b884.qc.json"
+    ],
+    "status": "finalised",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-01",
+        "timestamp": "2025-07-27T16:35:32.330669+00:00"
+      },
+      {
+        "status": "finalised",
+        "folder": "/home/art/art-processing/finalised-artwork/koala-gumtree-artwork-by-robin-custance-rjc-0146",
+        "timestamp": "2025-07-27T16:39:45.197398+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:35:32.330669+00:00"
+  },
+  "c7ccad0ad4304e76bedfc5fd5d81077b": {
+    "seo_filename": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c.jpg",
+    "base": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-02",
+    "assets": [
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c-thumb.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c-analyse.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-634f668c.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-02",
+        "timestamp": "2025-07-27T16:35:46.906421+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:35:46.906421+00:00"
+  },
+  "c690cfefb9894011857ec30498bdd58c": {
+    "seo_filename": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f.jpg",
+    "base": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-03",
+    "assets": [
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f-thumb.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f-analyse.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-0a92052f.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-03",
+        "timestamp": "2025-07-27T16:35:59.665651+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:35:59.665651+00:00"
+  },
+  "6c462fe51af9421c80cd190882700637": {
+    "seo_filename": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24.jpg",
+    "base": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-04",
+    "assets": [
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24-thumb.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24-analyse.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-7abaef24.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-04",
+        "timestamp": "2025-07-27T16:36:13.206144+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:36:13.206144+00:00"
+  },
+  "edc8a91a9c54461296808ef5fa0dd651": {
+    "seo_filename": "gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7.jpg",
+    "base": "gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-05",
+    "assets": [
+      "gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7.jpg",
+      "gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7-thumb.jpg",
+      "gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7-analyse.jpg",
+      "gang-gang-cockatoo-male-generate-an-aboriginal-dot-painting-of-a-gang-gang-cockatoo-callocephalon-fi-24c902a7.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-05",
+        "timestamp": "2025-07-27T16:36:27.325503+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:36:27.325503+00:00"
+  },
+  "8efd79ac070641ada0be2bfa54a1fc84": {
+    "seo_filename": "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-1d026e29.jpg",
+    "base": "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-1d026e29",
+    "current_folder": "/home/art/art-processing/finalised-artwork/fern-gully-creek-artwork-by-robin-custance-rjc-0147",
+    "assets": [
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-1d026e29.jpg",
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-1d026e29-thumb.jpg",
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-1d026e29-analyse.jpg",
+      "fern-gully-with-creek-flow-generate-an-aboriginal-dot-painting-of-a-fern-gully-with-a-small-creek-ru-1-1d026e29.qc.json"
+    ],
+    "status": "finalised",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-06",
+        "timestamp": "2025-07-27T16:36:41.720403+00:00"
+      },
+      {
+        "status": "finalised",
+        "folder": "/home/art/art-processing/finalised-artwork/fern-gully-creek-artwork-by-robin-custance-rjc-0147",
+        "timestamp": "2025-07-27T17:14:49.827628+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:36:41.720403+00:00"
+  },
+  "1d399dc10ee04f77abc78164246965f3": {
+    "seo_filename": "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6.jpg",
+    "base": "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-07",
+    "assets": [
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6.jpg",
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6-thumb.jpg",
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6-analyse.jpg",
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-6eea51c6.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-07",
+        "timestamp": "2025-07-27T16:36:56.062928+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:36:56.062928+00:00"
+  },
+  "4cdcc2e39a8d4d5aadedac396bf7f95d": {
+    "seo_filename": "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb.jpg",
+    "base": "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-08",
+    "assets": [
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb.jpg",
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb-thumb.jpg",
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb-analyse.jpg",
+      "eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-39034dfb.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-08",
+        "timestamp": "2025-07-27T16:37:08.722855+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:37:08.722855+00:00"
+  },
+  "5ffcc1ce96cc48838cde343398d43527": {
+    "seo_filename": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841.jpg",
+    "base": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-09",
+    "assets": [
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841.jpg",
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841-thumb.jpg",
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841-analyse.jpg",
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-12e6f841.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-09",
+        "timestamp": "2025-07-27T16:37:22.707183+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:37:22.707183+00:00"
+  },
+  "b9b3e0eecc72421690e3392991c2985c": {
+    "seo_filename": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53.jpg",
+    "base": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-10",
+    "assets": [
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53.jpg",
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53-thumb.jpg",
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53-analyse.jpg",
+      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-1-9a9c9c53.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-10",
+        "timestamp": "2025-07-27T16:37:35.380645+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:37:35.380645+00:00"
+  },
+  "31540428075841648d8af15fab1e0f08": {
+    "seo_filename": "coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c.jpg",
+    "base": "coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-11",
+    "assets": [
+      "coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c.jpg",
+      "coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c-thumb.jpg",
+      "coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c-analyse.jpg",
+      "coastal-dunes-at-sunset-generate-an-aboriginal-dot-painting-of-coastal-sand-dunes-at-sunset-showing-a3964f3c.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-11",
+        "timestamp": "2025-07-27T16:37:48.802556+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T16:37:48.802556+00:00"
+  },
+  "e73f574265894eb2bb9046ce827b68e1": {
+    "seo_filename": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770.jpg",
+    "base": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-12",
+    "assets": [
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770.jpg",
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770-thumb.jpg",
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770-analyse.jpg",
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-dabad770.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-12",
+        "timestamp": "2025-07-27T18:02:46.281387+00:00"
+      }
+    ],
+    "upload_date": "2025-07-27T18:02:46.281387+00:00"
   }
 }

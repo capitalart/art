@@ -1,8 +1,6 @@
-"""
-config.py — ArtNarrator & DreamArtMachine (Robbie Mode™, July 2025)
-Central config: All core folders, env vars, limits, AI models, templates.
-All code must import config.py and reference only these values!
-"""
+# config.py — ArtNarrator & DreamArtMachine (Robbie Mode™, July 2025)
+# Central config: All core folders, env vars, limits, AI models, templates.
+# All code must import config.py and reference only these values!
 
 import os
 from pathlib import Path
@@ -15,7 +13,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 
 # -----------------------------------------------------------------------------
-# 1. ENV/BRANDING/ADMINcat /home/art/logs/composites-workflow.log
+# 1. ENV/BRANDING/ADMIN
 # -----------------------------------------------------------------------------
 BRAND_NAME = os.getenv("BRAND_NAME", "Art Narrator")
 BRAND_TAGLINE = os.getenv("BRAND_TAGLINE", "Create. Automate. Sell Art.")
@@ -52,8 +50,8 @@ GOOGLE_GEMINI_PRO_VISION_MODEL_NAME = os.getenv("GOOGLE_GEMINI_PRO_VISION_MODEL_
 # --- Other Integrations ---
 RCLONE_REMOTE_NAME = os.getenv("RCLONE_REMOTE_NAME", "gdrive")
 RCLONE_REMOTE_PATH = os.getenv("RCLONE_REMOTE_PATH", "art-backups")
-SELLBRITE_ACCOUNT_TOKEN = os.getenv("SELLBRITE_ACCOUNT_TOKEN")  # <-- ADDED
-SELLBRITE_SECRET_KEY = os.getenv("SELLBRITE_SECRET_KEY")      # <-- ADDED
+SELLBRITE_ACCOUNT_TOKEN = os.getenv("SELLBRITE_ACCOUNT_TOKEN")
+SELLBRITE_SECRET_KEY = os.getenv("SELLBRITE_SECRET_KEY")
 SELLBRITE_API_BASE_URL = os.getenv("SELLBRITE_API_BASE_URL", "https://api.sellbrite.com/v1")
 ETSY_SHOP_URL = os.getenv("ETSY_SHOP_URL", "https://www.robincustance.etsy.com")
 
@@ -87,10 +85,7 @@ STATIC_DIR = Path(os.getenv("STATIC_DIR", BASE_DIR / "static"))
 TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", BASE_DIR / "templates"))
 DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
 DB_PATH = DATA_DIR / "artnarrator.sqlite3"
-
-DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
-GDWS_CONTENT_DIR = DATA_DIR / "gdws_content"  # <-- ADD THIS LINE
-DB_PATH = DATA_DIR / "artnarrator.sqlite3"
+GDWS_CONTENT_DIR = DATA_DIR / "gdws_content"
 
 # -----------------------------------------------------------------------------
 # 4. HELPER/REGISTRY FILES (ONLY WHAT'S USED)
@@ -130,15 +125,9 @@ def get_mockup_categories() -> list[str]:
     override = os.getenv("MOCKUP_CATEGORIES")
     if override:
         return [c.strip() for c in override.split(",") if c.strip()]
-    d = MOCKUPS_INPUT_DIR
+    d = MOCKUPS_CATEGORISED_DIR
     if d.exists():
-        return sorted(
-            [
-                f.name
-                for f in d.iterdir()
-                if f.is_dir() and f.name.lower() != "uncategorised"
-            ]
-        )
+        return sorted([f.name for f in d.iterdir() if f.is_dir()])
     return []
 
 MOCKUP_CATEGORIES = get_mockup_categories()
@@ -147,33 +136,18 @@ MOCKUP_CATEGORIES = get_mockup_categories()
 # 8. FOLDER AUTO-CREATION (STRICT)
 # -----------------------------------------------------------------------------
 _CRITICAL_FOLDERS = [
-    ART_PROCESSING_DIR,
-    UNANALYSED_ROOT,
-    PROCESSED_ROOT,
-    FINALISED_ROOT,
-    ARTWORK_VAULT_ROOT,
-    OUTPUTS_DIR,
-    COMPOSITES_DIR,
-    SELECTIONS_DIR,
-    SELLBRITE_DIR,
-    SIGNED_DIR,
-    MOCKUPS_INPUT_DIR,
-    SIGNATURES_DIR,
-    GENERIC_TEXTS_DIR,
-    COORDS_DIR,
-    SCRIPTS_DIR,
-    SETTINGS_DIR,
-    LOGS_DIR,
-    CODEX_LOGS_DIR,
-    DATA_DIR,
-    STATIC_DIR,
-    TEMPLATES_DIR,
+    ART_PROCESSING_DIR, UNANALYSED_ROOT, PROCESSED_ROOT, FINALISED_ROOT,
+    ARTWORK_VAULT_ROOT, OUTPUTS_DIR, COMPOSITES_DIR, SELECTIONS_DIR,
+    SELLBRITE_DIR, SIGNED_DIR, MOCKUPS_INPUT_DIR, MOCKUPS_STAGING_DIR,
+    MOCKUPS_CATEGORISED_DIR, SIGNATURES_DIR, GENERIC_TEXTS_DIR, COORDS_DIR,
+    SCRIPTS_DIR, SETTINGS_DIR, LOGS_DIR, CODEX_LOGS_DIR, DATA_DIR,
+    STATIC_DIR, TEMPLATES_DIR, GDWS_CONTENT_DIR,
 ]
 for folder in _CRITICAL_FOLDERS:
     try:
         folder.mkdir(parents=True, exist_ok=True)
     except Exception as exc:
-        raise RuntimeError(f"Could not create required folder {folder}: {exc}")
+        raise RuntimeError(f"Could not create required folder {folder}: {exc}") from exc
 
 # -----------------------------------------------------------------------------
 # 9. SCRIPTS (For automation & CLI)
@@ -187,3 +161,18 @@ GENERATE_SCRIPT_PATH = SCRIPTS_DIR / "generate_composites.py"
 QA_AUDIT_INDEX = BASE_DIR / "QA_AUDIT_INDEX.md"
 SITEMAP_FILE = BASE_DIR / "SITEMAP.md"
 CHANGELOG_FILE = BASE_DIR / "CHANGELOG.md"
+
+# -----------------------------------------------------------------------------
+# 11. URLS & ROUTE PREFIXES # <-- NEW SECTION
+# -----------------------------------------------------------------------------
+# URL paths for serving content. The leading slash is handled by Flask.
+# These variables define the URL structure for dynamically served content.
+STATIC_URL_PREFIX = "static"
+PROCESSED_URL_PATH = f"{STATIC_URL_PREFIX}/{PROCESSED_ROOT.relative_to(BASE_DIR).as_posix()}"
+FINALISED_URL_PATH = f"{STATIC_URL_PREFIX}/{FINALISED_ROOT.relative_to(BASE_DIR).as_posix()}"
+LOCKED_URL_PATH = f"{STATIC_URL_PREFIX}/{ARTWORK_VAULT_ROOT.relative_to(BASE_DIR).as_posix()}"
+
+# Prefixes for other dynamic image content served directly by routes
+UNANALYSED_IMG_URL_PREFIX = "unanalysed-img"
+MOCKUP_THUMB_URL_PREFIX = "thumbs"
+COMPOSITE_IMG_URL_PREFIX = "composite-img"

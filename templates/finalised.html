@@ -12,7 +12,7 @@
   <button id="grid-view-btn" class="btn-small">Grid</button>
   <button id="list-view-btn" class="btn-small">List</button>
 </div>
-<form method="post" action="{{ url_for('exports.run_sellbrite_export') }}">
+<form method="post" action="{{ url_for('exports.run_sellbrite_csv_export') }}">
   <button type="submit" class="btn-black">Export to CSV</button>
 </form>
 {% if not artworks %}

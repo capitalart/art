@@ -48,38 +48,17 @@ load_dotenv()
 
 # Etsy accepted colour values
 ALLOWED_COLOURS = [
-    "Beige",
-    "Black",
-    "Blue",
-    "Bronze",
-    "Brown",
-    "Clear",
-    "Copper",
-    "Gold",
-    "Grey",
-    "Green",
-    "Orange",
-    "Pink",
-    "Purple",
-    "Rainbow",
-    "Red",
-    "Rose gold",
-    "Silver",
-    "White",
-    "Yellow",
+    "Beige", "Black", "Blue", "Bronze", "Brown", "Clear", "Copper", "Gold",
+    "Grey", "Green", "Orange", "Pink", "Purple", "Rainbow", "Red",
+    "Rose gold", "Silver", "White", "Yellow",
 ]
 
 ALLOWED_COLOURS_LOWER = {c.lower(): c for c in ALLOWED_COLOURS}
 
 Image.MAX_IMAGE_PIXELS = None
 for directory in [
-    UNANALYSED_ROOT,
-    MOCKUPS_INPUT_DIR,
-    PROCESSED_ROOT,
-    SELECTIONS_DIR,
-    COMPOSITES_DIR,
-    FINALISED_ROOT,
-    LOGS_DIR,
+    UNANALYSED_ROOT, MOCKUPS_INPUT_DIR, PROCESSED_ROOT, SELECTIONS_DIR,
+    COMPOSITES_DIR, FINALISED_ROOT, LOGS_DIR,
 ]:
     directory.mkdir(parents=True, exist_ok=True)
 
@@ -89,23 +68,19 @@ for directory in [
 
 def load_json_file_safe(path: Path) -> dict:
     """Return JSON from ``path`` handling any errors gracefully."""
-
     logger = logging.getLogger(__name__)
     path = Path(path)
-
     try:
         if not path.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text("{}")
             logger.warning("Missing %s - created new empty file", path)
             return {}
-
         text = path.read_text(encoding="utf-8").strip()
         if not text:
             path.write_text("{}")
             logger.warning("Empty JSON file %s - reset to {}", path)
             return {}
-
         try:
             return json.loads(text)
         except json.JSONDecodeError as exc:
@@ -121,24 +96,15 @@ def load_json_file_safe(path: Path) -> dict:
 # ==============================
 
 def get_mockup_categories(aspect_folder: Path | str) -> List[str]:
-    """Return sorted list of category folder names under ``aspect_folder``.
-
-    Hidden folders and files are ignored.
-    """
+    """Return sorted list of category folder names under ``aspect_folder``."""
     folder = Path(aspect_folder)
     if not folder.exists():
         return []
-    return sorted(
-        f.name
-        for f in folder.iterdir()
-        if f.is_dir() and not f.name.startswith(".")
-    )
-
+    return sorted(f.name for f in folder.iterdir() if f.is_dir() and not f.name.startswith("."))
 
 def get_categories() -> List[str]:
     """Return sorted list of mockup categories from the root directory."""
     return get_mockup_categories(MOCKUPS_INPUT_DIR)
-
 
 def random_image(category: str) -> Optional[str]:
     """Return a random image filename for the given category."""
@@ -146,35 +112,29 @@ def random_image(category: str) -> Optional[str]:
     images = [f.name for f in cat_dir.glob("*.png")]
     return random.choice(images) if images else None
 
-
 def init_slots() -> None:
     """Initialise mockup slot selections in the session."""
     cats = get_categories()
     session["slots"] = [{"category": c, "image": random_image(c)} for c in cats]
-
 
 def compute_options(slots) -> List[List[str]]:
     """Return category options for each slot."""
     cats = get_categories()
     return [cats for _ in slots]
 
-
 def relative_to_base(path: Path | str) -> str:
     """Return a path string relative to the project root."""
     return str(Path(path).resolve().relative_to(BASE_DIR))
 
-
 def resize_image_for_long_edge(image: Image.Image, target_long_edge: int = 2000) -> Image.Image:
     """Resize image maintaining aspect ratio."""
     width, height = image.size
-    if width > height:
-        new_width = target_long_edge
-        new_height = int(height * (target_long_edge / width))
-    else:
-        new_height = target_long_edge
-        new_width = int(width * (target_long_edge / height))
-    return image.resize((new_width, new_height), Image.LANCZOS)
-
+    scale = target_long_edge / max(width, height)
+    if scale < 1.0:
+        new_width = int(width * scale)
+        new_height = int(height * scale)
+        return image.resize((new_width, new_height), Image.LANCZOS)
+    return image.copy()
 
 def apply_perspective_transform(art_img: Image.Image, mockup_img: Image.Image, dst_coords: list) -> Image.Image:
     """Overlay artwork onto mockup using perspective transform."""
@@ -186,43 +146,36 @@ def apply_perspective_transform(art_img: Image.Image, mockup_img: Image.Image, d
     warped = cv2.warpPerspective(art_np, matrix, (mockup_img.width, mockup_img.height))
     mask = np.any(warped > 0, axis=-1).astype(np.uint8) * 255
     mask = Image.fromarray(mask).convert("L")
-    composite = Image.composite(Image.fromarray(warped), mockup_img, mask)
+    composite = Image.composite(Image.fromarray(warped), mockup_img.convert("RGBA"), mask)
     return composite
-
 
 def latest_composite_folder() -> Optional[str]:
     """Return the most recent composite output folder name."""
     latest_time = 0
     latest_folder = None
     for folder in PROCESSED_ROOT.iterdir():
-        if not folder.is_dir():
-            continue
+        if not folder.is_dir(): continue
         images = list(folder.glob("*-mockup-*.jpg"))
-        if not images:
-            continue
+        if not images: continue
         recent = max(images, key=lambda p: p.stat().st_mtime)
         if recent.stat().st_mtime > latest_time:
             latest_time = recent.stat().st_mtime
             latest_folder = folder.name
     return latest_folder
 
-
 def latest_analyzed_artwork() -> Optional[Dict[str, str]]:
     """Return info about the most recently analysed artwork."""
     latest_time = 0
     latest_info = None
     for folder in PROCESSED_ROOT.iterdir():
-        if not folder.is_dir():
-            continue
+        if not folder.is_dir(): continue
         listing = folder / f"{folder.name}-listing.json"
-        if not listing.exists():
-            continue
+        if not listing.exists(): continue
         t = listing.stat().st_mtime
         if t > latest_time:
             latest_time = t
             try:
-                with open(listing, "r", encoding="utf-8") as f:
-                    data = json.load(f)
+                data = load_json_file_safe(listing)
                 latest_info = {
                     "aspect": data.get("aspect_ratio"),
                     "filename": data.get("filename"),
@@ -231,145 +184,50 @@ def latest_analyzed_artwork() -> Optional[Dict[str, str]]:
                 continue
     return latest_info
 
-
 def clean_display_text(text: str) -> str:
     """Collapse excess whitespace/newlines in description text."""
-    if not text:
-        return ""
+    if not text: return ""
     cleaned = text.strip()
-    cleaned = re.sub(r"\n{2,}", "\n\n", cleaned)
-    return cleaned
-
+    return re.sub(r"\n{2,}", "\n\n", cleaned)
 
 def build_full_listing_text(ai_desc: str, generic_text: str) -> str:
     """Combine AI description and generic text into one string."""
     parts = [clean_display_text(ai_desc), clean_display_text(generic_text)]
-    combined = "\n\n".join([p for p in parts if p])
-    return clean_display_text(combined)
-
+    return clean_display_text("\n\n".join([p for p in parts if p]))
 
 def slugify(text: str) -> str:
     """Return a slug suitable for filenames."""
-    text = re.sub(r"[^\w\- ]+", "", text)
-    text = text.strip().replace(" ", "-")
+    text = re.sub(r"[^\w\- ]+", "", text).strip().replace(" ", "-")
     return re.sub("-+", "-", text).lower()
-
 
 def prettify_slug(slug: str) -> str:
     """Return a human friendly title from a slug or filename."""
-    name = os.path.splitext(slug)[0]
-    name = name.replace("-", " ").replace("_", " ")
-    name = re.sub(r"\s+", " ", name)
-    return name.title()
+    name = os.path.splitext(slug)[0].replace("-", " ").replace("_", " ")
+    return re.sub(r"\s+", " ", name).title()
 
-
-def list_processed_artworks() -> Tuple[List[Dict], set]:
-    """Collect processed artworks and set of original filenames."""
+def get_all_artworks() -> List[Dict]:
+    """
+    Scans all artwork locations (processed, finalised, vault) and returns a single,
+    unified list of artwork dictionaries, each with a 'status' field.
+    """
     items: List[Dict] = []
-    processed_names: set = set()
-    for folder in PROCESSED_ROOT.iterdir():
-        if not folder.is_dir():
-            continue
-        listing_path = folder / f"{folder.name}-listing.json"
-        if not listing_path.exists():
-            continue
-        try:
-            with open(listing_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except Exception:
-            continue
-        original_name = data.get("filename")
-        if original_name:
-            processed_names.add(original_name)
-        items.append(
-            {
-                "seo_folder": folder.name,
-                "filename": original_name or f"{folder.name}.jpg",
-                "aspect": data.get("aspect_ratio", ""),
-                "title": data.get("title") or prettify_slug(folder.name),
-                "thumb": f"{folder.name}-THUMB.jpg",
-            }
-        )
-    items.sort(key=lambda x: x["title"].lower())
-    return items, processed_names
-
-
-def list_ready_to_analyze(_: set) -> List[Dict]:
-    """Return artworks uploaded but not yet analyzed."""
-    ready: List[Dict] = []
-    for qc_path in UNANALYSED_ROOT.glob("**/*.qc.json"):
-        base = qc_path.name[:-8]  # remove .qc.json
-        try:
-            with open(qc_path, "r", encoding="utf-8") as f:
-                qc = json.load(f)
-        except Exception:
-            continue
-        ext = qc.get("extension", "jpg")
-        aspect = qc.get("aspect_ratio", "")
-        title = prettify_slug(Path(qc.get("original_filename", base)).stem)
-        ready.append(
-            {
-                "aspect": aspect,
-                "filename": f"{base}.{ext}",
-                "title": title,
-                "thumb": f"{base}-thumb.jpg",
-                "base": base,
-            }
-        )
-    ready.sort(key=lambda x: x["title"].lower())
-    return ready
-
-
-def list_finalised_artworks() -> List[Dict]:
-    """Return artworks that have been finalised."""
-    items: List[Dict] = []
-    if FINALISED_ROOT.exists():
-        for folder in FINALISED_ROOT.iterdir():
-            if not folder.is_dir():
-                continue
-            listing_file = folder / f"{folder.name}-listing.json"
-            if not listing_file.exists():
-                continue
-            try:
-                with open(listing_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-            except Exception:
-                continue
-            items.append(
-                {
-                    "seo_folder": folder.name,
-                    "filename": data.get("filename", f"{folder.name}.jpg"),
-                    "aspect": data.get("aspect_ratio", ""),
-                    "title": data.get("title") or prettify_slug(folder.name),
-                    "thumb": f"{folder.name}-THUMB.jpg",
-                }
-            )
-    items.sort(key=lambda x: x["title"].lower())
-    return items
-
-
-def list_finalised_artworks_extended() -> List[Dict]:
-    """Return detailed info for finalised artworks including locked state."""
-    items: List[Dict] = []
-    for base in (FINALISED_ROOT, ARTWORK_VAULT_ROOT):
-        if not base.exists():
-            continue
-        for folder in base.iterdir():
-            if not folder.is_dir():
-                continue
-            slug = folder.name.removeprefix("LOCKED-")
+    
+    def process_directory(directory: Path, status: str):
+        if not directory.exists(): return
+        for folder in directory.iterdir():
+            if not folder.is_dir(): continue
+            
+            slug = folder.name.replace("LOCKED-", "")
             listing_file = folder / f"{slug}-listing.json"
-            if not listing_file.exists():
-                continue
+            if not listing_file.exists(): continue
+
             try:
-                with open(listing_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-            except Exception:
-                continue
-            main_img = folder / f"{slug}.jpg"
-            thumb_img = folder / f"{slug}-THUMB.jpg"
-            items.append(
-                {
+                data = load_json_file_safe(listing_file)
+                main_img = folder / f"{slug}.jpg"
+                thumb_img = folder / f"{slug}-THUMB.jpg"
+                
+                item = {
+                    "status": status,
                     "seo_folder": folder.name,
                     "title": data.get("title") or prettify_slug(slug),
                     "description": data.get("description", ""),
@@ -384,55 +242,85 @@ def list_finalised_artworks_extended() -> List[Dict]:
                     "filename": data.get("filename", f"{slug}.jpg"),
                     "locked": data.get("locked", False),
                     "main_image": main_img.name if main_img.exists() else None,
-                    "thumb": thumb_img.name if thumb_img.exists() else None,
-                    "images": [
-                        str(p)
-                        for p in data.get("images", [])
-                        if (BASE_DIR / p).exists()
-                    ],
+                    "thumb": thumb_img.name if thumb_img.exists() else f"{slug}-THUMB.jpg",
+                    "images": [str(p) for p in data.get("images", []) if (BASE_DIR / p).exists()],
+                    "mockups": [],
                 }
-            )
+                
+                for mp in data.get("mockups", []):
+                    if isinstance(mp, dict):
+                        out = folder / mp.get("composite", "")
+                    else:
+                        p = Path(mp)
+                        out = folder / f"{slug}-{p.stem}.jpg"
+                    if out.exists():
+                        item["mockups"].append({"filename": out.name})
+                items.append(item)
+            except Exception as e:
+                logging.error(f"Failed to process listing in {folder.name}: {e}")
+                continue
+
+    process_directory(PROCESSED_ROOT, "processed")
+    process_directory(FINALISED_ROOT, "finalised")
+    process_directory(ARTWORK_VAULT_ROOT, "locked")
+    
     items.sort(key=lambda x: x["title"].lower())
     return items
 
+def list_ready_to_analyze(processed_filenames: set) -> List[Dict]:
+    """Return artworks uploaded but not yet analyzed."""
+    ready: List[Dict] = []
+    for qc_path in UNANALYSED_ROOT.glob("**/*.qc.json"):
+        base = qc_path.name.replace(".qc.json", "")
+        try:
+            qc_data = load_json_file_safe(qc_path)
+            original_filename = qc_data.get("original_filename")
+            if original_filename and original_filename in processed_filenames:
+                continue
+            
+            ext = qc_data.get("extension", "jpg")
+            title = prettify_slug(Path(original_filename or base).stem)
+            
+            ready.append({
+                "aspect": qc_data.get("aspect_ratio", ""),
+                "filename": f"{base}.{ext}",
+                "title": title,
+                "thumb": f"{base}-thumb.jpg",
+                "base": base,
+            })
+        except Exception as e:
+            logging.error(f"Error processing QC file {qc_path}: {e}")
+            continue
+            
+    ready.sort(key=lambda x: x["title"].lower())
+    return ready
 
 def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
-    """Return the best matching SEO folder for ``filename``.
-
-    This searches both processed and finalised outputs and compares the given
-    base name against multiple permutations found in each listing file. If
-    multiple folders match, the most recently modified one is returned.
-    """
-
-    basename = Path(filename).stem.lower()
+    """Return the best matching SEO folder for ``filename``."""
+    basename = Path(filename).stem.lower().replace('-thumb', '').replace('-analyse', '')
     slug_base = slugify(basename)
     candidates: list[tuple[float, str]] = []
 
     for base in (PROCESSED_ROOT, FINALISED_ROOT, ARTWORK_VAULT_ROOT):
         for folder in base.iterdir():
-            if not folder.is_dir():
-                continue
-            slug = folder.name.removeprefix("LOCKED-")
+            if not folder.is_dir(): continue
+            
+            slug = folder.name.replace("LOCKED-", "")
             listing_file = folder / FILENAME_TEMPLATES["listing_json"].format(seo_slug=slug)
-            if not listing_file.exists():
-                continue
+            if not listing_file.exists(): continue
+                
             try:
-                with open(listing_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
+                data = load_json_file_safe(listing_file)
             except Exception:
                 continue
 
-            stems = {
+            stems_to_check = {
                 Path(data.get("filename", "")).stem.lower(),
                 Path(data.get("seo_filename", "")).stem.lower(),
                 slug.lower(),
-                folder.name.lower(),
-                slugify(Path(data.get("filename", "")).stem),
-                slugify(Path(data.get("seo_filename", "")).stem),
-                slugify(slug),
             }
 
-            if basename in stems or slug_base in stems:
+            if basename in stems_to_check or slug_base in stems_to_check:
                 candidates.append((listing_file.stat().st_mtime, slug))
 
     if not candidates:
@@ -443,44 +331,40 @@ def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
 
 def regenerate_one_mockup(seo_folder: str, slot_idx: int) -> bool:
     """Regenerate a single mockup in-place."""
-    folder = PROCESSED_ROOT / seo_folder
-    listing_file = folder / f"{seo_folder}-listing.json"
-    if not listing_file.exists():
-        folder = FINALISED_ROOT / seo_folder
-        listing_file = folder / f"{seo_folder}-listing.json"
-        if not listing_file.exists():
-            return False
-    with open(listing_file, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    try:
+        _, folder, listing_file, _ = resolve_listing_paths("", seo_folder)
+    except FileNotFoundError:
+        return False
+
+    data = load_json_file_safe(listing_file)
     mockups = data.get("mockups", [])
-    if slot_idx < 0 or slot_idx >= len(mockups):
-        return False
+    if not (0 <= slot_idx < len(mockups)): return False
+    
     entry = mockups[slot_idx]
-    if isinstance(entry, dict):
-        category = entry.get("category")
-    else:
-        category = Path(entry).parent.name
+    category = entry.get("category") if isinstance(entry, dict) else Path(entry).parent.name
     aspect = data.get("aspect_ratio")
-    mockup_root = MOCKUPS_INPUT_DIR / f"{aspect}-categorised"
+    mockup_root = MOCKUPS_CATEGORISED_DIR / aspect
     mockup_files = list((mockup_root / category).glob("*.png"))
-    if not mockup_files:
-        return False
+    if not mockup_files: return False
+
     new_mockup = random.choice(mockup_files)
-    coords_path = COORDS_DIR / aspect / f"{new_mockup.stem}.json"
-    art_path = folder / f"{seo_folder}.jpg"
-    output_path = folder / f"{seo_folder}-{new_mockup.stem}.jpg"
+    coords_path = COORDS_DIR / aspect / category / f"{new_mockup.stem}.json"
+    slug = seo_folder.replace("LOCKED-", "")
+    art_path = folder / f"{slug}.jpg"
+    output_path = folder / f"{slug}-{new_mockup.stem}.jpg"
+
     try:
         with open(coords_path, "r", encoding="utf-8") as cf:
             c = json.load(cf)["corners"]
         dst = [[c[0]["x"], c[0]["y"]], [c[1]["x"], c[1]["y"]], [c[3]["x"], c[3]["y"]], [c[2]["x"], c[2]["y"]]]
-        art_img = Image.open(art_path).convert("RGBA")
-        art_img = resize_image_for_long_edge(art_img)
-        mock_img = Image.open(new_mockup).convert("RGBA")
-        composite = apply_perspective_transform(art_img, mock_img, dst)
+        with Image.open(art_path) as art_img, Image.open(new_mockup) as mock_img:
+            art_img = resize_image_for_long_edge(art_img.convert("RGBA"))
+            composite = apply_perspective_transform(art_img, mock_img.convert("RGBA"), dst)
         composite.convert("RGB").save(output_path, "JPEG", quality=85)
+
         data.setdefault("mockups", [])[slot_idx] = {
             "category": category,
-            "source": f"{category}/{new_mockup.name}",
+            "source": str(new_mockup.relative_to(MOCKUPS_INPUT_DIR)),
             "composite": output_path.name,
         }
         with open(listing_file, "w", encoding="utf-8") as f:
@@ -493,25 +377,23 @@ def regenerate_one_mockup(seo_folder: str, slot_idx: int) -> bool:
 
 def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_mockup_src: str | None = None) -> tuple[bool, str, str]:
     """Swap a mockup to a new category and regenerate."""
-    folder = config.PROCESSED_ROOT / seo_folder
-    listing_file = folder / f"{seo_folder}-listing.json"
-    if not listing_file.exists():
-        folder = config.FINALISED_ROOT / seo_folder
-        listing_file = folder / f"{seo_folder}-listing.json"
-        if not listing_file.exists(): return False, "", ""
+    try:
+        _, folder, listing_file, _ = resolve_listing_paths("", seo_folder)
+    except FileNotFoundError:
+        return False, "", ""
             
     with open(listing_file, "r", encoding="utf-8") as f: data = json.load(f)
     mockups = data.get("mockups", [])
     if not (0 <= slot_idx < len(mockups)): return False, "", ""
 
     aspect = data.get("aspect_ratio")
-    mockup_root = config.MOCKUPS_CATEGORISED_DIR / aspect / new_category
+    mockup_root = MOCKUPS_CATEGORISED_DIR / aspect / new_category
     mockup_files = list(mockup_root.glob("*.png"))
     
     current_mockup_name = None
     if isinstance(mockups[slot_idx], dict):
         composite_name = mockups[slot_idx].get("composite", "")
-        match = re.search(r'-(mockup-\d+)(?:-\d+)?\.jpg$', composite_name)
+        match = re.search(r'-([^-]+-\d+)(?:-\d+)?\.jpg$', composite_name)
         if match: current_mockup_name = f"{match.group(1)}.png"
     
     choices = [f for f in mockup_files if f.name != current_mockup_name]
@@ -521,10 +403,11 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_m
     
     timestamp = int(time.time())
     
-    coords_path = config.COORDS_DIR / aspect / new_category / f"{new_mockup.stem}.json"
-    art_path = folder / f"{seo_folder}.jpg"
+    coords_path = COORDS_DIR / aspect / new_category / f"{new_mockup.stem}.json"
+    slug = seo_folder.replace("LOCKED-", "")
+    art_path = folder / f"{slug}.jpg"
     
-    output_filename = f"{seo_folder}-{new_mockup.stem}-{timestamp}.jpg"
+    output_filename = f"{slug}-{new_mockup.stem}-{timestamp}.jpg"
     output_path = folder / output_filename
 
     try:
@@ -541,7 +424,7 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_m
         composite.convert("RGB").save(output_path, "JPEG", quality=85)
 
         thumb_dir = folder / "THUMBS"; thumb_dir.mkdir(parents=True, exist_ok=True)
-        thumb_name = f"{seo_folder}-{new_mockup.stem}-thumb-{timestamp}.jpg"
+        thumb_name = f"{slug}-{new_mockup.stem}-thumb-{timestamp}.jpg"
         thumb_path = thumb_dir / thumb_name
         with composite.copy() as thumb_img:
             thumb_img.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
@@ -549,7 +432,7 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_m
             
         data.setdefault("mockups", [])[slot_idx] = {
             "category": new_category,
-            "source": f"{new_category}/{new_mockup.name}",
+            "source": str(new_mockup.relative_to(MOCKUPS_INPUT_DIR)),
             "composite": output_path.name,
             "thumbnail": thumb_name,
         }
@@ -559,27 +442,15 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_m
         logging.getLogger(__name__).error(f"Swap error: {e}")
         return False, "", ""
 
-
-def _listing_json_path(seo_folder: str) -> Path:
-    """Return the listing JSON path for a SEO folder if it exists."""
-    for base in (PROCESSED_ROOT, FINALISED_ROOT, ARTWORK_VAULT_ROOT):
-        path = base / seo_folder / f"{seo_folder}-listing.json"
-        if path.exists():
-            return path
-    raise FileNotFoundError(f"Listing file for {seo_folder} not found")
-
-
 def get_mockups(seo_folder: str) -> list:
     """Return mockup entries from the listing JSON."""
     try:
-        listing = _listing_json_path(seo_folder)
-        with open(listing, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        _, _, listing_file, _ = resolve_listing_paths("", seo_folder)
+        data = load_json_file_safe(listing_file)
         return data.get("mockups", [])
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logging.error("Failed reading mockups for %s: %s", seo_folder, exc)
         return []
-
 
 def create_default_mockups(seo_folder: str) -> None:
     """Create a fallback mockup image and update the listing."""
@@ -588,14 +459,13 @@ def create_default_mockups(seo_folder: str) -> None:
     default_src = config.STATIC_DIR / "img" / "default-mockup.jpg"
     target = dest / FILENAME_TEMPLATES["mockup"].format(seo_slug=seo_folder, num=1)
     shutil.copy(default_src, target)
-    listing = _listing_json_path(seo_folder)
+    _, _, listing, _ = resolve_listing_paths("", seo_folder)
     data = load_json_file_safe(listing)
     data.setdefault("mockups", []).append(
         {"category": "default", "source": "default", "composite": target.name}
     )
     with open(listing, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-
 
 def generate_mockups_for_listing(seo_folder: str) -> bool:
     """Ensure mockups exist for the listing, creating defaults if needed."""
@@ -604,15 +474,13 @@ def generate_mockups_for_listing(seo_folder: str) -> bool:
             create_default_mockups(seo_folder)
             logging.info("Default mockups created for %s", seo_folder)
         return True
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logging.error("Error generating mockups for %s: %s", seo_folder, exc)
         return False
-
 
 def get_menu() -> List[Dict[str, str | None]]:
     """Return navigation items for templates."""
     from flask import url_for
-
     menu = [
         {"name": "Home", "url": url_for("artwork.home")},
         {"name": "Artwork Gallery", "url": url_for("artwork.artworks")},
@@ -628,26 +496,20 @@ def get_menu() -> List[Dict[str, str | None]]:
         menu.append({"name": "Review Latest Listing", "url": None})
     return menu
 
-
 def get_allowed_colours() -> List[str]:
     """Return the list of allowed Etsy colour values."""
     return ALLOWED_COLOURS.copy()
-
 
 def infer_sku_from_filename(filename: str) -> Optional[str]:
     """Infer SKU from an SEO filename using 'RJC-XXXX' at the end."""
     m = re.search(r"RJC-([A-Za-z0-9-]+)(?:\.jpg)?$", filename or "")
     return f"RJC-{m.group(1)}" if m else None
 
-
 def sync_filename_with_sku(seo_filename: str, sku: str) -> str:
     """Return SEO filename updated so the SKU matches the given value."""
-    if not seo_filename:
-        return seo_filename
-    if not sku:
+    if not seo_filename or not sku:
         return seo_filename
     return re.sub(r"RJC-[A-Za-z0-9-]+(?=\.jpg$)", sku, seo_filename)
-
 
 def is_finalised_image(path: str | Path) -> bool:
     """Return True if the given path is within a finalised or locked folder."""
@@ -655,57 +517,37 @@ def is_finalised_image(path: str | Path) -> bool:
     try:
         p.relative_to(FINALISED_ROOT)
         return True
-    except Exception:
+    except ValueError:
         pass
     try:
         p.relative_to(ARTWORK_VAULT_ROOT)
         return True
-    except Exception:
+    except ValueError:
         return False
-
 
 def update_listing_paths(listing: Path, old_base: Path, new_base: Path) -> None:
     """Replace base path strings inside a listing JSON when folders move."""
-    if not listing.exists():
-        return
-    try:
-        with open(listing, "r", encoding="utf-8") as lf:
-            data = json.load(lf)
-    except Exception:
-        return
-
+    if not listing.exists(): return
+    data = load_json_file_safe(listing)
     old_rel = relative_to_base(old_base)
     new_rel = relative_to_base(new_base)
-
-    def _swap(p: str) -> str:
-        return p.replace(old_rel, new_rel)
-
+    def _swap(p: str) -> str: return p.replace(old_rel, new_rel)
     for key in ("main_jpg_path", "orig_jpg_path", "thumb_jpg_path", "processed_folder"):
-        if isinstance(data.get(key), str):
-            data[key] = _swap(data[key])
-
+        if isinstance(data.get(key), str): data[key] = _swap(data[key])
     if isinstance(data.get("images"), list):
         data["images"] = [_swap(img) if isinstance(img, str) else img for img in data["images"]]
-
     with open(listing, "w", encoding="utf-8") as lf:
         json.dump(data, lf, indent=2, ensure_ascii=False)
 
-
 def parse_csv_list(text: str) -> List[str]:
     """Parse a comma-separated string into a list of trimmed values."""
-    import csv
-
-    if not text:
-        return []
+    if not text: return []
     reader = csv.reader([text], skipinitialspace=True)
-    row = next(reader, [])
-    return [item.strip() for item in row if item.strip()]
-
+    return [item.strip() for item in next(reader, []) if item.strip()]
 
 def join_csv_list(items: List[str]) -> str:
     """Join a list of strings into a comma-separated string for display."""
     return ", ".join(item.strip() for item in items if item.strip())
-
 
 def read_generic_text(aspect: str) -> str:
     """Return the generic text block for the given aspect ratio."""
@@ -716,178 +558,93 @@ def read_generic_text(aspect: str) -> str:
         logging.warning("Generic text for %s not found", aspect)
         return ""
 
-
 def clean_terms(items: List[str]) -> Tuple[List[str], List[str]]:
     """Clean list entries by stripping invalid characters and hyphens."""
     cleaned: List[str] = []
     changed = False
     for item in items:
-        new = re.sub(r"[^A-Za-z0-9 ,]", "", item)
-        new = new.replace("-", "")
+        new = re.sub(r"[^A-Za-z0-9 ,]", "", item).replace("-", "")
         new = re.sub(r"\s+", " ", new).strip()
         cleaned.append(new)
-        if new != item.strip():
-            changed = True
+        if new != item.strip(): changed = True
     return cleaned, cleaned if changed else []
 
-
 def resolve_listing_paths(aspect: str, filename: str) -> Tuple[str, Path, Path, bool]:
-    """Return the folder and listing path for an artwork.
-
-    Searches both processed and finalised directories using
-    :func:`find_seo_folder_from_filename` and returns a tuple of
-    ``(seo_folder, folder_path, listing_path, finalised)``.
-    Raises ``FileNotFoundError`` if nothing matches.
-    """
-
+    """Return the folder and listing path for an artwork."""
     seo_folder = find_seo_folder_from_filename(aspect, filename)
+    
     processed_dir = PROCESSED_ROOT / seo_folder
+    if (processed_dir / f"{seo_folder}-listing.json").exists():
+        return seo_folder, processed_dir, (processed_dir / f"{seo_folder}-listing.json"), False
+
     final_dir = FINALISED_ROOT / seo_folder
+    if (final_dir / f"{seo_folder}-listing.json").exists():
+        return seo_folder, final_dir, (final_dir / f"{seo_folder}-listing.json"), True
+
+    # Note: seo_folder for locked items is the base name, the dir is LOCKED-<base_name>
     locked_dir = ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}"
+    if (locked_dir / f"{seo_folder}-listing.json").exists():
+        return seo_folder, locked_dir, (locked_dir / f"{seo_folder}-listing.json"), True
 
-    listing = processed_dir / f"{seo_folder}-listing.json"
-    if listing.exists():
-        return seo_folder, processed_dir, listing, False
-
-    listing = final_dir / f"{seo_folder}-listing.json"
-    if listing.exists():
-        return seo_folder, final_dir, listing, True
-
-    listing = locked_dir / f"{seo_folder}-listing.json"
-    if listing.exists():
-        return seo_folder, locked_dir, listing, True
-
-    raise FileNotFoundError(f"Listing file for {filename} not found")
-
+    raise FileNotFoundError(f"Listing file for {filename} not found in any location.")
 
 def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str, str]]:
-    """Return the aspect ratio and main filename for a given SEO folder.
+    """Return the aspect ratio and main filename for a given SEO folder."""
+    is_locked = seo_folder.startswith("LOCKED-")
+    base_slug = seo_folder.replace("LOCKED-", "")
+    
+    if is_locked:
+        folder = ARTWORK_VAULT_ROOT / seo_folder
+    else:
+        folder = FINALISED_ROOT / seo_folder
+        if not folder.exists():
+            folder = PROCESSED_ROOT / seo_folder
+    
+    if not folder.exists(): return None
 
-    The lookup checks both processed and finalised folders. Information is
-    primarily loaded from the listing JSON, but if fields are missing the
-    filename is inferred from disk contents. Filenames are normalised to use a
-    ``.jpg`` extension and to match the actual casing on disk when possible.
-    """
-
-    for base in (PROCESSED_ROOT, FINALISED_ROOT, ARTWORK_VAULT_ROOT):
-        folder = base / seo_folder
-        listing = folder / f"{seo_folder}-listing.json"
-        aspect = ""
-        filename = ""
-
-        if listing.exists():
-            try:
-                with open(listing, "r", encoding="utf-8") as lf:
-                    data = json.load(lf)
-                aspect = data.get("aspect_ratio") or data.get("aspect") or ""
-                filename = (
-                    data.get("seo_filename")
-                    or data.get("filename")
-                    or data.get("seo_name")
-                    or ""
-                )
-                if not filename:
-                    for key in ("main_jpg_path", "orig_jpg_path", "thumb_jpg_path"):
-                        val = data.get(key)
-                        if val:
-                            filename = Path(val).name
-                            break
-            except Exception as e:  # noqa: BLE001
-                logging.error("Failed reading listing for %s: %s", seo_folder, e)
-
-        if folder.exists() and not filename:
-            # Look for an image whose stem matches the folder name
-            for p in folder.iterdir():
-                if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == seo_folder.lower():
-                    filename = p.name
-                    break
-
-        if filename:
-            if not filename.lower().endswith(".jpg"):
-                filename = f"{Path(filename).stem}.jpg"
-            # Normalise casing to match actual disk file
-            disk_file = folder / filename
-            if not disk_file.exists():
-                stem = Path(filename).stem.lower()
-                for p in folder.iterdir():
-                    if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == stem:
-                        filename = p.name
-                        break
-            return aspect, filename
-
+    listing = folder / f"{base_slug}-listing.json"
+    if not listing.exists(): return None
+    
+    data = load_json_file_safe(listing)
+    aspect = data.get("aspect_ratio", "")
+    filename = data.get("seo_filename") or data.get("filename")
+    
+    if filename: return aspect, filename
     return None
 
-
-def assign_or_get_sku(
-    listing_json_path: Path, tracker_path: Path, *, force: bool = False
-) -> str:
-    """Return existing SKU or assign the next sequential one.
-
-    Parameters
-    ----------
-    listing_json_path:
-        Path to the ``*-listing.json`` file.
-    tracker_path:
-        Path to ``sku_tracker.json`` storing ``last_sku``.
-    force:
-        If ``True`` always allocate a new SKU even if one exists.
-    """
-    listing_json_path = Path(listing_json_path)
-    tracker_path = Path(tracker_path)
-
-    logger = logging.getLogger(__name__)
-
-    if not listing_json_path.exists():
-        raise FileNotFoundError(listing_json_path)
-
-    try:
-        with open(listing_json_path, "r", encoding="utf-8") as lf:
-            data = json.load(lf)
-    except Exception as exc:  # pragma: no cover - unexpected IO
-        logger.error("Failed reading %s: %s", listing_json_path, exc)
-        raise
-
+def assign_or_get_sku(listing_json_path: Path, tracker_path: Path, *, force: bool = False) -> str:
+    """Return existing SKU or assign the next sequential one."""
+    data = load_json_file_safe(listing_json_path)
     existing = str(data.get("sku") or "").strip()
     seo_field = str(data.get("seo_filename") or "").strip()
     if existing and not force:
         new_seo = sync_filename_with_sku(seo_field, existing)
         if new_seo != seo_field:
             data["seo_filename"] = new_seo
-            try:
-                with open(listing_json_path, "w", encoding="utf-8") as lf:
-                    json.dump(data, lf, indent=2, ensure_ascii=False)
-            except Exception as exc:  # pragma: no cover - unexpected IO
-                logger.error("Failed writing SEO filename to %s: %s", listing_json_path, exc)
-                raise
+            with open(listing_json_path, "w", encoding="utf-8") as lf:
+                json.dump(data, lf, indent=2, ensure_ascii=False)
         return existing
-
-    # Allocate the next SKU using the central assigner
+    
     sku = get_next_sku(tracker_path)
     data["sku"] = sku
     if seo_field:
         data["seo_filename"] = sync_filename_with_sku(seo_field, sku)
-    try:
-        with open(listing_json_path, "w", encoding="utf-8") as lf:
-            json.dump(data, lf, indent=2, ensure_ascii=False)
-    except Exception as exc:  # pragma: no cover - unexpected IO
-        logger.error("Failed writing SKU %s to %s: %s", sku, listing_json_path, exc)
-        raise
-
-    logger.info("Assigned SKU %s to %s", sku, listing_json_path.name)
+    with open(listing_json_path, "w", encoding="utf-8") as lf:
+        json.dump(data, lf, indent=2, ensure_ascii=False)
+    
+    logging.info("Assigned SKU %s to %s", sku, listing_json_path.name)
     return sku
-
 
 def assign_sequential_sku(listing_json_path: Path, tracker_path: Path) -> str:
     """Backward compatible wrapper for ``assign_or_get_sku``."""
     return assign_or_get_sku(listing_json_path, tracker_path)
 
-
 def validate_all_skus(listings: Iterable[Dict], tracker_path: Path) -> list[str]:
     """Return a list of SKU validation errors for the given listings."""
     tracker_last = 0
     try:
-        with open(tracker_path, "r", encoding="utf-8") as tf:
-            tracker_last = int(json.load(tf).get("last_sku", 0))
+        data = load_json_file_safe(tracker_path)
+        tracker_last = int(data.get("last_sku", 0))
     except Exception:
         pass
 
@@ -899,7 +656,7 @@ def validate_all_skus(listings: Iterable[Dict], tracker_path: Path) -> list[str]
         sku = str(data.get("sku") or "")
         m = re.fullmatch(r"RJC-(\d{4})", sku)
         if not m:
-            errors.append(f"Listing {idx}: invalid or missing SKU")
+            errors.append(f"Listing {idx}: invalid or missing SKU for {data.get('title', 'N/A')}")
             continue
         num = int(m.group(1))
         if num in seen:
@@ -909,57 +666,28 @@ def validate_all_skus(listings: Iterable[Dict], tracker_path: Path) -> list[str]
 
     if nums:
         nums.sort()
-        for a, b in zip(nums, nums[1:]):
-            if b != a + 1:
-                errors.append(f"Gap or out-of-sequence SKU between {a:04d} and {b:04d}")
-                break
         if nums[-1] > tracker_last:
-            errors.append("Tracker last_sku behind recorded SKUs")
-
+            errors.append(f"Tracker last_sku ({tracker_last}) is behind the largest recorded SKU ({nums[-1]})")
     return errors
 
-
-# ---------------------------------------------------------------------------
-# Artwork Registry & File Move Helpers
-# ---------------------------------------------------------------------------
+# --- Artwork Registry & File Move Helpers ---
 
 REGISTRY_PATH = OUTPUT_JSON
 
-
 def _load_registry() -> dict:
-    """Return registry JSON as a dictionary, resetting invalid data."""
-
-    if not REGISTRY_PATH.exists():
-        REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
-        REGISTRY_PATH.write_text("{}")
-
-    try:
-        with open(REGISTRY_PATH, "r", encoding="utf-8") as rf:
-            data = json.load(rf)
-    except Exception:  # pragma: no cover - unexpected IO
-        return {}
-
-    # Historical versions stored a list which breaks ``dict`` usage.
-    if not isinstance(data, dict):
-        logging.getLogger(__name__).warning(
-            "Registry file not a dict, resetting: %s", REGISTRY_PATH
-        )
-        return {}
-
-    return data
-
+    """Return registry JSON as a dictionary."""
+    return load_json_file_safe(REGISTRY_PATH)
 
 def _save_registry(reg: dict) -> None:
     """Write the registry ``reg`` to disk atomically."""
-
     REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = REGISTRY_PATH.with_suffix(".tmp")
     with open(tmp, "w", encoding="utf-8") as tf:
         json.dump(reg, tf, indent=2, ensure_ascii=False)
     os.replace(tmp, REGISTRY_PATH)
 
-
 def create_unanalysed_subfolder() -> Path:
+    """Create a new, uniquely named subfolder for uploads."""
     UNANALYSED_ROOT.mkdir(parents=True, exist_ok=True)
     existing = [p for p in UNANALYSED_ROOT.iterdir() if p.is_dir() and p.name.startswith("unanalysed-")]
     nums = [int(p.name.split("-")[-1]) for p in existing if p.name.split("-")[-1].isdigit()]
@@ -968,23 +696,15 @@ def create_unanalysed_subfolder() -> Path:
     folder.mkdir(parents=True, exist_ok=True)
     return folder
 
-
 def cleanup_unanalysed_folders() -> None:
-    """Delete any empty ``unanalysed-*`` folders under :data:`UNANALYSED_ROOT`."""
-
+    """Delete any empty ``unanalysed-*`` folders."""
     root = UNANALYSED_ROOT.resolve()
     for folder in root.glob("unanalysed-*"):
-        if not folder.is_dir():
-            continue
-        try:
-            folder_resolved = folder.resolve()
-            if folder_resolved.is_relative_to(root) and not any(folder_resolved.iterdir()):
-                shutil.rmtree(folder_resolved, ignore_errors=True)
-        except Exception as exc:  # pragma: no cover - unexpected IO
-            logging.getLogger(__name__).error("Failed cleaning %s: %s", folder, exc)
-
+        if folder.is_dir() and not any(folder.iterdir()):
+            shutil.rmtree(folder, ignore_errors=True)
 
 def move_and_log(src: Path, dest: Path, uid: str, status: str) -> None:
+    """Move a file and update its record in the central registry."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(str(src), str(dest))
     reg = _load_registry()
@@ -1002,12 +722,11 @@ def move_and_log(src: Path, dest: Path, uid: str, status: str) -> None:
     reg[uid] = rec
     _save_registry(reg)
 
-
 def update_status(uid: str, folder: Path, status: str) -> None:
+    """Update the status of an artwork in the registry."""
     reg = _load_registry()
     rec = reg.get(uid)
-    if not rec:
-        return
+    if not rec: return
     rec.setdefault("history", []).append({
         "status": status,
         "folder": str(folder),
@@ -1018,8 +737,8 @@ def update_status(uid: str, folder: Path, status: str) -> None:
     reg[uid] = rec
     _save_registry(reg)
 
-
 def register_new_artwork(uid: str, seo_filename: str, folder: Path, asset_files: list[str], status: str, base: str | None = None) -> None:
+    """Add a new artwork record to the registry."""
     ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
     reg = _load_registry()
     reg[uid] = {
@@ -1033,16 +752,16 @@ def register_new_artwork(uid: str, seo_filename: str, folder: Path, asset_files:
     }
     _save_registry(reg)
 
-
 def get_record_by_base(base: str) -> tuple[str, dict] | tuple[None, None]:
+    """Find a registry record by its unique base name."""
     reg = _load_registry()
     for uid, rec in reg.items():
         if rec.get("base") == base:
             return uid, rec
     return None, None
 
-
 def get_record_by_seo_filename(seo_filename: str) -> tuple[str, dict] | tuple[None, None]:
+    """Find a registry record by its SEO filename."""
     reg = _load_registry()
     for uid, rec in reg.items():
         if rec.get("seo_filename") == seo_filename:
@@ -1050,25 +769,18 @@ def get_record_by_seo_filename(seo_filename: str) -> tuple[str, dict] | tuple[No
     return None, None
 
 def assemble_gdws_description(aspect_ratio: str) -> str:
-    """
-    Assembles a full description by randomly selecting one variation from each
-    paragraph type within the specified aspect ratio folder in the GDWS.
-    """
+    """Assembles a full description from the GDWS content."""
     logger = logging.getLogger(__name__)
     description_parts = []
     aspect_path = config.GDWS_CONTENT_DIR / aspect_ratio
-
     if not aspect_path.exists():
         logger.warning(f"GDWS content for aspect ratio '{aspect_ratio}' not found.")
         return ""
-
-    # Get all paragraph type folders (e.g., about_the_artist, printing_tips)
+    
     paragraph_folders = sorted([p for p in aspect_path.iterdir() if p.is_dir()])
-
     for folder_path in paragraph_folders:
         variations = list(folder_path.glob("*.json"))
         if variations:
-            # Pick one random variation file
             chosen_variation_path = random.choice(variations)
             try:
                 with open(chosen_variation_path, 'r', encoding='utf-8') as f:
@@ -1076,16 +788,14 @@ def assemble_gdws_description(aspect_ratio: str) -> str:
                     if data.get("content"):
                         description_parts.append(data["content"])
             except Exception as e:
-                logger.error(f"Failed to load or parse GDWS variation {chosen_variation_path}: {e}")
+                logger.error(f"Failed to load GDWS variation {chosen_variation_path}: {e}")
 
     logger.info(f"Assembled description from {len(description_parts)} GDWS paragraphs for '{aspect_ratio}'.")
     return "\n\n".join(description_parts)
 
 def remove_record_from_registry(uid: str) -> bool:
     """Safely remove a record from the master JSON registry by its UID."""
-    if not uid:
-        return False
-    
+    if not uid: return False
     reg = _load_registry()
     if uid in reg:
         del reg[uid]
