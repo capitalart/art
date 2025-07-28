@@ -21,15 +21,15 @@
 /* === [ 2. THEME & GLOBAL VARIABLES ] === */
 :root {
   --font-primary: 'Urbanist', sans-serif;
-  --color-background: #bbbbbb;
+  --color-background: #cccccc;
   --color-text: #111111;
-  --color-card-bg: #bbbbbb;
+  --color-card-bg: hsl(0, 0%, 81%);
   --color-header-border: #eeeeee;
-  --color-footer-bg: #bbbbbb;
+  --color-footer-bg: #cccccc;
   --color-footer-text: #111111;
   --color-footer-border: #dddddd;
-  --header-bg: #bbbbbb;
-  --table-row-bg: #bbbbbb;
+  --header-bg: #cccccc;
+  --table-row-bg: #cccccc;
   --table-row-alt-bg: #adadad;
   --dark-color-footer-bg: #181818;
   --dark-color-footer-text: #FFFFFF;
@@ -51,7 +51,7 @@
 .theme-dark {
   --color-background: var(--dark-color-background);
   --color-text: var(--dark-color-text);
-  --color-card-bg: #bbbbbb;
+  --color-card-bg: #cccccc;
   --card-border: var(--dark-card-border);
   --color-footer-bg: var(--dark-color-footer-bg);
   --color-footer-text: var(--dark-color-footer-text);
