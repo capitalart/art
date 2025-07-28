@@ -273,5 +273,65 @@
       }
     ],
     "upload_date": "2025-07-27T18:02:46.281387+00:00"
+  },
+  "c61871083bc842d184dd582e12539847": {
+    "seo_filename": "test-cf523381.jpg",
+    "base": "test-cf523381",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-17",
+    "assets": [
+      "test-cf523381.jpg",
+      "test-cf523381-thumb.jpg",
+      "test-cf523381-analyse.jpg",
+      "test-cf523381.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-17",
+        "timestamp": "2025-07-28T06:43:03.194397+00:00"
+      }
+    ],
+    "upload_date": "2025-07-28T06:43:03.194397+00:00"
+  },
+  "e5ddf466ea6447128d0c29720b87b355": {
+    "seo_filename": "good-3040489c.jpg",
+    "base": "good-3040489c",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-19",
+    "assets": [
+      "good-3040489c.jpg",
+      "good-3040489c-thumb.jpg",
+      "good-3040489c-analyse.jpg",
+      "good-3040489c.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-19",
+        "timestamp": "2025-07-28T06:43:03.241131+00:00"
+      }
+    ],
+    "upload_date": "2025-07-28T06:43:03.241131+00:00"
+  },
+  "fc7d02e88cd14fa19c2fb00726daa5eb": {
+    "seo_filename": "sample-7572075d.jpg",
+    "base": "sample-7572075d",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-20",
+    "assets": [
+      "sample-7572075d.jpg",
+      "sample-7572075d-thumb.jpg",
+      "sample-7572075d-analyse.jpg",
+      "sample-7572075d.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/unanalysed-20",
+        "timestamp": "2025-07-28T06:43:03.353685+00:00"
+      }
+    ],
+    "upload_date": "2025-07-28T06:43:03.353685+00:00"
   }
 }

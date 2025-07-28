@@ -465,3 +465,14 @@ chmod 644 templates/sellbrite_sync_preview.html
 chmod 644 templates/main.html
 source /home/art/venv/bin/activate
 sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+bash /home/art/project-toolkit.sh
+python3 generate_folder_tree.py
+./project-toolkit.sh
+pip install -r requirements.txt
+./project-toolkit.sh
+./code-stacker
+./code-stacker.sh
+./project-toolkit.sh
