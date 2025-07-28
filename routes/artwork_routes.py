@@ -41,7 +41,11 @@ from utils.sku_assigner import peek_next_sku
 from utils import ai_services
 from routes import sellbrite_service
 import config
-from helpers.path_utils import resolve_listing_paths
+from helpers.listing_utils import (
+    resolve_listing_paths,
+    create_unanalysed_subfolder,
+    cleanup_unanalysed_folders,
+)
 from config import (
     PROCESSED_ROOT, FINALISED_ROOT, UNANALYSED_ROOT, ARTWORK_VAULT_ROOT,
     BASE_DIR, ANALYSIS_STATUS_FILE, PROCESSED_URL_PATH, FINALISED_URL_PATH,
@@ -299,7 +303,7 @@ def upload_artwork():
     """Handle new artwork file uploads and run pre-QC checks."""
     if request.method == "POST":
         files = request.files.getlist("images")
-        folder = utils.create_unanalysed_subfolder()
+        folder = create_unanalysed_subfolder()
         results, successes = [], []
         user = session.get("username")
         for f in files:
@@ -488,7 +492,7 @@ def analyze_upload(base):
     except Exception as e:
         flash(f"Mockup generation failed: {e}", "danger")
         
-    utils.cleanup_unanalysed_folders()
+    cleanup_unanalysed_folders()
     _write_analysis_status("done", 100, orig_path.name, status="complete")
     return redirect(url_for("artwork.edit_listing", aspect=qc.get("aspect_ratio", ""), filename=f"{seo_folder}.jpg"))
 

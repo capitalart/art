@@ -22,9 +22,11 @@ def test_move_and_registry(tmp_path, monkeypatch):
     importlib.reload(config)
     from routes import utils
     importlib.reload(utils)
+    from helpers import listing_utils
+    importlib.reload(listing_utils)
 
     # 1. Create a dummy file and register it
-    folder = utils.create_unanalysed_subfolder()
+    folder = listing_utils.create_unanalysed_subfolder()
     dummy_file = folder / 'img.jpg'
     dummy_file.write_text('test content')
     uid = 'test_uid_123'
