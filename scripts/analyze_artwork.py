@@ -47,6 +47,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import config
 from utils.logger_utils import sanitize_blob_data, setup_logger
 from utils.sku_assigner import get_next_sku
+from helpers.listing_utils import assemble_gdws_description
 
 # ===========================================================================
 # 2. Configuration & Constants
@@ -322,8 +323,6 @@ def analyze_single(image_path: Path):
         primary_colour, secondary_colour = get_dominant_colours(Path(file_paths["main_jpg_path"]), 2)
 
         # Step 8: Build listing data object
-        # Lazy-load to avoid circular import
-        from routes.utils import assemble_gdws_description
         final_description = ai_listing.get("description") or assemble_gdws_description(aspect)
 
         listing_data = {

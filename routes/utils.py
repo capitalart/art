@@ -16,7 +16,6 @@ INDEX
 7.  Text & String Manipulation
 8.  SKU Management
 9.  Artwork Registry & File Management
-10. GDWS & Description Helpers
 """
 
 # ===========================================================================
@@ -26,7 +25,7 @@ from __future__ import annotations
 import time, os, json, random, re, logging, csv, shutil, datetime
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional, Iterable
-from helpers.path_utils import resolve_listing_paths
+from helpers.listing_utils import resolve_listing_paths
 
 from dotenv import load_dotenv
 from flask import session
@@ -677,34 +676,3 @@ def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
                     candidates.append((listing_file.stat().st_mtime, slug))
     if not candidates: raise FileNotFoundError(f"SEO folder not found for {filename}")
     return max(candidates, key=lambda x: x[0])[1]
-
-# ===========================================================================
-# 10. GDWS & Description Helpers
-# ===========================================================================
-
-def assemble_gdws_description(aspect_ratio: str) -> str:
-    """
-    Assembles a full description by randomly selecting one version of each
-    paragraph from the Guided Description Writing System (GDWS) content.
-    """
-    description_parts = []
-    aspect_path = config.GDWS_CONTENT_DIR / aspect_ratio
-    if not aspect_path.exists():
-        logger.warning(f"GDWS content directory for '{aspect_ratio}' not found.")
-        return ""
-    
-    paragraph_folders = sorted([p for p in aspect_path.iterdir() if p.is_dir()])
-    
-    for folder_path in paragraph_folders:
-        variations = list(folder_path.glob("*.json"))
-        if variations:
-            chosen_variation_path = random.choice(variations)
-            try:
-                data = json.loads(chosen_variation_path.read_text(encoding='utf-8'))
-                if data.get("content"):
-                    description_parts.append(data["content"])
-            except Exception as e:
-                logger.error(f"Failed to load GDWS variation {chosen_variation_path}: {e}")
-
-    logger.info(f"Assembled description from {len(description_parts)} GDWS paragraphs for '{aspect_ratio}'.")
-    return "\n\n".join(description_parts)
