@@ -41,6 +41,7 @@ from utils.sku_assigner import peek_next_sku
 from utils import ai_services
 from routes import sellbrite_service
 import config
+from helpers.path_utils import resolve_listing_paths
 from config import (
     PROCESSED_ROOT, FINALISED_ROOT, UNANALYSED_ROOT, ARTWORK_VAULT_ROOT,
     BASE_DIR, ANALYSIS_STATUS_FILE, PROCESSED_URL_PATH, FINALISED_URL_PATH,
@@ -524,7 +525,7 @@ def review_swap_mockup(seo_folder, slot_idx):
 def edit_listing(aspect, filename):
     """Display and update a processed or finalised artwork listing."""
     try:
-        seo_folder, folder, listing_path, finalised = utils.resolve_listing_paths(aspect, filename)
+        seo_folder, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
     except FileNotFoundError:
         flash(f"Artwork not found: {filename}", "danger")
         return redirect(url_for("artwork.artworks"))
@@ -691,7 +692,7 @@ def approve_composites(seo_folder):
 def finalise_artwork(aspect, filename):
     """Move processed artwork to the finalised location."""
     try:
-        seo_folder, _, _, _ = utils.resolve_listing_paths(aspect, filename)
+        seo_folder, _, _, _ = resolve_listing_paths(aspect, filename)
     except FileNotFoundError:
         flash(f"Artwork not found: {filename}", "danger")
         return redirect(url_for("artwork.artworks"))
@@ -747,7 +748,7 @@ def locked_gallery():
 def delete_finalised(aspect, filename):
     # ... (function remains the same)
     try:
-        _, folder, listing_file, _ = utils.resolve_listing_paths(aspect, filename)
+        _, folder, listing_file, _ = resolve_listing_paths(aspect, filename)
         info = utils.load_json_file_safe(listing_file)
         if info.get("locked") and request.form.get("confirm") != "DELETE":
             flash("Type DELETE to confirm deletion of a locked item.", "warning")
@@ -767,7 +768,7 @@ def delete_finalised(aspect, filename):
 def lock_listing(aspect, filename):
     # ... (function remains the same)
     try:
-        seo, folder, listing_path, finalised = utils.resolve_listing_paths(aspect, filename)
+        seo, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
         if not finalised:
             flash("Artwork must be finalised before locking.", "danger")
             return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
@@ -806,7 +807,7 @@ def unlock_listing(aspect, filename):
 
     try:
         # 2. Resolve paths, ensuring we are looking in the vault
-        _, _, listing_path, _ = utils.resolve_listing_paths(aspect, filename, allow_locked=True)
+        _, _, listing_path, _ = resolve_listing_paths(aspect, filename, allow_locked=True)
         if config.ARTWORK_VAULT_ROOT not in listing_path.parents:
             flash("Cannot unlock an item that is not in the vault.", "danger")
             return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
@@ -845,7 +846,7 @@ def update_links(aspect, filename):
     """Regenerate the image URL list from disk and return as JSON."""
     wants_json = "application/json" in request.headers.get("Accept", "")
     try:
-        _, folder, listing_file, _ = utils.resolve_listing_paths(aspect, filename)
+        _, folder, listing_file, _ = resolve_listing_paths(aspect, filename)
         data = utils.load_json_file_safe(listing_file)
         imgs = [p for p in folder.iterdir() if p.suffix.lower() in {".jpg", ".jpeg", ".png"}]
         data["images"] = [utils.relative_to_base(p) for p in sorted(imgs)]
@@ -865,7 +866,7 @@ def update_links(aspect, filename):
 def reset_sku(aspect, filename):
     """Force reassign a new SKU for the given artwork."""
     try:
-        _, _, listing, _ = utils.resolve_listing_paths(aspect, filename)
+        _, _, listing, _ = resolve_listing_paths(aspect, filename)
         utils.assign_or_get_sku(listing, config.SKU_TRACKER, force=True)
         flash("SKU has been reset.", "success")
     except Exception as exc:
@@ -878,7 +879,7 @@ def delete_artwork(filename: str):
     """Delete all files and registry entries for an artwork via API call."""
     logger, user = logging.getLogger(__name__), session.get("username", "unknown")
     try:
-        seo_folder, _, _, _ = utils.resolve_listing_paths("", filename)
+        seo_folder, _, _, _ = resolve_listing_paths("", filename)
         shutil.rmtree(config.PROCESSED_ROOT / seo_folder, ignore_errors=True)
         shutil.rmtree(config.FINALISED_ROOT / seo_folder, ignore_errors=True)
         shutil.rmtree(config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}", ignore_errors=True)
