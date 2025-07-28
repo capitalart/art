@@ -1,33 +1,41 @@
-"""Utilities for exporting listings to Sellbrite.
-
-Field mapping between our artwork JSON and Sellbrite's Listings API:
-
-| JSON field       | Sellbrite field |
-|------------------|-----------------|
-| title            | name            |
-| description      | description     |
-| tags             | tags            |
-| materials        | materials       |
-| primary_colour   | primary_colour  |
-| secondary_colour | secondary_colour|
-| seo_filename     | seo_filename    |
-| sku              | sku             |
-| price            | price           |
-| images           | images          |
-"""
-
 # routes/sellbrite_export.py
+from __future__ import annotations
 """
 Utilities for exporting listings to Sellbrite.
+
+This module contains the helper function for generating a JSON payload
+formatted specifically for the Sellbrite Listings API.
+
+INDEX
+-----
+1.  Imports
+2.  JSON Generation Function
 """
 
-from __future__ import annotations
+# ===========================================================================
+# 1. Imports
+# ===========================================================================
 from typing import Any, Dict
 import config
 
 
+# ===========================================================================
+# 2. JSON Generation Function
+# ===========================================================================
 def generate_sellbrite_json(data: Dict[str, Any]) -> Dict[str, Any]:
-    """Return a dictionary formatted for the Sellbrite Listings API with absolute image URLs."""
+    """
+    Returns a dictionary formatted for the Sellbrite Listings API.
+
+    This function takes an artwork's listing data, constructs absolute image
+    URLs using the configured BASE_URL, and maps the fields to what the
+    Sellbrite API expects, including a default quantity.
+
+    Args:
+        data: A dictionary containing the artwork listing information.
+
+    Returns:
+        A dictionary formatted for the Sellbrite API.
+    """
     # Construct the public base URL for images from config
     base_url = config.BASE_URL
     
@@ -41,7 +49,7 @@ def generate_sellbrite_json(data: Dict[str, Any]) -> Dict[str, Any]:
         "name": data.get("title"),
         "description": data.get("description"),
         "price": data.get("price"),
-        "quantity": 25, # <-- MODIFIED: Added default quantity
+        "quantity": config.SELLBRITE_DEFAULTS["QUANTITY"],
         "tags": data.get("tags", []),
         "materials": data.get("materials", []),
         "primary_colour": data.get("primary_colour"),
@@ -49,5 +57,5 @@ def generate_sellbrite_json(data: Dict[str, Any]) -> Dict[str, Any]:
         "seo_filename": data.get("seo_filename"),
         "images": absolute_image_urls,
     }
-    # Clean out any empty fields before sending
+    # Clean out any empty or None fields before sending to the API
     return {k: v for k, v in sb.items() if v not in (None, "", [])}

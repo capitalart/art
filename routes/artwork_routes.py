@@ -311,6 +311,10 @@ def upload_artwork():
             log_action("upload", res.get("original", f.filename), user, res.get("error", "uploaded"), status=status)
             results.append(res)
         
+        # --- FIX: Restore JSON response logic for API-style uploads ---
+        if (request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html):
+            return jsonify(results)
+        
         successes = [r for r in results if r["success"]]
         if successes:
             flash(f"Uploaded {len(successes)} file(s) successfully", "success")
@@ -578,34 +582,33 @@ def edit_listing(aspect, filename):
 # These routes are responsible for serving images from various directories,
 # including processed, finalised, locked, and temporary unanalysed locations.
 # They are crucial for displaying artwork and mockups throughout the UI.
-# --- MODIFIED: All routes now use URL variables from config.py ---
 # ===========================================================================
 
-@bp.route(f"/{PROCESSED_URL_PATH}/<path:filename>")
+@bp.route(f"/{config.PROCESSED_URL_PATH}/<path:filename>")
 def processed_image(filename):
     """Serve artwork images from processed folders."""
-    return send_from_directory(PROCESSED_ROOT, filename)
+    return send_from_directory(config.PROCESSED_ROOT, filename)
 
-@bp.route(f"/{FINALISED_URL_PATH}/<path:filename>")
+@bp.route(f"/{config.FINALISED_URL_PATH}/<path:filename>")
 def finalised_image(filename):
     """Serve images strictly from the finalised-artwork folder."""
-    return send_from_directory(FINALISED_ROOT, filename)
+    return send_from_directory(config.FINALISED_ROOT, filename)
 
-@bp.route(f"/{LOCKED_URL_PATH}/<path:filename>")
+@bp.route(f"/{config.LOCKED_URL_PATH}/<path:filename>")
 def locked_image(filename):
     """Serve images from the locked artwork vault."""
-    return send_from_directory(ARTWORK_VAULT_ROOT, filename)
+    return send_from_directory(config.ARTWORK_VAULT_ROOT, filename)
 
-@bp.route(f"/{MOCKUP_THUMB_URL_PREFIX}/<path:filepath>")
+@bp.route(f"/{config.MOCKUP_THUMB_URL_PREFIX}/<path:filepath>")
 def serve_mockup_thumb(filepath: str):
     """Serve mockup thumbnails from any potential location."""
-    for base_dir in [PROCESSED_ROOT, FINALISED_ROOT, ARTWORK_VAULT_ROOT]:
+    for base_dir in [config.PROCESSED_ROOT, config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT]:
         full_path = base_dir / filepath
         if full_path.is_file():
             return send_from_directory(full_path.parent, full_path.name)
     abort(404)
 
-@bp.route(f"/{UNANALYSED_IMG_URL_PREFIX}/<filename>")
+@bp.route(f"/{config.UNANALYSED_IMG_URL_PREFIX}/<filename>")
 def unanalysed_image(filename: str):
     """Serve images from the unanalysed artwork folders."""
     path = next((p for p in config.UNANALYSED_ROOT.rglob(filename) if p.is_file()), None)
@@ -613,11 +616,16 @@ def unanalysed_image(filename: str):
         return send_from_directory(path.parent, path.name)
     abort(404)
 
-@bp.route(f"/{COMPOSITE_IMG_URL_PREFIX}/<folder>/<filename>")
+@bp.route(f"/{config.COMPOSITE_IMG_URL_PREFIX}/<folder>/<filename>")
 def composite_img(folder, filename):
     """Serve a specific composite image."""
-    # This assumes composites are stored under the processed root
-    return send_from_directory(PROCESSED_ROOT / folder, filename)
+    return send_from_directory(config.PROCESSED_ROOT / folder, filename)
+
+# --- FIX: Restored missing route required by mockup_selector.html ---
+@bp.route("/mockup-img/<category>/<filename>")
+def mockup_img(category, filename):
+    """Serves a mockup image from the central inputs directory."""
+    return send_from_directory(config.MOCKUPS_INPUT_DIR / category, filename)
 
 
 # ===========================================================================

@@ -47,7 +47,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import config
 from utils.logger_utils import sanitize_blob_data, setup_logger
 from utils.sku_assigner import get_next_sku
-from routes.utils import assemble_gdws_description
 
 # ===========================================================================
 # 2. Configuration & Constants
@@ -105,6 +104,11 @@ def sync_filename_with_sku(seo_filename: str, sku: str) -> str:
     if not seo_filename or not sku:
         return seo_filename
     return re.sub(r"RJC-[A-Za-z0-9-]+(?=\.jpg$)", sku, seo_filename)
+
+
+def read_onboarding_prompt() -> str:
+    """Reads the main system prompt from the file defined in config."""
+    return Path(config.ONBOARDING_PATH).read_text(encoding="utf-8")
 
 
 def make_optimized_image_for_ai(src_path: Path, out_dir: Path) -> Path:
@@ -266,7 +270,27 @@ def parse_text_fallback(text: str) -> dict:
 # ===========================================================================
 
 def analyze_single(image_path: Path):
-    """Orchestrates the analysis of a single artwork."""
+    """
+    Orchestrates the full analysis workflow for a single artwork image.
+
+    Steps:
+      1. Validate input and prepare environment
+      2. Determine aspect ratio
+      3. Assign next available SKU
+      4. Optimize image for OpenAI (downscale + compress)
+      5. Send to OpenAI and parse AI response
+      6. Save main and thumbnail images
+      7. Detect dominant colours
+      8. Assemble full listing dictionary
+      9. Write listing JSON
+     10. Cleanup temporary optimized file
+
+    Args:
+        image_path (Path): The full path to the artwork image.
+
+    Returns:
+        dict: Final listing data ready for export or post-processing.
+    """
     logger.info(f"--- Starting analysis for: {image_path.name} (User: {USER_ID}) ---")
     
     if not image_path.is_file():
@@ -274,27 +298,34 @@ def analyze_single(image_path: Path):
 
     temp_dir = config.UNANALYSED_ROOT / "temp"
     optimized_img_path = None
+
     try:
-        # 1. Prepare Data
+        # Step 1: Determine image aspect ratio
         aspect = get_aspect_ratio(image_path)
+
+        # Step 2: Get next available SKU
         assigned_sku = get_next_sku(config.SKU_TRACKER)
-        
-        # 2. Optimize Image for AI
+
+        # Step 3: Optimize image for AI analysis
         optimized_img_path = make_optimized_image_for_ai(image_path, temp_dir)
 
-        # 3. Call AI for Listing Generation
+        # Step 4: Query OpenAI for listing metadata
         ai_listing, raw_response = generate_ai_listing(optimized_img_path, aspect, assigned_sku)
-        
-        # 4. Process and Save Files
+
+        # Step 5: Create SEO name from title or fallback to filename
         seo_name = slugify(ai_listing.get("title", image_path.stem))
+
+        # Step 6: Save main and thumbnail artwork files
         file_paths = save_artwork_files(image_path, seo_name)
 
-        # 5. Get Dominant Colors
+        # Step 7: Detect primary and secondary colours
         primary_colour, secondary_colour = get_dominant_colours(Path(file_paths["main_jpg_path"]), 2)
-        
-        # 6. Assemble Final Listing Data
+
+        # Step 8: Build listing data object
+        # Lazy-load to avoid circular import
+        from routes.utils import assemble_gdws_description
         final_description = ai_listing.get("description") or assemble_gdws_description(aspect)
-        
+
         listing_data = {
             "filename": image_path.name,
             "aspect_ratio": aspect,
@@ -315,17 +346,17 @@ def analyze_single(image_path: Path):
                 "raw_response_preview": raw_response[:500]
             }
         }
-        
-        # 7. Write Listing JSON
+
+        # Step 9: Save final JSON to processed folder
         listing_json_path = Path(file_paths["processed_folder"]) / config.FILENAME_TEMPLATES["listing_json"].format(seo_slug=seo_name)
         listing_json_path.write_text(json.dumps(listing_data, indent=2), encoding="utf-8")
         logger.info(f"Wrote final listing JSON to {listing_json_path}")
-        
+
         logger.info(f"--- Successfully completed analysis for: {image_path.name} ---")
         return listing_data
-        
+
     finally:
-        # 8. Cleanup
+        # Step 10: Clean up temporary optimized file
         if optimized_img_path and optimized_img_path.exists():
             optimized_img_path.unlink()
             logger.debug(f"Cleaned up temporary file: {optimized_img_path}")

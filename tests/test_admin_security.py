@@ -1,36 +1,51 @@
+# tests/test_admin_security.py
 import os
 import sys
 import importlib
 from pathlib import Path
 
+# Add project root to path to allow imports
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
 os.environ.setdefault("OPENAI_API_KEY", "test")
+
+# Import necessary utilities
+from utils import user_manager
 
 
 def setup_app(tmp_path):
+    """Sets up a temporary Flask app instance for testing."""
     os.environ['LOGS_DIR'] = str(tmp_path / 'logs')
     os.environ['DATA_DIR'] = str(tmp_path / 'data')
+    # Reload modules to ensure they use the new temp paths
     for mod in ('config', 'db', 'utils.security', 'utils.user_manager', 'routes.auth_routes', 'routes.admin_security', 'app'):
         if mod in sys.modules:
             importlib.reload(sys.modules[mod])
-    if 'app' not in sys.modules:
-        import app  # type: ignore
     app_module = importlib.import_module('app')
     return app_module.app
 
 
 def login(client, username, password):
+    """Helper function to log in a user."""
     return client.post('/login', data={'username': username, 'password': password}, follow_redirects=False)
 
 
 def test_role_required_admin(tmp_path):
+    """Tests that only users with the 'admin' role can access admin pages."""
     app = setup_app(tmp_path)
+    # --- FIX: Create the 'viewer' user in the test database before attempting to log in ---
+    user_manager.add_user("viewer", "viewer", "viewer123")
+    
     client = app.test_client()
+    
+    # Test login with non-admin user
     resp = login(client, 'viewer', 'viewer123')
-    assert resp.status_code == 302
+    assert resp.status_code == 302 # Should be a successful login, redirecting
+    
+    # Test access to admin page as non-admin (should be redirected)
     resp = client.get('/admin/', follow_redirects=False)
     assert resp.status_code == 302
+    
+    # Test access as admin
     client.get('/logout')
     resp = login(client, 'robbie', 'kangaroo123')
     assert resp.status_code == 302
@@ -39,6 +54,7 @@ def test_role_required_admin(tmp_path):
 
 
 def test_no_cache_header(tmp_path):
+    """Tests that the no-cache header is applied correctly."""
     app = setup_app(tmp_path)
     client = app.test_client()
     admin_login = login(client, 'robbie', 'kangaroo123')
@@ -49,12 +65,19 @@ def test_no_cache_header(tmp_path):
 
 
 def test_login_lockout(tmp_path):
+    """Tests that a non-admin user is locked out when login is disabled."""
     app = setup_app(tmp_path)
+    # --- FIX: Create the 'viewer' user in the test database ---
+    user_manager.add_user("viewer", "viewer", "viewer123")
+    
     client = app.test_client()
     admin_login = login(client, 'robbie', 'kangaroo123')
     assert admin_login.status_code == 302
+    
+    # Admin disables login
     client.post('/admin/security', data={'action': 'disable', 'minutes': '1'})
     client.get('/logout')
+    
+    # Viewer attempts to log in
     resp = login(client, 'viewer', 'viewer123')
-    assert resp.status_code == 403
-
+    assert resp.status_code == 403 # Should be forbidden
