@@ -1,0 +1,86 @@
+{% extends "main.html" %}
+{% block title %}Sellbrite Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-title-row">
+        <h1>Sellbrite Management</h1>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="exports-special-grid">
+        <div class="status-and-actions">
+            <h3>API Status & Actions</h3>
+            <div class="status-box">
+                <strong>Connection Status:</strong>
+                {% if is_connected %}
+                    <span class="status-ok">Connected</span>
+                {% else %}
+                    <span class="status-fail">DISCONNECTED - Check API Credentials</span>
+                {% endif %}
+            </div>
+            <p>Push all finalized artworks to your Sellbrite account. Use the 'Dry Run' to preview the data that will be sent without making any live changes.</p>
+            
+            <form action="{{ url_for('exports.sync_to_sellbrite') }}" method="POST" class="action-form">
+                <button type="submit" name="run_type" value="dry_run" class="btn btn-secondary wide-btn" {% if not is_connected %}disabled{% endif %}>
+                    Test Sync (Dry Run)
+                </button>
+                <button type="submit" name="run_type" value="live" class="btn btn-primary wide-btn" 
+                        onclick="return confirm('This will push products to your LIVE Sellbrite account. Are you sure?');" 
+                        {% if not is_connected %}disabled{% endif %}>
+                    Run LIVE Sync to Sellbrite
+                </button>
+            </form>
+            
+            <hr>
+            <a href="{{ url_for('exports.sellbrite_csv_exports') }}" class="btn btn-secondary wide-btn">View Legacy CSV Exports</a>
+        </div>
+
+        <div class="product-listing">
+            <h3>Current Sellbrite Products</h3>
+            {% if is_connected %}
+                {% if products %}
+                <table class="exports-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.get('sku', 'N/A') }}</td>
+                            <td>{{ product.get('name', 'N/A') }}</td>
+                            <td>${{ "%.2f"|format(product.get('price', 0)) }}</td>
+                            <td>{{ product.get('inventory', [{}])[0].get('available', 'N/A') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No products found in your Sellbrite account.</p>
+                {% endif %}
+            {% else %}
+            <p>Cannot fetch products. Please check API connection.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .status-ok { color: green; font-weight: bold; }
+    .status-fail { color: red; font-weight: bold; }
+    .status-box { margin-bottom: 1.5rem; padding: 1rem; background: var(--color-card-bg); border: 1px solid var(--card-border); }
+    .action-form button { margin-top: 0.5rem; }
+</style>
+{% endblock %}

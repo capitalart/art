@@ -27,13 +27,24 @@
   <div class="review-artwork-grid row">
     <div class="col col-6 mockup-col">
       <div class="main-thumb">
+          {# *** CORRECTED LOGIC FOR IMAGE URLS *** #}
+          {% if is_locked_in_vault %}
+            {% set analyse_img_url = url_for('artwork.locked_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-ANALYSE.jpg') %}
+            {% set thumb_img_url = url_for('artwork.locked_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-THUMB.jpg') %}
+          {% elif finalised %}
+            {% set analyse_img_url = url_for('artwork.finalised_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-ANALYSE.jpg') %}
+            {% set thumb_img_url = url_for('artwork.finalised_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-THUMB.jpg') %}
+          {% else %}
+            {% set analyse_img_url = url_for('artwork.processed_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-ANALYSE.jpg') %}
+            {% set thumb_img_url = url_for('artwork.processed_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-THUMB.jpg') %}
+          {% endif %}
           <a
             href="#"
             class="main-thumb-link"
-            data-img="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '-ANALYSE.jpg') }}?t={{ cache_ts }}"
+            data-img="{{ analyse_img_url }}?t={{ cache_ts }}"
           >
           <img
-            src="{{ url_for('artwork.processed_image', seo_folder=seo_folder, filename=seo_folder ~ '-THUMB.jpg') }}?t={{ cache_ts }}"
+            src="{{ thumb_img_url }}?t={{ cache_ts }}"
             class="main-artwork-thumb"
             alt="Main artwork thumbnail for {{ seo_folder }}"
           />
@@ -46,8 +57,17 @@
         {% for m in mockups %}
           <div class="mockup-card" id="mockup-card-{{ m.index }}">
             {% if m.exists and m.thumb_exists %}
-              {% set thumb_url = url_for('artwork.serve_mockup_thumb', seo_folder=seo_folder, filename=m.thumb.name) %}
-              {% set full_url = url_for('artwork.processed_image', seo_folder=seo_folder, filename=m.path.name) %}
+              {# *** CORRECTED LOGIC FOR MOCKUP URLS *** #}
+              {% if is_locked_in_vault %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=seo_folder ~ '/THUMBS/' ~ m.thumb.name) %}
+                {% set full_url = url_for('artwork.locked_image', filename=seo_folder ~ '/' ~ m.path.name) %}
+              {% elif finalised %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=seo_folder ~ '/THUMBS/' ~ m.thumb.name) %}
+                {% set full_url = url_for('artwork.finalised_image', filename=seo_folder ~ '/' ~ m.path.name) %}
+              {% else %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=seo_folder ~ '/THUMBS/' ~ m.thumb.name) %}
+                {% set full_url = url_for('artwork.processed_image', filename=seo_folder ~ '/' ~ m.path.name) %}
+              {% endif %}
               <a
                 href="{{ full_url ~ '?t=' ~ cache_ts }}"
                 class="mockup-img-link"
@@ -189,7 +209,7 @@
         </form>
       </div>
 
-{% if openai_analysis %}
+      {% if openai_analysis %}
         <div class="openai-details">
           <h3>OpenAI Analysis Details</h3>
           {% set entries = openai_analysis if openai_analysis is iterable and openai_analysis.__class__ != dict else [openai_analysis] %}

@@ -3,8 +3,24 @@
    Defines theme-aware color variables for light and dark modes.
    ======================================================== */
 
+/* === [ 1. FONT DEFINITIONS ] === */
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/static/fonts/Urbanist-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/static/fonts/Urbanist-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+/* === [ 2. THEME & GLOBAL VARIABLES ] === */
 :root {
-  --font-primary: monospace !important;
+  --font-primary: 'Urbanist', sans-serif;
   --color-background: #bbbbbb;
   --color-text: #111111;
   --color-card-bg: #bbbbbb;
@@ -25,7 +41,7 @@
   --card-border: #c8c7c7;
   --workflow-icon-size: 2.1em;
   --dark-color-background: #333333;
-  --dark-color-text: #FFFFFF;
+  --dark-color-text: #636363;
   --dark-color-card-bg: #727272;
   --dark-card-border: #727272;
   --light-card-border: #727272;
@@ -44,7 +60,7 @@
   --table-row-alt-bg: #333333;
 }
 
-/* === Universal Base & Reset === */
+/* === [ 3. UNIVERSAL BASE & RESET ] === */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
@@ -64,7 +80,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 button { background: none; border: none; cursor: pointer; padding: 0; color: inherit; }
 main { flex-grow: 1; }
 
-/* === Universal Content Container === */
+/* === [ 4. UNIVERSAL CONTENT CONTAINER ] === */
 .container {
   max-width: 2400px;
   width: 100%;
@@ -72,6 +88,19 @@ main { flex-grow: 1; }
   padding: .25rem 2rem 2rem 2rem;
   box-sizing: border-box;
 }
+
+textarea, input[type="text"], input[type="email"], input[type="password"], select {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1em;
+  font-family: var(--font-primary);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+}
+
 @media (max-width: 1800px) { .container { max-width: 98vw; } }
 @media (max-width: 1400px) { .container { max-width: 99vw; } }
 @media (max-width: 1000px) { .container { padding: 1.8rem 1rem; } }

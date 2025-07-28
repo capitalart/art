@@ -445,3 +445,23 @@ source /home/art/venv/bin/activate
 bash /home/art/project-toolkit.sh
 source /home/art/venv/bin/activate
 sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+bash /home/art/project-toolkit.sh
+chmod 755 scripts/sellbrite_csv_export.py
+chmod 755 scripts/test_sellbrite_add_listing.py
+chmod 644 routes/export_routes.py
+chmod 644 routes/sellbrite_export.py
+chmod 644 routes/sellbrite_service.py
+chmod 644 templates/sellbrite_management.html
+chmod 644 templates/sellbrite_exports.html
+chmod 644 templates/sellbrite_csv_preview.html
+chmod 644 templates/sellbrite_log.html
+chmod 775 outputs/sellbrite
+chmod 644 routes/sellbrite_export.py
+chmod 644 routes/sellbrite_service.py
+chmod 644 routes/export_routes.py
+chmod 644 templates/sellbrite_management.html
+chmod 644 templates/sellbrite_sync_preview.html
+chmod 644 templates/main.html
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f

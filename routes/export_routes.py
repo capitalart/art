@@ -20,29 +20,108 @@ from flask import (
 
 import config
 from . import utils
+from routes import sellbrite_service
+from routes.sellbrite_export import generate_sellbrite_json
 from scripts import sellbrite_csv_export as sb
 from utils.logger_utils import log_action
 
 bp = Blueprint("exports", __name__, url_prefix="/exports")
 
 
-def _collect_listings(locked_only: bool) -> List[Dict]:
+def _collect_locked_listings() -> List[Dict]:
+    """Gathers only locked artwork listings from the artwork vault."""
     listings = []
-    for base in (config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT):
-        if not base.exists():
+    vault = config.ARTWORK_VAULT_ROOT
+    if not vault.exists():
+        return []
+
+    for listing_path in vault.rglob("*-listing.json"):
+        try:
+            with open(listing_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            # Ensure the listing is explicitly marked as locked
+            if data.get("locked"):
+                listings.append(data)
+        except Exception as e:
+            log_action("sellbrite-sync", listing_path.name, "system", "failed to collect locked listing", status="fail", error=str(e))
             continue
-        for listing in base.rglob("*-listing.json"):
-            try:
-                utils.assign_or_get_sku(listing, config.SKU_TRACKER)
-                with open(listing, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-            except Exception:
-                continue
-            if locked_only and not data.get("locked"):
-                continue
-            listings.append(data)
     return listings
 
+
+@bp.route("/sellbrite/manage")
+def sellbrite_management():
+    """Displays the new Sellbrite API management dashboard."""
+    is_connected = sellbrite_service.test_sellbrite_connection()
+    products = []
+    if is_connected:
+        products = sellbrite_service.get_products()
+    return render_template("sellbrite_management.html", is_connected=is_connected, products=products)
+
+
+@bp.post("/sellbrite/sync")
+def sync_to_sellbrite():
+    """Pushes locked products to Sellbrite (live) or shows a preview (dry run)."""
+    run_type = request.form.get("run_type")
+    
+    # This now only fetches locked artworks for syncing
+    listings_to_sync = _collect_locked_listings()
+
+    if not listings_to_sync:
+        flash("No locked artworks found to sync.", "warning")
+        return redirect(url_for('exports.sellbrite_management'))
+
+    if run_type == "dry_run":
+        # Prepare payloads for preview without sending
+        product_payloads = [generate_sellbrite_json(listing) for listing in listings_to_sync]
+        return render_template("sellbrite_sync_preview.html", products=product_payloads)
+
+    elif run_type == "live":
+        # Execute the live sync
+        success_count = 0
+        fail_count = 0
+        for listing in listings_to_sync:
+            success, message = sellbrite_service.create_product(listing)
+            if success:
+                success_count += 1
+            else:
+                fail_count += 1
+                flash(message, 'danger')
+        
+        flash(f"Live sync of locked artworks complete: {success_count} successful, {fail_count} failed.", 'success' if fail_count == 0 else 'warning')
+        return redirect(url_for('exports.sellbrite_management'))
+    
+    flash("Invalid action specified.", "danger")
+    return redirect(url_for('exports.sellbrite_management'))
+
+
+# --- [ LEGACY ] CSV Export Routes (Unchanged) ---
+# ... (the rest of the file remains the same) ...
+def _collect_listings(locked_only: bool) -> List[Dict]:
+    """Gathers all finalized and locked listing data."""
+    listings = []
+    # Check both finalised and locked directories
+    search_dirs = [config.FINALISED_ROOT]
+    if locked_only:
+        search_dirs.append(config.ARTWORK_VAULT_ROOT)
+
+    for base in search_dirs:
+        if not base.exists():
+            continue
+        for listing_path in base.rglob("*-listing.json"):
+            try:
+                # Ensure SKU is assigned before adding
+                utils.assign_or_get_sku(listing_path, config.SKU_TRACKER)
+                with open(listing_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                
+                # If locked_only is true, only include locked items. Otherwise, include all.
+                if not locked_only or data.get("locked"):
+                    listings.append(data)
+
+            except Exception as e:
+                log_action("sellbrite-exports", listing_path.name, "system", "failed to collect listing", status="fail", error=str(e))
+                continue
+    return listings
 
 def _export_csv(
     listings: List[Dict], locked_only: bool
@@ -63,82 +142,56 @@ def _export_csv(
 
     def row_iter():
         for data in listings:
-            missing = [
-                k for k in ("title", "description", "sku", "price") if not data.get(k)
-            ]
+            missing = [k for k in ("title", "description", "sku", "price") if not data.get(k)]
             if len((data.get("description") or "").split()) < 400:
                 missing.append("description<400w")
             if not data.get("images"):
                 missing.append("images")
             if missing:
-                warnings.append(
-                    f"{data.get('seo_filename', 'unknown')}: {', '.join(missing)}"
-                )
+                warnings.append(f"{data.get('seo_filename', 'unknown')}: {', '.join(missing)}")
             yield data
 
     sb.export_to_csv(row_iter(), header, csv_path)
     with open(log_path, "w", encoding="utf-8") as log:
-        if warnings:
-            log.write("\n".join(warnings))
-        else:
-            log.write("No warnings")
+        log.write("\n".join(warnings) if warnings else "No warnings")
     return csv_path, log_path, warnings
 
 
-@bp.route("/sellbrite")
-def sellbrite_exports():
+@bp.route("/sellbrite/csv")
+def sellbrite_csv_exports():
+    """Displays a list of generated CSV export files."""
     items = []
-    for csv_file in sorted(
-        config.SELLBRITE_DIR.glob("*.csv"),
-        key=lambda p: p.stat().st_mtime,
-        reverse=True,
-    ):
+    for csv_file in sorted(config.SELLBRITE_DIR.glob("*.csv"), key=lambda p: p.stat().st_mtime, reverse=True):
         log_file = csv_file.with_suffix(".log")
         export_type = "Locked" if "locked" in csv_file.stem else "All"
-        items.append(
-            {
-                "name": csv_file.name,
-                "mtime": datetime.datetime.fromtimestamp(csv_file.stat().st_mtime),
-                "type": export_type,
-                "log": log_file.name if log_file.exists() else None,
-            }
-        )
-    return render_template(
-        "sellbrite_exports.html", exports=items, menu=utils.get_menu()
-    )
+        items.append({
+            "name": csv_file.name,
+            "mtime": datetime.datetime.fromtimestamp(csv_file.stat().st_mtime),
+            "type": export_type,
+            "log": log_file.name if log_file.exists() else None,
+        })
+    return render_template("sellbrite_exports.html", exports=items, menu=utils.get_menu())
 
 
-@bp.route("/sellbrite/run", methods=["GET", "POST"])
-def run_sellbrite_export():
-    locked = request.args.get("locked") in {"1", "true", "yes"}
+@bp.route("/sellbrite/run-csv", methods=["POST"])
+def run_sellbrite_csv_export():
+    """Triggers the generation of a Sellbrite CSV file."""
+    locked = request.form.get("locked_only") == "true"
     try:
         listings = _collect_listings(locked)
-        csv_path, log_path, warns = _export_csv(listings, locked)
+        csv_path, _, warns = _export_csv(listings, locked)
         flash(f"Export created: {csv_path.name}", "success")
         if warns:
             flash(f"{len(warns)} warning(s) generated", "warning")
-        log_action(
-            "sellbrite-exports",
-            csv_path.name,
-            session.get("username"),
-            "export created",
-            status="success",
-        )
-    except Exception as exc:  # noqa: BLE001
-        log_action(
-            "sellbrite-exports",
-            "",
-            session.get("username"),
-            "export failed",
-            status="fail",
-            error=str(exc),
-        )
+        log_action("sellbrite-exports", csv_path.name, session.get("username"), "csv export created", status="success")
+    except Exception as exc:
+        log_action("sellbrite-exports", "", session.get("username"), "csv export failed", status="fail", error=str(exc))
         flash(f"Export failed: {exc}", "danger")
-    return redirect(url_for("exports.sellbrite_exports"))
+    return redirect(url_for("exports.sellbrite_csv_exports"))
 
 
 @bp.route("/sellbrite/download/<path:csv_filename>")
-def download_sellbrite(csv_filename: str):
+def download_sellbrite_csv(csv_filename: str):
     return send_from_directory(config.SELLBRITE_DIR, csv_filename, as_attachment=True)
 
 
@@ -153,16 +206,9 @@ def preview_sellbrite_csv(csv_filename: str):
         reader = csv.reader(f)
         header = next(reader)
         for i, row in enumerate(reader):
-            if i >= 20:
-                break
+            if i >= 20: break
             rows.append(row)
-    return render_template(
-        "sellbrite_csv_preview.html",
-        csv_filename=csv_filename,
-        header=header,
-        rows=rows,
-        menu=utils.get_menu(),
-    )
+    return render_template("sellbrite_csv_preview.html", csv_filename=csv_filename, header=header, rows=rows)
 
 
 @bp.route("/sellbrite/log/<path:log_filename>")
@@ -171,9 +217,4 @@ def view_sellbrite_log(log_filename: str):
     if not path.exists():
         abort(404)
     text = path.read_text(encoding="utf-8")
-    return render_template(
-        "sellbrite_log.html",
-        log_filename=log_filename,
-        log_text=text,
-        menu=utils.get_menu(),
-    )
+    return render_template("sellbrite_log.html", log_filename=log_filename, log_text=text)
