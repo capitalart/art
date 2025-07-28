@@ -26,12 +26,15 @@ from __future__ import annotations
 import time, os, json, random, re, logging, csv, shutil, datetime
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional, Iterable
-from routes.utils import resolve_listing_paths
+from helpers.path_utils import resolve_listing_paths
 
 from dotenv import load_dotenv
 from flask import session
 from PIL import Image
-import cv2
+try:
+    import cv2
+except Exception:  # pragma: no cover - optional dependency
+    cv2 = None
 import numpy as np
 
 import config
@@ -47,50 +50,29 @@ ALLOWED_COLOURS_LOWER = {c.lower(): c for c in ALLOWED_COLOURS}
 
 
 # ===========================================================================
-# 1.1. Listing Path Resolver (Required by Mockup and Registry Logic)
-# ===========================================================================
-def resolve_listing_paths(aspect: str, seo_folder: str, allow_locked: bool = False) -> tuple:
-    """
-    Resolves all necessary paths for a given artwork's SEO folder.
-    
-    Returns:
-        (aspect_folder, artwork_folder, listing_json_path, image_path)
-    Raises:
-        FileNotFoundError if no matching folder is found.
-    """
-    slug = seo_folder.replace("LOCKED-", "")
-    roots = [config.PROCESSED_ROOT]
-    if allow_locked:
-        roots += [config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT]
-
-    for root in roots:
-        folder = root / seo_folder
-        if folder.exists():
-            listing_file = folder / config.FILENAME_TEMPLATES["listing_json"].format(seo_slug=slug)
-            image_file = folder / f"{slug}.jpg"
-            return root, folder, listing_file, image_file
-
-    raise FileNotFoundError(f"Cannot resolve paths for folder '{seo_folder}' (allow_locked={allow_locked})")
-
-
-# ===========================================================================
 # 2. JSON & File Helpers
 # ===========================================================================
 
 def load_json_file_safe(path: Path) -> dict:
     """Return JSON from ``path`` handling any errors gracefully."""
     path = Path(path)
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("{}", encoding="utf-8")
+        logger.warning("created new empty file %s", path)
+        return {}
+
+    text = path.read_text(encoding="utf-8").strip()
+    if not text:
+        path.write_text("{}", encoding="utf-8")
+        logger.warning("reset to {} for %s", path)
+        return {}
+
     try:
-        if not path.exists():
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text("{}", encoding="utf-8")
-            return {}
-        text = path.read_text(encoding="utf-8").strip()
-        if not text:
-            return {}
         return json.loads(text)
-    except Exception as exc:
-        logger.error(f"Failed to load or parse JSON from {path}: {exc}")
+    except Exception as exc:  # pragma: no cover - unexpected IO
+        logger.error("Invalid JSON in %s: %s", path, exc)
+        path.write_text("{}", encoding="utf-8")
         return {}
 
 
@@ -182,6 +164,8 @@ def resize_for_analysis(image: Image.Image, dest_path: Path):
 
 def apply_perspective_transform(art_img: Image.Image, mockup_img: Image.Image, dst_coords: list) -> Image.Image:
     """Overlay artwork onto mockup using perspective transform."""
+    if cv2 is None:
+        raise RuntimeError("cv2 library is required for perspective transform")
     w, h = art_img.size
     src_points = np.float32([[0, 0], [w, 0], [w, h], [0, h]])
     dst_points = np.float32(dst_coords)
@@ -314,6 +298,52 @@ def latest_analyzed_artwork() -> Optional[Dict[str, str]]:
             data = load_json_file_safe(listing_path)
             latest_info = { "aspect": data.get("aspect_ratio"), "filename": data.get("seo_filename") }
     return latest_info
+
+
+def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str, str]]:
+    """Return aspect ratio and filename for a given SEO folder."""
+    for base in (config.PROCESSED_ROOT, config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT):
+        folder = base / seo_folder
+        listing = folder / f"{seo_folder}-listing.json"
+        aspect = ""
+        filename = ""
+        if listing.exists():
+            try:
+                data = json.loads(listing.read_text())
+                aspect = data.get("aspect_ratio") or data.get("aspect") or ""
+                filename = (
+                    data.get("seo_filename")
+                    or data.get("filename")
+                    or data.get("seo_name")
+                    or ""
+                )
+                if not filename:
+                    for key in ("main_jpg_path", "orig_jpg_path", "thumb_jpg_path"):
+                        val = data.get(key)
+                        if val:
+                            filename = Path(val).name
+                            break
+            except Exception as exc:  # pragma: no cover - unexpected IO
+                logging.error("Failed reading listing for %s: %s", seo_folder, exc)
+
+        if folder.exists() and not filename:
+            for p in folder.iterdir():
+                if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == seo_folder.lower():
+                    filename = p.name
+                    break
+
+        if filename:
+            if not filename.lower().endswith(".jpg"):
+                filename = f"{Path(filename).stem}.jpg"
+            disk_file = folder / filename
+            if not disk_file.exists():
+                stem = Path(filename).stem.lower()
+                for p in folder.iterdir():
+                    if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == stem:
+                        filename = p.name
+                        break
+            return aspect, filename
+    return None
 
 def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
     """Populates a dictionary with artwork details from a listing JSON."""
