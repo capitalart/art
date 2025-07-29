@@ -94,6 +94,11 @@ def relative_to_base(path: Path | str) -> str:
     return str(Path(path).resolve().relative_to(config.BASE_DIR))
 
 
+def resolve_image_url(path: Path | str) -> str:
+    """Convert full filesystem path to a URL-safe relative path."""
+    return "/" + str(Path(path)).replace(str(config.BASE_DIR), "").lstrip("/")
+
+
 def is_finalised_image(path: str | Path) -> bool:
     """Return True if the given path is within a finalised or locked folder."""
     p = Path(path).resolve()
@@ -386,16 +391,22 @@ def get_mockup_details_for_template(mockups_data: list, folder: Path, seo_folder
             out = folder / composite_name if composite_name else Path()
             cat = mp.get("category", "")
             thumb_name = mp.get("thumbnail", "")
-            thumb = folder / "THUMBS" / thumb_name if thumb_name else Path()
+            thumb = folder / config.THUMB_SUBDIR / thumb_name if thumb_name else Path()
         else:
             p = Path(mp)
             out = folder / f"{seo_folder}-{p.stem}.jpg"
             cat = p.parent.name
-            thumb = folder / "THUMBS" / f"{seo_folder}-{aspect}-mockup-thumb-{idx}.jpg"
+            thumb = folder / config.THUMB_SUBDIR / f"{seo_folder}-{aspect}-mockup-thumb-{idx}.jpg"
 
         mockups.append({
-            "path": out, "category": cat, "exists": out.exists(),
-            "index": idx, "thumb": thumb, "thumb_exists": thumb.exists(),
+            "path": out,
+            "category": cat,
+            "exists": out.exists(),
+            "index": idx,
+            "thumb": thumb,
+            "thumb_exists": thumb.exists(),
+            "path_rel": resolve_image_url(out),
+            "thumb_rel": resolve_image_url(thumb),
         })
     return mockups
 
