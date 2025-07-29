@@ -142,12 +142,15 @@ def analyze_with_google(image_path: Path):
             "You MUST use this SKU in the 'sku' field and in the 'seo_filename'."
         )
         
-        model = genai.GenerativeModel(config.GOOGLE_GEMINI_PRO_VISION_MODEL_NAME)
+        model = genai.GenerativeModel(config.GEMINI_MODEL)
         
-        google_logger.info("Sending request to Gemini API...")
         response = model.generate_content([prompt, Image.open(opt_img_path)])
         content = response.text.strip()
         google_logger.info(f"Received response from Gemini API for {image_path.name}")
+
+        # ADD THIS BLOCK to remove markdown fences from the API response
+        if content.startswith("```"):
+            content = re.sub(r"```(json)?\s*(.*)\s*```", r"\2", content, flags=re.DOTALL)
 
         try:
             ai_listing = json.loads(content)

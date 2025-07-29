@@ -15,7 +15,7 @@ Welcome, Codex (or any AI developer)!
 - Batch mockup generation & management
 - Pulitzer-worthy, SEO-rich, culturally aware listing creation
 - Robust file/folder structure (strict naming, versioned)
-- Automated CSV/JSON exports for Etsy, Nembol, Gelato, and partners
+- Automated JSON exports for Etsy, Nembol, Gelato, and partners
 - FastAPI backend, Jinja2 admin UI, SQLite+SQLAlchemy, and shell scripts
 
 **Key Tech:**  
@@ -34,7 +34,7 @@ Python 3.11+, FastAPI, SQLAlchemy, OpenAI API, Jinja2, Pillow, Bash, minimal HTM
 - `mockup-generator/` — Mockup templates, coordinates, category folders
 - `data/` — SQLite DB and settings
 - `master_listing_templates/` — Master OpenAI prompt templates (e.g., `etsy_master_template.txt`)
-- `exports/` — Output CSVs, logs, JSONs
+- `exports/` — logs, JSONs
 - `/CODEX-LOGS/` — All AI audit logs (see below)
 
 **Entry Point:**  
@@ -66,7 +66,7 @@ Python 3.11+, FastAPI, SQLAlchemy, OpenAI API, Jinja2, Pillow, Bash, minimal HTM
 - **AI analysis** (OpenAI/Gemini Vision + GPT) → generate title, description, attributes, tags (see templates)
 - **Mockup generation** → batch create, strict naming (`{seo_filename}-MU-01.jpg` etc), review/finalise
 - **Finalisation** → all files moved to `/finalised-artwork/{seo_folder}/`, DB paths updated, QA checks
-- **CSV/JSON export** → only finalized artwork, strict Etsy/Nembol compliance, image URLs generated
+- **JSON export** → only finalized artwork, strict Etsy/Nembol compliance, image URLs generated
 - **Audit/QA scripts** → health checks, folder scans, export summaries, error reporting
 
 ---
@@ -77,7 +77,7 @@ Python 3.11+, FastAPI, SQLAlchemy, OpenAI API, Jinja2, Pillow, Bash, minimal HTM
 - Prompts must:
   - Exceed 400+ words, Pulitzer-worthy, culturally aware
   - Use proper SEO, avoid banned phrases, respect protocols
-  - Output plain text (CSV/JSON safe), no HTML
+  - Output plain text (JSON safe), no HTML
   - Pull in relevant content blocks (dot art history, aspect ratio) where needed
 - **Log every prompt, model, and result for traceability.**
 
@@ -100,7 +100,7 @@ Python 3.11+, FastAPI, SQLAlchemy, OpenAI API, Jinja2, Pillow, Bash, minimal HTM
 
 - All flows covered by audit/reporting scripts—never break audit compatibility.
 - Add/extend pytest coverage for all new logic.
-- All export flows (CSV, JSON) must pass strict pre-export checks.
+- All export flows (JSON) must pass strict pre-export checks.
 - All code changes must be linted, formatted, and reviewed for:  
   - Security (input validation, permissions)  
   - Performance (efficient I/O, no memory leaks)  

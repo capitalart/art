@@ -476,3 +476,28 @@ pip install -r requirements.txt
 ./code-stacker
 ./code-stacker.sh
 ./project-toolkit.sh
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+git add .
+git commit
+git push
+./project-toolkit.sh
+git add .
+git commit
+git push
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+./project-toolkit.sh
+./code-stacker.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f

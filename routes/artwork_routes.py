@@ -67,8 +67,7 @@ import re
 # --- Local Route-Specific Imports ---
 from . import utils
 from .utils import (
-    ALLOWED_COLOURS_LOWER, relative_to_base, parse_csv_list, join_csv_list,
-    read_generic_text, clean_terms, infer_sku_from_filename,
+    ALLOWED_COLOURS_LOWER, relative_to_base, read_generic_text, clean_terms, infer_sku_from_filename,
     sync_filename_with_sku, is_finalised_image, get_allowed_colours,
     load_json_file_safe, generate_mockups_for_listing,
 )
@@ -436,20 +435,17 @@ def analyze_artwork_route(aspect, filename):
         _write_analysis_status("failed", 100, base_name, status="failed", error="file not found")
         return redirect(url_for("artwork.artworks"))
 
-    # Invoke the analyzer script
+    # Invoke the analyzer script using the helper function
     try:
-        if provider == "google":
-            cmd = ["python3", str(config.SCRIPTS_DIR / "analyze_artwork_google.py"), str(src_path)]
-        else:
-            cmd = ["python3", str(utils.ANALYZE_SCRIPT_PATH), str(src_path), "--provider", "openai"]
         _write_analysis_status(f"{provider}_call", 20, base_name, status="analyzing")
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300, env=os.environ)
-        if result.returncode != 0:
-            raise RuntimeError(result.stderr)
+        _run_ai_analysis(src_path, provider)
     except Exception as exc:
         logger.error("Error running analysis for %s: %s", filename, exc)
         flash(f"❌ Error running analysis: {exc}", "danger")
         _write_analysis_status("failed", 100, base_name, status="failed", error=str(exc))
+        # --- FIX: Check for API request before redirecting on error ---
+        if "XMLHttpRequest" in request.headers.get("X-Requested-With", ""):
+            return jsonify({"success": False, "error": str(exc)}), 500
         return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
     # Generate mockups/composites post-analysis
@@ -462,6 +458,16 @@ def analyze_artwork_route(aspect, filename):
 
     _write_analysis_status("done", 100, filename, status="complete")
     new_filename = f"{utils.find_seo_folder_from_filename(aspect, filename)}.jpg"
+
+    # Check if this was an API call (like from the test or frontend JS)
+    if "XMLHttpRequest" in request.headers.get("X-Requested-With", ""):
+        return jsonify({
+            "success": True,
+            "message": "Analysis complete.",
+            "redirect_url": url_for("artwork.edit_listing", aspect=aspect, filename=new_filename)
+        })
+
+    # Otherwise, it's a regular form submission, so redirect
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=new_filename))
 
 @bp.post("/analyze-upload/<base>")
@@ -542,8 +548,6 @@ def edit_listing(aspect, filename):
         form_data = {
             "title": request.form.get("title", "").strip(),
             "description": request.form.get("description", "").strip(),
-            "tags": parse_csv_list(request.form.get("tags", "")),
-            "materials": parse_csv_list(request.form.get("materials", "")),
             "primary_colour": request.form.get("primary_colour", "").strip(),
             "secondary_colour": request.form.get("secondary_colour", "").strip(),
             "seo_filename": request.form.get("seo_filename", "").strip(),
@@ -729,14 +733,14 @@ def finalise_artwork(aspect, filename):
 @bp.route("/finalised")
 def finalised_gallery():
     """Display all finalised artworks in a gallery view."""
-    artworks = utils.list_finalised_artworks_extended(locked=False)
+    artworks = [a for a in utils.get_all_artworks() if a['status'] == 'finalised']
     return render_template("finalised.html", artworks=artworks, menu=utils.get_menu())
 
 
 @bp.route("/locked")
 def locked_gallery():
     """Show gallery of locked artworks only."""
-    locked_items = utils.list_finalised_artworks_extended(locked=True)
+    locked_items = [a for a in utils.get_all_artworks() if a.get('locked')]
     return render_template("locked.html", artworks=locked_items, menu=utils.get_menu())
 
 

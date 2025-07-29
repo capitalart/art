@@ -9,7 +9,7 @@
       <a href="{{ url_for('artwork.artworks') }}">Artwork</a>
       <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
       <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
-      <a href="{{ url_for('exports.sellbrite_exports') }}">Exports</a>
+      <a href="{{ url_for('exports.sellbrite_management') }}">Exports</a>
     </nav>
     <div class="user-links">
       {% if session.get('logged_in') %}
