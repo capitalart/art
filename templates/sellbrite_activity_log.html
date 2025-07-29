@@ -1,0 +1,18 @@
+{% extends "main.html" %}
+{% block title %}Sellbrite Exports{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Sellbrite Exports</h1>
+<table class="exports-table">
+  <tbody>
+  {% for e in exports %}
+    <tr>
+      <td>{{ e.mtime.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ e.type }}</td>
+      <td>{% if e.log %}<a href="{{ url_for('exports.view_sellbrite_log', log_filename=e.log) }}">Log</a>{% else %}-{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

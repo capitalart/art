@@ -45,9 +45,8 @@ data/
 # Backup control files
 backup_excludes.txt
 
-# Optional: CSV/data dumps
+# Optional: data dumps
 *.sqlite3
-*.csv
 *.tar.gz
 *.zip
 
@@ -70,7 +69,5 @@ nginx.conf
 # project-toolkit.sh
 # README.md
 # requirements.txt
-# sellbrite_template.csv
-
 
 # Only exclude your actual code/configs above if you *never* want them in the backup!

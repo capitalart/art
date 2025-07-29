@@ -22,7 +22,7 @@ INDEX
 # 1. Imports & Initialisation
 # ===========================================================================
 from __future__ import annotations
-import time, os, json, random, re, logging, csv, shutil, datetime
+import time, os, json, random, re, logging, shutil, datetime
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional, Iterable
 from helpers.listing_utils import resolve_listing_paths
@@ -286,6 +286,8 @@ def latest_analyzed_artwork() -> Optional[Dict[str, str]]:
     """Return info about the most recently analysed artwork."""
     latest_time = 0
     latest_info = None
+    if not config.PROCESSED_ROOT.exists():
+        return None
     for folder in config.PROCESSED_ROOT.iterdir():
         if not folder.is_dir(): continue
         listing_path = next(folder.glob("*-listing.json"), None)
@@ -297,6 +299,20 @@ def latest_analyzed_artwork() -> Optional[Dict[str, str]]:
             data = load_json_file_safe(listing_path)
             latest_info = { "aspect": data.get("aspect_ratio"), "filename": data.get("seo_filename") }
     return latest_info
+
+
+def latest_composite_folder() -> str | None:
+    """Return the name of the most recently modified folder in PROCESSED_ROOT."""
+    processed_dir = config.PROCESSED_ROOT
+    if not processed_dir.exists():
+        return None
+
+    sub_folders = [d for d in processed_dir.iterdir() if d.is_dir()]
+    if not sub_folders:
+        return None
+
+    latest_folder = max(sub_folders, key=lambda d: d.stat().st_mtime)
+    return latest_folder.name
 
 
 def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str, str]]:
@@ -554,18 +570,37 @@ def assign_or_get_sku(listing_json_path: Path, tracker_path: Path, *, force: boo
 # ===========================================================================
 def validate_all_skus(entries: List[dict], tracker_path: Path) -> List[str]:
     """
-    Validate that all SKUs are unique and correctly formatted (RJC-XXXX...).
-    Used by test_sku_utils.py to verify integrity of assigned SKUs.
+    Validate SKUs for format, duplicates, and gaps.
     """
     seen = set()
     errors = []
+    sku_numbers = []
+
     for entry in entries:
         sku = entry.get("sku", "").strip()
         if not sku or not sku.startswith("RJC-"):
-            errors.append(f"Invalid SKU: {sku}")
-        elif sku in seen:
-            errors.append(f"Duplicate SKU: {sku}")
+            errors.append(f"Invalid SKU format: {sku}")
+            continue
+        
+        if sku in seen:
+            errors.append(f"Duplicate SKU found: {sku}")
         seen.add(sku)
+        
+        try:
+            # Extract number for gap detection
+            num = int(sku.split('-')[-1])
+            sku_numbers.append(num)
+        except (ValueError, IndexError):
+            errors.append(f"Could not parse SKU number: {sku}")
+
+    # Check for gaps
+    if sku_numbers:
+        sku_numbers.sort()
+        for i in range(len(sku_numbers) - 1):
+            if sku_numbers[i+1] != sku_numbers[i] + 1:
+                errors.append(f"Gap detected in SKUs between {sku_numbers[i]} and {sku_numbers[i+1]}")
+                break # Only report the first gap
+
     return errors
 
 

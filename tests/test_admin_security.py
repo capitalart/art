@@ -67,10 +67,16 @@ def test_no_cache_header(tmp_path):
 def test_login_lockout(tmp_path):
     """Tests that a non-admin user is locked out when login is disabled."""
     app = setup_app(tmp_path)
-    # --- FIX: Create the 'viewer' user in the test database ---
     user_manager.add_user("viewer", "viewer", "viewer123")
     
     client = app.test_client()
+
+    # --- ADD THIS BLOCK TO CLEAR SESSIONS ---
+    from utils import session_tracker
+    for s in session_tracker.active_sessions("robbie"):
+        session_tracker.remove_session("robbie", s["session_id"])
+    # --- END OF FIX ---
+    
     admin_login = login(client, 'robbie', 'kangaroo123')
     assert admin_login.status_code == 302
     
@@ -80,4 +86,4 @@ def test_login_lockout(tmp_path):
     
     # Viewer attempts to log in
     resp = login(client, 'viewer', 'viewer123')
-    assert resp.status_code == 403 # Should be forbidden
+    assert resp.status_code == 403

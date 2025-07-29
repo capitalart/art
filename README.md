@@ -49,7 +49,7 @@ requests
 
 🧼 Finalisation Script (move print files, create web preview)
 
-📦 Sellbrite/Nembol CSV Exporter
+📦 Sellbrite Exporter
 
 🖼 Aspect Ratio Selector Support
 
@@ -100,15 +100,6 @@ our artwork listing data to the fields expected by Sellbrite's Listings API.
 | price            | price           |
 | images           | images          |
 
-### Sellbrite CSV Export Script
-
-The `scripts/sellbrite_csv_export.py` tool converts Etsy CSV exports or
-finalised listing JSON files into a Sellbrite ready CSV. Provide the
-Sellbrite template for the header and specify your input files:
-
-```bash
-python scripts/sellbrite_csv_export.py template.csv output.csv --etsy exported.csv
-```
 
 Use `--json-dir` to read from the finalised artwork folders instead.
 

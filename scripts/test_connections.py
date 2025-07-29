@@ -81,7 +81,7 @@ def test_openai() -> None:
 
         models_to_check = {
             "Main Model": config.OPENAI_MODEL,
-            "Vision Model": config.OPENAI_VISION_MODEL
+            "Vision Model": config.OPENAI_MODEL
         }
         for name, model_id in models_to_check.items():
             if not model_id: continue
@@ -109,7 +109,7 @@ def test_google_gemini() -> None:
 
     try:
         genai.configure(api_key=api_key)
-        model_name = config.GOOGLE_GEMINI_PRO_VISION_MODEL_NAME
+        model_name = config.GEMINI_MODEL
         if model_name:
             model_name_for_check = f'models/{model_name}' if not model_name.startswith('models/') else model_name
             genai.get_model(model_name_for_check)

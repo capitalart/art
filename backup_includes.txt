@@ -1,7 +1,6 @@
 data
 descriptions
 generic_texts
-instructions
 routes
 scripts
 settings

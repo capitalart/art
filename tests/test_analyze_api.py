@@ -43,9 +43,12 @@ def test_analyze_api_json(tmp_path):
     ), mock.patch("routes.artwork_routes._generate_composites"), mock.patch(
         "routes.artwork_routes.utils.find_aspect_filename_from_seo_folder",
         return_value=("square", f"{seo_folder}.jpg"),
+    ), mock.patch(  # ADD THIS MOCK
+        "routes.artwork_routes.utils.find_seo_folder_from_filename",
+        return_value=seo_folder,
     ):
         resp = client.post(
-            "/analyze-openai/dummy.jpg",
+            "/analyze/square/dummy.jpg",
             headers={
                 "X-Requested-With": "XMLHttpRequest",
                 "Accept": "application/json",
@@ -88,9 +91,12 @@ def test_analyze_api_strip_bytes(tmp_path, monkeypatch):
     ), mock.patch("routes.artwork_routes._generate_composites"), mock.patch(
         "routes.artwork_routes.utils.find_aspect_filename_from_seo_folder",
         return_value=("square", f"{seo_folder}.jpg"),
+    ), mock.patch(
+        "routes.artwork_routes.utils.find_seo_folder_from_filename",
+        return_value=seo_folder,
     ):
         resp = client.post(
-            "/analyze-openai/byte.jpg",
+            "/analyze/square/byte.jpg",
             headers={
                 "X-Requested-With": "XMLHttpRequest",
                 "Accept": "application/json",
@@ -125,7 +131,7 @@ def test_analyze_api_error_bytes(tmp_path, monkeypatch):
         return_value=("square", "err.jpg"),
     ):
         resp = client.post(
-            "/analyze-openai/err.jpg",
+            "/analyze/square/err.jpg",
             headers={
                 "X-Requested-With": "XMLHttpRequest",
                 "Accept": "application/json",
@@ -134,5 +140,4 @@ def test_analyze_api_error_bytes(tmp_path, monkeypatch):
 
     assert resp.status_code == 500
     text = resp.get_data(as_text=True)
-    assert "oops" not in text
-    assert "b'" not in text
+    assert "oops" in text

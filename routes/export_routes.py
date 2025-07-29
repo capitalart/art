@@ -2,15 +2,13 @@
 """
 Flask routes for exporting listing data to external services like Sellbrite.
 
-This module contains routes for both the modern, API-driven Sellbrite sync
-and the legacy CSV-based export system.
+This module contains routes for both the modern, API-driven Sellbrite sync export system.
 
 INDEX
 -----
 1.  Imports & Initialisation
 2.  Data Collection Helpers
 3.  Sellbrite API Management Routes
-4.  Legacy CSV Export Routes & Helpers
 """
 
 # ===========================================================================
@@ -18,7 +16,6 @@ INDEX
 # ===========================================================================
 
 from __future__ import annotations
-import csv
 import datetime
 import json
 from pathlib import Path
@@ -26,14 +23,13 @@ from typing import List, Dict
 
 from flask import (
     Blueprint, render_template, request, redirect, url_for,
-    flash, send_from_directory, abort, session,
+    flash, send_from_directory, abort, session, Response,
 )
 
 import config
 from . import utils
 from routes import sellbrite_service
 from routes.sellbrite_export import generate_sellbrite_json
-from scripts import sellbrite_csv_export as sb
 from utils.logger_utils import log_action
 
 bp = Blueprint("exports", __name__, url_prefix="/exports")
@@ -118,88 +114,6 @@ def sync_to_sellbrite():
     
     flash("Invalid action specified.", "danger")
     return redirect(url_for('exports.sellbrite_management'))
-
-
-# ===========================================================================
-# 4. Legacy CSV Export Routes & Helpers
-# ===========================================================================
-
-def _export_csv(listings: List[Dict], locked_only: bool) -> tuple[Path, List[str]]:
-    """Helper function to generate the Sellbrite CSV file."""
-    config.SELLBRITE_DIR.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-    kind = "locked" if locked_only else "all"
-    csv_path = config.SELLBRITE_DIR / f"sellbrite_{stamp}_{kind}.csv"
-    log_path = csv_path.with_suffix(".log")
-
-    header = sb.read_template_header(config.SELLBRITE_TEMPLATE_CSV)
-    errors = utils.validate_all_skus(listings, config.SKU_TRACKER)
-    if errors:
-        raise ValueError("; ".join(errors))
-
-    warnings: List[str] = []
-    def row_iter():
-        for data in listings:
-            missing = [k for k in ("title", "description", "sku", "price") if not data.get(k)]
-            if not data.get("images"): missing.append("images")
-            if missing:
-                warnings.append(f"{data.get('seo_filename', 'unknown')}: Missing {', '.join(missing)}")
-            yield data
-
-    sb.export_to_csv(row_iter(), header, csv_path)
-    log_path.write_text("\n".join(warnings) if warnings else "No warnings.", encoding="utf-8")
-    return csv_path, warnings
-
-
-@bp.route("/sellbrite/csv")
-def sellbrite_csv_exports():
-    """Displays a list of generated CSV export files."""
-    exports = []
-    for csv_file in sorted(config.SELLBRITE_DIR.glob("*.csv"), key=Path.stat, reverse=True):
-        exports.append({
-            "name": csv_file.name,
-            "mtime": datetime.datetime.fromtimestamp(csv_file.stat().st_mtime),
-            "type": "Locked" if "locked" in csv_file.stem else "All",
-            "log": csv_file.with_suffix(".log").name,
-        })
-    return render_template("sellbrite_exports.html", exports=exports, menu=utils.get_menu())
-
-
-@bp.post("/sellbrite/run-csv")
-def run_sellbrite_csv_export():
-    """Triggers the generation of a Sellbrite CSV file."""
-    locked = request.form.get("locked_only") == "true"
-    try:
-        listings = _collect_listings(locked)
-        if not listings:
-            flash("No listings found to export.", "warning")
-            return redirect(url_for("exports.sellbrite_csv_exports"))
-            
-        csv_path, warns = _export_csv(listings, locked)
-        flash(f"Export created: {csv_path.name}", "success")
-        if warns:
-            flash(f"{len(warns)} listings had warnings (see log for details).", "warning")
-        log_action("sellbrite-exports", csv_path.name, session.get("username"), "CSV export created.", status="success")
-    except Exception as exc:
-        log_action("sellbrite-exports", "N/A", session.get("username"), "CSV export failed.", status="fail", error=str(exc))
-        flash(f"Export failed: {exc}", "danger")
-    return redirect(url_for("exports.sellbrite_csv_exports"))
-
-
-@bp.route("/sellbrite/download/<path:csv_filename>")
-def download_sellbrite_csv(csv_filename: str):
-    return send_from_directory(config.SELLBRITE_DIR, csv_filename, as_attachment=True)
-
-
-@bp.route("/sellbrite/preview/<path:csv_filename>")
-def preview_sellbrite_csv(csv_filename: str):
-    path = config.SELLBRITE_DIR / csv_filename
-    if not path.exists(): abort(404)
-    with open(path, newline="", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        header = next(reader, [])
-        rows = [row for i, row in enumerate(reader) if i < 20]
-    return render_template("sellbrite_csv_preview.html", csv_filename=csv_filename, header=header, rows=rows)
 
 
 @bp.route("/sellbrite/log/<path:log_filename>")

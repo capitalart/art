@@ -42,12 +42,27 @@ PORT = int(os.getenv("PORT", "7777"))
 # --- [ 2.1: OpenAI ] ---
 OPENAI_PROJECT_ID = os.getenv("OPENAI_PROJECT_ID")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Main model for both text and vision tasks (gpt-4o is multimodal)
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+OPENAI_MODEL_FALLBACK = os.getenv("OPENAI_MODEL_FALLBACK", "gpt-4-turbo")
+
+# Models specifically for image GENERATION
+OPENAI_IMAGE_MODEL = os.getenv("OPENAI_IMAGE_MODEL", "dall-e-3")
+OPENAI_IMAGE_MODEL_FALLBACK = os.getenv("OPENAI_IMAGE_MODEL_FALLBACK", "dall-e-2")
 # ... (other OpenAI models) ...
 
 # --- [ 2.2: Google Cloud ] ---
+# API Key for authenticating with Google Cloud services
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") 
+
+# The single, multimodal model for text and vision tasks
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-pro-latest")
+
+# You can keep this if other parts of your app use a generic Google API key
+# or the Google Project ID, otherwise they can be removed too.
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GOOGLE_PROJECT_ID = os.getenv("GOOGLE_PROJECT_ID")
 # ... (other Google models) ...
 
 # --- [ 2.3: Other Integrations ] ---
@@ -62,7 +77,6 @@ SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-
 
 # =============================================================================
 # 3. FOLDER STRUCTURE & CORE PATHS
@@ -114,7 +128,6 @@ MOCKUP_CATEGORISER_PROMPT_PATH = SETTINGS_DIR / "mockup_categoriser_prompt.txt" 
 OUTPUT_JSON = ART_PROCESSING_DIR / "master-artwork-paths.json"
 MOCKUP_CATEGORISATION_LOG = LOGS_DIR / "mockup_categorisation.log"
 PENDING_MOCKUPS_QUEUE_FILE = PROCESSED_ROOT / "pending_mockups.json"
-SELLBRITE_TEMPLATE_CSV = DATA_DIR / "sellbrite" / "sellbrite_template.csv"
 
 
 # =============================================================================
@@ -165,7 +178,7 @@ SKU_CONFIG = {
     "DIGITS": 4
 }
 
-# --- [ 7.4: Sellbrite CSV Export Defaults ] ---
+# --- [ 7.4: Sellbrite Export Defaults ] ---
 SELLBRITE_DEFAULTS = {
     "QUANTITY": 25,
     "CONDITION": "New",
