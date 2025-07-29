@@ -73,14 +73,14 @@
             {% if m.exists and m.thumb_exists %}
               {# Sub-subsection: Load mockup thumb and full mockup image depending on state #}
               {% if is_locked_in_vault %}
-                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=seo_folder ~ '/THUMBS/' ~ m.thumb.name) %}
-                {% set full_url = url_for('artwork.locked_image', filename=seo_folder ~ '/' ~ m.path.name) %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=m.thumb_rel) %}
+                {% set full_url = url_for('artwork.locked_image', filename=m.path_rel) %}
               {% elif finalised %}
-                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=seo_folder ~ '/THUMBS/' ~ m.thumb.name) %}
-                {% set full_url = url_for('artwork.finalised_image', filename=seo_folder ~ '/' ~ m.path.name) %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=m.thumb_rel) %}
+                {% set full_url = url_for('artwork.finalised_image', filename=m.path_rel) %}
               {% else %}
-                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=seo_folder ~ '/THUMBS/' ~ m.thumb.name) %}
-                {% set full_url = url_for('artwork.processed_image', filename=seo_folder ~ '/' ~ m.path.name) %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=m.thumb_rel) %}
+                {% set full_url = url_for('artwork.processed_image', filename=m.path_rel) %}
               {% endif %}
 
               <a href="{{ full_url ~ '?t=' ~ cache_ts }}" class="mockup-img-link" id="mockup-link-{{ m.index }}" data-img="{{ full_url ~ '?t=' ~ cache_ts }}">
