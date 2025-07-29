@@ -60,7 +60,7 @@ def swap_mockup_api():
         # --- CORRECTED URL GENERATION ---
         # The routes expect a single 'filename' or 'filepath' argument that includes the subdirectories.
         mockup_filepath = f"{seo_folder}/{new_mockup_name}"
-        thumb_filepath = f"{seo_folder}/THUMBS/{new_thumb_name}"
+        thumb_filepath = f"{seo_folder}/{config.THUMB_SUBDIR}/{new_thumb_name}"
 
         new_mockup_url = url_for('artwork.processed_image', filename=mockup_filepath)
         new_thumb_url = url_for('artwork.serve_mockup_thumb', filepath=thumb_filepath)

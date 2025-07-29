@@ -115,6 +115,13 @@ SELLBRITE_DIR = OUTPUTS_DIR / "sellbrite"
 SIGNED_DIR = OUTPUTS_DIR / "signed"
 CODEX_LOGS_DIR = Path(os.getenv("CODEX_LOGS_DIR", BASE_DIR / "CODEX-LOGS"))
 
+# Additional path aliases for easier imports
+MOCKUPS_ROOT = MOCKUPS_INPUT_DIR
+CATEGORISED_MOCKUPS_ROOT = MOCKUPS_CATEGORISED_DIR
+COMPOSITES_ROOT = COMPOSITES_DIR
+THUMB_SUBDIR = "THUMBS"
+THUMBS_ROOT = FINALISED_ROOT / THUMB_SUBDIR
+
 
 # =============================================================================
 # 4. HELPER & REGISTRY FILES
@@ -225,6 +232,11 @@ def get_mockup_categories() -> list[str]:
     return []
 
 MOCKUP_CATEGORIES = get_mockup_categories()
+
+
+def resolve_image_url(path: Path) -> str:
+    """Convert absolute path to a project-relative URL."""
+    return str(path).replace(str(BASE_DIR), "").lstrip("/")
 
 # =============================================================================
 # 9. FOLDER AUTO-CREATION
