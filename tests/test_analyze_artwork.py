@@ -1,44 +1,70 @@
-import json
+# ======================================================================================
+# FILE: tests/test_analyze_artwork.py
+# DESCRIPTION: Test /analyze API endpoint and ensure proper JSON response + cleanup
+# AUTHOR: Robbie Mode™ Patch - 2025-07-30
+# ======================================================================================
+
 import os
+import shutil
+import pytest
 from pathlib import Path
-import sys
-root_dir = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(root_dir))
-sys.path.insert(0, str(root_dir / "scripts"))
-from config import UNANALYSED_ROOT
-from unittest import mock
-os.environ.setdefault("OPENAI_API_KEY", "test")
-import analyze_artwork as aa
+from app import app
+import config
 
+# ======================================================================================
+# SECTION 1: Setup
+# ======================================================================================
 
-def dummy_openai_response(content):
-    class Choice:
-        def __init__(self, text):
-            self.message = type('m', (), {'content': text})
-    class Resp:
-        def __init__(self, text):
-            self.choices = [Choice(text)]
-    return Resp(content)
+@pytest.fixture
+def client():
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        yield client
 
+# ======================================================================================
+# SECTION 2: Test Endpoint – Analyze JSON
+# ======================================================================================
 
-def run_test():
-    sample_json = json.dumps({
-        "seo_filename": "test-artwork-by-robin-custance-rjc-0001.jpg",
-        "title": "Test Artwork – High Resolution Digital Aboriginal Print",
-        "description": "Test description " * 50,
-        "tags": ["test", "digital art"],
-        "materials": ["Digital artwork", "High resolution JPEG file"],
-        "primary_colour": "Black",
-        "secondary_colour": "Brown"
-    })
-    with mock.patch.object(aa.client.chat.completions, 'create', return_value=dummy_openai_response(sample_json)):
-        system_prompt = aa.read_onboarding_prompt()
-        img = next(UNANALYSED_ROOT.rglob('*.jpg'))
-        status = []
-        entry = aa.analyze_single(img, system_prompt, None, status)
-        print(json.dumps(entry, indent=2)[:200])
+def test_analyze_api_json(client):
+    """Test that /analyze returns a valid JSON response for test image, and cleanup after."""
 
+    # --- [ 2.0: Skip if test API key is used ] ---
+    openai_key = os.getenv("OPENAI_API_KEY", "test")
+    if openai_key.strip().lower() == "test":
+        pytest.skip("Skipping test: OPENAI_API_KEY is set to 'test'")
 
-if __name__ == '__main__':
-    run_test()
+    # --- [ 2.1: Ensure image exists ] ---
+    filename = "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring.jpg"
+    img_path = Path(config.UNANALYSED_ROOT) / filename
 
+    if not img_path.exists():
+        raise FileNotFoundError(f"Test image missing: {img_path}")
+
+    # --- [ 2.2: POST to /analyze ] ---
+    response = client.post(f"/analyze/openai/{filename}", follow_redirects=True)
+
+    # --- [ 2.3: Assert JSON returned ] ---
+    assert response.status_code == 200, "Expected HTTP 200 OK"
+    assert response.is_json, "Response should be JSON"
+
+    json_data = response.get_json()
+    assert "listing" in json_data, "JSON missing 'listing' key"
+    assert json_data["listing"].get("title"), "Missing title in listing"
+    assert json_data["listing"].get("description"), "Missing description in listing"
+
+# ======================================================================================
+# SECTION 3: Post-Test Cleanup
+# ======================================================================================
+
+def teardown_module(module):
+    """Clean up unanalysed-artwork test folders after tests run."""
+    patterns = ["test-", "sample-", "good-", "bad-"]
+    root = Path(config.UNANALYSED_ROOT)
+
+    for folder in root.iterdir():
+        if folder.is_dir() and any(folder.name.startswith(p) for p in patterns):
+            try:
+                shutil.rmtree(folder)
+                print(f"✅ Removed test folder: {folder}")
+            except Exception as e:
+                print(f"⚠️ Could not delete {folder}: {e}")

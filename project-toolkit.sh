@@ -117,15 +117,6 @@ local_backup() {
 # SECTION 4: TESTING, HEALTH & QA
 # ======================================================================================
 
-run_full_test_suite() {
-  log INFO "Running full test suite..."
-  [[ -d tests ]] || { log WARN "No 'tests' directory. Skipping tests."; return; }
-  [[ -d venv ]] || die "Python venv not found!"
-  source venv/bin/activate || die "Failed to activate venv!"
-  python3 -m pytest tests/ || die "One or more tests failed."
-  log SUCCESS "All tests passed."
-}
-
 health_and_deps_check() {
   log INFO "Running Health Check..."
   [[ -d venv ]] || die "Python venv not found!"
@@ -144,6 +135,37 @@ check_api_connections() {
   source venv/bin/activate || die "Venv activation failed!"
   python3 "$test_script" | tee -a "$LOG_FILE"
 }
+
+# ==============================================================================
+# SECTION 4.1 — TEST RUNNER: Full Test Suite with PYTHONPATH + Logging
+# Purpose: Runs all tests inside /tests, ensures environment is valid,
+# activates the virtual environment, and enforces clean test runs.
+# ==============================================================================
+
+run_full_test_suite() {
+  log INFO "Running full test suite..."
+
+  # --- [ 4.1.1: Check 'tests' folder exists ] ---
+  [[ -d tests ]] || {
+    log WARN "No 'tests' directory found. Skipping tests."
+    return
+  }
+
+  # --- [ 4.1.2: Ensure virtual environment exists and activate it ] ---
+  [[ -d venv ]] || die "Python venv not found!"
+  source venv/bin/activate || die "Failed to activate virtual environment!"
+
+  # --- [ 4.1.3: Fix Module Import Errors (e.g. routes.*) via PYTHONPATH override ] ---
+  export PYTHONPATH="/home/art"
+  log INFO "Set PYTHONPATH to: $PYTHONPATH"
+
+  # --- [ 4.1.4: Run pytest and abort if failures occur ] ---
+  python3 -m pytest tests/ || die "One or more tests failed."
+
+  # --- [ 4.1.5: Confirmation of success ] ---
+  log SUCCESS "All tests passed."
+}
+
 
 # ======================================================================================
 # SECTION 5: CHATBOT SNAPSHOT EXPORT
