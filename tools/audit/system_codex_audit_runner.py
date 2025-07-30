@@ -1,84 +1,85 @@
-"""tools/audit/system_codex_audit_runner.py
-Whole App Introspector that optionally feeds the codebase into OpenAI Codex.
+#!/usr/bin/env python3
+"""
+System Codex Audit Runner
+=========================
+This script uses OpenAI GPT-4 Turbo to audit your system codebase.
+It provides architecture summaries, highlights fragile code, and flags risks.
 
 INDEX
 -----
-1. Imports
-2. File Gathering Helpers
-3. Codex Interaction
-4. Markdown Writers
-5. CLI Entry Point
+1. Imports & Setup
+2. Main Audit Functions
+3. Command-Line Execution
 """
 
-# ===========================================================================
-# 1. Imports
-# ===========================================================================
-from __future__ import annotations
-
-import argparse
+# ============================================================================
+# 1. Imports & Setup
+# ============================================================================
+import os
 import json
+import argparse
 from pathlib import Path
-from typing import Dict, List
-
-import pathspec
+import pathspec  # Used for .gitignore matching
 
 try:
-    import openai
-except Exception:  # pragma: no cover - optional dependency
-    openai = None
-
-# ===========================================================================
-# 2. File Gathering Helpers
-# ===========================================================================
-
-IGNORE_DIRS = {".git", "venv", ".venv", "env", "node_modules", "__pycache__"}
+    from openai import OpenAI
+    client = OpenAI()
+except Exception:
+    client = None
 
 
-def load_gitignore(root: Path) -> pathspec.PathSpec:
-    gitignore_file = root / ".gitignore"
-    if gitignore_file.exists():
-        patterns = gitignore_file.read_text().splitlines()
-        return pathspec.PathSpec.from_lines("gitwildmatch", patterns)
-    return pathspec.PathSpec.from_lines("gitwildmatch", [])
+# ============================================================================
+# 2. Main Audit Functions
+# ============================================================================
 
+def load_all_code_files(root: Path, exclude_patterns=None) -> dict:
+    """
+    Scans and loads all source files under the project root,
+    excluding paths matched by .gitignore or custom patterns.
+    """
+    code_map = {}
+    exclude_patterns = exclude_patterns or []
 
-def gather_python_files(root: Path, spec: pathspec.PathSpec) -> List[Path]:
-    files: List[Path] = []
+    # Use .gitignore if present
+    gitignore_path = root / ".gitignore"
+    if gitignore_path.exists():
+        with open(gitignore_path, "r") as f:
+            exclude_patterns += f.read().splitlines()
+
+    spec = pathspec.PathSpec.from_lines("gitwildmatch", exclude_patterns)
+
     for path in root.rglob("*.py"):
-        relative = path.relative_to(root)
-        if any(part in IGNORE_DIRS for part in relative.parts):
+        rel_path = path.relative_to(root)
+        if spec.match_file(str(rel_path)):
             continue
-        if spec.match_file(str(relative)):
-            continue
-        files.append(path)
-    return files
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                code_map[str(rel_path)] = f.read()
+        except Exception as e:
+            print(f"⚠️ Could not read {path}: {e}")
+    return code_map
 
 
-def collect_contents(files: List[Path], root: Path) -> Dict[str, str]:
-    data: Dict[str, str] = {}
-    for f in files:
-        data[str(f.relative_to(root))] = f.read_text(encoding="utf-8")
-    return data
+def run_codex_analysis(code_map: dict, summarise_risks: bool = False) -> dict:
+    """
+    Sends project source code to GPT-4 Turbo to generate:
+    - Architectural summary
+    - Risk identification (optional)
+    """
+    if not client:
+        raise RuntimeError("❌ OpenAI SDK not available or failed to initialize.")
 
-# ===========================================================================
-# 3. Codex Interaction
-# ===========================================================================
-
-def run_codex_analysis(code_map: Dict[str, str], summarise_risks: bool) -> Dict[str, str]:
-    if openai is None:
-        raise RuntimeError("openai package not available")
-
+    # Build message for Codex summary
     messages = [
-        {
-            "role": "system",
-            "content": (
-                "You are a senior Python architect. Summarise the project architecture, workflows, and key modules."
-            ),
-        },
+        {"role": "system", "content": "Summarise the architecture and workflows."},
         {"role": "user", "content": json.dumps(code_map)[:12000]},
     ]
-    response = openai.ChatCompletion.create(model="gpt-4-turbo", messages=messages)
-    summary = response.choices[0].message.content  # type: ignore[index]
+    response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=messages,
+        temperature=0.2,
+    )
+    summary = response.choices[0].message.content  # type: ignore
 
     risks = ""
     if summarise_risks:
@@ -86,46 +87,55 @@ def run_codex_analysis(code_map: Dict[str, str], summarise_risks: bool) -> Dict[
             {"role": "system", "content": "Identify risks or fragile code."},
             {"role": "user", "content": json.dumps(code_map)[:12000]},
         ]
-        risk_response = openai.ChatCompletion.create(model="gpt-4-turbo", messages=risk_messages)
-        risks = risk_response.choices[0].message.content  # type: ignore[index]
+        risk_response = client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=risk_messages,
+            temperature=0.1,
+        )
+        risks = risk_response.choices[0].message.content  # type: ignore
 
     return {"summary": summary, "risks": risks}
 
-# ===========================================================================
-# 4. Markdown Writers
-# ===========================================================================
 
-def write_outputs(result: Dict[str, str], output_dir: Path, summarise_risks: bool) -> None:
-    (output_dir / "system_codex_summary.md").write_text(result.get("summary", ""), encoding="utf-8")
-    if summarise_risks and result.get("risks"):
-        (output_dir / "system_codex_risks.md").write_text(result["risks"], encoding="utf-8")
-
-# ===========================================================================
-# 5. CLI Entry Point
-# ===========================================================================
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Whole App Introspector")
-    parser.add_argument("--openai", action="store_true", help="Send code to OpenAI for analysis")
-    parser.add_argument("--summarise-risks", action="store_true", help="Generate risk analysis")
-    parser.add_argument("--dry-run", action="store_true", help="Do not call OpenAI (default)")
+# ============================================================================
+# 3. Command-Line Execution
+# ============================================================================
+def main():
+    parser = argparse.ArgumentParser(description="System Codex Audit Runner")
+    parser.add_argument(
+        "--summarise-risks",
+        action="store_true",
+        help="Also generate risk/failure-prone code identification",
+    )
     args = parser.parse_args()
 
-    root = Path.cwd()
-    spec = load_gitignore(root)
-    files = gather_python_files(root, spec)
-    contents = collect_contents(files, root)
+    root_dir = Path(os.getenv("PROJECT_ROOT", Path.cwd()))
+    print(f"[INFO] Scanning source files in: {root_dir}")
 
-    output_dir = root / "audit-output"
-    output_dir.mkdir(exist_ok=True)
+    contents = load_all_code_files(root_dir)
+    print(f"[INFO] {len(contents)} files loaded for audit.")
 
-    if args.openai and not args.dry_run:
-        result = run_codex_analysis(contents, args.summarise_risks)
-    else:
-        result = {"summary": "(dry run)" , "risks": ""}
+    result = run_codex_analysis(contents, args.summarise_risks)
 
-    write_outputs(result, output_dir, args.summarise_risks)
+    # Output results to stdout and optional file
+    print("\n📋 Codex System Summary:\n")
+    print(result["summary"])
+    if args.summarise_risks:
+        print("\n⚠️  Risk & Fragile Code Areas:\n")
+        print(result["risks"])
+
+    # Save results to file
+    audit_dir = Path("logs/audit/")
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    summary_path = audit_dir / "codex-system-summary.md"
+    with open(summary_path, "w", encoding="utf-8") as f:
+        f.write("# Codex System Summary\n\n")
+        f.write(result["summary"])
+        if args.summarise_risks:
+            f.write("\n\n# Risks and Fragile Areas\n\n")
+            f.write(result["risks"])
+    print(f"\n✅ Summary saved to {summary_path}")
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     main()
