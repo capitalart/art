@@ -1258,5 +1258,85 @@
       }
     ],
     "upload_date": "2025-07-30T04:53:34.469912+00:00"
+  },
+  "b25049b9ce364543addac0fc3752c379": {
+    "seo_filename": "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-fb7cc0a8.jpg",
+    "base": "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-fb7cc0a8",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-c7d37239",
+    "assets": [
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-fb7cc0a8.jpg",
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-fb7cc0a8-thumb.jpg",
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-fb7cc0a8-analyse.jpg",
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-fb7cc0a8.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-2-c7d37239",
+        "timestamp": "2025-07-30T04:54:26.553437+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T04:54:26.553437+00:00"
+  },
+  "002f5946bfcd463ba784b666e9c673d9": {
+    "seo_filename": "test-251257eb.jpg",
+    "base": "test-251257eb",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-ed4b2a6d",
+    "assets": [
+      "test-251257eb.jpg",
+      "test-251257eb-thumb.jpg",
+      "test-251257eb-analyse.jpg",
+      "test-251257eb.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/test-ed4b2a6d",
+        "timestamp": "2025-07-30T05:03:31.287011+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T05:03:31.287011+00:00"
+  },
+  "275e4e7c6b454fbbbf130f122130d548": {
+    "seo_filename": "good-0084dc86.jpg",
+    "base": "good-0084dc86",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-b2a10c99",
+    "assets": [
+      "good-0084dc86.jpg",
+      "good-0084dc86-thumb.jpg",
+      "good-0084dc86-analyse.jpg",
+      "good-0084dc86.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/good-b2a10c99",
+        "timestamp": "2025-07-30T05:03:31.332375+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T05:03:31.332375+00:00"
+  },
+  "ebd389fab8d94a9898deeeb533d31790": {
+    "seo_filename": "sample-fed163bd.jpg",
+    "base": "sample-fed163bd",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-0098008f",
+    "assets": [
+      "sample-fed163bd.jpg",
+      "sample-fed163bd-thumb.jpg",
+      "sample-fed163bd-analyse.jpg",
+      "sample-fed163bd.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-0098008f",
+        "timestamp": "2025-07-30T05:03:31.448681+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T05:03:31.448681+00:00"
   }
 }

@@ -27,6 +27,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Stre
 from sqlalchemy.orm import Session
 from starlette.datastructures import URL
 from starlette.routing import NoMatchFound
+from scripts.auto_register_missing_artworks import register_missing_artworks_internal
 import openai
 
 from .. import crud
@@ -261,6 +262,7 @@ async def trigger_ai_analysis_route(
 # === [ End of Section 4b | PATCHED FOR TYPE SAFETY ] ===
 
 # === [ analyze-routes-py-5: AI Analysis Form Submission Route ] ===
+register_missing_artworks_internal()
 @router.post("/process-analysis-vision/", name="process_analysis_form_submission_vision_original")
 async def process_analysis_form_submission_original_vision_route(
     request: Request, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_active_user),
