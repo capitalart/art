@@ -838,5 +838,65 @@
       }
     ],
     "upload_date": "2025-07-30T01:39:11.853043+00:00"
+  },
+  "e170c9497f1e4e6b9365a8a2e14fc033": {
+    "seo_filename": "test-5c1abf06.jpg",
+    "base": "test-5c1abf06",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-e1409a2f",
+    "assets": [
+      "test-5c1abf06.jpg",
+      "test-5c1abf06-thumb.jpg",
+      "test-5c1abf06-analyse.jpg",
+      "test-5c1abf06.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/test-e1409a2f",
+        "timestamp": "2025-07-30T01:47:56.673426+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T01:47:56.673426+00:00"
+  },
+  "97fd9a75e790414583574c2e22057cd8": {
+    "seo_filename": "good-3d6dc5aa.jpg",
+    "base": "good-3d6dc5aa",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-b5e00636",
+    "assets": [
+      "good-3d6dc5aa.jpg",
+      "good-3d6dc5aa-thumb.jpg",
+      "good-3d6dc5aa-analyse.jpg",
+      "good-3d6dc5aa.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/good-b5e00636",
+        "timestamp": "2025-07-30T01:47:56.717713+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T01:47:56.717713+00:00"
+  },
+  "0d937088a6274c4fbae1dedf8005416b": {
+    "seo_filename": "sample-0cd91c1a.jpg",
+    "base": "sample-0cd91c1a",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-308b97e8",
+    "assets": [
+      "sample-0cd91c1a.jpg",
+      "sample-0cd91c1a-thumb.jpg",
+      "sample-0cd91c1a-analyse.jpg",
+      "sample-0cd91c1a.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-308b97e8",
+        "timestamp": "2025-07-30T01:47:56.830862+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T01:47:56.830862+00:00"
   }
 }

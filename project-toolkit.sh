@@ -136,39 +136,40 @@ check_api_connections() {
   python3 "$test_script" | tee -a "$LOG_FILE"
 }
 
-# ==============================================================================
-# SECTION 4.1 — TEST RUNNER: Full Test Suite with PYTHONPATH + Logging
-# Purpose: Runs all tests inside /tests, ensures environment is valid,
-# activates the virtual environment, and enforces clean test runs.
-# ==============================================================================
-
 run_full_test_suite() {
   log INFO "Running full test suite..."
 
-  # --- [ 4.1.1: Check 'tests' folder exists ] ---
   [[ -d tests ]] || {
     log WARN "No 'tests' directory found. Skipping tests."
     return
   }
 
-  # --- [ 4.1.2: Ensure virtual environment exists and activate it ] ---
   [[ -d venv ]] || die "Python venv not found!"
   source venv/bin/activate || die "Failed to activate virtual environment!"
-
-  # --- [ 4.1.3: Fix Module Import Errors (e.g. routes.*) via PYTHONPATH override ] ---
   export PYTHONPATH="/home/art"
   log INFO "Set PYTHONPATH to: $PYTHONPATH"
 
-  # --- [ 4.1.4: Run pytest and abort if failures occur ] ---
   python3 -m pytest tests/ || die "One or more tests failed."
-
-  # --- [ 4.1.5: Confirmation of success ] ---
   log SUCCESS "All tests passed."
+
+  # --- [ 4.1.6: Cleanup Test Artefacts ] ---
+  cleanup_test_folders
 }
 
+# ======================================================================================
+# SECTION 5: CLEANUP TASKS
+# ======================================================================================
+
+cleanup_test_folders() {
+  local TEST_ART_PATH="art-processing/unanalysed-artwork"
+  log INFO "Cleaning up test folders in: $TEST_ART_PATH"
+  find "$TEST_ART_PATH" -type d \( -name "test-*" -o -name "sample-*" -o -name "good-*" -o -name "bad-*" \) -exec rm -rf {} + || true
+  find "$TEST_ART_PATH" -type f \( -name "*.qc.json" -o -name "*.test.json" \) -delete || true
+  log SUCCESS "Test folders and test json files cleaned up."
+}
 
 # ======================================================================================
-# SECTION 5: CHATBOT SNAPSHOT EXPORT
+# SECTION 6: CHATBOT SNAPSHOT EXPORT
 # ======================================================================================
 
 gather_recent_logs() {
@@ -197,7 +198,7 @@ gather_recent_logs() {
 }
 
 # ======================================================================================
-# SECTION 6: MENU SYSTEM
+# SECTION 7: MENU SYSTEM
 # ======================================================================================
 
 main_menu() {
@@ -246,11 +247,13 @@ cleanup_menu() {
   echo -e "\n--------------------------\nCLEANUP MENU\n--------------------------"
   echo "  [1] Delete all *.md code stack reports"
   echo "  [2] Delete all *.log toolkit logs"
+  echo "  [3] Clean up leftover test uploads"
   echo "  [0] Back to Main Menu"
   read -rp "Select: " sel
   case "$sel" in
     1) rm -f code-stack-*.md && log SUCCESS "Deleted *.md reports." ;;
     2) rm -f "$LOG_DIR"/*.log && log SUCCESS "Deleted toolkit logs." ;;
+    3) cleanup_test_folders ;;
     0) return ;;
     *) echo "Invalid selection." ;;
   esac
@@ -269,7 +272,7 @@ run_code_stack() {
 }
 
 # ======================================================================================
-# SECTION 7: MAIN EXECUTION
+# SECTION 8: MAIN EXECUTION
 # ======================================================================================
 
 log INFO "Project Toolkit Initialised – Launching Main Menu..."
