@@ -92,3 +92,7 @@ def register_missing_artworks() -> None:
 
 if __name__ == "__main__":
     register_missing_artworks()
+
+def register_missing_artworks_internal():
+    """Callable version for FastAPI integration."""
+    register_missing_artworks()
