@@ -370,8 +370,8 @@ def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
     artwork = {
         "title": data.get("title", prettify_slug(seo_folder)),
         "description": data.get("description", ""),
-        "tags": join_csv_list(data.get("tags", [])),
-        "materials": join_csv_list(data.get("materials", [])),
+        "tags": ", ".join(data.get("tags", [])),
+        "materials": ", ".join(data.get("materials", [])),
         "primary_colour": data.get("primary_colour", ""),
         "secondary_colour": data.get("secondary_colour", ""),
         "seo_filename": data.get("seo_filename", f"{seo_folder}.jpg"),
@@ -532,14 +532,6 @@ def slugify(text: str) -> str:
 def prettify_slug(slug: str) -> str:
     name = os.path.splitext(slug)[0].replace("-", " ").replace("_", " ")
     return re.sub(r"\s+", " ", name).title()
-
-def parse_csv_list(text: str) -> List[str]:
-    if not text: return []
-    reader = csv.reader([text], skipinitialspace=True)
-    return [item.strip() for item in next(reader, []) if item.strip()]
-
-def join_csv_list(items: List[str]) -> str:
-    return ", ".join(item.strip() for item in items if item.strip())
 
 def clean_terms(items: List[str]) -> Tuple[List[str], bool]:
     cleaned: List[str] = []
