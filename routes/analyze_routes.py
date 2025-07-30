@@ -16,6 +16,7 @@ import csv
 from io import StringIO
 import math
 import asyncio
+import subprocess
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple, Union, Callable
@@ -29,6 +30,7 @@ from starlette.datastructures import URL
 from starlette.routing import NoMatchFound
 from scripts.auto_register_missing_artworks import register_missing_artworks_internal
 import openai
+import config
 
 from .. import crud
 from ..models import Artwork, User as UserModel
@@ -281,6 +283,18 @@ async def process_analysis_form_submission_original_vision_route(
 
     analyze_page_url = str(request.url_for('analyze_artworks_page'))
 
+    # Preflight: ensure database registry matches disk contents
+    try:
+        subprocess.run(
+            [
+                "python3",
+                str(config.SCRIPTS_DIR / "auto_register_missing_artworks.py"),
+            ],
+            check=True,
+        )
+    except Exception as e:
+        logger.warning(f"Auto-registration script failed: {e}")
+
     # -------------------------------------------------------------------------
     # 1. Lookup artwork in DB
     # -------------------------------------------------------------------------
@@ -369,10 +383,17 @@ async def process_analysis_form_submission_original_vision_route(
     # 5. Trigger mockup generation from finalized file
     # -------------------------------------------------------------------------
     try:
-        from scripts.generate_composites import generate_composites_for_artwork
-        result = generate_composites_for_artwork(artwork_db.seo_filename)
-        if not result.get("success"):
-            logger.warning(f"Mockup generation warning: {result.get('message')}")
+        aspect_folder = artwork_db.aspect_ratio or "4x5"
+        seo_name = Path(artwork_db.seo_filename).name
+        subprocess.run(
+            [
+                "python3",
+                str(config.GENERATE_SCRIPT_PATH),
+                aspect_folder,
+                seo_name,
+            ],
+            check=True,
+        )
     except Exception as e:
         logger.error(f"Mockup generation failed after analysis: {e}", exc_info=True)
 
@@ -381,8 +402,12 @@ async def process_analysis_form_submission_original_vision_route(
     # -------------------------------------------------------------------------
     try:
         aspect_folder = artwork_db.aspect_ratio or "4x5"
-        seo_filename = Path(artwork_db.seo_filename).stem
-        edit_url = f"/edit-listing/{aspect_folder}/{seo_filename}.jpg"
+        seo_filename = Path(artwork_db.seo_filename).name
+        edit_url = request.url_for(
+            "edit_listing.edit_listing",
+            aspect=aspect_folder,
+            filename=seo_filename,
+        )
         logger.info(f"Redirecting to listing editor: {edit_url}")
         return RedirectResponse(url=edit_url, status_code=status.HTTP_303_SEE_OTHER)
     except Exception as e:
