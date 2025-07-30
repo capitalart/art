@@ -161,12 +161,21 @@ run_full_test_suite() {
 # ======================================================================================
 
 cleanup_test_folders() {
-  local TEST_ART_PATH="art-processing/unanalysed-artwork"
-  log INFO "Cleaning up test folders in: $TEST_ART_PATH"
-  find "$TEST_ART_PATH" -type d \( -name "test-*" -o -name "sample-*" -o -name "good-*" -o -name "bad-*" \) -exec rm -rf {} + || true
-  find "$TEST_ART_PATH" -type f \( -name "*.qc.json" -o -name "*.test.json" \) -delete || true
-  log SUCCESS "Test folders and test json files cleaned up."
+  local TEST_UNANALYSED="art-processing/unanalysed-artwork"
+  local TEST_PROCESSED="art-processing/processed-artwork"
+
+  # --- Cleanup unanalysed test folders and files ---
+  log INFO "Cleaning up test folders in: $TEST_UNANALYSED"
+  find "$TEST_UNANALYSED" -type d \( -name "test-*" -o -name "sample-*" -o -name "good-*" -o -name "bad-*" \) -exec rm -rf {} + || true
+  find "$TEST_UNANALYSED" -type f \( -name "*.qc.json" -o -name "*.test.json" \) -delete || true
+
+  # --- Cleanup leftover processed dummy folders ---
+  log INFO "Removing leftover processed test folders: first-artwork, second-artwork"
+  rm -rf "$TEST_PROCESSED/first-artwork" "$TEST_PROCESSED/second-artwork" || true
+
+  log SUCCESS "Test artefacts and dummy processed folders cleaned up."
 }
+
 
 # ======================================================================================
 # SECTION 6: CHATBOT SNAPSHOT EXPORT
