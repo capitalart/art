@@ -1018,5 +1018,85 @@
       }
     ],
     "upload_date": "2025-07-30T01:52:29.095964+00:00"
+  },
+  "84882267330e4c45bc060978916aff60": {
+    "seo_filename": "riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-e5fff1a0.jpg",
+    "base": "riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-e5fff1a0",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-88f64215",
+    "assets": [
+      "riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-e5fff1a0.jpg",
+      "riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-e5fff1a0-thumb.jpg",
+      "riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-e5fff1a0-analyse.jpg",
+      "riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-e5fff1a0.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/riverbank-with-reeds-generate-an-aboriginal-dot-painting-of-a-calm-riverbank-with-tall-reeds-and-wat-1-88f64215",
+        "timestamp": "2025-07-30T01:53:32.046321+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T01:53:32.046321+00:00"
+  },
+  "2597812e691e4ac8a6e50cb7cd585434": {
+    "seo_filename": "test-ccee7671.jpg",
+    "base": "test-ccee7671",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-a007a146",
+    "assets": [
+      "test-ccee7671.jpg",
+      "test-ccee7671-thumb.jpg",
+      "test-ccee7671-analyse.jpg",
+      "test-ccee7671.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/test-a007a146",
+        "timestamp": "2025-07-30T03:05:45.250206+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T03:05:45.250206+00:00"
+  },
+  "617e2857c01446c29eff43a1642f14da": {
+    "seo_filename": "good-4900a73e.jpg",
+    "base": "good-4900a73e",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-52f1a6b3",
+    "assets": [
+      "good-4900a73e.jpg",
+      "good-4900a73e-thumb.jpg",
+      "good-4900a73e-analyse.jpg",
+      "good-4900a73e.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/good-52f1a6b3",
+        "timestamp": "2025-07-30T03:05:45.295961+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T03:05:45.295961+00:00"
+  },
+  "daf0711843a1432f845b562ab37f9bf4": {
+    "seo_filename": "sample-c3034f4d.jpg",
+    "base": "sample-c3034f4d",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-06f3bd4e",
+    "assets": [
+      "sample-c3034f4d.jpg",
+      "sample-c3034f4d-thumb.jpg",
+      "sample-c3034f4d-analyse.jpg",
+      "sample-c3034f4d.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-06f3bd4e",
+        "timestamp": "2025-07-30T03:05:45.412406+00:00"
+      }
+    ],
+    "upload_date": "2025-07-30T03:05:45.412406+00:00"
   }
 }

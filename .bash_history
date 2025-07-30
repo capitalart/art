@@ -543,3 +543,15 @@ source venv/bin/activate
 sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
 bash /home/art/project-toolkit.sh
 pip install --upgrade pip
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+grep -r "def analyze_openai" routes/
+./code-stacker.sh
+source /home/art/venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+./code-stacker.sh
+./project-toolkit.sh
+chmod +x project-toolkit.sh
+./project-toolkit.sh
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
