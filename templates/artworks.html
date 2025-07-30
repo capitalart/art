@@ -14,7 +14,7 @@
     <h2 class="mb-3">Ready to Analyze</h2>
     <div class="artwork-grid">
       {% for art in ready_artworks %}
-      <div class="gallery-card" data-filename="{{ art.filename }}">
+      <div class="gallery-card" data-filename="{{ art.filename }}" data-aspect="{{ art.aspect }}">
         <div class="card-thumb">
           <img class="card-img-top"
                src="{{ url_for('artwork.unanalysed_image', filename=art.thumb) }}"
@@ -40,10 +40,10 @@
     <h2 class="mb-3 mt-5">Processed Artworks</h2>
     <div class="artwork-grid">
       {% for art in processed_artworks %}
-      <div class="gallery-card" data-filename="{{ art.filename }}">
+      <div class="gallery-card" data-filename="{{ art.filename }}" data-aspect="{{ art.aspect }}">
         <div class="card-thumb">
           <img class="card-img-top"
-               src="{{ url_for('artwork.processed_image', seo_folder=art.seo_folder, filename=art.thumb) }}"
+               src="{{ url_for('artwork.processed_image', filename=art.seo_folder ~ '/' ~ art.thumb) }}"
                alt="{{ art.title }}">
         </div>
         <span class="status-icon"></span>
@@ -67,10 +67,10 @@
     <h2 class="mb-3 mt-5">Finalised Artworks</h2>
     <div class="artwork-grid">
       {% for art in finalised_artworks %}
-      <div class="gallery-card" data-filename="{{ art.filename }}">
+      <div class="gallery-card" data-filename="{{ art.filename }}" data-aspect="{{ art.aspect }}">
         <div class="card-thumb">
           <img class="card-img-top"
-               src="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=art.thumb) }}"
+               src="{{ url_for('artwork.finalised_image', filename=art.seo_folder ~ '/' ~ art.thumb) }}"
                alt="{{ art.title }}">
         </div>
         <span class="status-icon"></span>

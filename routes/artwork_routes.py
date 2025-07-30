@@ -32,7 +32,7 @@ INDEX
 
 # This file now references all path, directory, and filename variables strictly from config.py.
 from __future__ import annotations
-import json, subprocess, uuid, random, logging, shutil, os, traceback, datetime, time
+import json, subprocess, uuid, random, logging, shutil, os, traceback, datetime, time, sys
 from pathlib import Path
 
 # --- Local Application Imports ---
@@ -170,10 +170,12 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
 
     if provider == "openai":
         script_path = config.SCRIPTS_DIR / "analyze_artwork.py"
-        cmd = ["python3", str(script_path), str(img_path), "--provider", "openai", "--json-output"]
+        # --- MODIFIED: Use sys.executable to ensure the correct Python interpreter ---
+        cmd = [sys.executable, str(script_path), str(img_path), "--provider", "openai", "--json-output"]
     elif provider == "google":
         script_path = config.SCRIPTS_DIR / "analyze_artwork_google.py"
-        cmd = ["python3", str(script_path), str(img_path)]
+        # --- MODIFIED: Use sys.executable for consistency ---
+        cmd = [sys.executable, str(script_path), str(img_path)]
     else:
         raise ValueError(f"Unknown provider: {provider}")
 
@@ -205,13 +207,14 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
 
 def _generate_composites(seo_folder: str, log_id: str) -> None:
     """Triggers the composite generation script."""
-    cmd = ["python3", str(utils.GENERATE_SCRIPT_PATH)]
+    # --- MODIFIED: Use sys.executable for consistency and reliability ---
+    cmd = [sys.executable, str(config.GENERATE_SCRIPT_PATH)]
     result = subprocess.run(
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
-        cwd=utils.BASE_DIR,
+        cwd=config.BASE_DIR,
         timeout=600,
     )
     composite_log = utils.LOGS_DIR / f"composite_gen_{log_id}.log"
@@ -302,20 +305,22 @@ def upload_artwork():
     """Handle new artwork file uploads and run pre-QC checks."""
     if request.method == "POST":
         files = request.files.getlist("images")
-        folder = create_unanalysed_subfolder()
         results, successes = [], []
         user = session.get("username")
+        
         for f in files:
+            # Create a unique folder for each file inside the loop
+            folder = create_unanalysed_subfolder(f.filename)
             try:
                 res = _process_upload_file(f, folder)
             except Exception as exc:
                 logging.getLogger(__name__).error("Upload failed for %s: %s", f.filename, exc)
                 res = {"original": f.filename, "success": False, "error": str(exc)}
+            
             status = "success" if res.get("success") else "fail"
             log_action("upload", res.get("original", f.filename), user, res.get("error", "uploaded"), status=status)
             results.append(res)
         
-        # --- FIX: Restore JSON response logic for API-style uploads ---
         if (request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html):
             return jsonify(results)
         
@@ -326,6 +331,7 @@ def upload_artwork():
             flash(f"{f['original']}: {f['error']}", "danger")
 
         return redirect(url_for("artwork.artworks"))
+        
     return render_template("upload.html", menu=utils.get_menu())
 
 
@@ -342,7 +348,7 @@ def artworks():
         finalised_artworks=finalised,
         menu=utils.get_menu(),
     )
-
+    
 
 # ===========================================================================
 # 6. Mockup Selection Workflow Routes
