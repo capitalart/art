@@ -313,8 +313,25 @@ def analyze_single(image_path: Path):
         # Step 4: Query OpenAI for listing metadata
         ai_listing, raw_response = generate_ai_listing(optimized_img_path, aspect, assigned_sku)
 
-        # Step 5: Create SEO name from title or fallback to filename
-        seo_name = slugify(ai_listing.get("title", image_path.stem))
+        # --- MODIFICATION START ---
+        # Step 5: Clean the AI-generated title before creating the SEO folder name (slug)
+        raw_title = ai_listing.get("title", image_path.stem)
+        
+        # List of generic phrases to remove from the title before creating the filename slug
+        phrases_to_remove = [
+            "High Resolution", "Digital Download", "Digital Print", "Artwork by Robin Custance",
+            "Instant Download", "Printable", "Wall Art", "Dot Art", "Aboriginal Print",
+            "Australian Wall Art", "—", "|"
+        ]
+        
+        # Clean the title by removing the phrases (case-insensitive)
+        clean_title_for_slug = raw_title
+        for phrase in phrases_to_remove:
+            clean_title_for_slug = re.sub(phrase, "", clean_title_for_slug, flags=re.IGNORECASE).strip()
+        
+        # Use the cleaned title for the slug, but fallback to the original if it becomes empty
+        seo_name = slugify(clean_title_for_slug if clean_title_for_slug else raw_title)
+        # --- MODIFICATION END ---
 
         # Step 6: Save main and thumbnail artwork files
         file_paths = save_artwork_files(image_path, seo_name)
@@ -329,7 +346,7 @@ def analyze_single(image_path: Path):
             "filename": image_path.name,
             "aspect_ratio": aspect,
             "sku": assigned_sku,
-            "title": ai_listing.get("title", "Untitled Artwork"),
+            "title": raw_title, # Use the original, full title for the listing data
             "description": final_description,
             "tags": ai_listing.get("tags", []),
             "materials": ai_listing.get("materials", []),

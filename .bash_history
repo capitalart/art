@@ -501,3 +501,45 @@ sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl
 source /home/art/venv/bin/activate
 sudo systemctl stop gunicorn && sudo systemctl start gunicorn && sudo journalctl -u gunicorn -f
 sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn
+sudo systemctl start gunicorn
+sudo systemctl status gunicorn
+sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+./code-stacker.sh
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl cat gunicorn.service
+./project-toolkit.sh
+./code-stacker.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./code-stacker.sh
+./project-toolkit.sh
+deactivate
+source venv/bin/activate
+/home/art/venv/bin/gunicorn --config /home/art/gunicorn.conf.py app:app
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn 
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl cat gunicorn.service
+/home/art/venv/bin/gunicorn --config /home/art/gunicorn.conf.py app:app
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./code-stacker.sh
+./project-push.sh
+source venv/bin/activate
+./project-push.sh
+ls
+git remote -v
+git checkout main
+git pull origin main --rebase --autostash
+cd art
+source venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+bash /home/art/project-toolkit.sh
+pip install --upgrade pip

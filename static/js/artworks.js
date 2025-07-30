@@ -78,11 +78,18 @@ function runAnalyze(card, provider, filename) {
   if (window.AnalysisModal) window.AnalysisModal.open();
   showOverlay(card, `Analyzing…`);
 
-  const actionUrl = `/analyze-${provider}/${encodeURIComponent(filename)}`;
+  // Get the aspect ratio from the card's data attribute
+  const aspect = card.dataset.aspect;
+  // Build the correct URL
+  const actionUrl = `/analyze/${encodeURIComponent(aspect)}/${encodeURIComponent(filename)}`;
+
+  const formData = new FormData();
+  formData.append('provider', provider);
 
   fetch(actionUrl, {
     method: 'POST',
-    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    body: formData
   })
   .then(resp => {
     if (!resp.ok) {
@@ -91,11 +98,11 @@ function runAnalyze(card, provider, filename) {
     return resp.json();
   })
   .then(data => {
-    if (data.success && data.edit_url) {
+    if (data.success && data.redirect_url) {
       if (window.AnalysisModal) window.AnalysisModal.setMessage('Complete! Redirecting...');
-      // Wait a moment before redirecting so the user sees the "Complete" message
+      // Wait a moment before redirecting
       setTimeout(() => {
-        window.location.href = data.edit_url;
+        window.location.href = data.redirect_url;
       }, 1200);
     } else {
       throw new Error(data.error || 'Analysis failed to return a valid redirect URL.');
@@ -103,7 +110,6 @@ function runAnalyze(card, provider, filename) {
   })
   .catch(error => {
     console.error('Analysis fetch error:', error);
-    // Display the error inside the modal for the user
     if (window.AnalysisModal) window.AnalysisModal.setMessage(`Error: ${error.error || 'A server error occurred.'}`);
     hideOverlay(card);
   });

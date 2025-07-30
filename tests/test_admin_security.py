@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 os.environ.setdefault("OPENAI_API_KEY", "test")
 
 # Import necessary utilities
-from utils import user_manager
+from utils import user_manager, session_tracker
 
 
 def setup_app(tmp_path):
@@ -32,10 +32,12 @@ def login(client, username, password):
 def test_role_required_admin(tmp_path):
     """Tests that only users with the 'admin' role can access admin pages."""
     app = setup_app(tmp_path)
-    # --- FIX: Create the 'viewer' user in the test database before attempting to log in ---
     user_manager.add_user("viewer", "viewer", "viewer123")
     
     client = app.test_client()
+    # Clear any leftover sessions before starting
+    for s in session_tracker.active_sessions("robbie"):
+        session_tracker.remove_session("robbie", s["session_id"])
     
     # Test login with non-admin user
     resp = login(client, 'viewer', 'viewer123')
@@ -57,6 +59,10 @@ def test_no_cache_header(tmp_path):
     """Tests that the no-cache header is applied correctly."""
     app = setup_app(tmp_path)
     client = app.test_client()
+    # Clear any leftover sessions before starting
+    for s in session_tracker.active_sessions("robbie"):
+        session_tracker.remove_session("robbie", s["session_id"])
+
     admin_login = login(client, 'robbie', 'kangaroo123')
     assert admin_login.status_code == 302
     client.post('/admin/security', data={'action': 'nocache_on', 'minutes': '1'})
@@ -70,12 +76,9 @@ def test_login_lockout(tmp_path):
     user_manager.add_user("viewer", "viewer", "viewer123")
     
     client = app.test_client()
-
-    # --- ADD THIS BLOCK TO CLEAR SESSIONS ---
-    from utils import session_tracker
+    # Clear any leftover sessions before starting
     for s in session_tracker.active_sessions("robbie"):
         session_tracker.remove_session("robbie", s["session_id"])
-    # --- END OF FIX ---
     
     admin_login = login(client, 'robbie', 'kangaroo123')
     assert admin_login.status_code == 302
@@ -86,4 +89,4 @@ def test_login_lockout(tmp_path):
     
     # Viewer attempts to log in
     resp = login(client, 'viewer', 'viewer123')
-    assert resp.status_code == 403
+    assert resp.status_code == 403 # Should be forbidden

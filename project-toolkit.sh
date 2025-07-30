@@ -1,20 +1,9 @@
 #!/bin/bash
 # ======================================================================================
 # PROJECT TOOLKIT (GEMINI ENHANCED EDITION)
-# AUTHOR: Robbie & Gemini (2025-07-28)
+# AUTHOR: Robbie & Gemini (2025-07-30)
 # PURPOSE: A robust, deterministic toolkit for managing project workflows including
-#          Git operations, testing, backups, and service management.
-# ======================================================================================
-#
-# INDEX
-# -----
-# 1.  CONFIGURATION & INITIALISATION
-# 2.  UTILITY & LOGGING FUNCTIONS
-# 3.  CORE WORKFLOWS (PULL, PUSH, BACKUP)
-# 4.  TESTING & QA FUNCTIONS
-# 5.  MENU SYSTEM
-# 6.  MAIN EXECUTION
-#
+#          Git operations, testing, backups, log analysis, and service management.
 # ======================================================================================
 
 set -euo pipefail
@@ -23,24 +12,17 @@ set -euo pipefail
 # SECTION 1: CONFIGURATION & INITIALISATION
 # ======================================================================================
 
-# --- [ 1.1: Project Definitions ] ---
-PROJECTS=("art" "ezy" "thebigshed")
 PROJECTS_PATH="/home"
 DEFAULT_BRANCH="main"
 
-# --- [ 1.2: Backup & Logging Definitions ] ---
 GDRIVE_REMOTE="gdrive"
 GDRIVE_BACKUP_FOLDER="project-backups"
 LOG_DIR="logs"
 INCLUDES_FILE="backup_includes.txt"
-
-# --- [ 1.3: Dynamic Variable Initialisation ] ---
 mkdir -p "$LOG_DIR"
-LOG_FILE="$LOG_DIR/project-toolkit-$(date +'%Y-%m-%d_%H-%M-%S').log"
-PROJECT=""
-PROJECT_PATH=""
-CODESTACK_SCRIPT=""
 
+LOG_FILE="$LOG_DIR/project-toolkit-$(date +'%Y-%m-%d_%H-%M-%S').log"
+CODESTACK_SCRIPT="code-stacker.sh"
 
 # ======================================================================================
 # SECTION 2: UTILITY & LOGGING FUNCTIONS
@@ -48,7 +30,7 @@ CODESTACK_SCRIPT=""
 
 log() {
   local type="$1"; shift
-  local color="\033[1;36m" # Default INFO color
+  local color="\033[1;36m"
   case "$type" in
     SUCCESS) color="\033[1;32m";;
     ERROR)   color="\033[1;31m";;
@@ -59,15 +41,14 @@ log() {
 
 die() {
   log ERROR "$*"
-  echo -e "\n[ABORTED] A critical error occurred. Please check the log for details."
+  echo -e "\n[ABORTED] A critical error occurred. Please check the log: $LOG_FILE"
   exit 1
 }
 
 # ======================================================================================
-# SECTION 3: CORE WORKFLOWS (PULL, PUSH, BACKUP)
+# SECTION 3: CORE WORKFLOWS
 # ======================================================================================
 
-# --- [ 3.1: Full Safety Workflows ] ---
 full_pull() {
   log INFO "Starting [PULL1] Full Safety Pull..."
   health_and_deps_check
@@ -78,7 +59,7 @@ full_pull() {
   local_backup
   safe_git_pull
   restart_services
-  log SUCCESS "[PULL1] All steps completed successfully."
+  log SUCCESS "[PULL1] Complete."
 }
 
 full_push() {
@@ -91,345 +72,183 @@ full_push() {
   local_backup
   safe_git_push
   restart_services
-  log SUCCESS "[PUSH1] All steps completed successfully."
+  log SUCCESS "[PUSH1] Complete."
 }
 
-# --- [ 3.2: Git Operations ] ---
 safe_git_pull() {
-  log INFO "Pulling latest changes from '$DEFAULT_BRANCH' branch..."
+  log INFO "Pulling latest changes from '$DEFAULT_BRANCH'..."
   git checkout "$DEFAULT_BRANCH"
-  git pull origin "$DEFAULT_BRANCH"
+  git pull origin "$DEFAULT_BRANCH" --rebase --autostash
   log SUCCESS "Git pull complete."
 }
 
 safe_git_push() {
-  log INFO "Adding, committing, and pushing changes to '$DEFAULT_BRANCH' branch..."
+  log INFO "Committing and pushing changes to '$DEFAULT_BRANCH'..."
   git add .
   git commit -m "Toolkit Push: $(date '+%Y-%m-%d %I:%M %p')" || log WARN "Nothing to commit."
   git push origin "$DEFAULT_BRANCH"
   log SUCCESS "Git push complete."
 }
 
-# --- [ 3.3: Backup Operations ] ---
 gdrive_backup() {
   local timestamp
   timestamp=$(date "+%a-%d-%b-%Y-%I-%M-%p")
-  mkdir -p backups
   local backup_zip="backups/backup_${timestamp}.zip"
-  
-  log INFO "Creating ZIP backup for Google Drive: $backup_zip"
-  if [[ ! -f "$INCLUDES_FILE" ]]; then die "Backup includes file ($INCLUDES_FILE) not found!"; fi
+  mkdir -p backups
+  log INFO "Creating ZIP backup: $backup_zip"
+  [[ -f "$INCLUDES_FILE" ]] || die "Missing includes file: $INCLUDES_FILE"
   zip -r -q "$backup_zip" -@ < "$INCLUDES_FILE"
-  
-  log INFO "Uploading backup to Google Drive..."
-  if rclone copy "$backup_zip" "$GDRIVE_REMOTE:$GDRIVE_BACKUP_FOLDER" --progress; then
-    log SUCCESS "Google Drive backup uploaded successfully."
-  else
-    log ERROR "Google Drive upload failed."
-  fi
+  rclone copy "$backup_zip" "$GDRIVE_REMOTE:$GDRIVE_BACKUP_FOLDER" --progress || log ERROR "Google Drive upload failed."
+  log SUCCESS "Backup uploaded to Google Drive."
 }
 
 local_backup() {
   local timestamp
   timestamp=$(date "+%a-%d-%b-%Y-%I-%M-%p")
-  mkdir -p backups
   local backup_tar="backups/backup_${timestamp}.tar.gz"
-  
-  log INFO "Creating local tar.gz backup: $backup_tar"
-  if [[ ! -f "$INCLUDES_FILE" ]]; then die "Backup includes file ($INCLUDES_FILE) not found!"; fi
+  mkdir -p backups
+  log INFO "Creating local backup: $backup_tar"
+  [[ -f "$INCLUDES_FILE" ]] || die "Missing includes file: $INCLUDES_FILE"
   tar czf "$backup_tar" -T "$INCLUDES_FILE"
-  
-  log SUCCESS "Local backup created successfully."
+  log SUCCESS "Local backup created."
 }
 
 # ======================================================================================
-# SECTION 4: TESTING & QA FUNCTIONS
+# SECTION 4: TESTING, HEALTH & QA
 # ======================================================================================
 
-# --- [ 4.1: Full Test Suite (pytest) ] ---
 run_full_test_suite() {
-  log INFO "Running full project test suite (pytest)..."
-  if [[ ! -d "tests" ]]; then
-    log WARN "No 'tests' directory found. Skipping full test suite."
-    return
-  fi
-  if [[ ! -d venv ]]; then die "Python venv not found!"; fi
-  source venv/bin/activate || die "Could not activate venv!"
-  
-  log INFO "Executing command: python3 -m pytest tests/"
-  if python3 -m pytest tests/; then
-    log SUCCESS "All tests passed successfully!"
-  else
-    die "One or more tests failed. Please review the output above."
-  fi
+  log INFO "Running full test suite..."
+  [[ -d tests ]] || { log WARN "No 'tests' directory. Skipping tests."; return; }
+  [[ -d venv ]] || die "Python venv not found!"
+  source venv/bin/activate || die "Failed to activate venv!"
+  python3 -m pytest tests/ || die "One or more tests failed."
+  log SUCCESS "All tests passed."
 }
 
-# --- [ 4.2: Health and Dependency Checks ] ---
 health_and_deps_check() {
-  log INFO "Running Health & Dependency Checks..."
+  log INFO "Running Health Check..."
   [[ -d venv ]] || die "Python venv not found!"
-  source venv/bin/activate || die "Could not activate venv!"
-  pip check || die "pip check reported broken requirements!"
-  python3 -c "import openai" || die "OpenAI Python library not installed."
-  python3 -c "import pytest" || die "Pytest library not installed."
-  [[ -f .env ]] || die ".env file is missing!"
-  if ! curl -fs http://localhost:7777/healthz >/dev/null 2>&1; then
-    die "/healthz endpoint is not responding! Is the Flask app running?"
-  else
-    log SUCCESS "Local route /healthz check OK."
-  fi
-}
-
-# --- [ 4.3: API Connection Tests ] ---
-run_connection_tests() {
-  log INFO "Running API Connection Test Script..."
-  local test_script="$PROJECT_PATH/scripts/test_connections.py"
-  if [[ ! -f "$test_script" ]]; then
-    log WARN "Connection test script ($test_script) not found. Skipping."
-    return
-  fi
-
-  [[ -d venv ]] || die "Python venv not found!"
-  source venv/bin/activate || die "Could not activate venv!"
-  python3 "$test_script"
-  log SUCCESS "Connection test script finished."
+  source venv/bin/activate || die "Venv activation failed!"
+  pip check || die "Dependency check failed!"
+  [[ -f .env ]] || die "Missing .env file!"
+  curl -fs http://localhost:7777/healthz >/dev/null || die "/healthz not responding!"
+  log SUCCESS "All system checks passed."
 }
 
 check_api_connections() {
-  log INFO "Verifying external API connections..."
-  local test_script="$PROJECT_PATH/scripts/test_connections.py"
-  if [[ ! -f "$test_script" ]]; then
-    log WARN "Connection test script ($test_script) not found. Skipping check."
-    return
-  fi
+  log INFO "Verifying API connectivity..."
+  local test_script="scripts/test_connections.py"
+  [[ -f "$test_script" ]] || { log WARN "API test script missing."; return; }
   [[ -d venv ]] || die "Python venv not found!"
-  source venv/bin/activate || die "Could not activate venv!"
-  
-  local test_output
-  test_output=$(python3 "$test_script")
-  echo -e "$test_output" | tee -a "$LOG_FILE"
-
-  if echo "$test_output" | grep -q "❌"; then
-    die "One or more API connection tests failed. Check credentials in .env file."
-  else
-    log SUCCESS "All API connections are OK."
-  fi
-}
-
-# --- [ 4.4: AI Self-Tests ] ---
-ai_selftest_openai() {
-  log INFO "[SelfTest] Running OpenAI Artwork Analysis Self-Test"
-  local test_images_path="$PROJECT_PATH/tests/opneai-analysys-tests"
-  local analyze_script="$PROJECT_PATH/scripts/analyze_artwork.py"
-  
-  local test_images=("$test_images_path"/*/test-image-*-for-analyse.jpg)
-  if [[ ! -f "${test_images[0]}" ]]; then
-    log WARN "No OpenAI test images found in '$test_images_path'. Skipping."
-    return
-  fi
-  
-  local picked_image="${test_images[RANDOM % ${#test_images[@]}]}"
-  local folder
-  folder=$(dirname "$picked_image")
-  local basename
-  basename=$(basename "$picked_image" .jpg)
-  local outfile="$folder/${basename}-openai-$(date +'%Y-%m-%d_%H-%M-%S').json"
-
-  log INFO "Testing OpenAI analysis on: $picked_image"
-  python3 "$analyze_script" "$picked_image" --provider openai --json-output > "$outfile" 2>&1
-
-  if grep -q '"aspect_ratio"' "$outfile"; then
-    log SUCCESS "OpenAI artwork analysis succeeded! Output: $outfile"
-  else
-    log ERROR "OpenAI analysis failed! See log for details: $outfile"
-  fi
-}
-
-ai_selftest_google() {
-  log INFO "[SelfTest] Running Google Artwork Analysis Self-Test"
-  local test_images_path="$PROJECT_PATH/tests/google-analysys-tests"
-  local analyze_script="$PROJECT_PATH/scripts/analyze_artwork_google.py"
-  
-  local test_images=("$test_images_path"/*/test-image-*-for-analyse.jpg)
-  if [[ ! -f "${test_images[0]}" ]]; then
-    log WARN "No Google test images found in '$test_images_path'. Skipping."
-    return
-  fi
-  
-  local picked_image="${test_images[RANDOM % ${#test_images[@]}]}"
-  local folder
-  folder=$(dirname "$picked_image")
-  local basename
-  basename=$(basename "$picked_image" .jpg)
-  local outfile="$folder/${basename}-google-$(date +'%Y-%m-%d_%H-%M-%S').json"
-
-  log INFO "Testing Google analysis on: $picked_image"
-  python3 "$analyze_script" "$picked_image" > "$outfile" 2>&1
-
-  if grep -q '"was_json": true' "$outfile"; then
-    log SUCCESS "Google artwork analysis succeeded! Output: $outfile"
-  else
-    log ERROR "Google analysis failed! See log for details: $outfile"
-  fi
+  source venv/bin/activate || die "Venv activation failed!"
+  python3 "$test_script" | tee -a "$LOG_FILE"
 }
 
 # ======================================================================================
-# SECTION 5: MENU SYSTEM
+# SECTION 5: CHATBOT SNAPSHOT EXPORT
 # ======================================================================================
 
-# --- [ 5.1: Project Selector ] ---
-select_project() {
-  echo -e "\n========================\n      PROJECTS\n========================"
-  select project_choice in "${PROJECTS[@]}" "Exit"; do
-    if [[ "$project_choice" == "Exit" ]]; then exit 0; fi
-    if [[ " ${PROJECTS[*]} " =~ " ${project_choice} " ]]; then
-      PROJECT="$project_choice"
-      PROJECT_PATH="$PROJECTS_PATH/$PROJECT"
-      cd "$PROJECT_PATH" || die "Could not change directory to $PROJECT_PATH"
-      CODESTACK_SCRIPT="$PROJECT_PATH/code-stacker.sh"
-      log INFO "Working directory set to: $PROJECT_PATH"
-      return 0
-    fi
-    echo "Invalid selection."
+gather_recent_logs() {
+  local since_minutes=60
+  local now_label
+  now_label=$(date "+%a-%d-%B-%Y-%I-%M-%p" | tr '[:lower:]' '[:upper:]')
+  local snapshot_dir="code-stacks/log-snapshots"
+  local output_file="${snapshot_dir}/log-stack-${now_label}.md"
+
+  mkdir -p "$snapshot_dir"
+  echo "# 📦 LOG SNAPSHOT (Last ${since_minutes} Minutes)" > "$output_file"
+
+  find "$LOG_DIR" -type f \( -name "*.log" -o -name "*.txt" \) | sort | while read -r log_file; do
+    echo -e "\n\n---\n## $(basename "$log_file")\n---" >> "$output_file"
+    echo "**Path:** \`$log_file\`" >> "$output_file"
+    echo "**Updated:** \`$(date -r "$log_file" "+%Y-%m-%d %H:%M:%S")\`" >> "$output_file"
+    echo >> "$output_file"
+
+    grep -E "$(date --date="-${since_minutes} minutes" "+%Y-%m-%d %H:[0-9]{2}:[0-9]{2}")" "$log_file" >> "$output_file" 2>/dev/null || {
+      echo "_(No entries in last ${since_minutes} minutes – showing last 30 lines)_" >> "$output_file"
+      tail -n 30 "$log_file" >> "$output_file"
+    }
   done
+
+  log SUCCESS "Generated log snapshot: $output_file"
 }
 
-# --- [ 5.2: Main Menu ] ---
+# ======================================================================================
+# SECTION 6: MENU SYSTEM
+# ======================================================================================
+
 main_menu() {
   while true; do
     echo -e "\n========================\n      MAIN MENU\n========================"
-    echo "  [1] PULL Actions (Get updates from remote)"
-    echo "  [2] PUSH Actions (Send updates to remote)"
-    echo "  [3] System Actions (Checks, backups, restarts)"
+    echo "  [1] PULL Actions"
+    echo "  [2] PUSH Actions"
+    echo "  [3] System Actions"
     echo "  [4] Testing & QA"
     echo "  [5] Backup Management"
+    echo "  [6] Cleanup Actions"
+    echo "  [7] Export Logs Snapshot for Chatbot (Last 60min)"
     echo "  [0] Exit"
     read -rp "Select an option: " main_menu_selection
     case "$main_menu_selection" in
-      1) pull_menu ;;
-      2) push_menu ;;
-      3) sys_menu ;;
-      4) test_menu ;;
+      1) full_pull ;;
+      2) full_push ;;
+      3) restart_services ;;
+      4) run_full_test_suite ;;
       5) backup_menu ;;
+      6) cleanup_menu ;;
+      7) gather_recent_logs ;;
       0) exit 0 ;;
       *) echo "Invalid selection." ;;
     esac
   done
 }
 
-# --- [ 5.3: Sub-Menus ] ---
-pull_menu() {
-  echo -e "\n--------------------------\nPULL ACTIONS\n--------------------------"
-  echo "  [1] PULL1: Full Safety Pull (Recommended)"
-  echo "  [2] PULL2: Fast Pull (Git pull only)"
-  echo "  [0] Back to Main Menu"
-  read -rp "Selection: " pullsel
-  case "$pullsel" in
-    1) full_pull ;;
-    2) safe_git_pull ;;
-    0) return ;;
-    *) echo "Invalid selection." ;;
-  esac
-}
-
-push_menu() {
-  echo -e "\n--------------------------\nPUSH ACTIONS\n--------------------------"
-  echo "  [1] PUSH1: Full Safety Push (Recommended)"
-  echo "  [2] PUSH2: Quick Push (Git add, commit, push only)"
-  echo "  [0] Back to Main Menu"
-  read -rp "Selection: " pushsel
-  case "$pushsel" in
-    1) full_push ;;
-    2) safe_git_push ;;
-    0) return ;;
-    *) echo "Invalid selection." ;;
-  esac
-}
-
-sys_menu() {
-  echo -e "\n--------------------------\nSYSTEM ACTIONS\n--------------------------"
-  echo "  [1] Run Full System Health Check"
-  echo "  [2] Restart Services (gunicorn/nginx)"
-  echo "  [0] Back to Main Menu"
-  read -rp "Selection: " syssel
-  case "$syssel" in
-    1) health_and_deps_check ;;
-    2) restart_services ;;
-    0) return ;;
-    *) echo "Invalid selection." ;;
-  esac
-}
-
-test_menu() {
-  echo -e "\n--------------------------\nTESTING & QA\n--------------------------"
-  echo "  [1] Run Full Test Suite (pytest)"
-  echo "  [2] Test API Connections"
-  echo "  [3] Run AI Self-Test (OpenAI)"
-  echo "  [4] Run AI Self-Test (Google)"
-  echo "  [5] Generate Code Stack Report"
-  echo "  [0] Back to Main Menu"
-  read -rp "Selection: " testsel
-  case "$testsel" in
-    1) run_full_test_suite ;;
-    2) run_connection_tests ;;
-    3) ai_selftest_openai ;;
-    4) ai_selftest_google ;;
-    5) run_code_stack ;;
-    0) return ;;
-    *) echo "Invalid selection." ;;
-  esac
-}
-
 backup_menu() {
-    echo -e "\n--------------------------\nBACKUP MANAGEMENT\n--------------------------"
-    echo "  [1] Create Local Backup"
-    echo "  [2] Create Google Drive Backup"
-    echo "  [3] Show Recent Local Backups"
-    echo "  [4] DRY RUN: See what files will be in the backup"
-    echo "  [0] Back to Main Menu"
-    read -rp "Selection: " backupsel
-    case "$backupsel" in
-        1) local_backup ;;
-        2) gdrive_backup ;;
-        3) echo -e "\nRecent backups:"; ls -lt backups | head -10 ;;
-        4) backup_dryrun_menu ;;
-        0) return ;;
-        *) echo "Invalid selection." ;;
-    esac
+  echo -e "\n--------------------------\nBACKUP MENU\n--------------------------"
+  echo "  [1] Create Local Backup"
+  echo "  [2] Create Google Drive Backup"
+  echo "  [3] Show Recent Local Backups"
+  echo "  [0] Back to Main Menu"
+  read -rp "Select: " sel
+  case "$sel" in
+    1) local_backup ;;
+    2) gdrive_backup ;;
+    3) ls -lt backups | head -10 ;;
+    0) return ;;
+    *) echo "Invalid selection." ;;
+  esac
 }
 
-backup_dryrun_menu() {
-  echo -e "\n--- DRY RUN: Files in Backup ---"
-  if [[ ! -f "$INCLUDES_FILE" ]]; then
-      log WARN "Includes file ($INCLUDES_FILE) not found."
-      return
-  fi
-  echo "The following top-level files/folders are configured for backup:"
-  cat "$INCLUDES_FILE"
-  echo "------------------------------------"
-}
-
-# --- [ 5.4: Utility Functions (Legacy, kept for reference) ] ---
-run_code_stack() {
-  log INFO "Generating code stack / QA report..."
-  if [[ -x "$CODESTACK_SCRIPT" ]]; then
-    bash "$CODESTACK_SCRIPT"
-    log SUCCESS "Code stack generated."
-  else
-    log WARN "$CODESTACK_SCRIPT not found/skipped."
-  fi
+cleanup_menu() {
+  echo -e "\n--------------------------\nCLEANUP MENU\n--------------------------"
+  echo "  [1] Delete all *.md code stack reports"
+  echo "  [2] Delete all *.log toolkit logs"
+  echo "  [0] Back to Main Menu"
+  read -rp "Select: " sel
+  case "$sel" in
+    1) rm -f code-stack-*.md && log SUCCESS "Deleted *.md reports." ;;
+    2) rm -f "$LOG_DIR"/*.log && log SUCCESS "Deleted toolkit logs." ;;
+    0) return ;;
+    *) echo "Invalid selection." ;;
+  esac
 }
 
 restart_services() {
-  log INFO "Restarting gunicorn/nginx (if running)..."
-  sudo systemctl restart gunicorn || log WARN "Gunicorn restart failed. (Might not be running)."
-  sudo systemctl restart nginx || log WARN "Nginx restart failed. (Might not be running)."
-  log SUCCESS "Service restart command issued."
+  log INFO "Restarting services..."
+  sudo systemctl restart gunicorn || log WARN "Gunicorn may not be running."
+  sudo systemctl restart nginx || log WARN "Nginx may not be running."
+  log SUCCESS "Restart command issued."
+}
+
+run_code_stack() {
+  log INFO "Generating code stack..."
+  [[ -x "$CODESTACK_SCRIPT" ]] && bash "$CODESTACK_SCRIPT" || log WARN "Script not found or not executable: $CODESTACK_SCRIPT"
 }
 
 # ======================================================================================
-# SECTION 6: MAIN EXECUTION
+# SECTION 7: MAIN EXECUTION
 # ======================================================================================
-log INFO "Project Toolkit Initialised"
-select_project
+
+log INFO "Project Toolkit Initialised – Launching Main Menu..."
 main_menu
