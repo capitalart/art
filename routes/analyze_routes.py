@@ -276,20 +276,24 @@ async def process_analysis_form_submission_original_vision_route(
     logger.info(
         f"User '{current_user.username}' POST /process-analysis-vision/ for '{original_filename}', Profile: '{ai_profile_key}'."
     )
+
     analyze_page_url = str(request.url_for('analyze_artworks_page'))
 
+    # -------------------------------------------------------------------------
+    # 1. Lookup artwork in DB
+    # -------------------------------------------------------------------------
     artwork_db = crud.get_artwork_by_filename(db, filename=original_filename)
     if not artwork_db:
-        error_msg = (
-            f"Artwork '{original_filename}' not found or is archived. Cannot perform AI analysis."
-        )
+        error_msg = f"Artwork '{original_filename}' not found or is archived. Cannot perform AI analysis."
         logger.error(error_msg)
         return RedirectResponse(
             f"{analyze_page_url}?error_message={urllib.parse.quote(error_msg)}&artwork_filename={urllib.parse.quote(original_filename)}",
             status_code=303,
         )
 
-        # Call the dedicated analysis service
+    # -------------------------------------------------------------------------
+    # 2. Perform AI analysis
+    # -------------------------------------------------------------------------
     analysis_results = await analyze_single_artwork(
         db,
         artwork_db,
@@ -310,7 +314,10 @@ async def process_analysis_form_submission_original_vision_route(
             f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&error_message={urllib.parse.quote(error_msg)}"
         )
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-    # Generate SKU and SEO filename after successful analysis
+
+    # -------------------------------------------------------------------------
+    # 3. Generate SKU and SEO filename
+    # -------------------------------------------------------------------------
     if not artwork_db.sku:
         artwork_db.sku = generate_sku_util(db, "RC")
     if not artwork_db.seo_filename:
@@ -321,7 +328,9 @@ async def process_analysis_form_submission_original_vision_route(
         )
     db.commit()
 
-    # Move files to finalized location immediately after analysis
+    # -------------------------------------------------------------------------
+    # 4. Move artwork files to finalized location
+    # -------------------------------------------------------------------------
     try:
         from ..utils.file_utils import move_files_to_finalized_artwork
 
@@ -332,6 +341,7 @@ async def process_analysis_form_submission_original_vision_route(
             final_folder=str(settings.FINALIZED_ARTWORK_DIR_ABSOLUTE),
             create_subfolder=True,
         )
+
         if final_paths and final_paths.get("main_artwork_path"):
             artwork_db.renamed_artwork_path = final_paths.get("main_artwork_path")
             artwork_db.thumb_path = final_paths.get("thumbnail_path")
@@ -343,20 +353,43 @@ async def process_analysis_form_submission_original_vision_route(
             artwork_db.status = "finalized"
             artwork_db.finalized_at = datetime.now(timezone.utc)
             db.commit()
-            success_msg = f"Artwork '{original_filename}' analyzed and finalized."
-            redirect_url = (
-                f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&message={urllib.parse.quote(success_msg)}"
-            )
         else:
             raise Exception("move_files_to_finalized_artwork returned invalid paths")
     except Exception as e_move:
         logger.error(f"File move during analysis failed for artwork ID {artwork_db.id}: {e_move}", exc_info=True)
-        success_msg = f"Artwork '{original_filename}' analyzed but file move failed."
+        error_msg = f"Artwork '{original_filename}' analyzed but file move failed."
         redirect_url = (
-            f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&error_message={urllib.parse.quote(success_msg)}"
+            f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&error_message={urllib.parse.quote(error_msg)}"
         )
-            
-    return RedirectResponse(url=redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url=redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+    # -------------------------------------------------------------------------
+    # 5. Trigger mockup generation from finalized file
+    # -------------------------------------------------------------------------
+    try:
+        from scripts.generate_composites import generate_composites_for_artwork
+        result = generate_composites_for_artwork(artwork_db.seo_filename)
+        if not result.get("success"):
+            logger.warning(f"Mockup generation warning: {result.get('message')}")
+    except Exception as e:
+        logger.error(f"Mockup generation failed after analysis: {e}", exc_info=True)
+
+    # -------------------------------------------------------------------------
+    # 6. Redirect to /edit-listing/<aspect>/<filename> page
+    # -------------------------------------------------------------------------
+    try:
+        aspect_folder = artwork_db.aspect_ratio or "4x5"
+        seo_filename = Path(artwork_db.seo_filename).stem
+        edit_url = f"/edit-listing/{aspect_folder}/{seo_filename}.jpg"
+        logger.info(f"Redirecting to listing editor: {edit_url}")
+        return RedirectResponse(url=edit_url, status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as e:
+        logger.error(f"Failed to redirect to edit listing: {e}", exc_info=True)
+        fallback_msg = f"Artwork analyzed but redirect to editor failed: {e}"
+        return RedirectResponse(
+            f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&error_message={urllib.parse.quote(fallback_msg)}",
+            status_code=status.HTTP_303_SEE_OTHER
+        )
 
 
 # === [ Section 6: Accept & Finalize Artwork Route ] ===
