@@ -428,61 +428,66 @@ def analyze_artwork_route(aspect, filename):
     base_name = Path(filename).name
     _write_analysis_status("starting", 0, base_name, status="analyzing")
 
-    # Locate the source image
     src_path = next((p for p in config.UNANALYSED_ROOT.rglob(base_name) if p.is_file()), None)
     if not src_path:
         try:
+            # Handle re-analysis of already processed files
             seo_folder = utils.find_seo_folder_from_filename(aspect, filename)
-            src_path = PROCESSED_ROOT / seo_folder / f"{Path(filename).stem}.jpg"
-        except FileNotFoundError: pass
+            src_path = PROCESSED_ROOT / seo_folder / f"{seo_folder}.jpg"
+        except FileNotFoundError:
+            pass
 
     if not src_path or not src_path.exists():
         flash(f"Artwork file not found: {filename}", "danger")
         _write_analysis_status("failed", 100, base_name, status="failed", error="file not found")
         return redirect(url_for("artwork.artworks"))
 
-    # Invoke the analyzer script using the helper function
     try:
         _write_analysis_status(f"{provider}_call", 20, base_name, status="analyzing")
-        _run_ai_analysis(src_path, provider)
-    except Exception as exc:
-        logger.error("Error running analysis for %s: %s", filename, exc)
-        flash(f"❌ Error running analysis: {exc}", "danger")
-        _write_analysis_status("failed", 100, base_name, status="failed", error=str(exc))
-        # --- FIX: Check for API request before redirecting on error ---
-        if "XMLHttpRequest" in request.headers.get("X-Requested-With", ""):
-            return jsonify({"success": False, "error": str(exc)}), 500
-        return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+        analysis_result = _run_ai_analysis(src_path, provider)
+        
+        processed_folder_path = Path(analysis_result.get("processed_folder", ""))
+        seo_folder = processed_folder_path.name
+        
+        if not seo_folder:
+            raise RuntimeError("Analysis script did not return a valid folder name.")
 
-    # Generate mockups/composites post-analysis
-    try:
-        seo_folder = utils.find_seo_folder_from_filename(aspect, filename)
         _write_analysis_status("generating", 60, filename, status="analyzing")
         _generate_composites(seo_folder, uuid.uuid4().hex)
-    except Exception as e:
-        flash(f"Composites generation error: {e}", "danger")
+        
+    except Exception as exc:
+        logger.error("Error running analysis for %s: %s", filename, exc, exc_info=True)
+        flash(f"❌ Error running analysis: {exc}", "danger")
+        _write_analysis_status("failed", 100, base_name, status="failed", error=str(exc))
+        if "XMLHttpRequest" in request.headers.get("X-Requested-With", ""):
+            return jsonify({"success": False, "error": str(exc)}), 500
+        return redirect(url_for("artwork.artworks"))
 
     _write_analysis_status("done", 100, filename, status="complete")
-    new_filename = f"{utils.find_seo_folder_from_filename(aspect, filename)}.jpg"
 
-    # Check if this was an API call (like from the test or frontend JS)
+    # --- THIS IS THE CRITICAL FIX ---
+    # The redirect filename MUST be based on the stable seo_folder, not the creative seo_filename.
+    redirect_filename = f"{seo_folder}.jpg"
+    redirect_url = url_for("artwork.edit_listing", aspect=aspect, filename=redirect_filename)
+
     if "XMLHttpRequest" in request.headers.get("X-Requested-With", ""):
         return jsonify({
             "success": True,
             "message": "Analysis complete.",
-            "redirect_url": url_for("artwork.edit_listing", aspect=aspect, filename=new_filename)
+            "redirect_url": redirect_url
         })
 
-    # Otherwise, it's a regular form submission, so redirect
-    return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=new_filename))
+    return redirect(redirect_url)
 
 @bp.post("/analyze-upload/<base>")
 def analyze_upload(base):
     """Analyze an uploaded image from the unanalysed folder."""
+    # ... (This function remains largely the same, but we ensure it also uses the correct redirect)
     uid, rec = utils.get_record_by_base(base)
     if not rec:
         flash("Artwork not found", "danger")
         return redirect(url_for("artwork.artworks"))
+        
     folder = Path(rec["current_folder"])
     qc_path = folder / f"{base}.qc.json"
     qc = utils.load_json_file_safe(qc_path)
@@ -491,22 +496,27 @@ def analyze_upload(base):
     
     _write_analysis_status("starting", 0, orig_path.name, status="analyzing")
     try:
-        _run_ai_analysis(orig_path, provider)
+        analysis_result = _run_ai_analysis(orig_path, provider)
+        processed_folder_path = Path(analysis_result.get("processed_folder", ""))
+        seo_folder = processed_folder_path.name
+        
+        if not seo_folder:
+            raise RuntimeError("Analysis script did not return a valid folder name.")
+            
+        _write_analysis_status("generating", 60, orig_path.name, status="analyzing")
+        _generate_composites(seo_folder, uuid.uuid4().hex)
+        
     except Exception as e:
         flash(f"❌ Error running analysis: {e}", "danger")
         _write_analysis_status("failed", 100, orig_path.name, status="failed", error=str(e))
         return redirect(url_for("artwork.artworks"))
     
-    seo_folder = utils.find_seo_folder_from_filename(qc.get("aspect_ratio", ""), orig_path.name)
-    _write_analysis_status("generating", 60, orig_path.name, status="analyzing")
-    try:
-        generate_mockups_for_listing(seo_folder)
-    except Exception as e:
-        flash(f"Mockup generation failed: {e}", "danger")
-        
     cleanup_unanalysed_folders()
     _write_analysis_status("done", 100, orig_path.name, status="complete")
-    return redirect(url_for("artwork.edit_listing", aspect=qc.get("aspect_ratio", ""), filename=f"{seo_folder}.jpg"))
+    
+    # CORRECTED: Redirect using the stable folder name
+    redirect_filename = f"{seo_folder}.jpg"
+    return redirect(url_for("artwork.edit_listing", aspect=qc.get("aspect_ratio", ""), filename=redirect_filename))
 
 
 # ===========================================================================
@@ -890,24 +900,44 @@ def reset_sku(aspect, filename):
 
 @bp.post("/delete/<filename>")
 def delete_artwork(filename: str):
-    """Delete all files and registry entries for an artwork via API call."""
+    """Delete all files and registry entries for an artwork, regardless of its state."""
     logger, user = logging.getLogger(__name__), session.get("username", "unknown")
-    try:
-        seo_folder, _, _, _ = resolve_listing_paths("", filename)
-        shutil.rmtree(config.PROCESSED_ROOT / seo_folder, ignore_errors=True)
-        shutil.rmtree(config.FINALISED_ROOT / seo_folder, ignore_errors=True)
-        shutil.rmtree(config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}", ignore_errors=True)
-    except FileNotFoundError:
-        pass
+    log_action("delete", filename, user, f"Initiating delete for '{filename}'")
     
-    base = Path(filename).stem.rsplit('-', 1)[0]
-    for p in config.UNANALYSED_ROOT.rglob(f"{base}*"):
-        p.unlink(missing_ok=True)
+    base_stem = Path(filename).stem
 
-    uid, _ = utils.get_record_by_seo_filename(filename)
-    if uid: utils.remove_record_from_registry(uid)
+    # --- Step 1: Clean up processed/finalised/locked folders if they exist ---
+    try:
+        # Use the utility that can find the folder from an original filename
+        seo_folder = utils.find_seo_folder_from_filename("", filename)
+        if seo_folder:
+            shutil.rmtree(config.PROCESSED_ROOT / seo_folder, ignore_errors=True)
+            shutil.rmtree(config.FINALISED_ROOT / seo_folder, ignore_errors=True)
+            # Locked folders have a prefix
+            shutil.rmtree(config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}", ignore_errors=True)
+            logger.info(f"Deleted processed/finalised/locked folders for {seo_folder}")
+    except FileNotFoundError:
+        # This is expected if the artwork was never processed
+        logger.info(f"No processed folder found for '{filename}', proceeding to clean unanalysed files.")
+        pass
+
+    # --- Step 2: Clean up the original unanalysed files and folder ---
+    # Find all files related to the original upload (image, thumb, qc.json, etc.)
+    found_files = list(config.UNANALYSED_ROOT.rglob(f"{base_stem}*"))
+    if found_files:
+        # Get the parent directory from the first found file
+        parent_dir = found_files[0].parent
+        if parent_dir != config.UNANALYSED_ROOT:
+             shutil.rmtree(parent_dir, ignore_errors=True)
+             logger.info(f"Deleted unanalysed folder: {parent_dir}")
     
-    log_action("delete", filename, user, "Deleted all files and registry record")
+    # --- Step 3: Clean up the registry entry using the unique base name ---
+    uid, _ = utils.get_record_by_base(base_stem)
+    if uid:
+        utils.remove_record_from_registry(uid)
+        logger.info(f"Removed registry record {uid}")
+    
+    log_action("delete", filename, user, "Delete process completed.")
     return jsonify({"success": True})
 
 

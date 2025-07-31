@@ -29,24 +29,18 @@ def test_analyze_api_json(tmp_path):
     Image.new("RGB", (10, 10), "blue").save(img_path)
 
     seo_folder = "dummy-artwork"
-    processed_dir = tmp_path
-    listing_path = processed_dir / f"{seo_folder}-listing.json"
-    listing_path.write_text(json.dumps({"title": "t"}))
 
+    # CORRECTED: The dummy data now perfectly mimics the real script's output
     dummy_entry = {
-        "seo_name": seo_folder,
-        "processed_folder": str(processed_dir),
+        "processed_folder": str(config.PROCESSED_ROOT / seo_folder),
+        "seo_filename": f"{seo_folder}.jpg",
+        "aspect_ratio": "square",
     }
 
+    # REMOVED: Unnecessary mocks that are no longer used by the refactored route
     with mock.patch(
         "routes.artwork_routes._run_ai_analysis", return_value=dummy_entry
-    ), mock.patch("routes.artwork_routes._generate_composites"), mock.patch(
-        "routes.artwork_routes.utils.find_aspect_filename_from_seo_folder",
-        return_value=("square", f"{seo_folder}.jpg"),
-    ), mock.patch(  # ADD THIS MOCK
-        "routes.artwork_routes.utils.find_seo_folder_from_filename",
-        return_value=seo_folder,
-    ):
+    ), mock.patch("routes.artwork_routes._generate_composites"):
         resp = client.post(
             "/analyze/square/dummy.jpg",
             headers={
@@ -70,31 +64,25 @@ def test_analyze_api_strip_bytes(tmp_path, monkeypatch):
         follow_redirects=True,
     )
     config.UNANALYSED_ROOT.mkdir(parents=True, exist_ok=True)
-    img_path = config.UNANALYSED_ROOT / "byte.jpg"
-    Image.new("RGB", (10, 10), "blue").save(img_path)
+    (config.UNANALYSED_ROOT / "byte.jpg").write_bytes(b"")
 
     seo_folder = "byte-art"
-    processed_dir = tmp_path
-    (processed_dir / f"{seo_folder}-listing.json").write_text("{}")
 
+    # CORRECTED: The dummy data now perfectly mimics the real script's output
     dummy_entry = {
-        "seo_name": seo_folder,
-        "processed_folder": str(processed_dir),
+        "processed_folder": str(config.PROCESSED_ROOT / seo_folder),
+        "seo_filename": f"{seo_folder}.jpg",
+        "aspect_ratio": "square",
         "blob": b"bigdata",
     }
 
     monkeypatch.setattr(config, "LOGS_DIR", tmp_path)
     monkeypatch.setattr(routes_utils, "LOGS_DIR", tmp_path)
 
+    # REMOVED: Unnecessary mocks
     with mock.patch(
         "routes.artwork_routes._run_ai_analysis", return_value=dummy_entry
-    ), mock.patch("routes.artwork_routes._generate_composites"), mock.patch(
-        "routes.artwork_routes.utils.find_aspect_filename_from_seo_folder",
-        return_value=("square", f"{seo_folder}.jpg"),
-    ), mock.patch(
-        "routes.artwork_routes.utils.find_seo_folder_from_filename",
-        return_value=seo_folder,
-    ):
+    ), mock.patch("routes.artwork_routes._generate_composites"):
         resp = client.post(
             "/analyze/square/byte.jpg",
             headers={
@@ -118,18 +106,15 @@ def test_analyze_api_error_bytes(tmp_path, monkeypatch):
         follow_redirects=True,
     )
     config.UNANALYSED_ROOT.mkdir(parents=True, exist_ok=True)
-    img_path = config.UNANALYSED_ROOT / "err.jpg"
-    Image.new("RGB", (10, 10), "blue").save(img_path)
+    (config.UNANALYSED_ROOT / "err.jpg").write_bytes(b"")
 
     monkeypatch.setattr(config, "LOGS_DIR", tmp_path)
     monkeypatch.setattr(routes_utils, "LOGS_DIR", tmp_path)
 
+    # This test is fine as is, but we'll remove the unused mock for consistency
     with mock.patch(
         "routes.artwork_routes._run_ai_analysis", side_effect=RuntimeError(b"oops")
-    ), mock.patch("routes.artwork_routes._generate_composites"), mock.patch(
-        "routes.artwork_routes.utils.find_aspect_filename_from_seo_folder",
-        return_value=("square", "err.jpg"),
-    ):
+    ), mock.patch("routes.artwork_routes._generate_composites"):
         resp = client.post(
             "/analyze/square/err.jpg",
             headers={

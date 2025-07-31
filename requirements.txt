@@ -54,4 +54,5 @@ google-cloud-secret-manager==2.22.0
 google-cloud-logging==3.11.0
 pytest==8.4.1
 ImageHash==4.3.2
-starlette==0.37.2  
+starlette==0.37.2
+pathspec==0.12.1

@@ -158,7 +158,8 @@ def _process_queued_artwork(img_path_str: str, total_in_queue: int, current_inde
         logger.warning(f"No .png mockup files found for aspect {aspect}")
         return
 
-    for cat_dir, mockup_file in selections:
+    # Use enumerate to get a sequential index for naming
+    for i, (cat_dir, mockup_file) in enumerate(selections):
         coord_path = coords_base_dir / cat_dir.name / f"{mockup_file.stem}.json"
         if not coord_path.exists():
             logger.warning(f"--> Missing coordinates for {mockup_file.name}, skipping this mockup.")
@@ -169,7 +170,8 @@ def _process_queued_artwork(img_path_str: str, total_in_queue: int, current_inde
             mockup_img = Image.open(mockup_file)
             composite = apply_perspective_transform(art_img, mockup_img, coords_data["corners"])
 
-            output_filename = config.FILENAME_TEMPLATES["mockup"].format(seo_slug=seo_name, num=random.randint(100,999))
+            # Use the loop index 'i' for a clean, sequential number
+            output_filename = config.FILENAME_TEMPLATES["mockup"].format(seo_slug=seo_name, num=i + 1)
             output_path = folder / output_filename
             composite.convert("RGB").save(output_path, "JPEG", quality=90)
 

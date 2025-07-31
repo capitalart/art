@@ -555,3 +555,88 @@ pip install -r requirements.txt
 chmod +x project-toolkit.sh
 ./project-toolkit.sh
 sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+pip install fastapi starlette
+pip install -r requirements.txt
+code /home/art/
+touch /home/art/__init__.py
+touch /home/art/routes/__init__.py
+touch /home/art/utils/__init__.py
+touch /home/art/services/__init__.py
+touch /home/art/models/__init__.py
+touch /home/art/database/__init__.py
+chmod +x fix-pylance-imports.sh
+./fix-pylance-imports.sh
+chmod +x fix-analyze-imports.sh
+./fix-analyze-imports.sh
+chmod +x fix-analyze-imports.sh
+./fix-analyze-imports.sh
+chmod +x touch-missing-analyze-modules.sh
+./touch-missing-analyze-modules.sh
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+mkdir -p tools/audit audit-output
+./project-toolkit.sh
+pip freeze | grep pathspec >> requirements.txt
+pip install pathspec
+pip freeze | grep pathspec >> requirements.txt
+./project-toolkit.sh
+openai migrate
+./project-toolkit.sh
+git add tools/audit/system_codex_audit_runner.py
+git commit -m "✅ Fix OpenAI client fallback and improve Codex audit summary tool"
+./project-toolkit.sh  # -> [8] Audit Tools → [3] or [4]
+./project-toolkit.sh
+pip install --upgrade pip
+pip install -r requirements.txt
+awk '{ if (NF>1) print "⚠️ Possibly broken line:", $0 }' requirements.txt
+./project-toolkit.sh
+pip install --upgrade openai
+./project-toolkit.sh
+source .venv/bin/activate
+export $(grep -v '^#' .env | xargs)
+python3
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./project-toolkit.sh
+less logs/audit/codex-system-summary.md
+./migrate_config_to_env.py
+chmod +x migrate_config_to_env.py
+./migrate_config_to_env.py
+echo $MOCKUPS_INPUT_DIR
+echo $MOCKUPS_CATEGORISED_DIR
+echo $MOCKUPS_STAGING_DIR
+echo $SIGNATURES_DIR
+echo $GENERIC_TEXTS_DIR
+echo $COORDS_DIR
+echo $OUTPUTS_DIR
+echo $CODEX_LOGS_DIR
+python3 tools/audit/path_naming_validator.py
+pythin3 tools/audit/analysis_path_tracker.py
+python3 tools/audit/analysis_path_tracker.py
+./project-toolkit.sh
+python3 -c "import os; print(os.getenv('OPENAI_API_KEY'))"
+from dotenv import load_dotenv
+load_dotenv(dotenv_path="/home/art/.env", override=True)
+python3
+./project-toolkit.sh
+grep -i "<h" templates/edit_listing.html
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source venv/bin/activate
+./project-toolkit.sh
+2
+0
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
