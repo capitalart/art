@@ -100,7 +100,12 @@ def slugify(text: str) -> str:
 
 
 def generate_seo_filename(raw_title: str, assigned_sku: str) -> str:
-    """Constructs a compliant Etsy SEO filename under 70 characters."""
+    """
+    Constructs a compliant Etsy SEO filename that is GUARANTEED to be 70 characters or less.
+    Format: [truncated-core-title-slug]-[seo-keywords]-[suffix]-[sku].jpg
+    """
+    # 1. Define the building blocks and constraints
+    MAX_LEN = 70
     phrases_to_remove = [
         "High Resolution", "Digital Download", "Digital Print", "Artwork by Robin Custance",
         "Instant Download", "Printable", "Wall Art", "Dot Art", "Aboriginal Print",
@@ -109,6 +114,7 @@ def generate_seo_filename(raw_title: str, assigned_sku: str) -> str:
     seo_keywords_to_add = ["digital", "print", "aboriginal", "australian"]
     suffix = "artwork-by-robin-custance"
     
+    # 2. Extract and slugify the core title
     clean_title = raw_title
     for phrase in phrases_to_remove:
         clean_title = re.sub(r'\b' + re.escape(phrase) + r'\b', "", clean_title, flags=re.IGNORECASE)
@@ -116,18 +122,34 @@ def generate_seo_filename(raw_title: str, assigned_sku: str) -> str:
     clean_title = re.sub(r'\s+', ' ', clean_title).strip()
     base_slug = slugify(clean_title if clean_title else "untitled-artwork")
 
+    # 3. **CRITICAL FIX**: Truncate the base_slug to ensure space for required parts
+    # Calculate the exact length of the fixed parts: "-artwork-by-robin-custance-RJC-XXXX.jpg"
+    required_len = len(suffix) + len(assigned_sku) + 5  # (2 hyphens + .jpg)
+    
+    # Calculate the max possible length for the base slug and keywords
+    max_variable_len = MAX_LEN - required_len
+    
+    # Truncate the base slug if it's too long by itself
+    if len(base_slug) > max_variable_len:
+        base_slug = base_slug[:max_variable_len]
+        # Cleanly cut at the last hyphen to avoid partial words
+        if '-' in base_slug:
+            base_slug = base_slug.rsplit('-', 1)[0]
+
+    # 4. Build the filename by adding SEO keywords only if space allows
     final_slug_parts = [base_slug]
-    fixed_suffix_len = len(suffix) + len(assigned_sku) + 5
-    current_len = len(base_slug) + fixed_suffix_len
+    current_len = len(base_slug)
     
     for keyword in seo_keywords_to_add:
-        if current_len + len(keyword) + 1 > 70:
+        if current_len + len(keyword) + 1 > max_variable_len:
             break
         final_slug_parts.append(keyword)
         current_len += len(keyword) + 1
         
+    # 5. Assemble the final filename string
     constructed_slug = "-".join(final_slug_parts)
     final_filename = f"{constructed_slug}-{suffix}-{assigned_sku}.jpg"
+
     return final_filename
 
 
@@ -325,7 +347,7 @@ def analyze_single(image_path: Path):
         ai_listing, raw_response = generate_ai_listing(optimized_img_path, aspect, assigned_sku)
         raw_title = ai_listing.get("title", image_path.stem)
         
-        seo_name = image_path.stem.replace('-OPTIMIZED', '').replace('-GOOGLE-OPTIMIZED', '')
+        seo_name = slugify(raw_title)
         seo_filename = generate_seo_filename(raw_title, assigned_sku)
 
         file_paths = save_artwork_files(image_path, seo_name)
