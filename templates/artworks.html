@@ -51,9 +51,9 @@
           <div class="card-title">{{ art.title }}</div>
           <div class="desc-snippet"></div>
           <div class="button-row">
-            <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.filename) }}" class="btn btn-primary btn-edit">Review</a>
-            <button class="btn btn-secondary btn-analyze" data-provider="openai">Analyze with OpenAI</button>
-            <button class="btn btn-secondary btn-analyze" data-provider="google">Analyze with Google</button>
+            {# --- CORRECTED LINE --- #}
+            <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.seo_folder ~ '.jpg') }}" class="btn btn-primary btn-edit">Review</a>
+            <button class="btn btn-secondary btn-analyze" data-provider="openai">Re-Analyze</button>
             <button class="btn btn-danger btn-delete">Delete</button>
           </div>
         </div>
@@ -78,9 +78,9 @@
           <div class="card-title">{{ art.title }}</div>
           <div class="desc-snippet"></div>
           <div class="button-row">
-            <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.filename) }}" class="btn btn-secondary btn-edit">Edit</a>
-            <button class="btn btn-secondary btn-analyze" data-provider="openai">Analyze with OpenAI</button>
-            <button class="btn btn-secondary btn-analyze" data-provider="google">Analyze with Google</button>
+            {# --- CORRECTED LINE --- #}
+            <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.seo_folder ~ '.jpg') }}" class="btn btn-secondary btn-edit">Edit</a>
+            <button class="btn btn-secondary btn-analyze" data-provider="openai">Re-Analyze</button>
             <button class="btn btn-danger btn-delete">Delete</button>
           </div>
         </div>

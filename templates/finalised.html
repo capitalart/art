@@ -70,7 +70,7 @@
         <button type="submit" class="art-btn delete">Delete</button>
       </form>
     {% else %}
-      <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.filename) }}" class="art-btn">Edit</a>
+      <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.seo_folder ~ '.jpg') }}" class="art-btn">Edit</a>
       <form method="post" action="{{ url_for('artwork.lock_listing', aspect=art.aspect, filename=art.filename) }}">
         <button type="submit" class="art-btn">Lock</button>
       </form>

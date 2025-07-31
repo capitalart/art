@@ -16,7 +16,6 @@ import config
 from scripts import analyze_artwork as aa
 from routes import utils
 
-
 class DummyChoice:
     def __init__(self, text):
         self.message = type('m', (), {'content': text})
@@ -25,14 +24,14 @@ class DummyResp:
     def __init__(self, text):
         self.choices = [DummyChoice(text)]
 
-
 SAMPLE_JSON1 = json.dumps({
     "title": "First Artwork",
     "description": "Test description",
     "tags": ["tag"],
     "materials": ["mat"],
     "primary_colour": "Black",
-    "secondary_colour": "Brown"
+    "secondary_colour": "Brown",
+    "price": 18.27
 })
 
 SAMPLE_JSON2 = json.dumps({
@@ -41,9 +40,9 @@ SAMPLE_JSON2 = json.dumps({
     "tags": ["tag"],
     "materials": ["mat"],
     "primary_colour": "Black",
-    "secondary_colour": "Brown"
+    "secondary_colour": "Brown",
+    "price": 18.27
 })
-
 
 def test_sequential_sku_assignment(tmp_path, monkeypatch):
     tracker = tmp_path / 'sku_tracker.json'
