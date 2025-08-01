@@ -73,7 +73,8 @@
 /* --- OpenAI Analysis Details Table --- */
 .openai-details {
   margin-top: 2rem;
-  padding-top: 1.5rem;
+  background-color:#dbdbdb;
+  padding: .7rem;
   border-top: 1px solid var(--card-border);
 }
 

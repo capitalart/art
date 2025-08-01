@@ -261,6 +261,7 @@
 .long-field {
   width: 100%;
   box-sizing: border-box;
+  background-color: #dbdbdb !important;
   font-size: 1.05em;
   padding: 0.6em;
   margin-bottom: 1em;
