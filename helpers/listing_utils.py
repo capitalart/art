@@ -19,8 +19,8 @@ from __future__ import annotations
 import json
 import logging
 import random
-import shutil
 import re
+import shutil
 import uuid
 from pathlib import Path
 
@@ -36,6 +36,7 @@ def slugify(text: str) -> str:
     """Return a slug suitable for filenames."""
     text = re.sub(r"[^\w\- ]+", "", text).strip().replace(" ", "-")
     return re.sub("-+", "-", text).lower()
+
 
 def create_unanalysed_subfolder(filename: str) -> Path:
     """Create and return a new subfolder in unanalysed-artwork based on the filename."""
@@ -55,7 +56,7 @@ def create_unanalysed_subfolder(filename: str) -> Path:
 def cleanup_unanalysed_folders() -> None:
     """Remove any empty ``unanalysed-*`` folders."""
     root = config.UNANALYSED_ROOT.resolve()
-    for folder in root.iterdir(): # Check all folders, not just numbered ones
+    for folder in root.iterdir():
         if folder.is_dir() and not any(folder.iterdir()):
             shutil.rmtree(folder, ignore_errors=True)
 
@@ -63,22 +64,49 @@ def cleanup_unanalysed_folders() -> None:
 # 3. Listing Path Resolution
 # ===========================================================================
 
-def resolve_listing_paths(aspect: str, seo_folder: str, allow_locked: bool = False) -> tuple:
-    """Return root, folder, listing JSON path and image path for ``seo_folder``."""
-    slug = seo_folder.replace("LOCKED-", "")
-    roots = [config.PROCESSED_ROOT, config.FINALISED_ROOT]
-    if allow_locked:
-        roots.append(config.ARTWORK_VAULT_ROOT)
+def resolve_listing_paths(aspect: str, filename: str, allow_locked: bool = False) -> tuple[str, Path, Path, bool]:
+    """
+    Directly resolves artwork paths based on the filename stem, which is assumed
+    to be the unique folder name. This is a fast and direct lookup.
+    """
+    if not filename:
+        raise FileNotFoundError("Filename cannot be empty.")
 
-    for root in roots:
-        folder = root / seo_folder
-        if folder.exists():
-            listing_file = folder / config.FILENAME_TEMPLATES["listing_json"].format(seo_slug=slug)
-            image_file = folder / f"{slug}.jpg"
-            return root, folder, listing_file, image_file
-    raise FileNotFoundError(
-        f"Cannot resolve paths for folder '{seo_folder}' (allow_locked={allow_locked})"
-    )
+    # The folder name is simply the filename without the '.jpg' extension.
+    seo_folder = Path(filename).stem
+    
+    # Define the potential locations for the folder
+    potential_dirs = {
+        "processed": config.PROCESSED_ROOT / seo_folder,
+        "finalised": config.FINALISED_ROOT / seo_folder,
+        "locked": config.ARTWORK_VAULT_ROOT / seo_folder,
+    }
+
+    found_path = None
+    state_finalised = False
+    
+    # Check each location in order
+    if potential_dirs["processed"].exists():
+        found_path = potential_dirs["processed"]
+    elif potential_dirs["finalised"].exists():
+        found_path = potential_dirs["finalised"]
+        state_finalised = True
+    elif allow_locked and potential_dirs["locked"].exists():
+        found_path = potential_dirs["locked"]
+        state_finalised = True
+    
+    if not found_path:
+        raise FileNotFoundError(f"Could not find artwork folder for: {seo_folder}")
+
+    # The listing JSON name is also based on the folder name
+    listing_path = found_path / f"{seo_folder}-listing.json"
+    if not listing_path.exists():
+        raise FileNotFoundError(f"Listing JSON not found in {found_path}")
+
+    # The main image path is also derived from the folder name
+    image_path = found_path / f"{seo_folder}.jpg"
+
+    return seo_folder, found_path, listing_path, state_finalised
 
 # ===========================================================================
 # 4. GDWS Description Assembly

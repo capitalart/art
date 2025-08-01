@@ -6,73 +6,34 @@ ArtNarrator | analyze_artwork.py
 Analyzes artworks using OpenAI. This script is the core engine that
 generates listing data, processes files, and prepares artworks for the
 next stage in the workflow.
-
-INDEX
------
-1.  Imports
-2.  Configuration & Constants
-3.  Logging Setup
-4.  Core Utility Functions
-5.  Colour Detection & Mapping
-6.  OpenAI API Handler
-7.  Main Analysis Workflow
-8.  Command-Line Interface (CLI)
 """
 
 # ===========================================================================
 # 1. Imports
 # ===========================================================================
-
-# --- [ 1.1: Standard Library Imports ] ---
-import argparse
-import datetime as _dt
-import json
-import logging
-import os
-import random
-import re
-import shutil
-import sys
-import traceback
+import argparse, base64, json, logging, os, random, re, shutil, sys, traceback
 from pathlib import Path
-import base64
-
-# --- [ 1.2: Third-Party Imports ] ---
+import datetime as _dt
 from dotenv import load_dotenv
 from PIL import Image
 from openai import OpenAI
-
-# --- [ 1.3: Local Application Imports ] ---
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import config
-from utils.logger_utils import sanitize_blob_data, setup_logger
+from utils.logger_utils import setup_logger
 from utils.sku_assigner import get_next_sku
 from helpers.listing_utils import assemble_gdws_description
-from routes.utils import sync_filename_with_sku
 
 # ===========================================================================
 # 2. Configuration & Constants
 # ===========================================================================
-
 load_dotenv()
 Image.MAX_IMAGE_PIXELS = None
-
 API_KEY = config.OPENAI_API_KEY
-if not API_KEY:
-    raise RuntimeError("OPENAI_API_KEY not set in environment/.env file")
+if not API_KEY: raise RuntimeError("OPENAI_API_KEY not set in environment/.env file")
 client = OpenAI(api_key=API_KEY, project=config.OPENAI_PROJECT_ID)
-
-MOCKUPS_PER_LISTING = config.MOCKUPS_PER_LISTING
 ETSY_COLOURS = config.ETSY_COLOURS
 USER_ID = os.getenv("USER_ID", "anonymous")
-
-
-# ===========================================================================
-# 3. Logging Setup
-# ===========================================================================
-
 logger = setup_logger(__name__, "ANALYZE_OPENAI")
-
 
 # ===========================================================================
 # 4. Core Utility Functions
@@ -80,41 +41,25 @@ logger = setup_logger(__name__, "ANALYZE_OPENAI")
 
 def get_aspect_ratio(image_path: Path) -> str:
     """Return closest aspect ratio label for a given image."""
-    with Image.open(image_path) as img:
-        w, h = img.size
-    aspect_map = [
-        ("1x1", 1/1), ("2x3", 2/3), ("3x2", 3/2), ("3x4", 3/4), ("4x3", 4/3),
-        ("4x5", 4/5), ("5x4", 5/4), ("5x7", 5/7), ("7x5", 7/5), ("9x16", 9/16),
-        ("16x9", 16/9), ("A-Series-Horizontal", 1.414/1), ("A-Series-Vertical", 1/1.414),
-    ]
+    with Image.open(image_path) as img: w, h = img.size
+    aspect_map = [("1x1", 1/1), ("2x3", 2/3), ("3x2", 3/2), ("3x4", 3/4), ("4x3", 4/3), ("4x5", 4/5), ("5x4", 5/4), ("5x7", 5/7), ("7x5", 7/5), ("9x16", 9/16), ("16x9", 16/9)]
     ar = round(w / h, 4)
     best = min(aspect_map, key=lambda tup: abs(ar - tup[1]))
     logger.info(f"Determined aspect ratio for {image_path.name}: {best[0]}")
     return best[0]
-
 
 def slugify(text: str) -> str:
     """Return a slug suitable for filenames."""
     text = re.sub(r"[^\w\- ]+", "", text).strip().replace(" ", "-")
     return re.sub("-+", "-", text).lower()
 
-
 def generate_seo_filename(raw_title: str, assigned_sku: str) -> str:
-    """
-    Constructs a compliant Etsy SEO filename that is GUARANTEED to be 70 characters or less.
-    Format: [truncated-core-title-slug]-[seo-keywords]-[suffix]-[sku].jpg
-    """
-    # 1. Define the building blocks and constraints
+    """Constructs a compliant Etsy SEO filename that is GUARANTEED to be 70 characters or less."""
     MAX_LEN = 70
-    phrases_to_remove = [
-        "High Resolution", "Digital Download", "Digital Print", "Artwork by Robin Custance",
-        "Instant Download", "Printable", "Wall Art", "Dot Art", "Aboriginal Print",
-        "Australian Wall Art", "Digital", "Download", "Print", "—", "|"
-    ]
+    phrases_to_remove = ["High Resolution", "Digital Download", "Digital Print", "Artwork by Robin Custance", "Instant Download", "Printable", "Wall Art", "Dot Art", "Aboriginal Print", "Australian Wall Art", "Digital", "Download", "Print", "—", "|"]
     seo_keywords_to_add = ["digital", "print", "aboriginal", "australian"]
     suffix = "artwork-by-robin-custance"
     
-    # 2. Extract and slugify the core title
     clean_title = raw_title
     for phrase in phrases_to_remove:
         clean_title = re.sub(r'\b' + re.escape(phrase) + r'\b', "", clean_title, flags=re.IGNORECASE)
@@ -122,41 +67,27 @@ def generate_seo_filename(raw_title: str, assigned_sku: str) -> str:
     clean_title = re.sub(r'\s+', ' ', clean_title).strip()
     base_slug = slugify(clean_title if clean_title else "untitled-artwork")
 
-    # 3. **CRITICAL FIX**: Truncate the base_slug to ensure space for required parts
-    # Calculate the exact length of the fixed parts: "-artwork-by-robin-custance-RJC-XXXX.jpg"
-    required_len = len(suffix) + len(assigned_sku) + 5  # (2 hyphens + .jpg)
-    
-    # Calculate the max possible length for the base slug and keywords
+    required_len = len(suffix) + len(assigned_sku) + 5
     max_variable_len = MAX_LEN - required_len
     
-    # Truncate the base slug if it's too long by itself
     if len(base_slug) > max_variable_len:
         base_slug = base_slug[:max_variable_len]
-        # Cleanly cut at the last hyphen to avoid partial words
-        if '-' in base_slug:
-            base_slug = base_slug.rsplit('-', 1)[0]
+        if '-' in base_slug: base_slug = base_slug.rsplit('-', 1)[0]
 
-    # 4. Build the filename by adding SEO keywords only if space allows
     final_slug_parts = [base_slug]
     current_len = len(base_slug)
     
     for keyword in seo_keywords_to_add:
-        if current_len + len(keyword) + 1 > max_variable_len:
-            break
+        if current_len + len(keyword) + 1 > max_variable_len: break
         final_slug_parts.append(keyword)
         current_len += len(keyword) + 1
         
-    # 5. Assemble the final filename string
     constructed_slug = "-".join(final_slug_parts)
-    final_filename = f"{constructed_slug}-{suffix}-{assigned_sku}.jpg"
-
-    return final_filename
-
+    return f"{constructed_slug}-{suffix}-{assigned_sku}.jpg"
 
 def read_onboarding_prompt() -> str:
     """Reads the main system prompt from the file defined in config."""
     return Path(config.ONBOARDING_PATH).read_text(encoding="utf-8")
-
 
 def make_optimized_image_for_ai(src_path: Path, out_dir: Path) -> Path:
     """Return path to an optimized JPEG for AI analysis, creating it if necessary."""
@@ -165,29 +96,33 @@ def make_optimized_image_for_ai(src_path: Path, out_dir: Path) -> Path:
     with Image.open(src_path) as im:
         w, h = im.size
         scale = config.ANALYSE_MAX_DIM / max(w, h)
-        if scale < 1.0:
-            im = im.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+        if scale < 1.0: im = im.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
         im = im.convert("RGB")
         q = 85
         while True:
             im.save(out_path, "JPEG", quality=q, optimize=True)
-            if out_path.stat().st_size <= config.ANALYSE_MAX_MB * 1024 * 1024 or q <= 60:
-                break
+            if out_path.stat().st_size <= config.ANALYSE_MAX_MB * 1024 * 1024 or q <= 60: break
             q -= 5
     logger.info(f"Optimized image for AI: {out_path.name} ({out_path.stat().st_size / 1024:.1f} KB)")
     return out_path
-
 
 def save_artwork_files(original_path: Path, seo_name: str) -> dict:
     """Move/copy artwork files to a new processed folder and return their paths."""
     target_folder = config.PROCESSED_ROOT / seo_name
     target_folder.mkdir(parents=True, exist_ok=True)
     
-    main_jpg = target_folder / config.FILENAME_TEMPLATES["artwork"].format(seo_slug=seo_name)
-    thumb_jpg = target_folder / config.FILENAME_TEMPLATES["thumbnail"].format(seo_slug=seo_name)
-    
+    main_jpg = target_folder / f"{seo_name}.jpg"
+    thumb_jpg = target_folder / f"{seo_name}-THUMB.jpg"
+    analyse_jpg = target_folder / f"{seo_name}-ANALYSE.jpg"
+
     shutil.copy2(original_path, main_jpg)
     
+    unanalysed_folder = original_path.parent
+    source_analyse_file = unanalysed_folder / f"{original_path.stem}-analyse.jpg"
+    if source_analyse_file.exists():
+        shutil.copy2(source_analyse_file, analyse_jpg)
+        logger.info(f"Copied analyse image to {analyse_jpg.name}")
+
     with Image.open(main_jpg) as img:
         thumb = img.copy()
         thumb.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
@@ -197,9 +132,9 @@ def save_artwork_files(original_path: Path, seo_name: str) -> dict:
     return {
         "main_jpg_path": str(main_jpg),
         "thumb_jpg_path": str(thumb_jpg),
+        "analyse_jpg_path": str(analyse_jpg),
         "processed_folder": str(target_folder)
     }
-
 
 def add_to_mockup_queue(artwork_path: str):
     """Adds a processed artwork path to the pending mockups queue file."""
@@ -209,44 +144,35 @@ def add_to_mockup_queue(artwork_path: str):
         if artwork_path not in queue:
             queue.append(artwork_path)
         queue_file.write_text(json.dumps(queue, indent=2), encoding="utf-8")
-        logger.info(f"Added {Path(artwork_path).name} to the mockup generation queue.")
+        logger.info(f"Added {Path(artwork_path).name} to mockup queue.")
     except (IOError, json.JSONDecodeError) as e:
         logger.error(f"Failed to update mockup queue file at {queue_file}: {e}")
-
 
 # ===========================================================================
 # 5. Colour Detection & Mapping
 # ===========================================================================
 
 def _closest_colour(rgb_tuple: tuple[int, int, int]) -> str:
-    """Find the nearest Etsy color name for a given RGB tuple."""
     min_dist = float('inf')
     best_colour = "White"
     for name, rgb in ETSY_COLOURS.items():
         dist = sum((rgb[i] - rgb_tuple[i]) ** 2 for i in range(3))
-        if dist < min_dist:
-            min_dist = dist
-            best_colour = name
+        if dist < min_dist: min_dist, best_colour = dist, name
     return best_colour
 
-
 def get_dominant_colours(img_path: Path, n: int = 2) -> list[str]:
-    """Get the N most dominant colors from an image, mapped to Etsy's palette."""
     try:
         from sklearn.cluster import KMeans
         import numpy as np
     except ImportError:
-        logger.error("Scikit-learn is not installed. Please run 'pip install scikit-learn'.")
+        logger.error("Scikit-learn not installed. Cannot perform color detection.")
         return ["White", "Black"]
 
     try:
         with Image.open(img_path) as img:
             img = img.convert("RGB").resize((100, 100))
             arr = np.asarray(img).reshape(-1, 3)
-
-        kmeans = KMeans(n_clusters=max(3, n + 1), n_init='auto', random_state=42)
-        kmeans.fit(arr)
-        
+        kmeans = KMeans(n_clusters=max(3, n + 1), n_init='auto', random_state=42).fit(arr)
         counts = np.bincount(kmeans.labels_)
         sorted_idx = np.argsort(counts)[::-1]
         
@@ -257,15 +183,13 @@ def get_dominant_colours(img_path: Path, n: int = 2) -> list[str]:
             if etsy_colour not in seen_colours:
                 seen_colours.add(etsy_colour)
                 colours.append(etsy_colour)
-            if len(colours) >= n:
-                break
+            if len(colours) >= n: break
         
         logger.info(f"Detected dominant colours for {img_path.name}: {colours}")
         return (colours + ["White", "Black"])[:n]
     except Exception as e:
         logger.error(f"Color detection failed for {img_path.name}: {e}")
         return ["White", "Black"]
-
 
 # ===========================================================================
 # 6. OpenAI API Handler
@@ -278,33 +202,16 @@ def generate_ai_listing(image_path: Path, aspect: str, assigned_sku: str) -> tup
         encoded_img = base64.b64encode(f.read()).decode("utf-8")
     
     system_prompt = Path(config.ONBOARDING_PATH).read_text(encoding="utf-8")
-    prompt = f"{system_prompt.strip()}\n\nThe assigned SKU for this artwork is {assigned_sku}."
     
-    messages = [
-        {"role": "system", "content": prompt},
-        {"role": "user", "content": [
-            {"type": "text", "text": f"Analyze this artwork (filename: {image_path.name}, aspect ratio: {aspect}) and generate the complete JSON listing."},
-            {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded_img}"}},
-        ]}
-    ]
+    messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": [{"type": "text", "text": f"Analyze this artwork (filename: {image_path.name}, aspect ratio: {aspect}) and generate the complete JSON listing. The assigned SKU is {assigned_sku}."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded_img}"}}]}]
 
     try:
         logger.info("Sending request to OpenAI ChatCompletion API...")
-        response = client.chat.completions.create(
-            model=config.OPENAI_MODEL,
-            messages=messages,
-            max_tokens=2100,
-            temperature=0.92,
-            timeout=60,
-            response_format={"type": "json_object"},
-        )
+        response = client.chat.completions.create(model=config.OPENAI_MODEL, messages=messages, max_tokens=2100, temperature=0.92, timeout=60, response_format={"type": "json_object"})
         
-        # --- ROBUSTNESS FIX ---
-        # Check if the response or its content is None before proceeding
         raw_text = response.choices[0].message.content
         if raw_text is None:
             logger.error("OpenAI API returned an empty response (content is None).")
-            # Return a default dictionary and an error message to prevent a crash
             return {}, "OpenAI response was null."
             
         raw_text = raw_text.strip()
@@ -325,7 +232,6 @@ def parse_text_fallback(text: str) -> dict:
     if title_match: data["title"] = title_match.group(1)
     return data
 
-
 # ===========================================================================
 # 7. Main Analysis Workflow
 # ===========================================================================
@@ -334,8 +240,7 @@ def analyze_single(image_path: Path):
     """Orchestrates the full analysis workflow for a single artwork image."""
     logger.info(f"--- Starting analysis for: {image_path.name} (User: {USER_ID}) ---")
     
-    if not image_path.is_file():
-        raise FileNotFoundError(f"Input image not found: {image_path}")
+    if not image_path.is_file(): raise FileNotFoundError(f"Input image not found: {image_path}")
 
     temp_dir = config.UNANALYSED_ROOT / "temp"
     optimized_img_path = None
@@ -346,13 +251,15 @@ def analyze_single(image_path: Path):
         optimized_img_path = make_optimized_image_for_ai(image_path, temp_dir)
         ai_listing, raw_response = generate_ai_listing(optimized_img_path, aspect, assigned_sku)
         raw_title = ai_listing.get("title", image_path.stem)
+
+        # The stable, unique name for the folder is the original image's file stem.
+        seo_name = image_path.stem.replace('-OPTIMIZED', '').replace('-GOOGLE-OPTIMIZED', '')
         
-        seo_name = slugify(raw_title)
+        # The creative, length-limited filename is for the listing itself.
         seo_filename = generate_seo_filename(raw_title, assigned_sku)
 
         file_paths = save_artwork_files(image_path, seo_name)
         primary_colour, secondary_colour = get_dominant_colours(Path(file_paths["main_jpg_path"]), 2)
-        
         final_description = ai_listing.get("description") or assemble_gdws_description(aspect)
 
         listing_data = {
@@ -376,11 +283,19 @@ def analyze_single(image_path: Path):
             }
         }
 
-        listing_json_path = Path(file_paths["processed_folder"]) / config.FILENAME_TEMPLATES["listing_json"].format(seo_slug=seo_name)
+        listing_json_path = Path(file_paths["processed_folder"]) / f"{seo_name}-listing.json"
         listing_json_path.write_text(json.dumps(listing_data, indent=2), encoding="utf-8")
         logger.info(f"Wrote final listing JSON to {listing_json_path}")
         
         add_to_mockup_queue(file_paths["main_jpg_path"])
+
+        # --- FIX APPLIED ---
+        # The line below was causing the test failure by deleting the parent
+        # directory of the test image, which also contained other test files.
+        # This cleanup is now handled by the calling process (e.g., the upload route)
+        # to ensure the analysis script has no unintended side effects.
+        # shutil.rmtree(image_path.parent, ignore_errors=True)
+        # logger.info(f"Cleaned up unanalysed source folder: {image_path.parent}")
 
         logger.info(f"--- Successfully completed analysis for: {image_path.name} ---")
         return listing_data

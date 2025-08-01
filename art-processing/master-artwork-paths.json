@@ -1,82 +1,142 @@
 {
-  "a2865fa850494d71ab785fe2dc24f410": {
-    "seo_filename": "waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-36a44fbe.jpg",
-    "base": "waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-36a44fbe",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-6a8c69fe",
+  "bc74a3fa21ae429b885cf0be7e655c27": {
+    "seo_filename": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-dab8e41c.jpg",
+    "base": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-dab8e41c",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-e8f02266",
     "assets": [
-      "waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-36a44fbe.jpg",
-      "waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-36a44fbe-thumb.jpg",
-      "waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-36a44fbe-analyse.jpg",
-      "waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-36a44fbe.qc.json"
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-dab8e41c.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-dab8e41c-thumb.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-dab8e41c-analyse.jpg",
+      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-dab8e41c.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2-6a8c69fe",
-        "timestamp": "2025-07-31T06:49:04.644362+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-1-e8f02266",
+        "timestamp": "2025-07-31T12:08:13.644653+00:00"
       }
     ],
-    "upload_date": "2025-07-31T06:49:04.644362+00:00"
+    "upload_date": "2025-07-31T12:08:13.644653+00:00"
   },
-  "612983b705974df7aaf596f3c1d6f792": {
-    "seo_filename": "test-49e9dace.jpg",
-    "base": "test-49e9dace",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-c2bea6b7",
+  "10390ee6a14e4a0087ec8472c41eabee": {
+    "seo_filename": "test-57292334.jpg",
+    "base": "test-57292334",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-6fbade95",
     "assets": [
-      "test-49e9dace.jpg",
-      "test-49e9dace-thumb.jpg",
-      "test-49e9dace-analyse.jpg",
-      "test-49e9dace.qc.json"
+      "test-57292334.jpg",
+      "test-57292334-thumb.jpg",
+      "test-57292334-analyse.jpg",
+      "test-57292334.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/test-c2bea6b7",
-        "timestamp": "2025-07-31T06:52:54.610992+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/test-6fbade95",
+        "timestamp": "2025-08-01T05:59:23.824321+00:00"
       }
     ],
-    "upload_date": "2025-07-31T06:52:54.610992+00:00"
+    "upload_date": "2025-08-01T05:59:23.824321+00:00"
   },
-  "05df74ce4e4c42c69da96dc8b7655df9": {
-    "seo_filename": "good-25c15f65.jpg",
-    "base": "good-25c15f65",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-0c5a1e4b",
+  "6b9cda678c2f4875b381018f9944e506": {
+    "seo_filename": "good-1eb66eb7.jpg",
+    "base": "good-1eb66eb7",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-5ed90bca",
     "assets": [
-      "good-25c15f65.jpg",
-      "good-25c15f65-thumb.jpg",
-      "good-25c15f65-analyse.jpg",
-      "good-25c15f65.qc.json"
+      "good-1eb66eb7.jpg",
+      "good-1eb66eb7-thumb.jpg",
+      "good-1eb66eb7-analyse.jpg",
+      "good-1eb66eb7.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/good-0c5a1e4b",
-        "timestamp": "2025-07-31T06:52:54.654013+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/good-5ed90bca",
+        "timestamp": "2025-08-01T05:59:23.867178+00:00"
       }
     ],
-    "upload_date": "2025-07-31T06:52:54.654013+00:00"
+    "upload_date": "2025-08-01T05:59:23.867178+00:00"
   },
-  "d11a128e529d44579fcf02ce0e325c25": {
-    "seo_filename": "sample-c27a8888.jpg",
-    "base": "sample-c27a8888",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-eae23b48",
+  "593d8dce722d495582642c6613bf7d87": {
+    "seo_filename": "sample-6ca99a1b.jpg",
+    "base": "sample-6ca99a1b",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-210df1db",
     "assets": [
-      "sample-c27a8888.jpg",
-      "sample-c27a8888-thumb.jpg",
-      "sample-c27a8888-analyse.jpg",
-      "sample-c27a8888.qc.json"
+      "sample-6ca99a1b.jpg",
+      "sample-6ca99a1b-thumb.jpg",
+      "sample-6ca99a1b-analyse.jpg",
+      "sample-6ca99a1b.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-eae23b48",
-        "timestamp": "2025-07-31T06:52:54.766746+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-210df1db",
+        "timestamp": "2025-08-01T05:59:23.982510+00:00"
       }
     ],
-    "upload_date": "2025-07-31T06:52:54.766746+00:00"
+    "upload_date": "2025-08-01T05:59:23.982510+00:00"
+  },
+  "1aa02f435ef04853a08c05bc514d594a": {
+    "seo_filename": "test-75b4dc05.jpg",
+    "base": "test-75b4dc05",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-39d9ecbd",
+    "assets": [
+      "test-75b4dc05.jpg",
+      "test-75b4dc05-thumb.jpg",
+      "test-75b4dc05-analyse.jpg",
+      "test-75b4dc05.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/test-39d9ecbd",
+        "timestamp": "2025-08-01T06:11:07.304258+00:00"
+      }
+    ],
+    "upload_date": "2025-08-01T06:11:07.304258+00:00"
+  },
+  "95a5ccb156de48b99cbf4081b13d0c37": {
+    "seo_filename": "good-4b5e5bda.jpg",
+    "base": "good-4b5e5bda",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-0488d0f6",
+    "assets": [
+      "good-4b5e5bda.jpg",
+      "good-4b5e5bda-thumb.jpg",
+      "good-4b5e5bda-analyse.jpg",
+      "good-4b5e5bda.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/good-0488d0f6",
+        "timestamp": "2025-08-01T06:11:07.351976+00:00"
+      }
+    ],
+    "upload_date": "2025-08-01T06:11:07.351976+00:00"
+  },
+  "2ada9fbe5dba4f02a4ed783b916d7366": {
+    "seo_filename": "sample-8a27c7f3.jpg",
+    "base": "sample-8a27c7f3",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-8c91ba3e",
+    "assets": [
+      "sample-8a27c7f3.jpg",
+      "sample-8a27c7f3-thumb.jpg",
+      "sample-8a27c7f3-analyse.jpg",
+      "sample-8a27c7f3.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-8c91ba3e",
+        "timestamp": "2025-08-01T06:11:07.467450+00:00"
+      }
+    ],
+    "upload_date": "2025-08-01T06:11:07.467450+00:00"
   }
 }

@@ -343,7 +343,7 @@ def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str,
                         if val:
                             filename = Path(val).name
                             break
-            except Exception as exc:  # pragma: no cover - unexpected IO
+            except Exception as exc:
                 logging.error("Failed reading listing for %s: %s", seo_folder, exc)
 
         if folder.exists() and not filename:
@@ -386,30 +386,30 @@ def get_mockup_details_for_template(mockups_data: list, folder: Path, seo_folder
     """Processes mockup data from a listing file for use in templates."""
     mockups = []
     for idx, mp in enumerate(mockups_data):
-        if isinstance(mp, dict):
-            composite_name = mp.get("composite", "")
-            out = folder / composite_name if composite_name else Path()
-            cat = mp.get("category", "")
-            thumb_name = mp.get("thumbnail", "")
-            thumb = folder / config.THUMB_SUBDIR / thumb_name if thumb_name else Path()
-        else:
-            p = Path(mp)
-            out = folder / f"{seo_folder}-{p.stem}.jpg"
-            cat = p.parent.name
-            thumb = folder / config.THUMB_SUBDIR / f"{seo_folder}-{aspect}-mockup-thumb-{idx}.jpg"
+        composite_name = mp.get("composite", "")
+        thumb_name = mp.get("thumbnail", "")
+        category = mp.get("category", "")
 
+        out_path = folder / composite_name if composite_name else Path()
+        thumb_path = folder / config.THUMB_SUBDIR / thumb_name if thumb_name else Path()
+
+        # --- CRITICAL FIX ---
+        # Instead of resolving the full path, create a simple relative path
+        # that matches what the url_for() function expects for the thumbnail route.
+        # e.g., "folder-name/THUMBS/thumb-name.jpg"
+        thumb_rel_path = f"{seo_folder}/{config.THUMB_SUBDIR}/{thumb_name}" if thumb_name else ""
+        
         mockups.append({
-            "path": out,
-            "category": cat,
-            "exists": out.exists(),
+            "path": out_path,
+            "category": category,
+            "exists": out_path.exists(),
             "index": idx,
-            "thumb": thumb,
-            "thumb_exists": thumb.exists(),
-            "path_rel": resolve_image_url(out),
-            "thumb_rel": resolve_image_url(thumb),
+            "thumb": thumb_path,
+            "thumb_exists": thumb_path.exists(),
+            "path_rel": relative_to_base(out_path),
+            "thumb_rel": thumb_rel_path, # Use the corrected relative path
         })
     return mockups
-
 
 # ===========================================================================
 # 6. Mockup Selection & Management

@@ -174,11 +174,22 @@ def _process_queued_artwork(img_path_str: str, total_in_queue: int, current_inde
             output_filename = config.FILENAME_TEMPLATES["mockup"].format(seo_slug=seo_name, num=i + 1)
             output_path = folder / output_filename
             composite.convert("RGB").save(output_path, "JPEG", quality=90)
+            
+            # --- CREATE THUMBNAIL LOGIC ---
+            thumb_dir = folder / config.THUMB_SUBDIR
+            thumb_dir.mkdir(parents=True, exist_ok=True)
+            thumb_name = f"{output_path.stem}-thumb.jpg"
+            thumb_path = thumb_dir / thumb_name
+            with composite.copy() as thumb_img:
+                thumb_img.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
+                thumb_img.convert("RGB").save(thumb_path, "JPEG", quality=85)
+            # --- END THUMBNAIL LOGIC ---
 
             mockup_entries.append({
                 "category": cat_dir.name,
                 "source": str(mockup_file.relative_to(config.MOCKUPS_INPUT_DIR)),
                 "composite": output_filename,
+                "thumbnail": thumb_name, # Add the thumbnail name to the listing data
             })
             logger.info(f"   - Mockup created: {output_filename} (from category '{cat_dir.name}')")
         except Exception as e:
