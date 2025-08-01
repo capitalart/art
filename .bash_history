@@ -640,3 +640,29 @@ source /home/art/venv/bin/activate
 ./project-toolkit.sh
 ./code-stacker.sh
 ./project-toolkit.sh
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+0
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f

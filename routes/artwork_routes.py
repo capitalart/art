@@ -482,7 +482,6 @@ def analyze_artwork_route(aspect, filename):
 @bp.post("/analyze-upload/<base>")
 def analyze_upload(base):
     """Analyze an uploaded image from the unanalysed folder."""
-    # ... (This function remains largely the same, but we ensure it also uses the correct redirect)
     uid, rec = utils.get_record_by_base(base)
     if not rec:
         flash("Artwork not found", "danger")
@@ -530,37 +529,66 @@ def analyze_upload(base):
 
 @bp.route("/review/<aspect>/<filename>")
 def review_artwork(aspect, filename):
-    """Legacy URL – redirect to the new edit/review page."""
+    """
+    Handles a legacy URL structure for reviewing artworks.
+    This route now permanently redirects to the modern 'edit_listing' page,
+    ensuring old bookmarks or links continue to function.
+    """
+    # Redirect to the new, canonical URL for editing listings.
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
 @bp.route("/review-swap-mockup/<seo_folder>/<int:slot_idx>", methods=["POST"])
 def review_swap_mockup(seo_folder, slot_idx):
-    """Swap a mockup to a new category from the edit page."""
+    """
+    Handles a request to swap a single mockup from the edit page.
+    This is triggered by a form submission for a specific mockup slot.
+    """
+    # Retrieve the new category selected by the user from the form data.
     new_category = request.form.get("new_category")
+    
+    # Call the utility function to perform the swap on disk.
+    # The function returns a success flag and other optional data.
     success, *_ = utils.swap_one_mockup(seo_folder, slot_idx, new_category)
+    
+    # Display a message to the user indicating the outcome of the swap.
     flash(f"Mockup slot {slot_idx} swapped to {new_category}" if success else "Failed to swap mockup", "success" if success else "danger")
-    # Determine aspect ratio from listing to redirect correctly
-    listing_path = next((PROCESSED_ROOT / seo_folder).glob("*-listing.json"), None)
-    aspect = "4x5" # fallback
+    
+    # To redirect back to the correct edit page, determine the aspect ratio from the listing file.
+    listing_path = next((config.PROCESSED_ROOT / seo_folder).glob("*-listing.json"), None)
+    aspect = "4x5" # A fallback aspect ratio in case the listing file is not found.
     if listing_path:
+        # Load the listing JSON to get the accurate aspect ratio.
         data = utils.load_json_file_safe(listing_path)
         aspect = data.get("aspect_ratio", aspect)
+        
+    # Redirect back to the edit page with all the necessary parameters.
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=f"{seo_folder}.jpg"))
 
 @bp.route("/edit-listing/<aspect>/<filename>", methods=["GET", "POST"])
 def edit_listing(aspect, filename):
-    """Display and update a processed or finalised artwork listing."""
+    """
+    The main endpoint for both displaying and updating a processed or finalised artwork listing.
+    Handles GET requests to show the form and POST requests to save changes.
+    """
     try:
+        # Resolve all necessary paths for the artwork based on its aspect and filename.
+        # This helper function checks processed, finalised, and locked directories.
         seo_folder, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
     except FileNotFoundError:
+        # If the artwork cannot be found, flash an error and redirect to the main gallery.
         flash(f"Artwork not found: {filename}", "danger")
         return redirect(url_for("artwork.artworks"))
     
+    # Load the artwork's metadata from its corresponding listing.json file.
     data = utils.load_json_file_safe(listing_path)
+    # Load the generic, boilerplate text associated with the artwork's aspect ratio.
     generic_text = read_generic_text(data.get("aspect_ratio", aspect))
-    is_locked_in_vault = ARTWORK_VAULT_ROOT in folder.parents
+    # Check if the artwork is in the 'artwork-vault', which is a special locked state.
+    is_locked_in_vault = config.ARTWORK_VAULT_ROOT in folder.parents
 
+    # Handle form submission for updating the listing.
     if request.method == "POST":
+        # Collect all editable fields from the submitted form.
         form_data = {
             "title": request.form.get("title", "").strip(),
             "description": request.form.get("description", "").strip(),
@@ -568,36 +596,55 @@ def edit_listing(aspect, filename):
             "secondary_colour": request.form.get("secondary_colour", "").strip(),
             "seo_filename": request.form.get("seo_filename", "").strip(),
             "price": request.form.get("price", "18.27").strip(),
-            "sku": data.get("sku", "").strip(), # SKU is not user-editable from form
+            "sku": data.get("sku", "").strip(), # SKU is preserved from the existing data and not user-editable.
             "images": [i.strip() for i in request.form.get("images", "").splitlines() if i.strip()],
         }
         
+        # Validate the submitted form data against a set of rules.
         errors = validate_listing_fields(form_data, generic_text)
         if errors:
-            # Re-render form with errors
-            # (Code omitted for brevity, but would re-populate and show errors)
+            # If validation fails, flash each error message to the user.
             for error in errors: flash(error, "danger")
         else:
+            # If validation passes, update the loaded data with the new form data.
             data.update(form_data)
+            # Write the updated dictionary back to the listing.json file.
             with open(listing_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
+            # Inform the user that the update was successful.
             flash("Listing updated", "success")
             log_action("edits", filename, session.get("username"), "listing updated")
+        # Redirect back to the same edit page to show the results or errors.
         return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
-    # Populate data for GET request
+    # This block handles the GET request to display the page.
+    # Populate a dictionary with all the necessary data for the template.
     artwork = utils.populate_artwork_data_from_json(data, seo_folder)
+    # Get details for all associated mockups (images, thumbnails, etc.).
     mockups = utils.get_mockup_details_for_template(data.get("mockups", []), folder, seo_folder, aspect)
     
+    # Render the main 'edit_listing.html' template with all the collected data.
     return render_template(
         "edit_listing.html",
-        artwork=artwork, aspect=aspect, filename=filename, seo_folder=seo_folder,
-        mockups=mockups, menu=utils.get_menu(), errors=None,
+        artwork=artwork,
+        aspect=aspect,
+        filename=filename,
+        seo_folder=seo_folder,
+        mockups=mockups,
+        menu=utils.get_menu(),
+        errors=None,
         colour_options=get_allowed_colours(),
+        # Get available mockup categories for dropdowns, specific to the artwork's aspect ratio.
         categories=get_categories_for_aspect(data.get("aspect_ratio", aspect)),
-        finalised=finalised, locked=data.get("locked", False),
-        is_locked_in_vault=is_locked_in_vault, editable=not data.get("locked", False),
-        openai_analysis=data.get("openai_analysis"), cache_ts=int(time.time()),
+        finalised=finalised,
+        locked=data.get("locked", False),
+        is_locked_in_vault=is_locked_in_vault,
+        # The form is editable only if the listing is not marked as locked.
+        editable=not data.get("locked", False),
+        # Pass the raw OpenAI analysis data for display.
+        openai_analysis=data.get("openai_analysis"),
+        # Add a timestamp for cache-busting URLs for images.
+        cache_ts=int(time.time()),
     )
 
 

@@ -1,4 +1,0 @@
-usage: analyze_artwork.py [-h] [--feedback FEEDBACK] [--verbose]
-                          [--provider {openai}] [--json-output]
-                          [image]
-analyze_artwork.py: error: argument --provider: invalid choice: 'google' (choose from 'openai')

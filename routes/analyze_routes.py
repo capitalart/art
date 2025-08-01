@@ -1,621 +1,356 @@
-# /home/dream/dreamartmachine/routes/analyze_routes.py
-# ==============================================================================
-# 📄 File: analyze_routes.py (DreamArtMachine Artwork Analysis & Management Routes)
-# 📅 Last Modified: 10 June 2025 (Definitive rewrite to fix all data handling, display, and async bugs)
-# ==============================================================================
+# -*- coding: utf-8 -*-
+"""Artwork-related Flask routes.
 
-# === [ analyze-routes-py-1: Imports and Global Setup ] ===
-import logging
-import json
-import os
-import shutil
-import re
-import urllib.parse
-import base64
-import csv
-from io import StringIO
-import math
-import asyncio
-import subprocess
+This module powers the full listing workflow from initial review to
+finalisation. It handles validation, moving files, regenerating image link
+lists and serving gallery pages for processed and finalised artworks.
+
+INDEX
+-----
+1.  Imports and Initialisation
+2.  Health Checks and Status API
+3.  AI Analysis & Subprocess Helpers
+4.  Validation and Data Helpers
+5.  Core Navigation & Upload Routes
+6.  Mockup Selection Workflow Routes
+7.  Artwork Analysis Trigger Routes
+8.  Artwork Editing and Listing Management
+9.  Static File and Image Serving Routes
+10. Composite Image Preview Routes
+11. Artwork Finalisation and Gallery Routes
+12. Listing State Management (Lock, Unlock, Delete)
+13. Asynchronous API Endpoints
+14. File Processing and Utility Helpers
+"""
+
+# ===========================================================================
+# 1. Imports and Initialisation
+# ===========================================================================
+# This section handles all necessary imports, configuration loading, and
+# the initial setup of the Flask Blueprint and logging.
+# ===========================================================================
+
+from __future__ import annotations
+import json, subprocess, uuid, random, logging, shutil, os, traceback, datetime, time, sys
 from pathlib import Path
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple, Union, Callable
 
-from fastapi import (
-    APIRouter, Request, Depends, Form, HTTPException, status, Query, File, UploadFile
-)
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
-from sqlalchemy.orm import Session
-from starlette.datastructures import URL
-from starlette.routing import NoMatchFound
-from scripts.auto_register_missing_artworks import register_missing_artworks_internal
-import openai
+# --- Local Application Imports ---
+from utils.logger_utils import log_action, strip_binary
+from utils.sku_assigner import peek_next_sku
+from utils import ai_services
+from routes import sellbrite_service
 import config
-
-from .. import crud
-from ..models import Artwork, User as UserModel
-from ..config import settings
-from ..database import get_db
-from ..dependencies import login_required, get_current_active_user
-from ..utils.template_engine import templates
-from ..services.artwork_analysis_service import analyze_single_artwork, update_artwork_with_analysis_results
-from ..utils.content_blocks import (
-    get_aspect_ratio_block,
-    get_dot_painting_history_block,
+from helpers.listing_utils import (
+    resolve_listing_paths,
+    create_unanalysed_subfolder,
+    cleanup_unanalysed_folders,
 )
-from ..utils.file_utils import (
-    get_artwork_display_url,
-    generate_seo_filename as generate_seo_filename_util,
-    generate_sku as generate_sku_util,
-    organize_artwork_files,
-    archive_original_file as archive_original_file_util,
-    restore_archived_file as restore_archived_file_util,
-    clean_tags_for_etsy,
-    get_image_path_for_openai_analysis,
+from config import (
+    PROCESSED_ROOT, FINALISED_ROOT, UNANALYSED_ROOT, ARTWORK_VAULT_ROOT,
+    BASE_DIR, ANALYSIS_STATUS_FILE, PROCESSED_URL_PATH, FINALISED_URL_PATH,
+    LOCKED_URL_PATH, UNANALYSED_IMG_URL_PREFIX, MOCKUP_THUMB_URL_PREFIX,
+    COMPOSITE_IMG_URL_PREFIX,
 )
-from ..utils.template_helpers import clean_listing_text
-from ..utils.ai_utils import get_ai_profile_settings, get_short_prompt_hint, execute_openai_vision_analysis
+import scripts.analyze_artwork as aa
 
-router = APIRouter(prefix="/analyze", tags=["Artwork Analysis & Management"], dependencies=[Depends(login_required)])
-logger = logging.getLogger(__name__)
+# --- Third-Party Imports ---
+from PIL import Image
+import io
+import google.generativeai as genai
+from flask import (
+    Blueprint, current_app, render_template, request, redirect, url_for,
+    session, flash, send_from_directory, abort, Response, jsonify,
+)
+import re
 
-# Module-level constants
-AI_PROFILE_SETTINGS_FILE_PATH = settings.AI_PROFILE_SETTINGS_FILE
-ETSY_MASTER_TEMPLATE_PATH = settings.ETSY_MASTER_TEMPLATE_PATH
-FINALISED_ART_DIR_PATH = settings.FINALIZED_ARTWORK_DIR_ABSOLUTE
-# === [ End of Section 1 ] ===
+# --- Local Route-Specific Imports ---
+from . import utils
+from .utils import (
+    ALLOWED_COLOURS_LOWER, relative_to_base, read_generic_text, clean_terms, infer_sku_from_filename,
+    sync_filename_with_sku, is_finalised_image, get_allowed_colours,
+    load_json_file_safe, generate_mockups_for_listing,
+)
 
+bp = Blueprint("artwork", __name__)
 
-# === [ analyze-routes-py-2: Internal Helper Functions ] ===
-def _get_artwork_or_404(artwork_id: int, db: Session, current_user: UserModel) -> Artwork:
-    """Synchronous helper to fetch an artwork or raise 404/403."""
-    artwork = crud.get_artwork(db, artwork_id=artwork_id)
-    if not artwork:
-        logger.warning(f"Artwork ID {artwork_id} not found (access by {current_user.username}).")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Artwork ID {artwork_id} not found.")
-    if not current_user.is_superuser and artwork.user_id != current_user.id:
-        logger.warning(f"Unauthorized access attempt by {current_user.username} to Artwork ID {artwork_id}.")
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to access this artwork.")
-    return artwork
-# === [ End of Section 2 ] ===
+# ===========================================================================
+# 2. Health Checks and Status API
+# ===========================================================================
+# These endpoints provide status information for external services like
+# OpenAI and Google, and for the background artwork analysis process.
+# They are used by the frontend to monitor system health.
+# ===========================================================================
 
-
-# === [ analyze-routes-py-3: Main Analysis Dashboard Route ] ===
-@router.get("/", response_class=HTMLResponse, name="analyze_artworks_page")
-async def display_analysis_dashboard(
-    request: Request, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_active_user),
-    artwork_id: Optional[int] = Query(None), processed_artwork_id: Optional[int] = Query(None),
-    artwork_filename: Optional[str] = Query(None),
-    message: Optional[str] = Query(None), error_message: Optional[str] = Query(None)
-):
-    """Displays the main artwork analysis dashboard, populating it with data for a selected artwork if provided."""
-    logger.info(f"User '{current_user.username}' accessed /analyze with artwork_id={artwork_id}")
-    
-    available_ai_profiles, current_ai_profile_key = [], "EtsyAustralianArt"
+@bp.get("/health/openai")
+def health_openai():
+    """Return status of OpenAI connection."""
+    logger = logging.getLogger(__name__)
     try:
-        with AI_PROFILE_SETTINGS_FILE_PATH.open("r", encoding="utf-8") as f:
-            settings_json = json.load(f)
-        available_ai_profiles = list(settings_json.get("profiles", {}).keys())
-        current_ai_profile_key = settings_json.get(
-            "current_profile",
-            available_ai_profiles[0] if available_ai_profiles else current_ai_profile_key,
-        )
-    except Exception as e:
-        logger.error(f"Failed to load AI profiles: {e}")
-        error_message = "Could not load AI profiles from settings."
+        aa.client.models.list()
+        return jsonify({"ok": True})
+    except Exception as exc:
+        logger.error("OpenAI health check failed: %s", exc)
+        error = str(exc)
+        if config.DEBUG:
+            error += "\n" + traceback.format_exc()
+        return jsonify({"ok": False, "error": error}), 500
 
-    display_id = processed_artwork_id or artwork_id
-    artwork = _get_artwork_or_404(display_id, db, current_user) if display_id else crud.get_artwork_by_filename(db, filename=artwork_filename) if artwork_filename else None
+@bp.get("/health/google")
+def health_google():
+    """Return status of Google Vision connection."""
+    logger = logging.getLogger(__name__)
+    try:
+        genai.list_models()
+        return jsonify({"ok": True})
+    except Exception as exc:
+        logger.error("Google health check failed: %s", exc)
+        error = str(exc)
+        if config.DEBUG:
+            error += "\n" + traceback.format_exc()
+        return jsonify({"ok": False, "error": error}), 500
 
-    form_details = {}
-    parsed_tags_for_preview = []
-    if artwork:
-        form_details = {
-            "id": artwork.id, "filename": artwork.original_filename,
-            "title_for_form": artwork.generated_title or get_short_prompt_hint(artwork.original_filename),
-            "image_url_for_form_preview": get_artwork_display_url(request, artwork.thumb_path, artwork.status),
-            "viewer_page_url_for_full_size_image": str(request.url_for('view_full_size_artwork_image_on_analyze', artwork_id=artwork.id)),
-            "aspect_ratio_for_form": artwork.aspect_ratio_str,
-            "description_from_db": artwork.generated_description or "",
-            "tags_input_from_db": artwork.generated_tags_keywords or "",
-            "notes_from_db": artwork.notes or "", "current_status": artwork.status,
-            "resolution_metric": artwork.resolution, "dpi_metric": artwork.dpi,
-            "filesize_metric": artwork.file_size_mb_str, "icc_profile_metric": artwork.icc_profile_name,
-        }
-        if artwork.generated_tags_keywords:
+load_json_file_safe(ANALYSIS_STATUS_FILE)
+
+def _write_analysis_status(step: str, percent: int, file: str | None = None, status: str | None = None, error: str | None = None) -> None:
+    """Write progress info for frontend polling."""
+    logger = logging.getLogger(__name__)
+    payload = {"step": step, "percent": percent, "file": file, "status": status, "error": error}
+    try:
+        ANALYSIS_STATUS_FILE.write_text(json.dumps({k: v for k, v in payload.items() if v is not None}))
+    except Exception as exc:
+        logger.error("Failed writing analysis status: %s", exc)
+
+@bp.route("/status/analyze")
+def analysis_status():
+    """Return JSON progress info for the current analysis job."""
+    return Response(ANALYSIS_STATUS_FILE.read_text(), mimetype="application/json")
+
+# ===========================================================================
+# 3. AI Analysis & Subprocess Helpers
+# ===========================================================================
+
+def _run_ai_analysis(img_path: Path, provider: str) -> dict:
+    """Run the AI analysis script and return its JSON output."""
+    logger = logging.getLogger("art_analysis")
+    logger.info("[DEBUG] _run_ai_analysis: img_path=%s provider=%s", img_path, provider)
+
+    if provider == "openai":
+        cmd = [sys.executable, str(config.ANALYZE_SCRIPT_PATH), str(img_path), "--json-output"]
+    else:
+        raise ValueError(f"Unknown provider: {provider}")
+
+    logger.info("[DEBUG] Subprocess cmd: %s", " ".join(cmd))
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+
+    if result.returncode != 0:
+        msg = (result.stderr or "Unknown error").strip()
+        raise RuntimeError(f"AI analysis failed: {msg}")
+    
+    try:
+        return json.loads(result.stdout.strip())
+    except json.JSONDecodeError as e:
+        logger.error("JSON decode error: %s", e)
+        raise RuntimeError("AI analysis output could not be parsed.") from e
+
+def _generate_composites(seo_folder: str, log_id: str) -> None:
+    """Triggers the composite generation script for a specific folder."""
+    cmd = [sys.executable, str(config.GENERATE_SCRIPT_PATH), "--folder", seo_folder]
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=config.BASE_DIR, timeout=600)
+    composite_log = config.LOGS_DIR / "composite-generation-logs" / f"composite_gen_{log_id}.log"
+    composite_log.parent.mkdir(exist_ok=True)
+    composite_log.write_text(f"=== STDOUT ===\n{result.stdout}\n\n=== STDERR ===\n{result.stderr}")
+    if result.returncode != 0:
+        raise RuntimeError(f"Composite generation failed ({result.returncode})")
+
+# ===========================================================================
+# 4. Validation and Data Helpers
+# ===========================================================================
+
+def validate_listing_fields(data: dict, generic_text: str) -> list[str]:
+    """Return a list of validation error messages for the listing."""
+    errors: list[str] = []
+    if not data.get("title", "").strip(): errors.append("Title cannot be blank")
+    if len(data.get("title", "")) > 140: errors.append("Title exceeds 140 characters")
+    if len(data.get("tags", [])) > 13: errors.append("Too many tags (max 13)")
+    for t in data.get("tags", []):
+        if not t or len(t) > 20: errors.append(f"Invalid tag: '{t}'")
+    return errors
+
+def get_categories_for_aspect(aspect: str) -> list[str]:
+    """Return list of mockup categories available for the given aspect."""
+    base = config.MOCKUPS_CATEGORISED_DIR / aspect
+    return sorted([f.name for f in base.iterdir() if f.is_dir()]) if base.exists() else []
+
+# ===========================================================================
+# 5. Core Navigation & Upload Routes
+# ===========================================================================
+
+@bp.app_context_processor
+def inject_latest_artwork():
+    """Injects the latest analyzed artwork data into all templates."""
+    return dict(latest_artwork=utils.latest_analyzed_artwork())
+
+@bp.route("/")
+def home():
+    """Renders the main home page."""
+    return render_template("index.html", menu=utils.get_menu())
+
+@bp.route("/upload", methods=["GET", "POST"])
+def upload_artwork():
+    """Handle new artwork file uploads and run pre-QC checks."""
+    if request.method == "POST":
+        files = request.files.getlist("images")
+        results = []
+        user = session.get("username")
+        
+        for f in files:
+            folder = create_unanalysed_subfolder(f.filename)
             try:
-                tags_list = json.loads(artwork.generated_tags_keywords)
-                parsed_tags_for_preview = clean_tags_for_etsy(json.dumps(tags_list))
-            except (json.JSONDecodeError, TypeError):
-                parsed_tags_for_preview = clean_tags_for_etsy(artwork.generated_tags_keywords)
+                res = _process_upload_file(f, folder)
+            except Exception as exc:
+                logging.getLogger(__name__).error("Upload failed for %s: %s", f.filename, exc)
+                res = {"original": f.filename, "success": False, "error": str(exc)}
+            
+            log_action("upload", res.get("original", f.filename), user, res.get("error", "uploaded"), status="success" if res.get("success") else "fail")
+            results.append(res)
+        
+        if any(r["success"] for r in results):
+            flash(f"Uploaded {sum(1 for r in results if r['success'])} file(s) successfully", "success")
+        for r in [r for r in results if not r["success"]]:
+            flash(f"{r['original']}: {r['error']}", "danger")
 
-    gallery_raw = crud.get_artworks_ordered_by_timestamp_paginated(
-        db, limit=50, owner_id=None if current_user.is_superuser else current_user.id
-    )
-    artworks_for_gallery = [
-        {
-            "id": art.id,
-            "original_filename": art.original_filename,
-            "thumb_url": get_artwork_display_url(request, art.thumb_path, art.status),
-            "status_raw": art.status or "unknown",
-            "status_display": (art.status or "Unknown").replace("_", " ").title(),
-            "generated_title_display": art.generated_title or get_short_prompt_hint(art.original_filename),
-            "sku_display": art.sku,
-        }
-        for art in gallery_raw
-    ]
+        return redirect(url_for("artwork.artworks"))
+        
+    return render_template("upload.html", menu=utils.get_menu())
 
-    context = {
-        "page_title": "Analyze Artwork & Generate Listings",
-        "artworks_for_gallery": artworks_for_gallery,
-        "selected_artwork_for_form": form_details,
-        "ai_listing_preview_artwork": artwork,
-        "parsed_tags_for_preview": parsed_tags_for_preview,
-        "available_ai_profiles": available_ai_profiles,
-        "current_ai_profile_key": current_ai_profile_key,
-        "message": message,
-        "error_message": error_message,
-        "current_user": current_user,
-        "current_page_nav": "analyze",
-    }
-    return templates.TemplateResponse(request, "analyze.html", context)
-# === [ End of Section 3 ] ===
-
-# === [ analyze-routes-py-4: Artwork Viewer Route ] ===
-@router.get("/viewer/{artwork_id}", response_class=HTMLResponse, name="view_full_size_artwork_image_on_analyze")
-async def view_full_size_artwork_image_analyze_context_route(
-    artwork_id: int, request: Request, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_active_user)
-):
-    """Displays the full-size image in a viewer page, in the context of the analyze workflow."""
-    artwork = _get_artwork_or_404(artwork_id, db, current_user)
-
-    path_for_viewer_str: Optional[str] = None
-    if artwork.status in ["finalized", "ready_for_export"] and artwork.renamed_artwork_path:
-         path_for_viewer_str = artwork.renamed_artwork_path
-    else:
-         path_for_viewer_str = artwork.original_file_storage_path
-
-    full_image_url = get_artwork_display_url(request, path_for_viewer_str, artwork.status)
-    from starlette.datastructures import URL
-    back_url = str(URL(str(request.url_for('analyze_artworks_page'))).include_query_params(artwork_id=artwork_id))
-
-    context = {
-        "artwork_id": artwork.id,
-        "artwork_title": artwork.generated_title or artwork.original_filename,
-        "full_image_url": full_image_url,
-        "back_to_analyze_url": back_url,
-    }
-    return templates.TemplateResponse(request, "full_image_viewer.html", context)
-
-
-# === [ analyze-routes-py-4b: Trigger Analysis by Artwork ID Route | PATCHED FOR TYPE SAFETY ] ===
-@router.post("/{artwork_id}/by-ai", name="trigger_ai_analysis")
-async def trigger_ai_analysis_route(
-    artwork_id: int,
-    request: Request,
-    profile_key: Optional[str] = Query(None),
-    db: Session = Depends(get_db),
-    current_user: UserModel = Depends(get_current_active_user),
-):
-    """
-    Initiates AI analysis for a single artwork and redirects back.
-
-    Accepts either an artwork_id (int) or full Artwork object.
-    All handling is now type-safe.
-    """
-    logger.info(f"User '{current_user.username}' requested AI analysis for artwork ID {artwork_id}.")
-    analyze_page_url = str(request.url_for("analyze_artworks_page"))
+@bp.route("/artworks")
+def artworks():
+    """Display lists of artworks ready for analysis, processed, and finalised."""
+    processed, processed_names = utils.list_processed_artworks()
+    ready = utils.list_ready_to_analyze(processed_names)
+    finalised = utils.list_finalised_artworks()
+    return render_template("artworks.html", ready_artworks=ready, processed_artworks=processed, finalised_artworks=finalised, menu=utils.get_menu())
     
-    # Always fetch Artwork by ID, so we have the freshest data
+# ===========================================================================
+# 6. Mockup Selection Workflow Routes
+# ===========================================================================
+
+@bp.route("/select", methods=["GET", "POST"])
+def select():
+    """Display the mockup selection interface."""
+    if "slots" not in session or request.args.get("reset") == "1":
+        utils.init_slots()
+    slots = session["slots"]
+    options = utils.compute_options(slots)
+    zipped = list(zip(slots, options))
+    return render_template("mockup_selector.html", zipped=zipped, menu=utils.get_menu())
+
+@bp.route("/regenerate", methods=["POST"])
+def regenerate():
+    """Regenerate a random mockup image for a specific slot."""
+    slot_idx = int(request.form["slot"])
+    slots = session.get("slots", [])
+    if 0 <= slot_idx < len(slots):
+        cat = slots[slot_idx]["category"]
+        slots[slot_idx]["image"] = utils.random_image(cat, "4x5") # Assuming 4x5 for now
+        session["slots"] = slots
+    return redirect(url_for("artwork.select"))
+
+@bp.route("/swap", methods=["POST"])
+def swap():
+    """Swap a mockup slot to a new category."""
+    slot_idx = int(request.form["slot"])
+    new_cat = request.form["new_category"]
+    slots = session.get("slots", [])
+    if 0 <= slot_idx < len(slots):
+        slots[slot_idx]["category"] = new_cat
+        slots[slot_idx]["image"] = utils.random_image(new_cat, "4x5")
+        session["slots"] = slots
+    return redirect(url_for("artwork.select"))
+
+# ===========================================================================
+# 7. Artwork Analysis Trigger Routes
+# ===========================================================================
+
+@bp.route("/analyze/<aspect>/<filename>", methods=["POST"], endpoint="analyze_artwork")
+def analyze_artwork_route(aspect, filename):
+    """Run analysis on `filename` using the selected provider."""
+    logger, provider = logging.getLogger(__name__), request.form.get("provider", "openai").lower()
+    base_name = Path(filename).name
+    _write_analysis_status("starting", 0, base_name, status="analyzing")
+
+    src_path = next((p for p in config.UNANALYSED_ROOT.rglob(base_name) if p.is_file()), None)
+    if not src_path:
+        try:
+            seo_folder = utils.find_seo_folder_from_filename(aspect, filename)
+            src_path = PROCESSED_ROOT / seo_folder / f"{seo_folder}.jpg"
+        except FileNotFoundError: pass
+
+    if not src_path or not src_path.exists():
+        flash(f"Artwork file not found: {filename}", "danger")
+        return redirect(url_for("artwork.artworks"))
+
     try:
-        artwork_db = _get_artwork_or_404(int(artwork_id), db, current_user)
-    except Exception as e:
-        error_msg = f"Artwork not found or not accessible: {e}"
-        logger.error(error_msg)
-        return RedirectResponse(
-            f"{analyze_page_url}?artwork_id={artwork_id}&error_message={urllib.parse.quote(error_msg)}",
-            status_code=303,
-        )
+        analysis_result = _run_ai_analysis(src_path, provider)
+        seo_folder = Path(analysis_result.get("processed_folder", "")).name
+        
+        if not seo_folder: raise RuntimeError("Analysis script did not return a valid folder name.")
 
-    # Run AI analysis (returns a dict or None)
+        _generate_composites(seo_folder, uuid.uuid4().hex)
+        
+    except Exception as exc:
+        flash(f"❌ Error running analysis: {exc}", "danger")
+        return redirect(url_for("artwork.artworks"))
+
+    redirect_filename = f"{seo_folder}.jpg"
+    return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=redirect_filename))
+
+# ===========================================================================
+# 8. Artwork Editing and Listing Management
+# ===========================================================================
+
+@bp.route("/edit-listing/<aspect>/<filename>", methods=["GET", "POST"])
+def edit_listing(aspect, filename):
+    """Display and update a processed or finalised artwork listing."""
     try:
-        analysis_results = await analyze_single_artwork(
-            db,
-            artwork_db,
-            current_user,
-            profile_key_override=profile_key,
-        )
-    except Exception as e:
-        error_msg = f"AI analysis crashed: {str(e)}"
-        logger.error(error_msg, exc_info=True)
-        return RedirectResponse(
-            f"{analyze_page_url}?processed_artwork_id={artwork_id}&error_message={urllib.parse.quote(error_msg)}",
-            status_code=303,
-        )
-    if not analysis_results:
-        error_msg = f"AI analysis failed: {getattr(analysis_results, 'error', 'Unknown error')}"
-        logger.error(error_msg)
-        return RedirectResponse(
-            f"{analyze_page_url}?processed_artwork_id={artwork_id}&error_message={urllib.parse.quote(error_msg)}",
-            status_code=303,
-        )
+        seo_folder, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
+    except FileNotFoundError:
+        flash(f"Artwork not found: {filename}", "danger")
+        return redirect(url_for("artwork.artworks"))
+    
+    data = utils.load_json_file_safe(listing_path)
+    is_locked_in_vault = ARTWORK_VAULT_ROOT in folder.parents
 
-    # Update artwork with results (always pass ID, never Artwork object!)
-    try:
-        update_success = update_artwork_with_analysis_results(db, artwork_db.id, analysis_results)
-    except Exception as e:
-        error_msg = f"Error updating artwork with analysis results: {str(e)}"
-        logger.error(error_msg, exc_info=True)
-        update_success = False
+    if request.method == "POST":
+        form_data = {
+            "title": request.form.get("title", "").strip(),
+            "description": request.form.get("description", "").strip(),
+            "tags": [t.strip() for t in request.form.get("tags", "").split(',') if t.strip()],
+            "materials": [m.strip() for m in request.form.get("materials", "").split(',') if m.strip()],
+        }
+        data.update(form_data)
+        with open(listing_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        flash("Listing updated", "success")
+        return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
-    if not update_success:
-        error_msg = "Failed to save AI analysis results to the database."
-        logger.error(error_msg)
-        return RedirectResponse(
-            f"{analyze_page_url}?processed_artwork_id={artwork_id}&error_message={urllib.parse.quote(error_msg)}",
-            status_code=303,
-        )
-
-    success_msg = "Artwork analyzed successfully."
-    return RedirectResponse(
-        f"{analyze_page_url}?processed_artwork_id={artwork_id}&message={urllib.parse.quote(success_msg)}",
-        status_code=303,
+    artwork = utils.populate_artwork_data_from_json(data, seo_folder)
+    mockups = utils.get_mockup_details_for_template(data.get("mockups", []), folder, seo_folder, aspect)
+    
+    return render_template(
+        "edit_listing.html",
+        artwork=artwork,
+        aspect=aspect,
+        filename=filename,
+        seo_folder=seo_folder,
+        mockups=mockups,
+        finalised=finalised,
+        locked=data.get("locked", False),
+        is_locked_in_vault=is_locked_in_vault,
+        editable=not data.get("locked", False),
+        openai_analysis=data.get("openai_analysis"),
+        cache_ts=int(time.time()),
     )
-# === [ End of Section 4b | PATCHED FOR TYPE SAFETY ] ===
-
-# === [ analyze-routes-py-5: AI Analysis Form Submission Route ] ===
-register_missing_artworks_internal()
-@router.post("/process-analysis-vision/", name="process_analysis_form_submission_vision_original")
-async def process_analysis_form_submission_original_vision_route(
-    request: Request, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_active_user),
-    original_filename: str = Form(...), ai_profile_key: str = Form(...),
-    description: str = Form(""), tags_input: str = Form(""), user_notes: Optional[str] = Form(None)
-):
-    """Handles the AI analysis form submission.
-
-    This route must remain named ``process_analysis_form_submission_vision_original``
-    so that ``url_for('process_analysis_form_submission_vision_original')`` in
-    ``templates/analyze.html`` resolves correctly.
-    """
-    logger.info(
-        f"User '{current_user.username}' POST /process-analysis-vision/ for '{original_filename}', Profile: '{ai_profile_key}'."
-    )
-
-    analyze_page_url = str(request.url_for('analyze_artworks_page'))
-
-    # Preflight: ensure database registry matches disk contents
-    try:
-        subprocess.run(
-            [
-                "python3",
-                str(config.SCRIPTS_DIR / "auto_register_missing_artworks.py"),
-            ],
-            check=True,
-        )
-    except Exception as e:
-        logger.warning(f"Auto-registration script failed: {e}")
-
-    # -------------------------------------------------------------------------
-    # 1. Lookup artwork in DB
-    # -------------------------------------------------------------------------
-    artwork_db = crud.get_artwork_by_filename(db, filename=original_filename)
-    if not artwork_db:
-        error_msg = f"Artwork '{original_filename}' not found or is archived. Cannot perform AI analysis."
-        logger.error(error_msg)
-        return RedirectResponse(
-            f"{analyze_page_url}?error_message={urllib.parse.quote(error_msg)}&artwork_filename={urllib.parse.quote(original_filename)}",
-            status_code=303,
-        )
-
-    # -------------------------------------------------------------------------
-    # 2. Perform AI analysis
-    # -------------------------------------------------------------------------
-    analysis_results = await analyze_single_artwork(
-        db,
-        artwork_db,
-        current_user,
-        profile_key_override=ai_profile_key,
-        user_notes_override=user_notes or description,
-    )
-
-    if analysis_results:
-        update_artwork_with_analysis_results(db, artwork_db.id, analysis_results)
-        db.refresh(artwork_db)
-    else:
-        error_msg = "AI analysis failed"
-        logger.error(error_msg)
-        artwork_db.status = "error_ai_analysis"
-        db.commit()
-        redirect_url = (
-            f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&error_message={urllib.parse.quote(error_msg)}"
-        )
-        return RedirectResponse(url=redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-
-    # -------------------------------------------------------------------------
-    # 3. Generate SKU and SEO filename
-    # -------------------------------------------------------------------------
-    if not artwork_db.sku:
-        artwork_db.sku = generate_sku_util(db, "RC")
-    if not artwork_db.seo_filename:
-        artwork_db.seo_filename = generate_seo_filename_util(
-            title=artwork_db.generated_title or "artwork",
-            sku=artwork_db.sku,
-            file_extension=Path(artwork_db.original_filename).suffix.lstrip("."),
-        )
-    db.commit()
-
-    # -------------------------------------------------------------------------
-    # 4. Move artwork files to finalized location
-    # -------------------------------------------------------------------------
-    try:
-        from ..utils.file_utils import move_files_to_finalized_artwork
-
-        temp_folder = artwork_db.artwork_base_folder_path or Path(artwork_db.original_file_storage_path).parent
-        final_paths = move_files_to_finalized_artwork(
-            temp_folder=str(temp_folder),
-            seo_filename=Path(artwork_db.seo_filename).stem,
-            final_folder=str(settings.FINALIZED_ARTWORK_DIR_ABSOLUTE),
-            create_subfolder=True,
-        )
-
-        if final_paths and final_paths.get("main_artwork_path"):
-            artwork_db.renamed_artwork_path = final_paths.get("main_artwork_path")
-            artwork_db.thumb_path = final_paths.get("thumbnail_path")
-            artwork_db.openai_image_path = final_paths.get("openai_variant_path")
-            artwork_db.artwork_base_folder_path = final_paths.get(
-                "artwork_folder", artwork_db.artwork_base_folder_path
-            )
-            artwork_db.original_file_storage_path = final_paths.get("main_artwork_path")
-            artwork_db.status = "finalized"
-            artwork_db.finalized_at = datetime.now(timezone.utc)
-            db.commit()
-        else:
-            raise Exception("move_files_to_finalized_artwork returned invalid paths")
-    except Exception as e_move:
-        logger.error(f"File move during analysis failed for artwork ID {artwork_db.id}: {e_move}", exc_info=True)
-        error_msg = f"Artwork '{original_filename}' analyzed but file move failed."
-        redirect_url = (
-            f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&error_message={urllib.parse.quote(error_msg)}"
-        )
-        return RedirectResponse(url=redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-
-    # -------------------------------------------------------------------------
-    # 5. Trigger mockup generation from finalized file
-    # -------------------------------------------------------------------------
-    try:
-        aspect_folder = artwork_db.aspect_ratio or "4x5"
-        seo_name = Path(artwork_db.seo_filename).name
-        subprocess.run(
-            [
-                "python3",
-                str(config.GENERATE_SCRIPT_PATH),
-                aspect_folder,
-                seo_name,
-            ],
-            check=True,
-        )
-    except Exception as e:
-        logger.error(f"Mockup generation failed after analysis: {e}", exc_info=True)
-
-    # -------------------------------------------------------------------------
-    # 6. Redirect to /edit-listing/<aspect>/<filename> page
-    # -------------------------------------------------------------------------
-    try:
-        aspect_folder = artwork_db.aspect_ratio or "4x5"
-        seo_filename = Path(artwork_db.seo_filename).name
-        edit_url = request.url_for(
-            "edit_listing.edit_listing",
-            aspect=aspect_folder,
-            filename=seo_filename,
-        )
-        logger.info(f"Redirecting to listing editor: {edit_url}")
-        return RedirectResponse(url=edit_url, status_code=status.HTTP_303_SEE_OTHER)
-    except Exception as e:
-        logger.error(f"Failed to redirect to edit listing: {e}", exc_info=True)
-        fallback_msg = f"Artwork analyzed but redirect to editor failed: {e}"
-        return RedirectResponse(
-            f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&error_message={urllib.parse.quote(fallback_msg)}",
-            status_code=status.HTTP_303_SEE_OTHER
-        )
-
-
-# === [ Section 6: Accept & Finalize Artwork Route ] ===
-@router.post("/accept-finalize/{artwork_id}", name="accept_finalize_artwork_and_organize_files")
-async def accept_and_finalize_artwork_route(
-    artwork_id: int, request: Request, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_active_user)
-):
-    """Finalizes an artwork, renaming and moving files to their permanent location."""
-    logger.info(f"User '{current_user.username}' initiating ACCEPT & FINALIZE for artwork ID: {artwork_id}")
-    artwork_db = _get_artwork_or_404(artwork_id, db, current_user)
-    analyze_page_url = str(request.url_for('analyze_artworks_page'))
-
-    missing_keys = [key for key in ["original_file_storage_path", "generated_title", "sku", "seo_filename"] if not getattr(artwork_db, key)]
-    if missing_keys:
-        error_msg = f"Cannot finalize: Missing required data: {', '.join(missing_keys)}."
-        logger.error(error_msg)
-        return RedirectResponse(
-            f"{analyze_page_url}?processed_artwork_id={artwork_id}&error_message={urllib.parse.quote(error_msg)}",
-            status_code=303,
-        )
-
-    try:
-        from ..utils.file_utils import move_files_to_finalized_artwork
-
-        temp_folder = artwork_db.artwork_base_folder_path or Path(artwork_db.original_file_storage_path).parent
-        final_paths = move_files_to_finalized_artwork(
-            temp_folder=str(temp_folder),
-            seo_filename=Path(artwork_db.seo_filename).stem,
-            final_folder=str(settings.FINALIZED_ARTWORK_DIR_ABSOLUTE),
-            create_subfolder=True,
-        )
-        if not final_paths or not final_paths.get("main_artwork_path"):
-            raise Exception("move_files_to_finalized_artwork did not return expected paths")
-    except Exception as e_org:
-        logger.error(f"File move failed for artwork ID {artwork_id}: {e_org}", exc_info=True)
-        artwork_db.status = "error_file_move"
-        db.commit()
-        return RedirectResponse(
-            f"{analyze_page_url}?processed_artwork_id={artwork_id}&error_message=File+move+failed.",
-            status_code=303,
-        )
-
-    # Update artwork with final paths and status
-    artwork_db.renamed_artwork_path = final_paths.get("main_artwork_path")
-    artwork_db.thumb_path = final_paths.get("thumbnail_path")
-    artwork_db.openai_image_path = final_paths.get("openai_variant_path")
-    artwork_db.artwork_base_folder_path = final_paths.get("artwork_folder", artwork_db.artwork_base_folder_path)
-    artwork_db.original_file_storage_path = final_paths.get("main_artwork_path")
-    artwork_db.status = "finalized"
-    artwork_db.finalized_at = datetime.now(timezone.utc)
-    artwork_db.updated_at = datetime.now(timezone.utc)
-
-    try:
-        db.commit()
-        logger.info(f"Artwork ID {artwork_db.id} finalized successfully.")
-        success_msg = f"Artwork '{artwork_db.seo_filename}' finalized and organized successfully!"
-        redirect_url = f"{analyze_page_url}?processed_artwork_id={artwork_id}&message={urllib.parse.quote(success_msg)}"
-    except Exception as e_commit:
-        db.rollback()
-        logger.error(
-            f"DB commit error after finalizing artwork ID {artwork_id}: {e_commit}",
-            exc_info=True,
-        )
-        redirect_url = (
-            f"{analyze_page_url}?processed_artwork_id={artwork_id}&error_message=Database+save+failed+after+finalization."
-        )
-
-    return RedirectResponse(url=redirect_url, status_code=303)
-
-# ==============================================================================
-# SECTION 7: ADDITIONAL ARTWORK ACTIONS
-# ==============================================================================
-
-# ------------------------------------------------------------------------------
-# 7.1: Mark Artwork as Ready for Export
-# ------------------------------------------------------------------------------
-
-@router.post("/mark-ready-export/{artwork_id}", name="mark_artwork_ready_for_export")
-async def mark_artwork_ready_for_export_route(
-    artwork_id: int,
-    request: Request,
-    db: Session = Depends(get_db),
-    current_user: UserModel = Depends(get_current_active_user)
-):
-    """
-    Marks a finalized artwork as ready for export. Updates the status to 'ready_for_export'
-    and returns user back to the Analyze Artworks admin page.
-    """
-    logger.info(f"User '{current_user.username}' marking artwork ID {artwork_id} as ready for export.")
-    analyze_page_url = str(request.url_for('analyze_artworks_page'))
-    artwork_db = _get_artwork_or_404(artwork_id, db, current_user)
-
-    # --- Prevent marking if not finalized ---
-    if artwork_db.status != "finalized":
-        error_msg = (
-            f"Artwork ID {artwork_db.id} must be finalized before marking ready for export. "
-            f"Current status: {artwork_db.status}"
-        )
-        return RedirectResponse(
-            f"{analyze_page_url}?artwork_id={artwork_db.id}&error_message={urllib.parse.quote(error_msg)}",
-            status_code=303,
-        )
-
-    # --- Update fields ---
-    artwork_db.ready_for_export = True
-    artwork_db.status = "ready_for_export"
-    artwork_db.updated_at = datetime.now(timezone.utc)
-
-    # --- Commit changes or handle DB error ---
-    try:
-        db.commit()
-        db.refresh(artwork_db)
-        message = f"Artwork ID {artwork_db.id} marked ready for export."
-    except Exception as e:
-        db.rollback()
-        message = f"DB error marking artwork ID {artwork_db.id} ready for export: {e}"
-        logger.error(message, exc_info=True)
-        return RedirectResponse(
-            f"{analyze_page_url}?artwork_id={artwork_db.id}&error_message={urllib.parse.quote(message)}",
-            status_code=303,
-        )
-
-    return RedirectResponse(
-        f"{analyze_page_url}?processed_artwork_id={artwork_db.id}&message={urllib.parse.quote(message)}",
-        status_code=303,
-    )
-
-
-# ==============================================================================
-# SECTION 8: FULL LISTING PREVIEW PAGE
-# ==============================================================================
-
-# ------------------------------------------------------------------------------
-# 8.1: Etsy/Nembol Preview for Single Artwork
-# ------------------------------------------------------------------------------
-
-@router.get("/full-preview/{artwork_id}", response_class=HTMLResponse, name="full_listing_preview_page")
-async def full_listing_preview_page(
-    artwork_id: int,
-    request: Request,
-    db: Session = Depends(get_db),
-    current_user: UserModel = Depends(get_current_active_user),
-):
-    """
-    Displays a full Etsy/Nembol preview of the generated listing data for a specific artwork.
-    Replaces blocks in the Etsy master template based on artwork metadata and aspect ratio.
-    """
-    logger.info(f"User '{current_user.username}' generating full listing preview for ArtID: {artwork_id}")
-    artwork = _get_artwork_or_404(artwork_id, db, current_user)
-
-    assembled_description = "Error: Master Etsy template file could not be processed."
-    aspect_ratio_key = "2:3"
-
-    try:
-        if ETSY_MASTER_TEMPLATE_PATH.is_file():
-            master_template = clean_listing_text(ETSY_MASTER_TEMPLATE_PATH.read_text(encoding="utf-8"))
-
-            # --- Determine aspect ratio key ---
-            if artwork.aspect_ratio_str:
-                match = re.match(r"(\d+:\d+)", artwork.aspect_ratio_str)
-                if match:
-                    aspect_ratio_key = match.group(1)
-                elif artwork.width and artwork.height:
-                    from ..utils.image_processing_utils import parse_aspect_ratio
-                    aspect_ratio_key = parse_aspect_ratio(artwork.width, artwork.height)[0].split(" ")[0]
-
-            # --- Load blocks ---
-            aspect_details_block = get_aspect_ratio_block(aspect_ratio_key)
-            dot_painting_block = (
-                get_dot_painting_history_block()
-                if artwork.ai_profile_used and "aboriginal" in artwork.ai_profile_used.lower()
-                else ""
-            )
-
-            # --- Replace tokens in template ---
-            assembled_description = (
-                master_template
-                .replace("{AI_GENERATED_TITLE}", artwork.generated_title or "")
-                .replace("{AI_GENERATED_FULL_DESCRIPTION_CONTENT}", artwork.generated_description or "")
-                .replace("{ASPECT_RATIO_DETAILS_BLOCK}", aspect_details_block)
-                .replace("{CONDITIONAL_DOT_PAINTING_HISTORY_BLOCK}", dot_painting_block)
-                .replace("https://www.etsy.com/au/shop/RobinCustance", settings.ETSY_SHOP_URL or "#")
-            )
-            assembled_description = clean_listing_text(assembled_description)
-        else:
-            logger.error(f"Etsy master template not found at: {ETSY_MASTER_TEMPLATE_PATH}")
-    except Exception as e:
-        logger.error(f"Error assembling listing description for ArtID {artwork.id}: {e}", exc_info=True)
-
-    context = {
-        "page_title": f"Listing Preview: {artwork.generated_title or artwork.original_filename}",
-        "artwork_db_id": artwork.id,
-        "artwork_title": artwork.generated_title,
-        "artwork_status": artwork.status,
-        "assembled_listing_description": assembled_description,
-        "etsy_shop_url": settings.ETSY_SHOP_URL,
-        "current_user": current_user,
-    }
-    return templates.TemplateResponse(request, "full_listing_preview.html", context)
 
 
 # ==============================================================================
