@@ -1,282 +1,82 @@
 {
-  "10390ee6a14e4a0087ec8472c41eabee": {
-    "seo_filename": "test-57292334.jpg",
-    "base": "test-57292334",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-6fbade95",
+  "40c9ac82fece4d988e8e36ae5a5e7102": {
+    "seo_filename": "sample-45edcdc5.jpg",
+    "base": "sample-45edcdc5",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-640c423d",
     "assets": [
-      "test-57292334.jpg",
-      "test-57292334-thumb.jpg",
-      "test-57292334-analyse.jpg",
-      "test-57292334.qc.json"
+      "sample-45edcdc5.jpg",
+      "sample-45edcdc5-thumb.jpg",
+      "sample-45edcdc5-analyse.jpg",
+      "sample-45edcdc5.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/test-6fbade95",
-        "timestamp": "2025-08-01T05:59:23.824321+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-640c423d",
+        "timestamp": "2025-08-02T06:28:16.154620+00:00"
       }
     ],
-    "upload_date": "2025-08-01T05:59:23.824321+00:00"
+    "upload_date": "2025-08-02T06:28:16.154620+00:00"
   },
-  "6b9cda678c2f4875b381018f9944e506": {
-    "seo_filename": "good-1eb66eb7.jpg",
-    "base": "good-1eb66eb7",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-5ed90bca",
+  "e9a56adb280a44e39c54489f0589ef64": {
+    "seo_filename": "sample-e857de92.jpg",
+    "base": "sample-e857de92",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-2bf24c60",
     "assets": [
-      "good-1eb66eb7.jpg",
-      "good-1eb66eb7-thumb.jpg",
-      "good-1eb66eb7-analyse.jpg",
-      "good-1eb66eb7.qc.json"
+      "sample-e857de92.jpg",
+      "sample-e857de92-thumb.jpg",
+      "sample-e857de92-analyse.jpg",
+      "sample-e857de92.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/good-5ed90bca",
-        "timestamp": "2025-08-01T05:59:23.867178+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-2bf24c60",
+        "timestamp": "2025-08-02T06:39:41.236927+00:00"
       }
     ],
-    "upload_date": "2025-08-01T05:59:23.867178+00:00"
+    "upload_date": "2025-08-02T06:39:41.236927+00:00"
   },
-  "593d8dce722d495582642c6613bf7d87": {
-    "seo_filename": "sample-6ca99a1b.jpg",
-    "base": "sample-6ca99a1b",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-210df1db",
+  "874999dfcea44f56bccfd6a75cf36511": {
+    "seo_filename": "sample-115cbe56.jpg",
+    "base": "sample-115cbe56",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-8c87d71e",
     "assets": [
-      "sample-6ca99a1b.jpg",
-      "sample-6ca99a1b-thumb.jpg",
-      "sample-6ca99a1b-analyse.jpg",
-      "sample-6ca99a1b.qc.json"
+      "sample-115cbe56.jpg",
+      "sample-115cbe56-thumb.jpg",
+      "sample-115cbe56-analyse.jpg",
+      "sample-115cbe56.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-210df1db",
-        "timestamp": "2025-08-01T05:59:23.982510+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-8c87d71e",
+        "timestamp": "2025-08-02T07:26:54.055583+00:00"
       }
     ],
-    "upload_date": "2025-08-01T05:59:23.982510+00:00"
+    "upload_date": "2025-08-02T07:26:54.055583+00:00"
   },
-  "1aa02f435ef04853a08c05bc514d594a": {
-    "seo_filename": "test-75b4dc05.jpg",
-    "base": "test-75b4dc05",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-39d9ecbd",
+  "c5c2466f18b44d9fa5022b08d589ef82": {
+    "seo_filename": "sample-788c7c08.jpg",
+    "base": "sample-788c7c08",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-e09ec728",
     "assets": [
-      "test-75b4dc05.jpg",
-      "test-75b4dc05-thumb.jpg",
-      "test-75b4dc05-analyse.jpg",
-      "test-75b4dc05.qc.json"
+      "sample-788c7c08.jpg",
+      "sample-788c7c08-thumb.jpg",
+      "sample-788c7c08-analyse.jpg",
+      "sample-788c7c08.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/test-39d9ecbd",
-        "timestamp": "2025-08-01T06:11:07.304258+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-e09ec728",
+        "timestamp": "2025-08-02T07:41:49.845923+00:00"
       }
     ],
-    "upload_date": "2025-08-01T06:11:07.304258+00:00"
-  },
-  "95a5ccb156de48b99cbf4081b13d0c37": {
-    "seo_filename": "good-4b5e5bda.jpg",
-    "base": "good-4b5e5bda",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-0488d0f6",
-    "assets": [
-      "good-4b5e5bda.jpg",
-      "good-4b5e5bda-thumb.jpg",
-      "good-4b5e5bda-analyse.jpg",
-      "good-4b5e5bda.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/good-0488d0f6",
-        "timestamp": "2025-08-01T06:11:07.351976+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T06:11:07.351976+00:00"
-  },
-  "2ada9fbe5dba4f02a4ed783b916d7366": {
-    "seo_filename": "sample-8a27c7f3.jpg",
-    "base": "sample-8a27c7f3",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-8c91ba3e",
-    "assets": [
-      "sample-8a27c7f3.jpg",
-      "sample-8a27c7f3-thumb.jpg",
-      "sample-8a27c7f3-analyse.jpg",
-      "sample-8a27c7f3.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-8c91ba3e",
-        "timestamp": "2025-08-01T06:11:07.467450+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T06:11:07.467450+00:00"
-  },
-  "f8224c93c87f488bb28cb8cc6f9e3bd0": {
-    "seo_filename": "test-6468b626.jpg",
-    "base": "test-6468b626",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-bb9b93d4",
-    "assets": [
-      "test-6468b626.jpg",
-      "test-6468b626-thumb.jpg",
-      "test-6468b626-analyse.jpg",
-      "test-6468b626.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/test-bb9b93d4",
-        "timestamp": "2025-08-01T06:12:55.811105+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T06:12:55.811105+00:00"
-  },
-  "94edfc3c69974de7a260bd9a0ae4b04d": {
-    "seo_filename": "good-4c4e42b8.jpg",
-    "base": "good-4c4e42b8",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-d1029024",
-    "assets": [
-      "good-4c4e42b8.jpg",
-      "good-4c4e42b8-thumb.jpg",
-      "good-4c4e42b8-analyse.jpg",
-      "good-4c4e42b8.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/good-d1029024",
-        "timestamp": "2025-08-01T06:12:55.854763+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T06:12:55.854763+00:00"
-  },
-  "5dc41da46e064fbfad4bd37e2842c0ed": {
-    "seo_filename": "sample-c139390f.jpg",
-    "base": "sample-c139390f",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-269ed7eb",
-    "assets": [
-      "sample-c139390f.jpg",
-      "sample-c139390f-thumb.jpg",
-      "sample-c139390f-analyse.jpg",
-      "sample-c139390f.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-269ed7eb",
-        "timestamp": "2025-08-01T06:12:55.969265+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T06:12:55.969265+00:00"
-  },
-  "69c3ee96c36e4dfcb9605b5cc07935e3": {
-    "seo_filename": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-d6be01be.jpg",
-    "base": "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-d6be01be",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-fd68de3f",
-    "assets": [
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-d6be01be.jpg",
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-d6be01be-thumb.jpg",
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-d6be01be-analyse.jpg",
-      "estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-d6be01be.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/estuary-with-mangroves-generate-an-aboriginal-dot-painting-of-a-mangrove-estuary-showing-tidal-flow-fd68de3f",
-        "timestamp": "2025-08-01T06:13:50.277634+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T06:13:50.277634+00:00"
-  },
-  "bb0b8e4b06c4487b8c587894cbbf65ad": {
-    "seo_filename": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-0d78e65d.jpg",
-    "base": "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-0d78e65d",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-f164208a",
-    "assets": [
-      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-0d78e65d.jpg",
-      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-0d78e65d-thumb.jpg",
-      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-0d78e65d-analyse.jpg",
-      "generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-0d78e65d.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/generate-an-aboriginal-dot-painting-of-a-sulphur-crested-cockatoo-cacatua-galerita-focusing-on-its-w-2-f164208a",
-        "timestamp": "2025-08-01T06:29:14.392642+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T06:29:14.392642+00:00"
-  },
-  "d6d4686916c54ca3b32f218213fe3b05": {
-    "seo_filename": "test-dc6de721.jpg",
-    "base": "test-dc6de721",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/test-77a5085d",
-    "assets": [
-      "test-dc6de721.jpg",
-      "test-dc6de721-thumb.jpg",
-      "test-dc6de721-analyse.jpg",
-      "test-dc6de721.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/test-77a5085d",
-        "timestamp": "2025-08-01T07:22:05.771302+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T07:22:05.771302+00:00"
-  },
-  "46d3376a214c42ba8eb977be7dcbeb72": {
-    "seo_filename": "good-a316ad84.jpg",
-    "base": "good-a316ad84",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/good-1384cf9b",
-    "assets": [
-      "good-a316ad84.jpg",
-      "good-a316ad84-thumb.jpg",
-      "good-a316ad84-analyse.jpg",
-      "good-a316ad84.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/good-1384cf9b",
-        "timestamp": "2025-08-01T07:22:05.818404+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T07:22:05.818404+00:00"
-  },
-  "ff5be36966fd4a21a8121c34f47c1a6e": {
-    "seo_filename": "sample-383cb8c3.jpg",
-    "base": "sample-383cb8c3",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-15b6699b",
-    "assets": [
-      "sample-383cb8c3.jpg",
-      "sample-383cb8c3-thumb.jpg",
-      "sample-383cb8c3-analyse.jpg",
-      "sample-383cb8c3.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-15b6699b",
-        "timestamp": "2025-08-01T07:22:05.931882+00:00"
-      }
-    ],
-    "upload_date": "2025-08-01T07:22:05.931882+00:00"
+    "upload_date": "2025-08-02T07:41:49.845923+00:00"
   }
 }

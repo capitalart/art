@@ -393,10 +393,12 @@ def get_mockup_details_for_template(mockups_data: list, folder: Path, seo_folder
         out_path = folder / composite_name if composite_name else Path()
         thumb_path = folder / config.THUMB_SUBDIR / thumb_name if thumb_name else Path()
 
-        # --- CRITICAL FIX ---
-        # Instead of resolving the full path, create a simple relative path
-        # that matches what the url_for() function expects for the thumbnail route.
-        # e.g., "folder-name/THUMBS/thumb-name.jpg"
+        # --- FIX APPLIED ---
+        # The original `path_rel` created a path that was too long by including
+        # the full path from the project root. This new version creates a path
+        # relative to the specific artwork root (e.g., 'processed-artwork'),
+        # which is what the Flask routes expect to prevent URL duplication.
+        path_rel = f"{seo_folder}/{composite_name}" if composite_name else ""
         thumb_rel_path = f"{seo_folder}/{config.THUMB_SUBDIR}/{thumb_name}" if thumb_name else ""
         
         mockups.append({
@@ -406,8 +408,8 @@ def get_mockup_details_for_template(mockups_data: list, folder: Path, seo_folder
             "index": idx,
             "thumb": thumb_path,
             "thumb_exists": thumb_path.exists(),
-            "path_rel": relative_to_base(out_path),
-            "thumb_rel": thumb_rel_path, # Use the corrected relative path
+            "path_rel": path_rel, # Use the corrected relative path
+            "thumb_rel": thumb_rel_path,
         })
     return mockups
 

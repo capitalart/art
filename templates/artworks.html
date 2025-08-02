@@ -14,7 +14,7 @@
     <h2 class="mb-3">Ready to Analyze</h2>
     <div class="artwork-grid">
       {% for art in ready_artworks %}
-      <div class="gallery-card" data-filename="{{ art.filename }}" data-aspect="{{ art.aspect }}">
+      <div class="gallery-card" data-filename="{{ art.filename }}" data-aspect="{{ art.aspect }}" data-base="{{ art.base }}">
         <div class="card-thumb">
           <img class="card-img-top"
                src="{{ url_for('artwork.unanalysed_image', filename=art.thumb) }}"
@@ -26,7 +26,7 @@
           <div class="desc-snippet"></div>
           <div class="button-row">
             <button class="btn btn-primary btn-analyze" data-provider="openai">Analyze with OpenAI</button>
-            <button class="btn btn-secondary btn-analyze" data-provider="google">Analyze with Google</button>
+            <button class="btn btn-secondary btn-sign" data-base="{{ art.base }}">Sign Artwork</button>
             <button class="btn btn-danger btn-delete">Delete</button>
           </div>
         </div>

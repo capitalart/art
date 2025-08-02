@@ -15,7 +15,6 @@ BASE_DIR = Path(__file__).resolve().parent
 # =============================================================================
 # 1. ENV/BRANDING/ADMIN
 # =============================================================================
-# ... (sections 1-9 remain the same) ...
 # --- [ 1.1: Branding ] ---
 BRAND_NAME = os.getenv("BRAND_NAME", "Art Narrator")
 BRAND_TAGLINE = os.getenv("BRAND_TAGLINE", "Create. Automate. Sell Art.")
@@ -50,7 +49,6 @@ OPENAI_MODEL_FALLBACK = os.getenv("OPENAI_MODEL_FALLBACK", "gpt-4-turbo")
 # Models specifically for image GENERATION
 OPENAI_IMAGE_MODEL = os.getenv("OPENAI_IMAGE_MODEL", "dall-e-3")
 OPENAI_IMAGE_MODEL_FALLBACK = os.getenv("OPENAI_IMAGE_MODEL_FALLBACK", "dall-e-2")
-# ... (other OpenAI models) ...
 
 # --- [ 2.2: Google Cloud ] ---
 # API Key for authenticating with Google Cloud services
@@ -59,11 +57,8 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # The single, multimodal model for text and vision tasks
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-pro-latest")
 
-# You can keep this if other parts of your app use a generic Google API key
-# or the Google Project ID, otherwise they can be removed too.
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_PROJECT_ID = os.getenv("GOOGLE_PROJECT_ID")
-# ... (other Google models) ...
 
 # --- [ 2.3: Other Integrations ] ---
 RCLONE_REMOTE_NAME = os.getenv("RCLONE_REMOTE_NAME", "gdrive")
@@ -72,7 +67,7 @@ SELLBRITE_ACCOUNT_TOKEN = os.getenv("SELLBRITE_ACCOUNT_TOKEN")
 SELLBRITE_SECRET_KEY = os.getenv("SELLBRITE_SECRET_KEY")
 SELLBRITE_API_BASE_URL = os.getenv("SELLBRITE_API_BASE_URL", "https://api.sellbrite.com/v1")
 
-# --- [ 2.4: SMTP Configuration ] --- (NEW SUB-SECTION)
+# --- [ 2.4: SMTP Configuration ] ---
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
@@ -131,7 +126,7 @@ SKU_TRACKER = SETTINGS_DIR / "sku_tracker.json"
 ANALYSIS_STATUS_FILE = LOGS_DIR / "analysis_status.json"
 SESSION_REGISTRY_FILE = LOGS_DIR / "session_registry.json"
 ONBOARDING_PATH = SETTINGS_DIR / "Master-Etsy-Listing-Description-Writing-Onboarding.txt"
-MOCKUP_CATEGORISER_PROMPT_PATH = SETTINGS_DIR / "mockup_categoriser_prompt.txt" # <-- NEW VARIABLE
+MOCKUP_CATEGORISER_PROMPT_PATH = SETTINGS_DIR / "mockup_categoriser_prompt.txt"
 OUTPUT_JSON = ART_PROCESSING_DIR / "master-artwork-paths.json"
 MOCKUP_CATEGORISATION_LOG = LOGS_DIR / "mockup_categorisation.log"
 PENDING_MOCKUPS_QUEUE_FILE = PROCESSED_ROOT / "pending_mockups.json"
@@ -165,6 +160,13 @@ THUMB_HEIGHT = int(os.getenv("THUMB_HEIGHT", "400"))
 # --- [ 7.1: Artwork & Mockup Defaults ] ---
 MOCKUPS_PER_LISTING = 9
 DEFAULT_MOCKUP_IMAGE = STATIC_DIR / "img" / "default-mockup.jpg"
+
+# --- ADDED FOR THE SIGNING SCRIPT ---
+ARTWORKS_INPUT_DIR = UNANALYSED_ROOT  # Pointing to the unanalysed artwork folder
+SIGNATURE_SIZE_PERCENTAGE = 0.10     # Signature will be 10% of the image's long edge
+SIGNATURE_MARGIN_PERCENTAGE = 0.05   # 5% margin from the edges
+SIGNED_OUTPUT_DIR = SIGNED_DIR       # Alias for the script to find the correct folder
+
 ETSY_COLOURS = {
     'Beige': (222, 202, 173), 'Black': (24, 23, 22), 'Blue': (42, 80, 166),
     'Bronze': (140, 120, 83), 'Brown': (110, 72, 42), 'Clear': (240, 240, 240),
@@ -195,7 +197,6 @@ SELLBRITE_DEFAULTS = {
 
 # --- [ 7.5: Guided Description Writing System (GDWS) Config ] ---
 GDWS_CONFIG = {
-    # --- MODIFIED: Added the master list of paragraph headings ---
     "PARAGRAPH_HEADINGS": [
         "About the Artist – Robin Custance", "Did You Know? Aboriginal Art & the Spirit of Dot Painting",
         "What You’ll Receive", "Ideal Uses for the", "Printing Tips",
@@ -220,7 +221,6 @@ GDWS_CONFIG = {
 
 # =============================================================================
 # 8. DYNAMIC CATEGORIES (from filesystem)
-# ... (rest of the file is unchanged) ...
 # =============================================================================
 def get_mockup_categories() -> list[str]:
     override = os.getenv("MOCKUP_CATEGORIES")
@@ -262,7 +262,7 @@ ANALYZE_SCRIPT_PATH = SCRIPTS_DIR / "analyze_artwork.py"
 GENERATE_SCRIPT_PATH = SCRIPTS_DIR / "generate_composites.py"
 MOCKUP_CATEGORISER_SCRIPT_PATH = SCRIPTS_DIR / "mockup_categoriser.py"
 COORDINATE_GENERATOR_SCRIPT_PATH = SCRIPTS_DIR / "generate_coordinates.py"
-COORDINATE_GENERATOR_RATIO_SCRIPT_PATH = SCRIPTS_DIR / "generate_coordinates_for_ratio.py" # <-- NEW VARIABLE
+COORDINATE_GENERATOR_RATIO_SCRIPT_PATH = SCRIPTS_DIR / "generate_coordinates_for_ratio.py"
 
 # =============================================================================
 # 11. URLS & ROUTE PREFIXES

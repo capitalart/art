@@ -146,6 +146,8 @@
         <div class="artwork-info-card" id="generic-text-reworder" data-generic-text="{{ artwork.generic_text|e }}">
           <h2>Generic Text Rewording</h2>
           <p class="help-text">Use AI to rephrase the generic text block to make it unique for this listing.</p>
+          <label for="generic-text-display">Original Generic Text:</label>
+          <textarea id="generic-text-display" rows="6" class="long-field" readonly style="opacity: 0.7; background-color: #e9ecef;">{{ artwork.generic_text|e }}</textarea>
           <div class="button-row">
             <button type="button" id="reword-openai-btn" class="btn btn-secondary" data-provider="openai" {% if not openai_configured %}disabled title="OpenAI API not configured"{% endif %}>Reword with OpenAI</button>
             <button type="button" id="reword-gemini-btn" class="btn btn-secondary" data-provider="gemini" {% if not google_configured %}disabled title="Google API not configured"{% endif %}>Reword with Gemini</button>
@@ -192,7 +194,10 @@
             <input type="text" id="sku-input" value="{{ artwork.sku|e }}" class="long-field" readonly disabled>
           </div>
         </div>
-
+        
+        <div class="button-row" style="justify-content: flex-end; margin-top: 0; margin-bottom: 0.5rem;">
+            <button type="button" id="update-links-btn" class="btn btn-sm btn-secondary" style="width: auto; min-width: 150px;">Update Image URLs</button>
+        </div>
         <label for="images-input">Image URLs (one per line):</label>
         <textarea name="images" id="images-input" rows="5" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.images|e }}</textarea>
       </form>
@@ -242,34 +247,22 @@
       {% if openai_analysis %}
         <div class="openai-details">
           <h3>OpenAI Analysis Details</h3>
-          {% set entries = openai_analysis if openai_analysis is iterable and openai_analysis.__class__ != dict else [openai_analysis] %}
-          {% for info in entries %}
-            <table class="openai-analysis-table">
-              <tbody>
-                <tr><th>Original File</th><td>{{ info.original_file }}</td></tr>
-                <tr><th>Optimized File</th><td>{{ info.optimized_file }}</td></tr>
-                <tr><th>Size</th><td>{{ info.size_mb }} MB ({{ info.size_bytes }} bytes)</td></tr>
-                <tr><th>Dimensions</th><td>{{ info.dimensions }}</td></tr>
-                <tr><th>Time Sent</th><td>{{ info.time_sent }}</td></tr>
-                <tr><th>Time Responded</th><td>{{ info.time_responded }}</td></tr>
-                <tr><th>Duration</th><td>{{ info.duration_sec }} s</td></tr>
-                <tr><th>Status</th><td>{{ info.status }}</td></tr>
-                {% if info.api_response %}
-                  <tr><th>API Response</th><td>{{ info.api_response }}</td></tr>
-                {% endif %}
-                {% if info.naming_method %}
-                  <tr><th>Naming Method</th><td>{{ info.naming_method }}{% if info.used_fallback_naming %} (fallback){% endif %}</td></tr>
-                {% endif %}
-              </tbody>
-            </table>
-          {% endfor %}
+          <table class="openai-analysis-table">
+            <tbody>
+              <tr><th>Original File</th><td>{{ openai_analysis.original_file }}</td></tr>
+              <tr><th>Optimized File</th><td>{{ openai_analysis.optimized_file }}</td></tr>
+              <tr><th>Size</th><td>{{ openai_analysis.size_mb }} MB ({{ openai_analysis.size_bytes }} bytes)</td></tr>
+              <tr><th>Dimensions</th><td>{{ openai_analysis.dimensions }}</td></tr>
+              <tr><th>Time Sent</th><td>{{ openai_analysis.time_sent }}</td></tr>
+              <tr><th>Time Responded</th><td>{{ openai_analysis.time_responded }}</td></tr>
+              <tr><th>Duration</th><td>{{ openai_analysis.duration_sec }} s</td></tr>
+              <tr><th>Status</th><td>{{ openai_analysis.status }}</td></tr>
+              <tr><th>API Response</th><td>{{ openai_analysis.api_response }}</td></tr>
+            </tbody>
+          </table>
         </div>
       {% endif %}
-    </div> <!-- end of .edit-listing-col -->
-
-  </div> <!-- end of .review-artwork-grid -->
-
-  {# -------------------------------
+    </div> </div> {# -------------------------------
      SECTION 4: MODAL - MOCKUP CAROUSEL
   ------------------------------- #}
   <div id="mockup-carousel" class="modal-bg" tabindex="-1">
@@ -279,9 +272,7 @@
     <button id="carousel-next" class="carousel-nav" aria-label="Next">&#10095;</button>
   </div>
 
-</div> <!-- end of .container -->
-
-{# --------------------------
+</div> {# --------------------------
    SECTION 5: PAGE SCRIPTS
 --------------------------- #}
 <script>
