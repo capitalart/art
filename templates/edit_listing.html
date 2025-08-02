@@ -1,3 +1,4 @@
+{# templates/edit_listing.html #}
 {# ====================================================================================
   TEMPLATE: edit_listing.html
   PURPOSE: Edit existing artwork listing, preview mockups, update metadata, finalise
@@ -143,11 +144,12 @@
         <textarea name="description" id="description-input" rows="12" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.description|e }}</textarea>
 
         {# AI Rewording Tool #}
-        <div class="artwork-info-card" id="generic-text-reworder" data-generic-text="{{ artwork.generic_text|e }}">
+        <div class="artwork-info-card" id="generic-text-reworder">
           <h2>Generic Text Rewording</h2>
           <p class="help-text">Use AI to rephrase the generic text block to make it unique for this listing.</p>
-          <label for="generic-text-display">Original Generic Text:</label>
-          <textarea id="generic-text-display" rows="6" class="long-field" readonly style="opacity: 0.7; background-color: #e9ecef;">{{ artwork.generic_text|e }}</textarea>
+          {# FIX: Changed label and made textarea editable #}
+          <label for="generic-text-input">Generic Text:</label>
+          <textarea id="generic-text-input" rows="6" class="long-field">{{ artwork.generic_text|e }}</textarea>
           <div class="button-row">
             <button type="button" id="reword-openai-btn" class="btn btn-secondary" data-provider="openai" {% if not openai_configured %}disabled title="OpenAI API not configured"{% endif %}>Reword with OpenAI</button>
             <button type="button" id="reword-gemini-btn" class="btn btn-secondary" data-provider="gemini" {% if not google_configured %}disabled title="Google API not configured"{% endif %}>Reword with Gemini</button>
@@ -262,7 +264,10 @@
           </table>
         </div>
       {% endif %}
-    </div> </div> {# -------------------------------
+    </div>
+  </div>
+
+  {# -------------------------------
      SECTION 4: MODAL - MOCKUP CAROUSEL
   ------------------------------- #}
   <div id="mockup-carousel" class="modal-bg" tabindex="-1">
@@ -272,7 +277,9 @@
     <button id="carousel-next" class="carousel-nav" aria-label="Next">&#10095;</button>
   </div>
 
-</div> {# --------------------------
+</div>
+
+{# --------------------------
    SECTION 5: PAGE SCRIPTS
 --------------------------- #}
 <script>

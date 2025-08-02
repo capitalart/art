@@ -669,3 +669,24 @@ sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalc
 source /home/art/venv/bin/activate
 source /home/art/venv/bin/activate
 sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+@bp.post("/sign-artwork/<base_name>")
+def sign_artwork_route(base_name: str):
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+pytest
+./project-toolkit.sh
+pytest
+./code-stacker.sh
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+/home/art/venv/bin/python
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f

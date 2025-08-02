@@ -1,3 +1,4 @@
+# tests/test_analyze_artwork.py
 # ======================================================================================
 # FILE: tests/test_analyze_artwork.py
 # DESCRIPTION: Test /analyze API endpoint and ensure proper HTML response + cleanup
@@ -81,18 +82,24 @@ def test_analyze_api_html_response(client):
 
 def teardown_module(module):
     """
-    Cleanup test folders and files after the test run completes.
+    Cleanup test folders and files from ALL relevant directories after the test run completes.
     """
     patterns = ["test-", "sample-", "good-", "bad-", "cassowary-test-01-test-run"]
-    root = Path(config.UNANALYSED_ROOT)
+    
+    # FIX: Add both unanalysed and processed roots to the cleanup path list
+    roots_to_clean = [
+        Path(config.UNANALYSED_ROOT),
+        Path(config.PROCESSED_ROOT)
+    ]
 
-    if not root.exists():
-        return
+    for root in roots_to_clean:
+        if not root.exists():
+            continue
 
-    for item in root.iterdir():
-        if item.is_dir() and any(item.name.startswith(p) for p in patterns):
-            try:
-                shutil.rmtree(item)
-                print(f"✅ Removed test folder: {item}")
-            except Exception as e:
-                print(f"⚠️ Could not delete test folder {item}: {e}")
+        for item in root.iterdir():
+            if item.is_dir() and any(item.name.startswith(p) for p in patterns):
+                try:
+                    shutil.rmtree(item)
+                    print(f"✅ Cleaned up test folder: {item}")
+                except Exception as e:
+                    print(f"⚠️ Could not delete test folder {item}: {e}")

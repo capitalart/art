@@ -1,22 +1,82 @@
 {
-  "38f038363b024261bc944d0c04a8faa4": {
-    "seo_filename": "sample-e6f2b8ab.jpg",
-    "base": "sample-e6f2b8ab",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-3019d4e4",
+  "c1b8f35e25164761a4d5d7bde4a01fdb": {
+    "seo_filename": "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a.jpg",
+    "base": "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-dd3b8f98",
     "assets": [
-      "sample-e6f2b8ab.jpg",
-      "sample-e6f2b8ab-thumb.jpg",
-      "sample-e6f2b8ab-analyse.jpg",
-      "sample-e6f2b8ab.qc.json"
+      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a.jpg",
+      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a-thumb.jpg",
+      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a-analyse.jpg",
+      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-3019d4e4",
-        "timestamp": "2025-08-02T07:48:19.519045+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-dd3b8f98",
+        "timestamp": "2025-08-02T10:20:02.009732+00:00"
       }
     ],
-    "upload_date": "2025-08-02T07:48:19.519045+00:00"
+    "upload_date": "2025-08-02T10:20:02.009732+00:00"
+  },
+  "629dbf29769e423984bdaf77cf4cbcc1": {
+    "seo_filename": "test-0e8a831f.jpg",
+    "base": "test-0e8a831f",
+    "current_folder": "/tmp/pytest-of-art/pytest-13/test_upload_single0/unanalysed-artwork/test-85346c98",
+    "assets": [
+      "test-0e8a831f.jpg",
+      "test-0e8a831f-thumb.jpg",
+      "test-0e8a831f-analyse.jpg",
+      "test-0e8a831f.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-13/test_upload_single0/unanalysed-artwork/test-85346c98",
+        "timestamp": "2025-08-02T11:05:56.677468+00:00"
+      }
+    ],
+    "upload_date": "2025-08-02T11:05:56.677468+00:00"
+  },
+  "9beadf73790b41c4bdbc58414b5b45a6": {
+    "seo_filename": "good-9ce7c69b.jpg",
+    "base": "good-9ce7c69b",
+    "current_folder": "/tmp/pytest-of-art/pytest-13/test_upload_batch0/unanalysed-artwork/good-2cd1d3e2",
+    "assets": [
+      "good-9ce7c69b.jpg",
+      "good-9ce7c69b-thumb.jpg",
+      "good-9ce7c69b-analyse.jpg",
+      "good-9ce7c69b.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-13/test_upload_batch0/unanalysed-artwork/good-2cd1d3e2",
+        "timestamp": "2025-08-02T11:05:56.722503+00:00"
+      }
+    ],
+    "upload_date": "2025-08-02T11:05:56.722503+00:00"
+  },
+  "3e2b09ffe88b4171a07c48139b042d62": {
+    "seo_filename": "sample-19c98ce4.jpg",
+    "base": "sample-19c98ce4",
+    "current_folder": "/tmp/pytest-of-art/pytest-13/test_upload_json_response0/unanalysed-artwork/sample-f55beb84",
+    "assets": [
+      "sample-19c98ce4.jpg",
+      "sample-19c98ce4-thumb.jpg",
+      "sample-19c98ce4-analyse.jpg",
+      "sample-19c98ce4.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-13/test_upload_json_response0/unanalysed-artwork/sample-f55beb84",
+        "timestamp": "2025-08-02T11:05:56.838756+00:00"
+      }
+    ],
+    "upload_date": "2025-08-02T11:05:56.838756+00:00"
   }
 }

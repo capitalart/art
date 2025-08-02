@@ -147,7 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (rewordContainer) {
     const descriptionTextarea = document.getElementById('description-input');
     const spinner = document.getElementById('reword-spinner');
-    const genericTextDisplay = document.getElementById('generic-text-display');
+    // FIX: Target the newly named textarea
+    const genericTextInput = document.getElementById('generic-text-input');
     const buttons = rewordContainer.querySelectorAll('button');
 
     rewordContainer.addEventListener('click', async (event) => {
@@ -156,12 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const button = event.target;
       const provider = button.dataset.provider;
-      const genericText = genericTextDisplay.value;
+      const genericText = genericTextInput.value;
       const currentDescription = descriptionTextarea.value;
       
-      // Find the old generic text in the main description to replace it
-      const oldGenericTextIndex = currentDescription.indexOf(genericText);
-
       buttons.forEach(b => b.disabled = true);
       spinner.style.display = 'block';
 
@@ -171,16 +169,16 @@ document.addEventListener('DOMContentLoaded', () => {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                   provider: provider,
-                  artwork_description: currentDescription,
-                  generic_text: genericText
+                  artwork_description: currentDescription, // Main description is sent for context
+                  generic_text: genericText // The text to be reworded
               })
           });
 
           const data = await response.json();
           if (!response.ok) throw new Error(data.error || 'Failed to reword text.');
           
-          const artDescriptionOnly = currentDescription.substring(0, oldGenericTextIndex).trim();
-          descriptionTextarea.value = artDescriptionOnly + '\n\n' + data.reworded_text;
+          // FIX: Update the generic text field directly, instead of the main description.
+          genericTextInput.value = data.reworded_text;
 
       } catch (error) {
           console.error('Reword failed:', error);
