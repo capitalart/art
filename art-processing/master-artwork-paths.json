@@ -78,5 +78,25 @@
       }
     ],
     "upload_date": "2025-08-02T07:41:49.845923+00:00"
+  },
+  "f6d83aeb7f5b4b61b98cbac66a5487f3": {
+    "seo_filename": "sample-41409892.jpg",
+    "base": "sample-41409892",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-c9e34aab",
+    "assets": [
+      "sample-41409892.jpg",
+      "sample-41409892-thumb.jpg",
+      "sample-41409892-analyse.jpg",
+      "sample-41409892.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-c9e34aab",
+        "timestamp": "2025-08-02T07:46:08.012324+00:00"
+      }
+    ],
+    "upload_date": "2025-08-02T07:46:08.012324+00:00"
   }
 }
