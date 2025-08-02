@@ -1,102 +1,22 @@
 {
-  "40c9ac82fece4d988e8e36ae5a5e7102": {
-    "seo_filename": "sample-45edcdc5.jpg",
-    "base": "sample-45edcdc5",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-640c423d",
+  "38f038363b024261bc944d0c04a8faa4": {
+    "seo_filename": "sample-e6f2b8ab.jpg",
+    "base": "sample-e6f2b8ab",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-3019d4e4",
     "assets": [
-      "sample-45edcdc5.jpg",
-      "sample-45edcdc5-thumb.jpg",
-      "sample-45edcdc5-analyse.jpg",
-      "sample-45edcdc5.qc.json"
+      "sample-e6f2b8ab.jpg",
+      "sample-e6f2b8ab-thumb.jpg",
+      "sample-e6f2b8ab-analyse.jpg",
+      "sample-e6f2b8ab.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-640c423d",
-        "timestamp": "2025-08-02T06:28:16.154620+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/sample-3019d4e4",
+        "timestamp": "2025-08-02T07:48:19.519045+00:00"
       }
     ],
-    "upload_date": "2025-08-02T06:28:16.154620+00:00"
-  },
-  "e9a56adb280a44e39c54489f0589ef64": {
-    "seo_filename": "sample-e857de92.jpg",
-    "base": "sample-e857de92",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-2bf24c60",
-    "assets": [
-      "sample-e857de92.jpg",
-      "sample-e857de92-thumb.jpg",
-      "sample-e857de92-analyse.jpg",
-      "sample-e857de92.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-2bf24c60",
-        "timestamp": "2025-08-02T06:39:41.236927+00:00"
-      }
-    ],
-    "upload_date": "2025-08-02T06:39:41.236927+00:00"
-  },
-  "874999dfcea44f56bccfd6a75cf36511": {
-    "seo_filename": "sample-115cbe56.jpg",
-    "base": "sample-115cbe56",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-8c87d71e",
-    "assets": [
-      "sample-115cbe56.jpg",
-      "sample-115cbe56-thumb.jpg",
-      "sample-115cbe56-analyse.jpg",
-      "sample-115cbe56.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-8c87d71e",
-        "timestamp": "2025-08-02T07:26:54.055583+00:00"
-      }
-    ],
-    "upload_date": "2025-08-02T07:26:54.055583+00:00"
-  },
-  "c5c2466f18b44d9fa5022b08d589ef82": {
-    "seo_filename": "sample-788c7c08.jpg",
-    "base": "sample-788c7c08",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-e09ec728",
-    "assets": [
-      "sample-788c7c08.jpg",
-      "sample-788c7c08-thumb.jpg",
-      "sample-788c7c08-analyse.jpg",
-      "sample-788c7c08.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-e09ec728",
-        "timestamp": "2025-08-02T07:41:49.845923+00:00"
-      }
-    ],
-    "upload_date": "2025-08-02T07:41:49.845923+00:00"
-  },
-  "f6d83aeb7f5b4b61b98cbac66a5487f3": {
-    "seo_filename": "sample-41409892.jpg",
-    "base": "sample-41409892",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/sample-c9e34aab",
-    "assets": [
-      "sample-41409892.jpg",
-      "sample-41409892-thumb.jpg",
-      "sample-41409892-analyse.jpg",
-      "sample-41409892.qc.json"
-    ],
-    "status": "unanalysed",
-    "history": [
-      {
-        "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/sample-c9e34aab",
-        "timestamp": "2025-08-02T07:46:08.012324+00:00"
-      }
-    ],
-    "upload_date": "2025-08-02T07:46:08.012324+00:00"
+    "upload_date": "2025-08-02T07:48:19.519045+00:00"
   }
 }
