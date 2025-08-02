@@ -92,6 +92,10 @@ PROCESSED_ROOT = ART_PROCESSING_DIR / "processed-artwork"
 FINALISED_ROOT = ART_PROCESSING_DIR / "finalised-artwork"
 ARTWORK_VAULT_ROOT = ART_PROCESSING_DIR / "artwork-vault"
 
+# ✅ NEW: TEST FOLDERS for Pytest fixtures
+UNANALYSED_TEST_DIR = UNANALYSED_ROOT / "tests"
+PROCESSED_TEST_DIR = PROCESSED_ROOT / "tests"
+
 # --- [ 3.3: Input Asset Directories ] ---
 MOCKUPS_INPUT_DIR = Path(os.getenv("MOCKUPS_INPUT_DIR", BASE_DIR / "inputs" / "mockups"))
 MOCKUPS_STAGING_DIR = MOCKUPS_INPUT_DIR / "uncategorised"
@@ -110,13 +114,12 @@ SELLBRITE_DIR = OUTPUTS_DIR / "sellbrite"
 SIGNED_DIR = OUTPUTS_DIR / "signed"
 CODEX_LOGS_DIR = Path(os.getenv("CODEX_LOGS_DIR", BASE_DIR / "CODEX-LOGS"))
 
-# Additional path aliases for easier imports
+# Aliases
 MOCKUPS_ROOT = MOCKUPS_INPUT_DIR
 CATEGORISED_MOCKUPS_ROOT = MOCKUPS_CATEGORISED_DIR
 COMPOSITES_ROOT = COMPOSITES_DIR
 THUMB_SUBDIR = "THUMBS"
 THUMBS_ROOT = FINALISED_ROOT / THUMB_SUBDIR
-
 
 # =============================================================================
 # 4. HELPER & REGISTRY FILES
@@ -289,7 +292,7 @@ SITEMAP_FILE = BASE_DIR / "SITEMAP.md"
 CHANGELOG_FILE = BASE_DIR / "CHANGELOG.md"
 
 # =============================================================================
-# 13. LOGGING SETUP
+# 14. LOGGING SETUP
 # =============================================================================
 # --- [ 13.1: Log File Timestamp Format ] ---
 LOG_TIMESTAMP_FORMAT = "%a-%d-%b-%Y-%I-%M-%p"

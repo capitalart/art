@@ -61,37 +61,33 @@ def slugify(text: str) -> str:
     text = re.sub(r"[^\w\- ]+", "", text).strip().replace(" ", "-")
     return re.sub("-+", "-", text).lower()
 
-def generate_seo_filename(raw_title: str, assigned_sku: str) -> str:
-    """Constructs a compliant Etsy SEO filename that is GUARANTEED to be 70 characters or less."""
-    MAX_LEN = 70
-    phrases_to_remove = ["High Resolution", "Digital Download", "Digital Print", "Artwork by Robin Custance", "Instant Download", "Printable", "Wall Art", "Dot Art", "Aboriginal Print", "Australian Wall Art", "Digital", "Download", "Print", "—", "|"]
-    seo_keywords_to_add = ["digital", "print", "aboriginal", "australian"]
-    suffix = "artwork-by-robin-custance"
+def generate_seo_filename(ai_slug: str, assigned_sku: str) -> tuple[str, str]:
+    """
+    Constructs a final SEO filename guaranteed to be <= 70 characters.
+    """
+    # Define the fixed parts of the filename
+    SUFFIX = "-by-robin-custance"
+    EXTENSION = ".jpg"
     
-    clean_title = raw_title
-    for phrase in phrases_to_remove:
-        clean_title = re.sub(r'\b' + re.escape(phrase) + r'\b', "", clean_title, flags=re.IGNORECASE)
+    # Calculate the maximum possible length for the AI-generated slug
+    # 70 (total) - length of suffix - 1 (hyphen) - length of SKU - length of extension
+    max_slug_len = 70 - len(SUFFIX) - 1 - len(assigned_sku) - len(EXTENSION)
     
-    clean_title = re.sub(r'\s+', ' ', clean_title).strip()
-    base_slug = slugify(clean_title if clean_title else "untitled-artwork")
-
-    required_len = len(suffix) + len(assigned_sku) + 5
-    max_variable_len = MAX_LEN - required_len
+    # Clean, slugify, and truncate the AI-provided slug
+    clean_slug = slugify(ai_slug)
+    truncated_slug = clean_slug[:max_slug_len]
     
-    if len(base_slug) > max_variable_len:
-        base_slug = base_slug[:max_variable_len]
-        if '-' in base_slug: base_slug = base_slug.rsplit('-', 1)[0]
-
-    final_slug_parts = [base_slug]
-    current_len = len(base_slug)
-    
-    for keyword in seo_keywords_to_add:
-        if current_len + len(keyword) + 1 > max_variable_len: break
-        final_slug_parts.append(keyword)
-        current_len += len(keyword) + 1
+    # Ensure the slug doesn't end with a hyphen after truncation
+    if truncated_slug.endswith('-'):
+        truncated_slug = truncated_slug[:-1]
         
-    constructed_slug = "-".join(final_slug_parts)
-    return f"{constructed_slug}-{suffix}-{assigned_sku}.jpg"
+    # Assemble the final filename
+    final_filename = f"{truncated_slug}{SUFFIX}-{assigned_sku}{EXTENSION}"
+    
+    # The folder name is the stem of the final filename
+    seo_folder_name = Path(final_filename).stem
+    
+    return final_filename, seo_folder_name
 
 def read_onboarding_prompt() -> str:
     """Reads the main system prompt from the file defined in config."""
@@ -114,24 +110,27 @@ def make_optimized_image_for_ai(src_path: Path, out_dir: Path) -> Path:
     logger.info(f"Optimized image for AI: {out_path.name} ({out_path.stat().st_size / 1024:.1f} KB)")
     return out_path
 
-def save_artwork_files(original_path: Path, seo_name: str) -> dict:
-    """Move/copy artwork files to a new processed folder and return their paths."""
-    target_folder = config.PROCESSED_ROOT / seo_name
+def save_artwork_files(original_path: Path, final_filename: str, seo_folder_name: str) -> dict:
+    """Saves artwork files to a new processed folder using the final SEO names."""
+    target_folder = config.PROCESSED_ROOT / seo_folder_name
     target_folder.mkdir(parents=True, exist_ok=True)
     
-    main_jpg = target_folder / f"{seo_name}.jpg"
-    thumb_jpg = target_folder / f"{seo_name}-THUMB.jpg"
-    analyse_jpg = target_folder / f"{seo_name}-ANALYSE.jpg"
+    main_jpg = target_folder / final_filename
+    
+    stem = Path(final_filename).stem
+    thumb_jpg = target_folder / f"{stem}-THUMB.jpg"
+    analyse_jpg = target_folder / f"{stem}-ANALYSE.jpg"
 
     shutil.copy2(original_path, main_jpg)
     
-    unanalysed_folder = original_path.parent
-    source_analyse_file = unanalysed_folder / f"{original_path.stem}-analyse.jpg"
-    if source_analyse_file.exists():
-        shutil.copy2(source_analyse_file, analyse_jpg)
-        logger.info(f"Copied analyse image to {analyse_jpg.name}")
-
     with Image.open(main_jpg) as img:
+        source_analyse_file = original_path.parent / f"{original_path.stem}-analyse.jpg"
+        if source_analyse_file.exists():
+            shutil.copy2(source_analyse_file, analyse_jpg)
+            logger.info(f"Copied analyse image to {analyse_jpg.name}")
+        else: # Fallback: create from main image
+             shutil.copy2(main_jpg, analyse_jpg)
+
         thumb = img.copy()
         thumb.thumbnail((config.THUMB_WIDTH, config.THUMB_HEIGHT))
         thumb.save(thumb_jpg, "JPEG", quality=85)
@@ -246,8 +245,7 @@ def parse_text_fallback(text: str) -> dict:
 
 def analyze_single(image_path: Path):
     """
-    Orchestrates the full analysis workflow for a single artwork image,
-    including AI analysis, file processing, and detailed data logging.
+    Orchestrates the full analysis workflow for a single artwork image.
     """
     logger.info(f"--- Starting analysis for: {image_path.name} (User: {USER_ID}) ---")
     _write_status("Starting analysis...", 5, image_path.name)
@@ -273,17 +271,17 @@ def analyze_single(image_path: Path):
 
         _write_status("Calling OpenAI API...", 40, image_path.name)
         ai_listing, raw_response = generate_ai_listing(optimized_img_path, aspect, assigned_sku)
-        raw_title = ai_listing.get("title", image_path.stem)
         
         _write_status("Generating filenames...", 75, image_path.name)
-        seo_name = image_path.stem.replace('-OPTIMIZED', '').replace('-GOOGLE-OPTIMIZED', '')
-        seo_filename = generate_seo_filename(raw_title, assigned_sku)
+        ai_slug = ai_listing.get("seo_filename_slug", slugify(ai_listing.get("title", image_path.stem)))
+        final_filename, seo_folder_name = generate_seo_filename(ai_slug, assigned_sku)
         
         _write_status("Saving artwork files...", 85, image_path.name)
-        file_paths = save_artwork_files(image_path, seo_name)
+        file_paths = save_artwork_files(image_path, final_filename, seo_folder_name)
 
         _write_status("Detecting colors...", 95, image_path.name)
-        primary_colour, secondary_colour = get_dominant_colours(Path(file_paths["main_jpg_path"]), 2)
+        main_image_path = Path(file_paths["main_jpg_path"])
+        primary_colour, secondary_colour = get_dominant_colours(main_image_path, 2)
         final_description = ai_listing.get("description") or assemble_gdws_description(aspect)
 
         end_time = _dt.datetime.now(_dt.timezone.utc)
@@ -291,10 +289,12 @@ def analyze_single(image_path: Path):
         
         listing_data = {
             "filename": image_path.name, "aspect_ratio": aspect, "sku": assigned_sku,
-            "title": raw_title, "description": final_description,
+            "title": ai_listing.get("title", image_path.stem),
+            "description": final_description,
             "tags": ai_listing.get("tags", []), "materials": ai_listing.get("materials", []),
             "primary_colour": primary_colour, "secondary_colour": secondary_colour,
-            "price": ai_listing.get("price", 18.27), "seo_filename": seo_filename,
+            "price": ai_listing.get("price", 18.27),
+            "seo_filename": final_filename, # Use the final, constructed filename
             "processed_folder": file_paths["processed_folder"],
             "main_jpg_path": file_paths["main_jpg_path"], "thumb_jpg_path": file_paths["thumb_jpg_path"],
             "openai_analysis": {
@@ -307,7 +307,7 @@ def analyze_single(image_path: Path):
             }
         }
 
-        listing_json_path = Path(file_paths["processed_folder"]) / f"{seo_name}-listing.json"
+        listing_json_path = Path(file_paths["processed_folder"]) / f"{seo_folder_name}-listing.json"
         listing_json_path.write_text(json.dumps(listing_data, indent=2), encoding="utf-8")
         logger.info(f"Wrote final listing JSON to {listing_json_path}")
         

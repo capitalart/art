@@ -145,7 +145,6 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
 
 def _generate_composites(log_id: str) -> None:
     """Triggers the queue-based composite generation script."""
-    # FIX: Removed the "--folder" argument as the script is queue-based and does not accept it.
     cmd = [sys.executable, str(config.GENERATE_SCRIPT_PATH)]
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=config.BASE_DIR, timeout=600)
     composite_log = config.LOGS_DIR / "composite-generation-logs" / f"composite_gen_{log_id}.log"
@@ -160,7 +159,6 @@ def _generate_composites(log_id: str) -> None:
 def validate_listing_fields(data: dict, generic_text: str) -> list[str]:
     """Return a list of validation error messages for the listing."""
     errors: list[str] = []
-    # This function is now complete and includes all necessary checks
     title = data.get("title", "").strip()
     if not title: errors.append("Title cannot be blank")
     if len(title) > 140: errors.append("Title exceeds 140 characters")
@@ -232,7 +230,6 @@ def upload_artwork():
             log_action("upload", res.get("original", f.filename), user, res.get("error", "uploaded"), status="success" if res.get("success") else "fail")
             results.append(res)
         
-        # --- FIX: Simplified AJAX check ---
         if "XMLHttpRequest" in request.headers.get("X-Requested-With", ""):
             return jsonify(results)
         
@@ -289,7 +286,6 @@ def swap():
         session["slots"] = slots
     return redirect(url_for("artwork.select"))
 
-# --- FIX: Added the missing /proceed route ---
 @bp.route("/proceed", methods=["POST"])
 def proceed():
     """Finalise mockup selections and trigger composite generation."""
@@ -411,6 +407,7 @@ def edit_listing(aspect, filename):
             "description": request.form.get("description", "").strip(),
             "tags": [t.strip() for t in request.form.get("tags", "").split(',') if t.strip()],
             "materials": [m.strip() for m in request.form.get("materials", "").split(',') if m.strip()],
+            "images": [i.strip() for i in request.form.get("images", "").splitlines() if i.strip()],
         }
         data.update(form_data)
         with open(listing_path, "w", encoding="utf-8") as f:
