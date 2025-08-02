@@ -45,6 +45,49 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(() => { hideOverlay(card); alert('An error occurred during deletion.'); });
     });
   });
+
+  // --- Event Listener for all "Sign Artwork" buttons ---
+  document.querySelectorAll('.btn-sign').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.preventDefault();
+      const card = btn.closest('.gallery-card');
+      if (!card) return;
+      
+      const baseName = btn.dataset.base;
+      if (!baseName) {
+        alert('Error: Missing artwork base name.');
+        return;
+      }
+
+      showOverlay(card, 'Signing…');
+      
+      fetch(`/sign-artwork/${baseName}`, { method: 'POST' })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            // Success! Reload the thumbnail to show the signed version
+            const thumb = card.querySelector('.card-img-top');
+            thumb.src = `${thumb.src.split('?')[0]}?t=${new Date().getTime()}`;
+            btn.textContent = 'Signed ✔';
+            btn.disabled = true;
+          } else {
+            alert(`Signing failed: ${data.error}`);
+          }
+        })
+        .catch(error => {
+          console.error('Signing error:', error);
+          alert(`An error occurred: ${error.error || 'Check console for details.'}`);
+        })
+        .finally(() => {
+          hideOverlay(card);
+        });
+    });
+  });
 });
 
 // --- Helper function to show a loading overlay on a card ---

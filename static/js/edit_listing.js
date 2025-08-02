@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentImg = document.getElementById(`mockup-img-${slotIndex}`);
       const currentSrc = currentImg ? currentImg.src : '';
 
-      // MODIFIED: Add swapping class to the card to show the overlay
       mockupCard.classList.add('swapping');
 
       try {
@@ -111,9 +110,85 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Swap failed:', error);
         alert(`Error: ${error.message}`);
       } finally {
-        // MODIFIED: Remove swapping class from the card to hide the overlay
         mockupCard.classList.remove('swapping');
       }
     });
   });
+
+  // === [ 3. ASYNC UPDATE IMAGE URLS ] ===
+  const updateLinksBtn = document.getElementById('update-links-btn');
+  if (updateLinksBtn) {
+    updateLinksBtn.addEventListener('click', async () => {
+      const originalText = updateLinksBtn.textContent;
+      updateLinksBtn.textContent = 'Updating...';
+      updateLinksBtn.disabled = true;
+
+      try {
+        const url = `/update-links/${window.EDIT_INFO.aspect}/${window.EDIT_INFO.seoFolder}.jpg`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Server error');
+        
+        document.getElementById('images-input').value = data.images.join('\n');
+      } catch (error) {
+        alert(`Error updating image links: ${error.message}`);
+      } finally {
+        updateLinksBtn.textContent = originalText;
+        updateLinksBtn.disabled = false;
+      }
+    });
+  }
+  
+  // === [ 4. ASYNC GENERIC TEXT REWORDING ] ===
+  const rewordContainer = document.getElementById('generic-text-reworder');
+  if (rewordContainer) {
+    const descriptionTextarea = document.getElementById('description-input');
+    const spinner = document.getElementById('reword-spinner');
+    const genericTextDisplay = document.getElementById('generic-text-display');
+    const buttons = rewordContainer.querySelectorAll('button');
+
+    rewordContainer.addEventListener('click', async (event) => {
+      if (!event.target.matches('#reword-openai-btn, #reword-gemini-btn')) {
+        return;
+      }
+      const button = event.target;
+      const provider = button.dataset.provider;
+      const genericText = genericTextDisplay.value;
+      const currentDescription = descriptionTextarea.value;
+      
+      // Find the old generic text in the main description to replace it
+      const oldGenericTextIndex = currentDescription.indexOf(genericText);
+
+      buttons.forEach(b => b.disabled = true);
+      spinner.style.display = 'block';
+
+      try {
+          const response = await fetch('/api/reword-generic-text', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  provider: provider,
+                  artwork_description: currentDescription,
+                  generic_text: genericText
+              })
+          });
+
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Failed to reword text.');
+          
+          const artDescriptionOnly = currentDescription.substring(0, oldGenericTextIndex).trim();
+          descriptionTextarea.value = artDescriptionOnly + '\n\n' + data.reworded_text;
+
+      } catch (error) {
+          console.error('Reword failed:', error);
+          alert(`Error: ${error.message}`);
+      } finally {
+          buttons.forEach(b => b.disabled = false);
+          spinner.style.display = 'none';
+      }
+    });
+  }
 });

@@ -39,6 +39,14 @@ logger = setup_logger(__name__, "ANALYZE_OPENAI")
 # 4. Core Utility Functions
 # ===========================================================================
 
+def _write_status(step: str, percent: int, filename: str):
+    """Writes progress to the shared status file for the UI modal."""
+    payload = {"step": step, "percent": percent, "file": filename, "status": "analyzing"}
+    try:
+        config.ANALYSIS_STATUS_FILE.write_text(json.dumps(payload), encoding="utf-8")
+    except Exception:
+        pass # Fails silently to not interrupt the main analysis process
+
 def get_aspect_ratio(image_path: Path) -> str:
     """Return closest aspect ratio label for a given image."""
     with Image.open(image_path) as img: w, h = img.size
@@ -237,49 +245,65 @@ def parse_text_fallback(text: str) -> dict:
 # ===========================================================================
 
 def analyze_single(image_path: Path):
-    """Orchestrates the full analysis workflow for a single artwork image."""
+    """
+    Orchestrates the full analysis workflow for a single artwork image,
+    including AI analysis, file processing, and detailed data logging.
+    """
     logger.info(f"--- Starting analysis for: {image_path.name} (User: {USER_ID}) ---")
+    _write_status("Starting analysis...", 5, image_path.name)
     
-    if not image_path.is_file(): raise FileNotFoundError(f"Input image not found: {image_path}")
+    if not image_path.is_file(): 
+        raise FileNotFoundError(f"Input image not found: {image_path}")
 
     temp_dir = config.UNANALYSED_ROOT / "temp"
     optimized_img_path = None
+    start_time = _dt.datetime.now(_dt.timezone.utc)
 
     try:
+        with Image.open(image_path) as img:
+            original_dimensions = f"{img.width}x{img.height}"
+
         aspect = get_aspect_ratio(image_path)
+        
+        _write_status("Assigning SKU...", 15, image_path.name)
         assigned_sku = get_next_sku(config.SKU_TRACKER)
+
+        _write_status("Optimizing image for AI...", 25, image_path.name)
         optimized_img_path = make_optimized_image_for_ai(image_path, temp_dir)
+
+        _write_status("Calling OpenAI API...", 40, image_path.name)
         ai_listing, raw_response = generate_ai_listing(optimized_img_path, aspect, assigned_sku)
         raw_title = ai_listing.get("title", image_path.stem)
-
-        # The stable, unique name for the folder is the original image's file stem.
-        seo_name = image_path.stem.replace('-OPTIMIZED', '').replace('-GOOGLE-OPTIMIZED', '')
         
-        # The creative, length-limited filename is for the listing itself.
+        _write_status("Generating filenames...", 75, image_path.name)
+        seo_name = image_path.stem.replace('-OPTIMIZED', '').replace('-GOOGLE-OPTIMIZED', '')
         seo_filename = generate_seo_filename(raw_title, assigned_sku)
-
+        
+        _write_status("Saving artwork files...", 85, image_path.name)
         file_paths = save_artwork_files(image_path, seo_name)
+
+        _write_status("Detecting colors...", 95, image_path.name)
         primary_colour, secondary_colour = get_dominant_colours(Path(file_paths["main_jpg_path"]), 2)
         final_description = ai_listing.get("description") or assemble_gdws_description(aspect)
 
+        end_time = _dt.datetime.now(_dt.timezone.utc)
+        duration = round((end_time - start_time).total_seconds(), 2)
+        
         listing_data = {
-            "filename": image_path.name,
-            "aspect_ratio": aspect,
-            "sku": assigned_sku,
-            "title": raw_title,
-            "description": final_description,
-            "tags": ai_listing.get("tags", []),
-            "materials": ai_listing.get("materials", []),
-            "primary_colour": primary_colour,
-            "secondary_colour": secondary_colour,
-            "price": ai_listing.get("price", 18.27),
-            "seo_filename": seo_filename,
+            "filename": image_path.name, "aspect_ratio": aspect, "sku": assigned_sku,
+            "title": raw_title, "description": final_description,
+            "tags": ai_listing.get("tags", []), "materials": ai_listing.get("materials", []),
+            "primary_colour": primary_colour, "secondary_colour": secondary_colour,
+            "price": ai_listing.get("price", 18.27), "seo_filename": seo_filename,
             "processed_folder": file_paths["processed_folder"],
-            "main_jpg_path": file_paths["main_jpg_path"],
-            "thumb_jpg_path": file_paths["thumb_jpg_path"],
+            "main_jpg_path": file_paths["main_jpg_path"], "thumb_jpg_path": file_paths["thumb_jpg_path"],
             "openai_analysis": {
-                "timestamp": _dt.datetime.now(_dt.timezone.utc).isoformat(),
-                "raw_response_preview": raw_response[:500]
+                "original_file": str(image_path), "optimized_file": str(optimized_img_path),
+                "size_bytes": optimized_img_path.stat().st_size,
+                "size_mb": round(optimized_img_path.stat().st_size / (1024 * 1024), 3),
+                "dimensions": original_dimensions, "time_sent": start_time.isoformat(),
+                "time_responded": end_time.isoformat(), "duration_sec": duration,
+                "status": "success", "api_response": raw_response[:500] + "..." if raw_response else "N/A"
             }
         }
 
@@ -288,15 +312,7 @@ def analyze_single(image_path: Path):
         logger.info(f"Wrote final listing JSON to {listing_json_path}")
         
         add_to_mockup_queue(file_paths["main_jpg_path"])
-
-        # --- FIX APPLIED ---
-        # The line below was causing the test failure by deleting the parent
-        # directory of the test image, which also contained other test files.
-        # This cleanup is now handled by the calling process (e.g., the upload route)
-        # to ensure the analysis script has no unintended side effects.
-        # shutil.rmtree(image_path.parent, ignore_errors=True)
-        # logger.info(f"Cleaned up unanalysed source folder: {image_path.parent}")
-
+        
         logger.info(f"--- Successfully completed analysis for: {image_path.name} ---")
         return listing_data
 
@@ -304,7 +320,6 @@ def analyze_single(image_path: Path):
         if optimized_img_path and optimized_img_path.exists():
             optimized_img_path.unlink()
             logger.debug(f"Cleaned up temporary file: {optimized_img_path}")
-
 
 # ===========================================================================
 # 8. Command-Line Interface (CLI)
