@@ -298,5 +298,205 @@
       }
     ],
     "upload_date": "2025-08-03T07:13:23.777019+00:00"
+  },
+  "df2003c2ae3740dfa1e1be2654cd508f": {
+    "seo_filename": "Test-aee7b1cb.jpg",
+    "base": "Test-aee7b1cb",
+    "current_folder": "/tmp/pytest-of-art/pytest-2/test_upload_single0/unanalysed-artwork/test-a4ec38c9",
+    "assets": [
+      "Test-aee7b1cb.jpg",
+      "Test-aee7b1cb-thumb.jpg",
+      "Test-aee7b1cb-analyse.jpg",
+      "Test-aee7b1cb.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-2/test_upload_single0/unanalysed-artwork/test-a4ec38c9",
+        "timestamp": "2025-08-03T07:38:40.758063+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T07:38:40.758063+00:00"
+  },
+  "9f6fcde8f3324480ab053961d616fa31": {
+    "seo_filename": "Good-a94082ac.jpg",
+    "base": "Good-a94082ac",
+    "current_folder": "/tmp/pytest-of-art/pytest-2/test_upload_batch0/unanalysed-artwork/good-2f98362b",
+    "assets": [
+      "Good-a94082ac.jpg",
+      "Good-a94082ac-thumb.jpg",
+      "Good-a94082ac-analyse.jpg",
+      "Good-a94082ac.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-2/test_upload_batch0/unanalysed-artwork/good-2f98362b",
+        "timestamp": "2025-08-03T07:38:40.805295+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T07:38:40.805295+00:00"
+  },
+  "bfd48a9a25b249b9a488137d2eb4d8ea": {
+    "seo_filename": "Sample-f0b6c9de.jpg",
+    "base": "Sample-f0b6c9de",
+    "current_folder": "/tmp/pytest-of-art/pytest-2/test_upload_json_response0/unanalysed-artwork/sample-eaaf2a8c",
+    "assets": [
+      "Sample-f0b6c9de.jpg",
+      "Sample-f0b6c9de-thumb.jpg",
+      "Sample-f0b6c9de-analyse.jpg",
+      "Sample-f0b6c9de.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-2/test_upload_json_response0/unanalysed-artwork/sample-eaaf2a8c",
+        "timestamp": "2025-08-03T07:38:40.926316+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T07:38:40.926316+00:00"
+  },
+  "ced3c3acb8ab4f0e9f5cd3d5d8d082dd": {
+    "seo_filename": "Moon Over Fire Country Storylines Of Regrowth Full Moon In Dotted Concentric Halos Tree Lines Beneat 2 2-707e918c.jpg",
+    "base": "Moon Over Fire Country Storylines Of Regrowth Full Moon In Dotted Concentric Halos Tree Lines Beneat 2 2-707e918c",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-22-eb4ff35e",
+    "assets": [
+      "Moon Over Fire Country Storylines Of Regrowth Full Moon In Dotted Concentric Halos Tree Lines Beneat 2 2-707e918c.jpg",
+      "Moon Over Fire Country Storylines Of Regrowth Full Moon In Dotted Concentric Halos Tree Lines Beneat 2 2-707e918c-thumb.jpg",
+      "Moon Over Fire Country Storylines Of Regrowth Full Moon In Dotted Concentric Halos Tree Lines Beneat 2 2-707e918c-analyse.jpg",
+      "Moon Over Fire Country Storylines Of Regrowth Full Moon In Dotted Concentric Halos Tree Lines Beneat 2 2-707e918c.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/moon-over-fire-country-storylines-of-regrowth-full-moon-in-dotted-concentric-halos-tree-lines-beneat-22-eb4ff35e",
+        "timestamp": "2025-08-03T07:40:22.110311+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T07:40:22.110311+00:00"
+  },
+  "ea6d25deabd54ba5be3e5eeefb2be42b": {
+    "seo_filename": "Test-d1f0542e.jpg",
+    "base": "Test-d1f0542e",
+    "current_folder": "/tmp/pytest-of-art/pytest-3/test_upload_single0/unanalysed-artwork/test-62a7bfef",
+    "assets": [
+      "Test-d1f0542e.jpg",
+      "Test-d1f0542e-thumb.jpg",
+      "Test-d1f0542e-analyse.jpg",
+      "Test-d1f0542e.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-3/test_upload_single0/unanalysed-artwork/test-62a7bfef",
+        "timestamp": "2025-08-03T08:23:46.963465+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T08:23:46.963465+00:00"
+  },
+  "eac215706c6a4b1c899f865bee2d7f18": {
+    "seo_filename": "Good-38a1b8bb.jpg",
+    "base": "Good-38a1b8bb",
+    "current_folder": "/tmp/pytest-of-art/pytest-3/test_upload_batch0/unanalysed-artwork/good-65ae6369",
+    "assets": [
+      "Good-38a1b8bb.jpg",
+      "Good-38a1b8bb-thumb.jpg",
+      "Good-38a1b8bb-analyse.jpg",
+      "Good-38a1b8bb.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-3/test_upload_batch0/unanalysed-artwork/good-65ae6369",
+        "timestamp": "2025-08-03T08:23:47.016319+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T08:23:47.016319+00:00"
+  },
+  "c4986f2476ac4d9a9aa8e7528dd63cb0": {
+    "seo_filename": "Sample-b56471b9.jpg",
+    "base": "Sample-b56471b9",
+    "current_folder": "/tmp/pytest-of-art/pytest-3/test_upload_json_response0/unanalysed-artwork/sample-ab18f5f2",
+    "assets": [
+      "Sample-b56471b9.jpg",
+      "Sample-b56471b9-thumb.jpg",
+      "Sample-b56471b9-analyse.jpg",
+      "Sample-b56471b9.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-3/test_upload_json_response0/unanalysed-artwork/sample-ab18f5f2",
+        "timestamp": "2025-08-03T08:23:47.131323+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T08:23:47.131323+00:00"
+  },
+  "788bff516e5249718a162c501f85f63a": {
+    "seo_filename": "Test-4de2c103.jpg",
+    "base": "Test-4de2c103",
+    "current_folder": "/tmp/pytest-of-art/pytest-4/test_upload_single0/unanalysed-artwork/test-e70f516c",
+    "assets": [
+      "Test-4de2c103.jpg",
+      "Test-4de2c103-thumb.jpg",
+      "Test-4de2c103-analyse.jpg",
+      "Test-4de2c103.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-4/test_upload_single0/unanalysed-artwork/test-e70f516c",
+        "timestamp": "2025-08-03T08:38:26.496798+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T08:38:26.496798+00:00"
+  },
+  "23185604d46141d6ad103ca6c48a6eb4": {
+    "seo_filename": "Good-2b569de6.jpg",
+    "base": "Good-2b569de6",
+    "current_folder": "/tmp/pytest-of-art/pytest-4/test_upload_batch0/unanalysed-artwork/good-f2f0bc28",
+    "assets": [
+      "Good-2b569de6.jpg",
+      "Good-2b569de6-thumb.jpg",
+      "Good-2b569de6-analyse.jpg",
+      "Good-2b569de6.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-4/test_upload_batch0/unanalysed-artwork/good-f2f0bc28",
+        "timestamp": "2025-08-03T08:38:26.538959+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T08:38:26.538959+00:00"
+  },
+  "130f42a501ca4bfdb4f26f6fd4844926": {
+    "seo_filename": "Sample-45c09526.jpg",
+    "base": "Sample-45c09526",
+    "current_folder": "/tmp/pytest-of-art/pytest-4/test_upload_json_response0/unanalysed-artwork/sample-eb6731cb",
+    "assets": [
+      "Sample-45c09526.jpg",
+      "Sample-45c09526-thumb.jpg",
+      "Sample-45c09526-analyse.jpg",
+      "Sample-45c09526.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-4/test_upload_json_response0/unanalysed-artwork/sample-eb6731cb",
+        "timestamp": "2025-08-03T08:38:26.651697+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T08:38:26.651697+00:00"
   }
 }
