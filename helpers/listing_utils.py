@@ -25,6 +25,7 @@ import re
 import uuid
 import shutil
 import threading
+from datetime import datetime
 
 # Local application imports are moved inside functions to prevent circular dependencies
 # import config # <-- REMOVED FROM TOP LEVEL
@@ -172,6 +173,31 @@ def cleanup_unanalysed_folders():
                 logger.info(f"Cleaned up empty unanalysed folder: {item.name}")
             except OSError as e:
                 logger.warning(f"Could not remove empty folder {item.name}: {e}")
+
+def update_artwork_registry(seo_folder: str, new_path: Path, new_status: str) -> None:
+    """Update the master registry entry for ``seo_folder``.
+
+    Args:
+        seo_folder: Artwork identifier.
+        new_path: Filesystem path to the artwork's new location.
+        new_status: Workflow status (e.g. ``processed`` or ``locked``).
+    """
+    import config
+    registry = Path(config.OUTPUT_JSON)
+    with master_json_lock:
+        data = load_json_file_safe(registry)
+        key = next((k for k, v in data.items() if v.get("base") == seo_folder), None)
+        if not key:
+            return
+        entry = data[key]
+        entry["current_folder"] = str(new_path)
+        entry["status"] = new_status
+        entry.setdefault("history", []).append({
+            "status": new_status,
+            "folder": str(new_path),
+            "timestamp": datetime.utcnow().isoformat(),
+        })
+        registry.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 def remove_artwork_from_registry(seo_folder: str, registry_path: Path | None = None) -> bool:
     """Remove any entry referencing ``seo_folder`` from the master registry JSON."""
