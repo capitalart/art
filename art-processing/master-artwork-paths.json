@@ -1,82 +1,162 @@
 {
-  "c1b8f35e25164761a4d5d7bde4a01fdb": {
-    "seo_filename": "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a.jpg",
-    "base": "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a",
-    "current_folder": "/home/art/art-processing/unanalysed-artwork/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-dd3b8f98",
+  "076beb4ebafa46638ea7baa9c4b55afb": {
+    "seo_filename": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-125cbe76.jpg",
+    "base": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-125cbe76",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-c2f4a205",
     "assets": [
-      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a.jpg",
-      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a-thumb.jpg",
-      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a-analyse.jpg",
-      "cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-02e8ca5a.qc.json"
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-125cbe76.jpg",
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-125cbe76-thumb.jpg",
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-125cbe76-analyse.jpg",
+      "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-125cbe76.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/home/art/art-processing/unanalysed-artwork/cassowary-generate-an-aboriginal-dot-painting-of-a-southern-cassowary-casuarius-casuarius-featuring-dd3b8f98",
-        "timestamp": "2025-08-02T10:20:02.009732+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1-c2f4a205",
+        "timestamp": "2025-08-03T02:17:10.353163+00:00"
       }
     ],
-    "upload_date": "2025-08-02T10:20:02.009732+00:00"
+    "upload_date": "2025-08-03T02:17:10.353163+00:00"
   },
-  "629dbf29769e423984bdaf77cf4cbcc1": {
-    "seo_filename": "test-0e8a831f.jpg",
-    "base": "test-0e8a831f",
-    "current_folder": "/tmp/pytest-of-art/pytest-13/test_upload_single0/unanalysed-artwork/test-85346c98",
+  "a37adfbf7a724daf862d19ad1422a6ea": {
+    "seo_filename": "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-5de18fb4.jpg",
+    "base": "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-5de18fb4",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-baa8a3db",
     "assets": [
-      "test-0e8a831f.jpg",
-      "test-0e8a831f-thumb.jpg",
-      "test-0e8a831f-analyse.jpg",
-      "test-0e8a831f.qc.json"
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-5de18fb4.jpg",
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-5de18fb4-thumb.jpg",
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-5de18fb4-analyse.jpg",
+      "outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-5de18fb4.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/tmp/pytest-of-art/pytest-13/test_upload_single0/unanalysed-artwork/test-85346c98",
-        "timestamp": "2025-08-02T11:05:56.677468+00:00"
+        "folder": "/home/art/art-processing/unanalysed-artwork/outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8-baa8a3db",
+        "timestamp": "2025-08-03T02:29:39.698340+00:00"
       }
     ],
-    "upload_date": "2025-08-02T11:05:56.677468+00:00"
+    "upload_date": "2025-08-03T02:29:39.698340+00:00"
   },
-  "9beadf73790b41c4bdbc58414b5b45a6": {
-    "seo_filename": "good-9ce7c69b.jpg",
-    "base": "good-9ce7c69b",
-    "current_folder": "/tmp/pytest-of-art/pytest-13/test_upload_batch0/unanalysed-artwork/good-2cd1d3e2",
+  "49bb154c5702499eb8a2066495441fd5": {
+    "seo_filename": "Test-66a441aa.jpg",
+    "base": "Test-66a441aa",
+    "current_folder": "/tmp/pytest-of-art/pytest-14/test_upload_single0/unanalysed-artwork/test-51aecbb5",
     "assets": [
-      "good-9ce7c69b.jpg",
-      "good-9ce7c69b-thumb.jpg",
-      "good-9ce7c69b-analyse.jpg",
-      "good-9ce7c69b.qc.json"
+      "Test-66a441aa.jpg",
+      "Test-66a441aa-thumb.jpg",
+      "Test-66a441aa-analyse.jpg",
+      "Test-66a441aa.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/tmp/pytest-of-art/pytest-13/test_upload_batch0/unanalysed-artwork/good-2cd1d3e2",
-        "timestamp": "2025-08-02T11:05:56.722503+00:00"
+        "folder": "/tmp/pytest-of-art/pytest-14/test_upload_single0/unanalysed-artwork/test-51aecbb5",
+        "timestamp": "2025-08-03T04:11:29.110448+00:00"
       }
     ],
-    "upload_date": "2025-08-02T11:05:56.722503+00:00"
+    "upload_date": "2025-08-03T04:11:29.110448+00:00"
   },
-  "3e2b09ffe88b4171a07c48139b042d62": {
-    "seo_filename": "sample-19c98ce4.jpg",
-    "base": "sample-19c98ce4",
-    "current_folder": "/tmp/pytest-of-art/pytest-13/test_upload_json_response0/unanalysed-artwork/sample-f55beb84",
+  "faa59f861ee94ee2965472f352556d27": {
+    "seo_filename": "Good-cfd546de.jpg",
+    "base": "Good-cfd546de",
+    "current_folder": "/tmp/pytest-of-art/pytest-14/test_upload_batch0/unanalysed-artwork/good-71c19795",
     "assets": [
-      "sample-19c98ce4.jpg",
-      "sample-19c98ce4-thumb.jpg",
-      "sample-19c98ce4-analyse.jpg",
-      "sample-19c98ce4.qc.json"
+      "Good-cfd546de.jpg",
+      "Good-cfd546de-thumb.jpg",
+      "Good-cfd546de-analyse.jpg",
+      "Good-cfd546de.qc.json"
     ],
     "status": "unanalysed",
     "history": [
       {
         "status": "unanalysed",
-        "folder": "/tmp/pytest-of-art/pytest-13/test_upload_json_response0/unanalysed-artwork/sample-f55beb84",
-        "timestamp": "2025-08-02T11:05:56.838756+00:00"
+        "folder": "/tmp/pytest-of-art/pytest-14/test_upload_batch0/unanalysed-artwork/good-71c19795",
+        "timestamp": "2025-08-03T04:11:29.162712+00:00"
       }
     ],
-    "upload_date": "2025-08-02T11:05:56.838756+00:00"
+    "upload_date": "2025-08-03T04:11:29.162712+00:00"
+  },
+  "187823fc3190438f95e3d0da7bfac6ed": {
+    "seo_filename": "Sample-c2668e73.jpg",
+    "base": "Sample-c2668e73",
+    "current_folder": "/tmp/pytest-of-art/pytest-14/test_upload_json_response0/unanalysed-artwork/sample-6898b593",
+    "assets": [
+      "Sample-c2668e73.jpg",
+      "Sample-c2668e73-thumb.jpg",
+      "Sample-c2668e73-analyse.jpg",
+      "Sample-c2668e73.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-14/test_upload_json_response0/unanalysed-artwork/sample-6898b593",
+        "timestamp": "2025-08-03T04:11:29.275544+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T04:11:29.275544+00:00"
+  },
+  "73c6be9cbeec44878d35955030a247b6": {
+    "seo_filename": "Test-98c57fbb.jpg",
+    "base": "Test-98c57fbb",
+    "current_folder": "/tmp/pytest-of-art/pytest-15/test_upload_single0/unanalysed-artwork/test-906abc22",
+    "assets": [
+      "Test-98c57fbb.jpg",
+      "Test-98c57fbb-thumb.jpg",
+      "Test-98c57fbb-analyse.jpg",
+      "Test-98c57fbb.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-15/test_upload_single0/unanalysed-artwork/test-906abc22",
+        "timestamp": "2025-08-03T04:14:32.646425+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T04:14:32.646425+00:00"
+  },
+  "27fa952dfcd5434b8ff16023a2ac47f6": {
+    "seo_filename": "Good-f8cdc7d9.jpg",
+    "base": "Good-f8cdc7d9",
+    "current_folder": "/tmp/pytest-of-art/pytest-15/test_upload_batch0/unanalysed-artwork/good-4ff9bcfa",
+    "assets": [
+      "Good-f8cdc7d9.jpg",
+      "Good-f8cdc7d9-thumb.jpg",
+      "Good-f8cdc7d9-analyse.jpg",
+      "Good-f8cdc7d9.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-15/test_upload_batch0/unanalysed-artwork/good-4ff9bcfa",
+        "timestamp": "2025-08-03T04:14:32.698247+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T04:14:32.698247+00:00"
+  },
+  "d74113cb2c4840198c108aec48592681": {
+    "seo_filename": "Sample-a859ed52.jpg",
+    "base": "Sample-a859ed52",
+    "current_folder": "/tmp/pytest-of-art/pytest-15/test_upload_json_response0/unanalysed-artwork/sample-4079e627",
+    "assets": [
+      "Sample-a859ed52.jpg",
+      "Sample-a859ed52-thumb.jpg",
+      "Sample-a859ed52-analyse.jpg",
+      "Sample-a859ed52.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-15/test_upload_json_response0/unanalysed-artwork/sample-4079e627",
+        "timestamp": "2025-08-03T04:14:32.812586+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T04:14:32.812586+00:00"
   }
 }

@@ -2,105 +2,142 @@
 """
 Central utility functions for the ArtNarrator Flask application.
 
-This module provides helpers for file operations, data manipulation, image
-processing, and interacting with the application's file-based data stores.
+This module provides helpers for data manipulation, image processing, and
+interacting with the application's file-based data stores. It is designed
+to be imported by the main route files and does not depend on them,
+preventing circular imports.
 
-INDEX
------
-1.  Imports & Initialisation
-2.  JSON & File Helpers
-3.  Path & URL Utilities
-4.  Image Processing & Mockup Generation
-5.  Listing Data Retrieval & Formatting
-6.  Mockup Selection & Management
-7.  Text & String Manipulation
-8.  SKU Management
-9.  Artwork Registry & File Management
+Table of Contents (ToC)
+-----------------------
+[utils-py-1] Imports & Initialisation
+    [utils-py-1a] Imports
+    [utils-py-1b] Constants & Globals
+
+[utils-py-2] Path & URL Utilities
+    [utils-py-2a] relative_to_base
+    [utils-py-2b] is_finalised_image
+
+[utils-py-3] Template & UI Helpers
+    [utils-py-3a] get_menu
+    [utils-py-3b] populate_artwork_data_from_json
+    [utils-py-3c] get_mockup_details_for_template
+
+[utils-py-4] Image Processing Utilities
+    [utils-py-4a] resize_image_for_long_edge
+    [utils-py-4b] resize_for_analysis
+    [utils-py-4c] apply_perspective_transform
+
+[utils-py-5] Artwork Data Retrieval
+    [utils-py-5a] get_all_artworks
+    [utils-py-5b] list_processed_artworks
+    [utils-py-5c] list_finalised_artworks
+    [utils-py-5d] list_ready_to_analyze
+    [utils-py-5e] latest_analyzed_artwork
+    [utils-py-5f] latest_composite_folder
+
+[utils-py-6] Mockup Management Utilities
+    [utils-py-6a] get_mockup_categories
+    [utils-py-6b] random_image
+    [utils-py-6c] init_slots
+    [utils-py-6d] compute_options
+    [utils-py-6e] get_mockups
+    [utils-py-6f] swap_one_mockup
+
+[utils-py-7] Text & String Manipulation
+    [utils-py-7a] prettify_slug
+    [utils-py-7b] read_generic_text
+    [utils-py-7c] clean_terms
+    [utils-py-7d] get_allowed_colours
+
+[utils-py-8] SKU Management
+    [utils-py-8a] infer_sku_from_filename
+    [utils-py-8b] sync_filename_with_sku
+    [utils-py-8c] assign_or_get_sku
+    [utils-py-8d] validate_all_skus
+
+[utils-py-9] Listing File Path Management
+    [utils-py-9a] update_listing_paths
+
+[utils-py-10] Legacy Registry Management
+    [utils-py-10a] _load_registry
+    [utils-py-10b] _save_registry
+    [utils-py-10c] register_new_artwork
+    [utils-py-10d] move_and_log
+    [utils-py-10e] update_status
+    [utils-py-10f] get_record_by_base
+    [utils-py-10g] get_record_by_seo_filename
+    [utils-py-10h] remove_record_from_registry
 """
 
-# ===========================================================================
-# 1. Imports & Initialisation
-# ===========================================================================
-from __future__ import annotations
-import time, os, json, random, re, logging, shutil, datetime
-from pathlib import Path
-from typing import List, Tuple, Dict, Optional, Iterable
-from helpers.listing_utils import resolve_listing_paths
+# === [ Section 1: Imports & Initialisation | utils-py-1 ] ===
+# Handles all necessary library imports and sets up global constants for the module.
+# Cross-references: config.py, helpers/listing_utils.py
+# ---------------------------------------------------------------------------------
 
-from dotenv import load_dotenv
-from flask import session
+# --- [ 1a: Imports | utils-py-1a ] ---
+from __future__ import annotations
+import time
+import os
+import json
+import random
+import re
+import logging
+import shutil
+import datetime
+from pathlib import Path
+from typing import List, Tuple, Dict, Optional
+
+from flask import session, url_for
 from PIL import Image
 try:
     import cv2
-except Exception:  # pragma: no cover - optional dependency
-    cv2 = None
+except ImportError:
+    cv2 = None # OpenCV is an optional dependency for perspective transforms
 import numpy as np
 
 import config
-from utils.sku_assigner import get_next_sku, peek_next_sku
+from utils.sku_assigner import get_next_sku
+# FIX: Import helpers from the correct module to break the circular dependency
+from helpers.listing_utils import resolve_listing_paths, load_json_file_safe
 
-load_dotenv()
+
+# --- [ 1b: Constants & Globals | utils-py-1b ] ---
 Image.MAX_IMAGE_PIXELS = None
 logger = logging.getLogger(__name__)
-LOGS_DIR = getattr(config, "LOGS_DIR", Path("/tmp/logs"))
 
 ALLOWED_COLOURS = sorted(config.ETSY_COLOURS.keys())
 ALLOWED_COLOURS_LOWER = {c.lower(): c for c in ALLOWED_COLOURS}
 
 
-# ===========================================================================
-# 2. JSON & File Helpers
-# ===========================================================================
+# === [ Section 2: Path & URL Utilities | utils-py-2 ] ===
+# A collection of helper functions for manipulating and resolving file paths and URLs.
+# ---------------------------------------------------------------------------------
 
-def load_json_file_safe(path: Path) -> dict:
-    """Return JSON from ``path`` handling any errors gracefully."""
-    path = Path(path)
-    if not path.exists():
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("{}", encoding="utf-8")
-        logger.warning("created new empty file %s", path)
-        return {}
-
-    text = path.read_text(encoding="utf-8").strip()
-    if not text:
-        path.write_text("{}", encoding="utf-8")
-        logger.warning("reset to {} for %s", path)
-        return {}
-
-    try:
-        return json.loads(text)
-    except Exception as exc:  # pragma: no cover - unexpected IO
-        logger.error("Invalid JSON in %s: %s", path, exc)
-        path.write_text("{}", encoding="utf-8")
-        return {}
-
-
-def read_generic_text(aspect: str) -> str:
-    """Return the generic text block for the given aspect ratio."""
-    path = config.GENERIC_TEXTS_DIR / f"{aspect}.txt"
-    try:
-        return path.read_text(encoding="utf-8")
-    except Exception:
-        logger.warning(f"Generic text for {aspect} not found at {path}")
-        return ""
-
-
-# ===========================================================================
-# 3. Path & URL Utilities
-# ===========================================================================
-
+# --- [ 2a: relative_to_base | utils-py-2a ] ---
 def relative_to_base(path: Path | str) -> str:
-    """Return a path string relative to the project root."""
+    """
+    Converts an absolute filesystem path to a path string relative to the project's base directory.
+
+    Args:
+        path: The absolute Path object or string to convert.
+
+    Returns:
+        A string representing the path relative to the project root (e.g., "static/img/logo.png").
+    """
     return str(Path(path).resolve().relative_to(config.BASE_DIR))
 
 
-def resolve_image_url(path: Path | str) -> str:
-    """Convert full filesystem path to a URL-safe relative path."""
-    return "/" + str(Path(path)).replace(str(config.BASE_DIR), "").lstrip("/")
-
-
+# --- [ 2b: is_finalised_image | utils-py-2b ] ---
 def is_finalised_image(path: str | Path) -> bool:
-    """Return True if the given path is within a finalised or locked folder."""
+    """
+    Checks if a given file path exists within either the 'finalised-artwork' or 'artwork-vault' directories.
+
+    Args:
+        path: The file path string or Path object to check.
+
+    Returns:
+        True if the path is within a finalised or locked directory, False otherwise.
+    """
     p = Path(path).resolve()
     try:
         p.relative_to(config.FINALISED_ROOT)
@@ -113,9 +150,19 @@ def is_finalised_image(path: str | Path) -> bool:
             return False
 
 
+# === [ Section 3: Template & UI Helpers | utils-py-3 ] ===
+# Functions that provide data and context specifically for rendering Jinja2 templates.
+# ---------------------------------------------------------------------------------
+
+# --- [ 3a: get_menu | utils-py-3a ] ---
 def get_menu() -> List[Dict[str, str | None]]:
-    """Return navigation items for templates."""
-    from flask import url_for
+    """
+    Generates the dynamic navigation menu items for the main layout template.
+    Includes a link to the most recently analyzed artwork for quick access.
+
+    Returns:
+        A list of dictionaries, where each dictionary represents a menu item.
+    """
     menu = [
         {"name": "Home", "url": url_for("artwork.home")},
         {"name": "Artwork Gallery", "url": url_for("artwork.artworks")},
@@ -135,12 +182,80 @@ def get_menu() -> List[Dict[str, str | None]]:
     return menu
 
 
-# ===========================================================================
-# 4. Image Processing & Mockup Generation
-# ===========================================================================
+# --- [ 3b: populate_artwork_data_from_json | utils-py-3b ] ---
+def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
+    """
+    Populates a dictionary with artwork details from a listing JSON for the edit page form.
 
+    Args:
+        data: The dictionary loaded from the artwork's -listing.json file.
+        seo_folder: The name of the artwork's parent folder.
+
+    Returns:
+        A dictionary formatted for easy use in the Jinja2 template.
+    """
+    artwork = {
+        "title": data.get("title", prettify_slug(seo_folder)),
+        "description": data.get("description", ""),
+        "tags": ", ".join(data.get("tags", [])),
+        "materials": ", ".join(data.get("materials", [])),
+        "primary_colour": data.get("primary_colour", ""),
+        "secondary_colour": data.get("secondary_colour", ""),
+        "seo_filename": data.get("seo_filename", f"{seo_folder}.jpg"),
+        "price": data.get("price", "18.27"),
+        "sku": data.get("sku", ""),
+        "images": "\n".join(data.get("images", [])),
+        "generic_text": read_generic_text(data.get("aspect_ratio", ""))
+    }
+    return artwork
+
+
+# --- [ 3c: get_mockup_details_for_template | utils-py-3c ] ---
+def get_mockup_details_for_template(mockups_data: list, folder: Path, seo_folder: str, aspect: str) -> list:
+    """
+    Processes mockup data from a listing file for use in the edit_listing template.
+
+    Args:
+        mockups_data: The 'mockups' list from the listing JSON.
+        folder: The absolute path to the artwork's parent directory.
+        seo_folder: The name of the artwork's parent folder.
+        aspect: The aspect ratio of the artwork (e.g., '4x5').
+
+    Returns:
+        A list of dictionaries, each representing a mockup with its associated paths and metadata.
+    """
+    mockups = []
+    for idx, mp in enumerate(mockups_data):
+        composite_name = mp.get("composite", "")
+        thumb_name = mp.get("thumbnail", "")
+        category = mp.get("category", "")
+
+        out_path = folder / composite_name if composite_name else Path()
+        thumb_path = folder / config.THUMB_SUBDIR / thumb_name if thumb_name else Path()
+        
+        path_rel = f"{seo_folder}/{composite_name}" if composite_name else ""
+        thumb_rel_path = f"{seo_folder}/{config.THUMB_SUBDIR}/{thumb_name}" if thumb_name else ""
+        
+        mockups.append({
+            "path": out_path,
+            "category": category,
+            "exists": out_path.exists(),
+            "index": idx,
+            "thumb": thumb_path,
+            "thumb_exists": thumb_path.exists(),
+            "path_rel": path_rel,
+            "thumb_rel": thumb_rel_path,
+        })
+    return mockups
+
+
+# === [ Section 4: Image Processing Utilities | utils-py-4 ] ===
+# Functions for handling image manipulations like resizing and transformations.
+# ---------------------------------------------------------------------------------
+
+# --- [ 4a: resize_image_for_long_edge | utils-py-4a ] ---
 def resize_image_for_long_edge(image: Image.Image, target_long_edge: int = 2000) -> Image.Image:
-    """Resize image maintaining aspect ratio."""
+    """Resizes an image to have its longest edge match the target size, preserving aspect ratio."""
     width, height = image.size
     scale = target_long_edge / max(width, height)
     if scale < 1.0:
@@ -150,8 +265,12 @@ def resize_image_for_long_edge(image: Image.Image, target_long_edge: int = 2000)
     return image.copy()
 
 
+# --- [ 4b: resize_for_analysis | utils-py-4b ] ---
 def resize_for_analysis(image: Image.Image, dest_path: Path):
-    """Resize and save an image to be compliant with AI analysis limits."""
+    """
+    Resizes and saves an image to be compliant with AI analysis size and filetype limits.
+    It iteratively reduces JPEG quality to ensure the file is under the max size.
+    """
     w, h = image.size
     scale = config.ANALYSE_MAX_DIM / max(w, h)
     if scale < 1.0:
@@ -166,55 +285,32 @@ def resize_for_analysis(image: Image.Image, dest_path: Path):
         q -= 5
 
 
+# --- [ 4c: apply_perspective_transform | utils-py-4c ] ---
 def apply_perspective_transform(art_img: Image.Image, mockup_img: Image.Image, dst_coords: list) -> Image.Image:
-    """Overlay artwork onto mockup using perspective transform."""
+    """Overlays artwork onto a mockup using perspective transform, handling RGBA transparency."""
     if cv2 is None:
-        raise RuntimeError("cv2 library is required for perspective transform")
+        raise RuntimeError("OpenCV (cv2) library is required for perspective transform.")
     w, h = art_img.size
-    src_points = np.float32([[0, 0], [w, 0], [w, h], [0, h]])
-    dst_points = np.float32(dst_coords)
+    src_points = np.float32([[0, 0], [w, 0], [0, h], [w, h]])
+    dst_points = np.float32([[c['x'], c['y']] for c in dst_coords])
+    
     matrix = cv2.getPerspectiveTransform(src_points, dst_points)
-    art_np = np.array(art_img)
+    art_np = np.array(art_img.convert("RGBA"))
+    
     warped = cv2.warpPerspective(art_np, matrix, (mockup_img.width, mockup_img.height))
-    mask = np.any(warped > 0, axis=-1).astype(np.uint8) * 255
-    mask_img = Image.fromarray(mask).convert("L")
-    composite = Image.composite(Image.fromarray(warped), mockup_img.convert("RGBA"), mask_img)
-    return composite
+    warped_pil = Image.fromarray(warped)
+    
+    final_image = Image.alpha_composite(mockup_img.convert("RGBA"), warped_pil)
+    return final_image
 
 
-def create_default_mockups(seo_folder: str) -> None:
-    """Create a fallback mockup image and update the listing."""
-    dest = config.PROCESSED_ROOT / seo_folder
-    dest.mkdir(parents=True, exist_ok=True)
-    target = dest / config.FILENAME_TEMPLATES["mockup"].format(seo_slug=seo_folder, num=1)
-    shutil.copy(config.DEFAULT_MOCKUP_IMAGE, target)
-    _, _, listing, _ = resolve_listing_paths("", seo_folder)
-    data = load_json_file_safe(listing)
-    data.setdefault("mockups", []).append(
-        {"category": "default", "source": "default", "composite": target.name}
-    )
-    with open(listing, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+# === [ Section 5: Artwork Data Retrieval | utils-py-5 ] ===
+# Functions for scanning the filesystem and retrieving lists of artworks in various states.
+# ---------------------------------------------------------------------------------
 
-
-def generate_mockups_for_listing(seo_folder: str) -> bool:
-    """Ensure mockups exist for the listing, creating defaults if needed."""
-    try:
-        if not get_mockups(seo_folder):
-            create_default_mockups(seo_folder)
-            logger.info("Default mockups created for %s", seo_folder)
-        return True
-    except Exception as exc:
-        logger.error("Error generating mockups for %s: %s", seo_folder, exc)
-        return False
-
-
-# ===========================================================================
-# 5. Listing Data Retrieval & Formatting
-# ===========================================================================
-
+# --- [ 5a: get_all_artworks | utils-py-5a ] ---
 def get_all_artworks() -> List[Dict]:
-    """Scans all artwork locations and returns a unified list of artwork dictionaries."""
+    """Scans all artwork locations (processed, finalised, locked) and returns a unified list."""
     items: List[Dict] = []
     
     def process_directory(directory: Path, status: str):
@@ -251,16 +347,24 @@ def get_all_artworks() -> List[Dict]:
     items.sort(key=lambda x: x["title"].lower())
     return items
 
+
+# --- [ 5b: list_processed_artworks | utils-py-5b ] ---
 def list_processed_artworks() -> Tuple[List[Dict], set]:
+    """Returns a list of artworks in the 'processed' state and a set of their filenames."""
     processed_artworks = [a for a in get_all_artworks() if a['status'] == 'processed']
     processed_filenames = {a['filename'] for a in processed_artworks}
     return processed_artworks, processed_filenames
 
+
+# --- [ 5c: list_finalised_artworks | utils-py-5c ] ---
 def list_finalised_artworks() -> List[Dict]:
+    """Returns a list of artworks in the 'finalised' state."""
     return [a for a in get_all_artworks() if a['status'] == 'finalised']
 
+
+# --- [ 5d: list_ready_to_analyze | utils-py-5d ] ---
 def list_ready_to_analyze(processed_filenames: set) -> List[Dict]:
-    """Return artworks uploaded but not yet analyzed."""
+    """Returns artworks from the unanalysed folder that are not yet processed."""
     ready: List[Dict] = []
     for qc_path in config.UNANALYSED_ROOT.glob("**/*.qc.json"):
         base = qc_path.name.replace(".qc.json", "")
@@ -287,8 +391,10 @@ def list_ready_to_analyze(processed_filenames: set) -> List[Dict]:
     ready.sort(key=lambda x: x["title"].lower())
     return ready
 
+
+# --- [ 5e: latest_analyzed_artwork | utils-py-5e ] ---
 def latest_analyzed_artwork() -> Optional[Dict[str, str]]:
-    """Return info about the most recently analysed artwork."""
+    """Finds the most recently modified artwork in the 'processed' directory."""
     latest_time = 0
     latest_info = None
     if not config.PROCESSED_ROOT.exists():
@@ -306,8 +412,9 @@ def latest_analyzed_artwork() -> Optional[Dict[str, str]]:
     return latest_info
 
 
+# --- [ 5f: latest_composite_folder | utils-py-5f ] ---
 def latest_composite_folder() -> str | None:
-    """Return the name of the most recently modified folder in PROCESSED_ROOT."""
+    """Returns the name of the most recently modified folder in PROCESSED_ROOT."""
     processed_dir = config.PROCESSED_ROOT
     if not processed_dir.exists():
         return None
@@ -320,113 +427,19 @@ def latest_composite_folder() -> str | None:
     return latest_folder.name
 
 
-def find_aspect_filename_from_seo_folder(seo_folder: str) -> Optional[Tuple[str, str]]:
-    """Return aspect ratio and filename for a given SEO folder."""
-    for base in (config.PROCESSED_ROOT, config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT):
-        folder = base / seo_folder
-        listing = folder / f"{seo_folder}-listing.json"
-        aspect = ""
-        filename = ""
-        if listing.exists():
-            try:
-                data = json.loads(listing.read_text())
-                aspect = data.get("aspect_ratio") or data.get("aspect") or ""
-                filename = (
-                    data.get("seo_filename")
-                    or data.get("filename")
-                    or data.get("seo_name")
-                    or ""
-                )
-                if not filename:
-                    for key in ("main_jpg_path", "orig_jpg_path", "thumb_jpg_path"):
-                        val = data.get(key)
-                        if val:
-                            filename = Path(val).name
-                            break
-            except Exception as exc:
-                logging.error("Failed reading listing for %s: %s", seo_folder, exc)
+# === [ Section 6: Mockup Management Utilities | utils-py-6 ] ===
+# Functions related to the interactive mockup selection workflow.
+# ---------------------------------------------------------------------------------
 
-        if folder.exists() and not filename:
-            for p in folder.iterdir():
-                if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == seo_folder.lower():
-                    filename = p.name
-                    break
-
-        if filename:
-            if not filename.lower().endswith(".jpg"):
-                filename = f"{Path(filename).stem}.jpg"
-            disk_file = folder / filename
-            if not disk_file.exists():
-                stem = Path(filename).stem.lower()
-                for p in folder.iterdir():
-                    if p.suffix.lower() in {".jpg", ".jpeg", ".png"} and p.stem.lower() == stem:
-                        filename = p.name
-                        break
-            return aspect, filename
-    return None
-
-def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
-    """Populates a dictionary with artwork details from a listing JSON."""
-    artwork = {
-        "title": data.get("title", prettify_slug(seo_folder)),
-        "description": data.get("description", ""),
-        "tags": ", ".join(data.get("tags", [])),
-        "materials": ", ".join(data.get("materials", [])),
-        "primary_colour": data.get("primary_colour", ""),
-        "secondary_colour": data.get("secondary_colour", ""),
-        "seo_filename": data.get("seo_filename", f"{seo_folder}.jpg"),
-        "price": data.get("price", "18.27"),
-        "sku": data.get("sku", ""),
-        "images": "\n".join(data.get("images", [])),
-        "generic_text": read_generic_text(data.get("aspect_ratio", ""))
-    }
-    return artwork
-
-def get_mockup_details_for_template(mockups_data: list, folder: Path, seo_folder: str, aspect: str) -> list:
-    """Processes mockup data from a listing file for use in templates."""
-    mockups = []
-    for idx, mp in enumerate(mockups_data):
-        composite_name = mp.get("composite", "")
-        thumb_name = mp.get("thumbnail", "")
-        category = mp.get("category", "")
-
-        out_path = folder / composite_name if composite_name else Path()
-        thumb_path = folder / config.THUMB_SUBDIR / thumb_name if thumb_name else Path()
-
-        # --- FIX APPLIED ---
-        # The original `path_rel` created a path that was too long by including
-        # the full path from the project root. This new version creates a path
-        # relative to the specific artwork root (e.g., 'processed-artwork'),
-        # which is what the Flask routes expect to prevent URL duplication.
-        path_rel = f"{seo_folder}/{composite_name}" if composite_name else ""
-        thumb_rel_path = f"{seo_folder}/{config.THUMB_SUBDIR}/{thumb_name}" if thumb_name else ""
-        
-        mockups.append({
-            "path": out_path,
-            "category": category,
-            "exists": out_path.exists(),
-            "index": idx,
-            "thumb": thumb_path,
-            "thumb_exists": thumb_path.exists(),
-            "path_rel": path_rel, # Use the corrected relative path
-            "thumb_rel": thumb_rel_path,
-        })
-    return mockups
-
-# ===========================================================================
-# 6. Mockup Selection & Management
-# ===========================================================================
-
+# --- [ 6a: get_mockup_categories | utils-py-6a ] ---
 def get_mockup_categories(aspect_folder: Path | str) -> List[str]:
-    """Return sorted list of category folder names under ``aspect_folder``."""
+    """Return sorted list of category folder names under a specific aspect folder."""
     folder = Path(aspect_folder)
     if not folder.exists(): return []
     return sorted(f.name for f in folder.iterdir() if f.is_dir() and not f.name.startswith("."))
 
-def get_categories() -> List[str]:
-    """Return sorted list of mockup categories from the root directory."""
-    return get_mockup_categories(config.MOCKUPS_INPUT_DIR)
 
+# --- [ 6b: random_image | utils-py-6b ] ---
 def random_image(category: str, aspect: str) -> Optional[str]:
     """Return a random image filename for a given category and aspect."""
     cat_dir = config.MOCKUPS_CATEGORISED_DIR / aspect / category
@@ -434,20 +447,26 @@ def random_image(category: str, aspect: str) -> Optional[str]:
     images = [f.name for f in cat_dir.glob("*.png")]
     return random.choice(images) if images else None
 
+
+# --- [ 6c: init_slots | utils-py-6c ] ---
 def init_slots() -> None:
-    """Initialise mockup slot selections in the session."""
-    aspect = "4x5"  # Default aspect for selector, can be made dynamic later
+    """Initialise mockup slot selections in the user's session."""
+    aspect = "4x5"
     cats = get_mockup_categories(config.MOCKUPS_CATEGORISED_DIR / aspect)
     session["slots"] = [{"category": c, "image": random_image(c, aspect)} for c in cats]
 
+
+# --- [ 6d: compute_options | utils-py-6d ] ---
 def compute_options(slots) -> List[List[str]]:
-    """Return category options for each slot."""
-    aspect = "4x5"  # Default aspect for selector
+    """Return category options for each slot in the mockup selector."""
+    aspect = "4x5"
     cats = get_mockup_categories(config.MOCKUPS_CATEGORISED_DIR / aspect)
     return [cats for _ in slots]
 
+
+# --- [ 6e: get_mockups | utils-py-6e ] ---
 def get_mockups(seo_folder: str) -> list:
-    """Return mockup entries from the listing JSON."""
+    """Return mockup entries from an artwork's listing JSON."""
     try:
         _, _, listing_file, _ = resolve_listing_paths("", seo_folder, allow_locked=True)
         data = load_json_file_safe(listing_file)
@@ -456,8 +475,10 @@ def get_mockups(seo_folder: str) -> list:
         logger.error(f"Failed reading mockups for {seo_folder}: {exc}")
         return []
 
+
+# --- [ 6f: swap_one_mockup | utils-py-6f ] ---
 def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_mockup_src: str | None = None) -> tuple[bool, str, str]:
-    """Swap a mockup to a new category and regenerate."""
+    """Swaps a single mockup to a new category and regenerates the composite image."""
     try:
         _, folder, listing_file, _ = resolve_listing_paths("", seo_folder, allow_locked=True)
     except FileNotFoundError:
@@ -524,18 +545,31 @@ def swap_one_mockup(seo_folder: str, slot_idx: int, new_category: str, current_m
         return False, "", ""
 
 
-# ===========================================================================
-# 7. Text & String Manipulation
-# ===========================================================================
-def slugify(text: str) -> str:
-    text = re.sub(r"[^\w\- ]+", "", text).strip().replace(" ", "-")
-    return re.sub("-+", "-", text).lower()
+# === [ Section 7: Text & String Manipulation | utils-py-7 ] ===
+# Helpers for cleaning, formatting, and manipulating strings.
+# ---------------------------------------------------------------------------------
 
+# --- [ 7a: prettify_slug | utils-py-7a ] ---
 def prettify_slug(slug: str) -> str:
+    """Converts a filename-safe slug into a human-readable title."""
     name = os.path.splitext(slug)[0].replace("-", " ").replace("_", " ")
     return re.sub(r"\s+", " ", name).title()
 
+
+# --- [ 7b: read_generic_text | utils-py-7b ] ---
+def read_generic_text(aspect: str) -> str:
+    """Reads the generic boilerplate text block for a given aspect ratio."""
+    path = config.GENERIC_TEXTS_DIR / f"{aspect}.txt"
+    try:
+        return path.read_text(encoding="utf-8")
+    except Exception:
+        logger.warning(f"Generic text for {aspect} not found at {path}")
+        return ""
+
+
+# --- [ 7c: clean_terms | utils-py-7c ] ---
 def clean_terms(items: List[str]) -> Tuple[List[str], bool]:
+    """Removes invalid characters from a list of strings (e.g., tags)."""
     cleaned: List[str] = []
     changed = False
     for item in items:
@@ -545,22 +579,34 @@ def clean_terms(items: List[str]) -> Tuple[List[str], bool]:
         if new: cleaned.append(new)
     return cleaned, changed
 
+
+# --- [ 7d: get_allowed_colours | utils-py-7d ] ---
 def get_allowed_colours() -> List[str]:
+    """Returns a copy of the list of Etsy-allowed color names."""
     return ALLOWED_COLOURS.copy()
 
 
-# ===========================================================================
-# 8. SKU Management
-# ===========================================================================
+# === [ Section 8: SKU Management | utils-py-8 ] ===
+# Functions for handling Stock Keeping Units (SKUs).
+# ---------------------------------------------------------------------------------
+
+# --- [ 8a: infer_sku_from_filename | utils-py-8a ] ---
 def infer_sku_from_filename(filename: str) -> Optional[str]:
+    """Extracts a SKU from a filename string."""
     m = re.search(r"RJC-([A-Za-z0-9-]+)(?:\.jpg)?$", filename or "")
     return f"RJC-{m.group(1)}" if m else None
 
+
+# --- [ 8b: sync_filename_with_sku | utils-py-8b ] ---
 def sync_filename_with_sku(seo_filename: str, sku: str) -> str:
+    """Replaces the SKU portion of a filename with a new SKU."""
     if not seo_filename or not sku: return seo_filename
     return re.sub(r"RJC-[A-Za-z0-9-]+(?=\.jpg$)", sku, seo_filename)
 
+
+# --- [ 8c: assign_or_get_sku | utils-py-8c ] ---
 def assign_or_get_sku(listing_json_path: Path, tracker_path: Path, *, force: bool = False) -> str:
+    """Retrieves an existing SKU from a listing file or assigns a new one."""
     data = load_json_file_safe(listing_json_path)
     if not force and data.get("sku"): return data["sku"]
     sku = get_next_sku(tracker_path)
@@ -570,13 +616,10 @@ def assign_or_get_sku(listing_json_path: Path, tracker_path: Path, *, force: boo
     with open(listing_json_path, "w") as f: json.dump(data, f, indent=2)
     return sku
 
-# ===========================================================================
-# 8.1. SKU Validation Helper for Testing
-# ===========================================================================
+
+# --- [ 8d: validate_all_skus | utils-py-8d ] ---
 def validate_all_skus(entries: List[dict], tracker_path: Path) -> List[str]:
-    """
-    Validate SKUs for format, duplicates, and gaps.
-    """
+    """Validates SKUs for format, duplicates, and gaps in a list of entries."""
     seen = set()
     errors = []
     sku_numbers = []
@@ -592,39 +635,84 @@ def validate_all_skus(entries: List[dict], tracker_path: Path) -> List[str]:
         seen.add(sku)
         
         try:
-            # Extract number for gap detection
             num = int(sku.split('-')[-1])
             sku_numbers.append(num)
         except (ValueError, IndexError):
             errors.append(f"Could not parse SKU number: {sku}")
 
-    # Check for gaps
     if sku_numbers:
         sku_numbers.sort()
         for i in range(len(sku_numbers) - 1):
             if sku_numbers[i+1] != sku_numbers[i] + 1:
                 errors.append(f"Gap detected in SKUs between {sku_numbers[i]} and {sku_numbers[i+1]}")
-                break # Only report the first gap
+                break
 
     return errors
 
 
-# ===========================================================================
-# 9. Artwork Registry & File Management
-# ===========================================================================
+# === [ Section 9: Listing File Path Management | utils-py-9 ] ===
+# Contains the critical function for updating paths within a listing.json file.
+# ---------------------------------------------------------------------------------
 
+# --- [ 9a: update_listing_paths | utils-py-9a ] ---
+def update_listing_paths(listing_file: Path, old_root: Path, new_root: Path) -> None:
+    """
+    Updates all file paths within a listing JSON file when its parent folder is moved.
+    This function is critical for the "Finalise" step to prevent broken image links.
+
+    Args:
+        listing_file: The path to the listing's JSON file.
+        old_root: The old base directory (e.g., config.PROCESSED_ROOT).
+        new_root: The new base directory (e.g., config.FINALISED_ROOT).
+    """
+    if not listing_file.exists():
+        logger.warning(f"update_listing_paths was called but file not found: {listing_file}")
+        return
+
+    data = load_json_file_safe(listing_file)
+    
+    str_old_root = str(old_root)
+    str_new_root = str(new_root)
+
+    # Update single-path keys
+    for key in ["main_jpg_path", "thumb_jpg_path", "analyse_jpg_path", "processed_folder"]:
+        if key in data and isinstance(data[key], str):
+            data[key] = data[key].replace(str_old_root, str_new_root)
+
+    # Update list of image paths
+    if "images" in data and isinstance(data["images"], list):
+        updated_images = [
+            path.replace(str_old_root, str_new_root) for path in data["images"]
+        ]
+        data["images"] = updated_images
+    
+    with open(listing_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    logger.info(f"Updated all paths in {listing_file.name} from {old_root.name} to {new_root.name}.")
+
+
+# === [ Section 10: Legacy Registry Management | utils-py-10 ] ===
+# Functions for interacting with the old master-artwork-paths.json registry.
+# These are kept for backward compatibility but may be phased out.
+# ---------------------------------------------------------------------------------
+
+# --- [ 10a: _load_registry | utils-py-10a ] ---
 def _load_registry() -> dict:
     """Loads the master artwork JSON registry file."""
     return load_json_file_safe(config.OUTPUT_JSON)
 
+
+# --- [ 10b: _save_registry | utils-py-10b ] ---
 def _save_registry(reg: dict) -> None:
     """Writes data to the master artwork JSON registry atomically."""
     tmp = config.OUTPUT_JSON.with_suffix(".tmp")
     tmp.write_text(json.dumps(reg, indent=2, ensure_ascii=False), encoding="utf-8")
     os.replace(tmp, config.OUTPUT_JSON)
 
+
+# --- [ 10c: register_new_artwork | utils-py-10c ] ---
 def register_new_artwork(uid: str, filename: str, folder: Path, assets: list, status: str, base: str):
-    """Add a new artwork record to the registry."""
+    """Add a new artwork record to the legacy registry."""
     ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
     reg = _load_registry()
     reg[uid] = {
@@ -638,8 +726,10 @@ def register_new_artwork(uid: str, filename: str, folder: Path, assets: list, st
     }
     _save_registry(reg)
 
+
+# --- [ 10d: move_and_log | utils-py-10d ] ---
 def move_and_log(src: Path, dest: Path, uid: str, status: str):
-    """Move a file and update its record in the central registry."""
+    """Move a file and update its record in the legacy registry."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(str(src), str(dest))
     reg = _load_registry()
@@ -657,8 +747,10 @@ def move_and_log(src: Path, dest: Path, uid: str, status: str):
     reg[uid] = rec
     _save_registry(reg)
 
+
+# --- [ 10e: update_status | utils-py-10e ] ---
 def update_status(uid: str, folder: Path, status: str):
-    """Update the status of an artwork in the registry."""
+    """Update the status of an artwork in the legacy registry."""
     reg = _load_registry()
     rec = reg.get(uid)
     if not rec: return
@@ -672,24 +764,30 @@ def update_status(uid: str, folder: Path, status: str):
     reg[uid] = rec
     _save_registry(reg)
 
+
+# --- [ 10f: get_record_by_base | utils-py-10f ] ---
 def get_record_by_base(base: str) -> tuple[str | None, dict | None]:
-    """Find a registry record by its unique base name."""
+    """Find a legacy registry record by its unique base name."""
     reg = _load_registry()
     for uid, rec in reg.items():
         if rec.get("base") == base:
             return uid, rec
     return None, None
 
+
+# --- [ 10g: get_record_by_seo_filename | utils-py-10g ] ---
 def get_record_by_seo_filename(filename: str) -> tuple[str | None, dict | None]:
-    """Find a registry record by its SEO filename."""
+    """Find a legacy registry record by its SEO filename."""
     reg = _load_registry()
     for uid, rec in reg.items():
         if rec.get("seo_filename") == filename:
             return uid, rec
     return None, None
 
+
+# --- [ 10h: remove_record_from_registry | utils-py-10h ] ---
 def remove_record_from_registry(uid: str) -> bool:
-    """Safely remove a record from the master JSON registry by its UID."""
+    """Safely remove a record from the legacy JSON registry by its UID."""
     if not uid: return False
     reg = _load_registry()
     if uid in reg:
@@ -698,21 +796,3 @@ def remove_record_from_registry(uid: str) -> bool:
         logger.info(f"Removed record {uid} from registry.")
         return True
     return False
-
-def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
-    """Return the best matching SEO folder for ``filename``."""
-    basename = Path(filename).stem.lower().replace('-thumb', '').replace('-analyse', '')
-    candidates: list[tuple[float, str]] = []
-    for base in (config.PROCESSED_ROOT, config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT):
-        if not base.exists(): continue
-        for folder in base.iterdir():
-            if not folder.is_dir(): continue
-            slug = folder.name.replace("LOCKED-", "")
-            listing_file = folder / config.FILENAME_TEMPLATES["listing_json"].format(seo_slug=slug)
-            if listing_file.exists():
-                data = load_json_file_safe(listing_file)
-                stems_to_check = { Path(data.get(k, "")).stem.lower() for k in ("filename", "seo_filename")} | {slug.lower()}
-                if basename in stems_to_check:
-                    candidates.append((listing_file.stat().st_mtime, slug))
-    if not candidates: raise FileNotFoundError(f"SEO folder not found for {filename}")
-    return max(candidates, key=lambda x: x[0])[1]

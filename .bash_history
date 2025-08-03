@@ -690,3 +690,19 @@ pytest
 source /home/art/venv/bin/activate
 /home/art/venv/bin/python
 sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+pytest
+./project-toolkit.sh
+./code-stacker.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./code-stacker.sh
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn 
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn
+[200~sudo systemctl stop gunicorn~
+sudo systemctl stop gunicorn
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f

@@ -1,57 +1,98 @@
 # routes/artwork_routes.py
-
 # -*- coding: utf-8 -*-
-"""Artwork-related Flask routes.
+"""
+Artwork-related Flask routes for the ArtNarrator application.
 
-This module powers the full listing workflow from initial review to
-finalisation. It handles validation, moving files, regenerating image link
-lists and serving gallery pages for processed and finalised artworks.
+This module powers the entire artwork processing workflow, from initial
+upload and AI analysis to mockup review, finalization, and state management.
 
-INDEX
------
-1.  Imports and Initialisation
-2.  Health Checks and Status API
-3.  AI Analysis & Subprocess Helpers
-4.  Validation and Data Helpers
-5.  Core Navigation & Upload Routes
-6.  Mockup Selection Workflow Routes
-7.  Artwork Analysis Trigger Routes
-8.  Artwork Editing and Listing Management
-9.  Static File and Image Serving Routes
-10. Composite Image Preview Routes
-11. Artwork Finalisation and Gallery Routes
-12. Listing State Management (Lock, Unlock, Delete)
-13. Asynchronous API Endpoints
-14. File Processing and Utility Helpers
-15. Artwork Signing Route
+Table of Contents (ToC)
+-----------------------
+[artwork-routes-py-1] Imports & Initialisation
+    [artwork-routes-py-1a] Imports
+    [artwork-routes-py-1b] Blueprint Setup
+
+[artwork-routes-py-2] Health Checks and Status API
+    [artwork-routes-py-2a] health_openai
+    [artwork-routes-py-2b] health_google
+    [artwork-routes-py-2c] _write_analysis_status
+    [artwork-routes-py-2d] analysis_status
+
+[artwork-routes-py-3] AI Analysis & Subprocess Helpers
+    [artwork-routes-py-3a] _run_ai_analysis
+    [artwork-routes-py-3b] _generate_composites
+
+[artwork-routes-py-4] Validation and Data Helpers
+    [artwork-routes-py-4a] validate_listing_fields
+    [artwork-routes-py-4b] get_categories_for_aspect
+
+[artwork-routes-py-5] Core Navigation & Upload Routes
+    [artwork-routes-py-5a] inject_latest_artwork
+    [artwork-routes-py-5b] home
+    [artwork-routes-py-5c] upload_artwork
+    [artwork-routes-py-5d] artworks
+
+[artwork-routes-py-6] Mockup Selection Workflow Routes
+    [artwork-routes-py-6a] select
+    [artwork-routes-py-6b] regenerate
+    [artwork-routes-py-6c] swap
+    [artwork-routes-py-6d] proceed
+
+[artwork-routes-py-7] Artwork Analysis Trigger Routes
+    [artwork-routes-py-7a] analyze_artwork_route
+    [artwork-routes-py-7b] analyze_upload
+
+[artwork-routes-py-8] Artwork Editing and Listing Management
+    [artwork-routes-py-8a] edit_listing
+
+[artwork-routes-py-9] Static File and Image Serving Routes
+    [artwork-routes-py-9a] processed_image
+    [artwork-routes-py-9b] finalised_image
+    [artwork-routes-py-9c] locked_image
+    [artwork-routes-py-9d] serve_mockup_thumb
+    [artwork-routes-py-9e] unanalysed_image
+    [artwork-routes-py-9f] composite_img
+    [artwork-routes-py-9g] mockup_img
+
+[artwork-routes-py-10] Composite Image Preview Routes
+    [artwork-routes-py-10a] composites_preview
+    [artwork-routes-py-10b] composites_specific
+    [artwork-routes-py-10c] approve_composites
+
+[artwork-routes-py-11] Artwork Finalisation and Gallery Routes
+    [artwork-routes-py-11a] finalise_artwork
+    [artwork-routes-py-11b] finalised_gallery
+    [artwork-routes-py-11c] locked_gallery
+
+[artwork-routes-py-12] Listing State Management (Lock, Unlock, Delete)
+    [artwork-routes-py-12a] delete_finalised
+    [artwork-routes-py-12b] lock_listing
+    [artwork-routes-py-12c] unlock_listing
+
+[artwork-routes-py-13] Asynchronous API Endpoints
+    [artwork-routes-py-13a] update_links
+    [artwork-routes-py-13b] reset_sku
+    [artwork-routes-py-13c] delete_artwork
+    [artwork-routes-py-13d] reword_generic_text_api
+
+[artwork-routes-py-14] File Processing and Utility Helpers
+    [artwork-routes-py-14a] preview_next_sku
+    [artwork-routes-py-14b] _process_upload_file
+
+[artwork-routes-py-15] Artwork Signing Route
+    [artwork-routes-py-15a] sign_artwork_route
 """
 
-# ===========================================================================
-# 1. Imports and Initialisation
-# ===========================================================================
+# === [ Section 1: Imports & Initialisation | artwork-routes-py-1 ] ===
+# Handles all necessary library imports and sets up the Flask Blueprint.
+# Cross-references: config.py, helpers/listing_utils.py, routes/utils.py
+# ---------------------------------------------------------------------------------
+
+# --- [ 1a: Imports | artwork-routes-py-1a ] ---
+# FIX: This section has been corrected to include all necessary imports.
 from __future__ import annotations
 import json, subprocess, uuid, random, logging, shutil, os, traceback, datetime, time, sys
 from pathlib import Path
-
-# --- Local Application Imports ---
-from utils.logger_utils import log_action
-from utils.sku_assigner import peek_next_sku
-from utils import ai_services
-from routes import sellbrite_service
-import config
-from helpers.listing_utils import (
-    resolve_listing_paths,
-    create_unanalysed_subfolder,
-    cleanup_unanalysed_folders,
-)
-from config import (
-    PROCESSED_ROOT, FINALISED_ROOT, UNANALYSED_ROOT, ARTWORK_VAULT_ROOT,
-    ANALYSIS_STATUS_FILE,
-)
-import scripts.analyze_artwork as aa
-from scripts import signing_service
-
-# --- Third-Party Imports ---
 from PIL import Image
 import google.generativeai as genai
 from flask import (
@@ -60,22 +101,39 @@ from flask import (
 )
 import re
 
-# --- Local Route-Specific Imports ---
+# Local Application Imports
+import config
+from helpers.listing_utils import (
+    resolve_listing_paths,
+    create_unanalysed_subfolder,
+    cleanup_unanalysed_folders,
+    load_json_file_safe
+)
+import scripts.analyze_artwork as aa
+from scripts import signing_service
 from . import utils
+from utils.logger_utils import log_action
+from utils.sku_assigner import peek_next_sku
+from utils import ai_services
 from .utils import (
     ALLOWED_COLOURS_LOWER, read_generic_text, clean_terms, infer_sku_from_filename,
-    sync_filename_with_sku, is_finalised_image, get_allowed_colours,
-    load_json_file_safe,
+    is_finalised_image, get_allowed_colours, update_listing_paths
 )
 
+
+# --- [ 1b: Blueprint Setup | artwork-routes-py-1b ] ---
 bp = Blueprint("artwork", __name__)
 
-# ===========================================================================
-# 2. Health Checks and Status API
-# ===========================================================================
+
+# === [ Section 2: Health Checks and Status API | artwork-routes-py-2 ] ===
+# Endpoints for monitoring the health of external services (OpenAI, Google)
+# and for providing real-time status updates on background analysis jobs.
+# ---------------------------------------------------------------------------------
+
+# --- [ 2a: health_openai | artwork-routes-py-2a ] ---
 @bp.get("/health/openai")
 def health_openai():
-    """Return status of OpenAI connection."""
+    """Provides a health check endpoint for the OpenAI API connection."""
     logger = logging.getLogger(__name__)
     try:
         aa.client.models.list()
@@ -87,9 +145,11 @@ def health_openai():
             error += "\n" + traceback.format_exc()
         return jsonify({"ok": False, "error": error}), 500
 
+
+# --- [ 2b: health_google | artwork-routes-py-2b ] ---
 @bp.get("/health/google")
 def health_google():
-    """Return status of Google Vision connection."""
+    """Provides a health check endpoint for the Google Gemini API connection."""
     logger = logging.getLogger(__name__)
     try:
         genai.list_models()
@@ -101,27 +161,45 @@ def health_google():
             error += "\n" + traceback.format_exc()
         return jsonify({"ok": False, "error": error}), 500
 
-load_json_file_safe(ANALYSIS_STATUS_FILE)
 
+# --- [ 2c: _write_analysis_status | artwork-routes-py-2c ] ---
 def _write_analysis_status(step: str, percent: int, file: str | None = None, status: str | None = None, error: str | None = None) -> None:
-    """Write progress info for frontend polling."""
+    """
+    Writes the current progress of an analysis job to a shared JSON file.
+    This file is polled by the frontend to update the UI modal.
+    """
     logger = logging.getLogger(__name__)
     payload = {"step": step, "percent": percent, "file": file, "status": status, "error": error}
     try:
-        ANALYSIS_STATUS_FILE.write_text(json.dumps({k: v for k, v in payload.items() if v is not None}))
+        config.ANALYSIS_STATUS_FILE.write_text(json.dumps({k: v for k, v in payload.items() if v is not None}))
     except Exception as exc:
         logger.error("Failed writing analysis status: %s", exc)
 
+
+# --- [ 2d: analysis_status | artwork-routes-py-2d ] ---
 @bp.route("/status/analyze")
 def analysis_status():
-    """Return JSON progress info for the current analysis job."""
-    return Response(ANALYSIS_STATUS_FILE.read_text(), mimetype="application/json")
+    """Returns the content of the analysis status JSON file for frontend polling."""
+    return Response(config.ANALYSIS_STATUS_FILE.read_text(), mimetype="application/json")
 
-# ===========================================================================
-# 3. AI Analysis & Subprocess Helpers
-# ===========================================================================
+
+# === [ Section 3: AI Analysis & Subprocess Helpers | artwork-routes-py-3 ] ===
+# Helper functions for invoking external Python scripts (like AI analysis
+# and mockup generation) as separate processes.
+# ---------------------------------------------------------------------------------
+
+# --- [ 3a: _run_ai_analysis | artwork-routes-py-3a ] ---
 def _run_ai_analysis(img_path: Path, provider: str) -> dict:
-    """Run the AI analysis script and return its JSON output."""
+    """
+    Executes the AI analysis script as a subprocess and captures its JSON output.
+
+    Args:
+        img_path: The absolute path to the image file to be analyzed.
+        provider: The AI provider to use (e.g., 'openai').
+
+    Returns:
+        A dictionary parsed from the script's JSON output.
+    """
     logger = logging.getLogger("art_analysis")
     logger.info("[DEBUG] _run_ai_analysis: img_path=%s provider=%s", img_path, provider)
 
@@ -143,21 +221,35 @@ def _run_ai_analysis(img_path: Path, provider: str) -> dict:
         logger.error("JSON decode error: %s", e)
         raise RuntimeError("AI analysis output could not be parsed.") from e
 
+
+# --- [ 3b: _generate_composites | artwork-routes-py-3b ] ---
 def _generate_composites(log_id: str) -> None:
-    """Triggers the queue-based composite generation script."""
+    """Triggers the queue-based composite/mockup generation script as a subprocess."""
     cmd = [sys.executable, str(config.GENERATE_SCRIPT_PATH)]
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=config.BASE_DIR, timeout=600)
     composite_log = config.LOGS_DIR / "composite-generation-logs" / f"composite_gen_{log_id}.log"
-    composite_log.parent.mkdir(exist_ok=True)
+    composite_log.parent.mkdir(exist_ok=True, parents=True)
     composite_log.write_text(f"=== STDOUT ===\n{result.stdout}\n\n=== STDERR ===\n{result.stderr}")
     if result.returncode != 0:
         raise RuntimeError(f"Composite generation failed ({result.returncode})")
 
-# ===========================================================================
-# 4. Validation and Data Helpers
-# ===========================================================================
+
+# === [ Section 4: Validation and Data Helpers | artwork-routes-py-4 ] ===
+# Functions for validating form data and retrieving data needed by templates.
+# ---------------------------------------------------------------------------------
+
+# --- [ 4a: validate_listing_fields | artwork-routes-py-4a ] ---
 def validate_listing_fields(data: dict, generic_text: str) -> list[str]:
-    """Return a list of validation error messages for the listing."""
+    """
+    Validates all fields from the edit listing form against business rules.
+
+    Args:
+        data: A dictionary of form data.
+        generic_text: The boilerplate text block to check for inclusion.
+
+    Returns:
+        A list of string error messages. An empty list indicates success.
+    """
     errors: list[str] = []
     title = data.get("title", "").strip()
     if not title: errors.append("Title cannot be blank")
@@ -169,51 +261,59 @@ def validate_listing_fields(data: dict, generic_text: str) -> list[str]:
         if not re.fullmatch(r"[A-Za-z0-9 ]+", t): errors.append(f"Tag has invalid characters: '{t}'")
     seo_filename = data.get("seo_filename", "")
     if len(seo_filename) > 70: errors.append("SEO filename exceeds 70 characters")
-    if not re.search(r"artwork-by-robin-custance-RJC-[A-Za-z0-9-]+\.jpg$", seo_filename, re.IGNORECASE):
-        errors.append("SEO filename must end with 'artwork-by-robin-custance-RJC-XXXX.jpg'")
+    if not re.search(r"-by-robin-custance-RJC-[A-Za-z0-9-]+\.jpg$", seo_filename, re.IGNORECASE):
+        errors.append("SEO filename must end with '-by-robin-custance-RJC-XXXX.jpg'")
     sku = data.get("sku", "")
     if not sku: errors.append("SKU is required")
     if sku and not sku.startswith("RJC-"): errors.append("SKU must start with 'RJC-'")
-    if sku and infer_sku_from_filename(seo_filename or "") != sku:
+    if sku and utils.infer_sku_from_filename(seo_filename or "") != sku:
         errors.append("SKU must match value in SEO filename")
     try:
         if abs(float(data.get("price")) - 18.27) > 1e-2: errors.append("Price must be 18.27")
-    except Exception: errors.append("Price must be a number (18.27)")
+    except (ValueError, TypeError): errors.append("Price must be a number (18.27)")
     for key in ("primary_colour", "secondary_colour"):
         col = data.get(key, "").strip()
         if not col: errors.append(f"{key.replace('_', ' ').title()} is required")
-        elif col.lower() not in ALLOWED_COLOURS_LOWER: errors.append(f"{key.replace('_', ' ').title()} invalid")
+        elif col.lower() not in utils.ALLOWED_COLOURS_LOWER: errors.append(f"{key.replace('_', ' ').title()} invalid")
     images = [i.strip() for i in data.get("images", []) if str(i).strip()]
     if not images: errors.append("At least one image required")
-    for img in images:
-        if not is_finalised_image(img): errors.append(f"Image not in finalised-artwork folder: '{img}'")
     desc = data.get("description", "").strip()
     if len(desc.split()) < 400: errors.append("Description must be at least 400 words")
     if generic_text and "About the Artist – Robin Custance".lower() not in " ".join(desc.split()).lower():
         errors.append("Description must include the correct generic context block.")
     return errors
 
+
+# --- [ 4b: get_categories_for_aspect | artwork-routes-py-4b ] ---
 def get_categories_for_aspect(aspect: str) -> list[str]:
-    """Return list of mockup categories available for the given aspect."""
+    """Returns a sorted list of available mockup category names for a given aspect ratio."""
     base = config.MOCKUPS_CATEGORISED_DIR / aspect
     return sorted([f.name for f in base.iterdir() if f.is_dir()]) if base.exists() else []
 
-# ===========================================================================
-# 5. Core Navigation & Upload Routes
-# ===========================================================================
+
+# === [ Section 5: Core Navigation & Upload Routes | artwork-routes-py-5 ] ===
+# Handles the main UI pages: the homepage, the artwork gallery/dashboard,
+# and the file upload page.
+# ---------------------------------------------------------------------------------
+
+# --- [ 5a: inject_latest_artwork | artwork-routes-py-5a ] ---
 @bp.app_context_processor
 def inject_latest_artwork():
-    """Injects the latest analyzed artwork data into all templates."""
+    """Injects data about the latest analyzed artwork into all templates."""
     return dict(latest_artwork=utils.latest_analyzed_artwork())
 
+
+# --- [ 5b: home | artwork-routes-py-5b ] ---
 @bp.route("/")
 def home():
-    """Renders the main home page."""
+    """Renders the main home/dashboard page."""
     return render_template("index.html", menu=utils.get_menu())
 
+
+# --- [ 5c: upload_artwork | artwork-routes-py-5c ] ---
 @bp.route("/upload", methods=["GET", "POST"])
 def upload_artwork():
-    """Handle new artwork file uploads and run pre-QC checks."""
+    """Handles new artwork file uploads and runs initial QC checks."""
     if request.method == "POST":
         files = request.files.getlist("images")
         results = []
@@ -242,20 +342,26 @@ def upload_artwork():
         
     return render_template("upload.html", menu=utils.get_menu())
 
+
+# --- [ 5d: artworks | artwork-routes-py-5d ] ---
 @bp.route("/artworks")
 def artworks():
-    """Display lists of artworks ready for analysis, processed, and finalised."""
+    """Displays galleries of artworks in 'Ready to Analyze', 'Processed', and 'Finalised' states."""
     processed, processed_names = utils.list_processed_artworks()
     ready = utils.list_ready_to_analyze(processed_names)
     finalised = utils.list_finalised_artworks()
     return render_template("artworks.html", ready_artworks=ready, processed_artworks=processed, finalised_artworks=finalised, menu=utils.get_menu())
     
-# ===========================================================================
-# 6. Mockup Selection Workflow Routes
-# ===========================================================================
+
+# === [ Section 6: Mockup Selection Workflow Routes | artwork-routes-py-6 ] ===
+# DEPRECATED: These routes were part of an older, manual mockup selection flow.
+# They are kept for reference but are no longer active in the main UI.
+# ---------------------------------------------------------------------------------
+
+# --- [ 6a: select | artwork-routes-py-6a ] ---
 @bp.route("/select", methods=["GET", "POST"])
 def select():
-    """Display the mockup selection interface."""
+    """(DEPRECATED) Displays the old mockup selection interface."""
     if "slots" not in session or request.args.get("reset") == "1":
         utils.init_slots()
     slots = session["slots"]
@@ -263,9 +369,11 @@ def select():
     zipped = list(zip(slots, options))
     return render_template("mockup_selector.html", zipped=zipped, menu=utils.get_menu())
 
+
+# --- [ 6b: regenerate | artwork-routes-py-6b ] ---
 @bp.route("/regenerate", methods=["POST"])
 def regenerate():
-    """Regenerate a random mockup image for a specific slot."""
+    """(DEPRECATED) Regenerates a random mockup for a specific slot."""
     slot_idx = int(request.form["slot"])
     slots = session.get("slots", [])
     if 0 <= slot_idx < len(slots):
@@ -274,9 +382,11 @@ def regenerate():
         session["slots"] = slots
     return redirect(url_for("artwork.select"))
 
+
+# --- [ 6c: swap | artwork-routes-py-6c ] ---
 @bp.route("/swap", methods=["POST"])
 def swap():
-    """Swap a mockup slot to a new category."""
+    """(DEPRECATED) Swaps a mockup slot to a new category."""
     slot_idx = int(request.form["slot"])
     new_cat = request.form["new_category"]
     slots = session.get("slots", [])
@@ -286,31 +396,48 @@ def swap():
         session["slots"] = slots
     return redirect(url_for("artwork.select"))
 
+
+# --- [ 6d: proceed | artwork-routes-py-6d ] ---
 @bp.route("/proceed", methods=["POST"])
 def proceed():
-    """Finalise mockup selections and trigger composite generation."""
+    """(DEPRECATED) Finalises mockup selections and triggers composite generation."""
     flash("Composite generation process initiated!", "success")
     latest = utils.latest_composite_folder()
     if latest:
         return redirect(url_for("artwork.composites_specific", seo_folder=latest))
     return redirect(url_for("artwork.composites_preview"))
 
-# ===========================================================================
-# 7. Artwork Analysis Trigger Routes
-# ===========================================================================
+
+# === [ Section 7: Artwork Analysis Trigger Routes | artwork-routes-py-7 ] ===
+# These routes handle the initiation of the AI analysis process. They are
+# triggered from the artwork gallery page.
+# ---------------------------------------------------------------------------------
+
+# --- [ 7a: analyze_artwork_route | artwork-routes-py-7a ] ---
 @bp.route("/analyze/<aspect>/<filename>", methods=["POST"], endpoint="analyze_artwork")
 def analyze_artwork_route(aspect, filename):
-    """Run analysis on `filename` using the selected provider."""
+    """
+    Runs AI analysis on a given artwork file. This can be a fresh analysis
+    from the 'unanalysed' folder or a re-analysis of a 'processed' artwork.
+    """
     logger, provider = logging.getLogger(__name__), request.form.get("provider", "openai").lower()
     base_name = Path(filename).name
     _write_analysis_status("starting", 0, base_name, status="analyzing")
     is_ajax = "XMLHttpRequest" in request.headers.get("X-Requested-With", "")
 
     src_path = next((p for p in config.UNANALYSED_ROOT.rglob(base_name) if p.is_file()), None)
+    
+    old_processed_folder_path = None
+    is_reanalysis = False
+    
     if not src_path:
         try:
             seo_folder = utils.find_seo_folder_from_filename(aspect, filename)
-            src_path = PROCESSED_ROOT / seo_folder / f"{seo_folder}.jpg"
+            potential_path = config.PROCESSED_ROOT / seo_folder / f"{seo_folder}.jpg"
+            if potential_path.exists():
+                src_path = potential_path
+                is_reanalysis = True
+                old_processed_folder_path = src_path.parent
         except FileNotFoundError: pass
 
     if not src_path or not src_path.exists():
@@ -320,9 +447,9 @@ def analyze_artwork_route(aspect, filename):
 
     try:
         analysis_result = _run_ai_analysis(src_path, provider)
-        seo_folder = Path(analysis_result.get("processed_folder", "")).name
+        new_seo_folder_name = Path(analysis_result.get("processed_folder", "")).name
         
-        if not seo_folder: raise RuntimeError("Analysis script did not return a valid folder name.")
+        if not new_seo_folder_name: raise RuntimeError("Analysis script did not return a valid folder name.")
 
         _generate_composites(uuid.uuid4().hex)
         
@@ -330,6 +457,12 @@ def analyze_artwork_route(aspect, filename):
             shutil.rmtree(src_path.parent, ignore_errors=True)
             log_action("cleanup", src_path.parent.name, session.get("username"), "Deleted unanalysed artwork folder.")
             logger.info(f"Cleaned up unanalysed source folder: {src_path.parent}")
+        
+        new_folder_path = config.PROCESSED_ROOT / new_seo_folder_name
+        if is_reanalysis and old_processed_folder_path and old_processed_folder_path.exists() and old_processed_folder_path != new_folder_path:
+            shutil.rmtree(old_processed_folder_path)
+            log_action("cleanup", old_processed_folder_path.name, session.get("username"), "Deleted old folder after re-analysis.")
+            logger.info(f"Cleaned up old processed folder after re-analysis: {old_processed_folder_path}")
 
     except Exception as exc:
         logger.error(f"Error running analysis for {filename}: {exc}", exc_info=True)
@@ -337,7 +470,7 @@ def analyze_artwork_route(aspect, filename):
         if is_ajax: return jsonify({"success": False, "error": str(exc)}), 500
         return redirect(url_for("artwork.artworks"))
 
-    redirect_filename = f"{seo_folder}.jpg"
+    redirect_filename = f"{new_seo_folder_name}.jpg"
     redirect_url = url_for("artwork.edit_listing", aspect=aspect, filename=redirect_filename)
 
     if is_ajax:
@@ -349,9 +482,11 @@ def analyze_artwork_route(aspect, filename):
     
     return redirect(redirect_url)
 
+
+# --- [ 7b: analyze_upload | artwork-routes-py-7b ] ---
 @bp.post("/analyze-upload/<base>")
 def analyze_upload(base):
-    """Analyze an uploaded image from the unanalysed folder."""
+    """(DEPRECATED) Legacy route to analyze an uploaded image from the unanalysed folder."""
     uid, rec = utils.get_record_by_base(base)
     if not rec:
         flash("Artwork not found", "danger")
@@ -359,7 +494,7 @@ def analyze_upload(base):
         
     folder = Path(rec["current_folder"])
     qc_path = folder / f"{base}.qc.json"
-    qc = utils.load_json_file_safe(qc_path)
+    qc = load_json_file_safe(qc_path)
     orig_path = folder / f"{base}.{qc.get('extension', 'jpg')}"
     provider = request.form.get("provider", "openai")
     
@@ -386,20 +521,24 @@ def analyze_upload(base):
     redirect_filename = f"{seo_folder}.jpg"
     return redirect(url_for("artwork.edit_listing", aspect=qc.get("aspect_ratio", ""), filename=redirect_filename))
 
-# ===========================================================================
-# 8. Artwork Editing and Listing Management
-# ===========================================================================
+
+# === [ Section 8: Artwork Editing and Listing Management | artwork-routes-py-8 ] ===
+# The main route for editing an artwork's listing details, handling both
+# displaying the form (GET) and saving changes (POST).
+# ---------------------------------------------------------------------------------
+
+# --- [ 8a: edit_listing | artwork-routes-py-8a ] ---
 @bp.route("/edit-listing/<aspect>/<filename>", methods=["GET", "POST"])
 def edit_listing(aspect, filename):
-    """Display and update a processed or finalised artwork listing."""
+    """Displays and updates a processed or finalised artwork listing."""
     try:
         seo_folder, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
     except FileNotFoundError:
         flash(f"Artwork not found: {filename}", "danger")
         return redirect(url_for("artwork.artworks"))
     
-    data = utils.load_json_file_safe(listing_path)
-    is_locked_in_vault = ARTWORK_VAULT_ROOT in folder.parents
+    data = load_json_file_safe(listing_path)
+    is_locked_in_vault = config.ARTWORK_VAULT_ROOT in folder.parents
 
     if request.method == "POST":
         form_data = {
@@ -433,62 +572,92 @@ def edit_listing(aspect, filename):
         cache_ts=int(time.time()),
     )
 
-# ===========================================================================
-# 9. Static File and Image Serving Routes
-# ===========================================================================
+
+# === [ Section 9: Static File and Image Serving Routes | artwork-routes-py-9 ] ===
+# These routes serve images from various processing directories. They are essential
+# for displaying thumbnails and full-size images throughout the application.
+# ---------------------------------------------------------------------------------
+
+# --- [ 9a: processed_image | artwork-routes-py-9a ] ---
 @bp.route(f"/{config.PROCESSED_URL_PATH}/<path:filename>")
 def processed_image(filename):
+    """Serves images from the 'processed-artwork' directory."""
     return send_from_directory(config.PROCESSED_ROOT, filename)
 
+
+# --- [ 9b: finalised_image | artwork-routes-py-9b ] ---
 @bp.route(f"/{config.FINALISED_URL_PATH}/<path:filename>")
 def finalised_image(filename):
+    """Serves images from the 'finalised-artwork' directory."""
     return send_from_directory(config.FINALISED_ROOT, filename)
 
+
+# --- [ 9c: locked_image | artwork-routes-py-9c ] ---
 @bp.route(f"/{config.LOCKED_URL_PATH}/<path:filename>")
 def locked_image(filename):
+    """Serves images from the 'artwork-vault' (locked) directory."""
     return send_from_directory(config.ARTWORK_VAULT_ROOT, filename)
 
+
+# --- [ 9d: serve_mockup_thumb | artwork-routes-py-9d ] ---
 @bp.route(f"/{config.MOCKUP_THUMB_URL_PREFIX}/<path:filepath>")
 def serve_mockup_thumb(filepath: str):
+    """Serves mockup thumbnail images from any potential artwork directory."""
     for base_dir in [config.PROCESSED_ROOT, config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT]:
         full_path = base_dir / filepath
         if full_path.is_file():
             return send_from_directory(full_path.parent, full_path.name)
     abort(404)
 
+
+# --- [ 9e: unanalysed_image | artwork-routes-py-9e ] ---
 @bp.route(f"/{config.UNANALYSED_IMG_URL_PREFIX}/<filename>")
 def unanalysed_image(filename: str):
+    """Serves images from the 'unanalysed-artwork' directory."""
     path = next((p for p in config.UNANALYSED_ROOT.rglob(filename) if p.is_file()), None)
     if path:
         return send_from_directory(path.parent, path.name)
     abort(404)
 
+
+# --- [ 9f: composite_img | artwork-routes-py-9f ] ---
 @bp.route(f"/{config.COMPOSITE_IMG_URL_PREFIX}/<folder>/<filename>")
 def composite_img(folder, filename):
+    """(DEPRECATED) Serves a specific composite image."""
     return send_from_directory(config.PROCESSED_ROOT / folder, filename)
 
+
+# --- [ 9g: mockup_img | artwork-routes-py-9g ] ---
 @bp.route("/mockup-img/<category>/<filename>")
 def mockup_img(category, filename):
+    """Serves a mockup template image from the central inputs directory."""
     return send_from_directory(config.MOCKUPS_INPUT_DIR / category, filename)
 
-# ===========================================================================
-# 10. Composite Image Preview Routes
-# ===========================================================================
+
+# === [ Section 10: Composite Image Preview Routes | artwork-routes-py-10 ] ===
+# Routes for the composite/mockup preview page.
+# ---------------------------------------------------------------------------------
+
+# --- [ 10a: composites_preview | artwork-routes-py-10a ] ---
 @bp.route("/composites")
 def composites_preview():
+    """Redirects to the latest composite folder or the main artworks page."""
     latest = utils.latest_composite_folder()
     if latest:
         return redirect(url_for("artwork.composites_specific", seo_folder=latest))
     flash("No composites found", "warning")
     return redirect(url_for("artwork.artworks"))
 
+
+# --- [ 10b: composites_specific | artwork-routes-py-10b ] ---
 @bp.route("/composites/<seo_folder>")
 def composites_specific(seo_folder):
-    folder = utils.PROCESSED_ROOT / seo_folder
+    """Displays the composite images for a specific artwork."""
+    folder = config.PROCESSED_ROOT / seo_folder
     json_path = folder / f"{seo_folder}-listing.json"
     images = []
     if json_path.exists():
-        listing = utils.load_json_file_safe(json_path)
+        listing = load_json_file_safe(json_path)
         images = utils.get_mockup_details_for_template(
             listing.get("mockups", []), folder, seo_folder, listing.get("aspect_ratio", "")
         )
@@ -499,11 +668,14 @@ def composites_specific(seo_folder):
         menu=utils.get_menu(),
     )
 
+
+# --- [ 10c: approve_composites | artwork-routes-py-10c ] ---
 @bp.route("/approve_composites/<seo_folder>", methods=["POST"])
 def approve_composites(seo_folder):
-    listing_path = next((PROCESSED_ROOT / seo_folder).glob("*-listing.json"), None)
+    """Approves composites and redirects to the edit/review page."""
+    listing_path = next((config.PROCESSED_ROOT / seo_folder).glob("*-listing.json"), None)
     if listing_path:
-        data = utils.load_json_file_safe(listing_path)
+        data = load_json_file_safe(listing_path)
         aspect = data.get("aspect_ratio", "4x5")
         filename = data.get("seo_filename", f"{seo_folder}.jpg")
         flash("Composites approved. Please review and finalise.", "success")
@@ -511,29 +683,42 @@ def approve_composites(seo_folder):
     flash("Could not find listing data.", "danger")
     return redirect(url_for("artwork.artworks"))
 
-# ===========================================================================
-# 11. Artwork Finalisation and Gallery Routes
-# ===========================================================================
-@bp.route("/finalise/<aspect>/<filename>", methods=["GET", "POST"])
+
+# === [ Section 11: Artwork Finalisation and Gallery Routes | artwork-routes-py-11 ] ===
+# Routes for the final step of the workflow: moving an artwork to the
+# 'finalised' directory, and viewing the finalised/locked galleries.
+# ---------------------------------------------------------------------------------
+
+# --- [ 11a: finalise_artwork | artwork-routes-py-11a ] ---
+@bp.route("/finalise/<aspect>/<filename>", methods=["POST"])
 def finalise_artwork(aspect, filename):
+    """Moves a processed artwork and its assets to the 'finalised' directory."""
     try:
-        seo_folder, _, _, _ = resolve_listing_paths(aspect, filename)
+        seo_folder, _, listing_path, finalised = resolve_listing_paths(aspect, filename)
+        if finalised:
+            flash(f"'{seo_folder}' is already finalised.", "warning")
+            return redirect(url_for("artwork.finalised_gallery"))
     except FileNotFoundError:
         flash(f"Artwork not found: {filename}", "danger")
         return redirect(url_for("artwork.artworks"))
 
-    processed_dir = utils.PROCESSED_ROOT / seo_folder
-    final_dir = utils.FINALISED_ROOT / seo_folder
+    processed_dir = config.PROCESSED_ROOT / seo_folder
+    final_dir = config.FINALISED_ROOT / seo_folder
     user = session.get("username")
 
     try:
+        data = load_json_file_safe(listing_path)
+        if "images" not in data or not data["images"]:
+            flash("Cannot finalise: Image URLs are missing. Please click 'Update Image URLs' and then 'Save Changes' first.", "danger")
+            return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
         if final_dir.exists(): shutil.rmtree(final_dir)
         shutil.move(str(processed_dir), str(final_dir))
 
-        listing_file = final_dir / f"{seo_folder}-listing.json"
-        if listing_file.exists():
-            utils.assign_or_get_sku(listing_file, config.SKU_TRACKER)
-            utils.update_listing_paths(listing_file, PROCESSED_ROOT, FINALISED_ROOT)
+        listing_file_in_final = final_dir / listing_path.name
+        if listing_file_in_final.exists():
+            utils.assign_or_get_sku(listing_file_in_final, config.SKU_TRACKER)
+            utils.update_listing_paths(listing_file_in_final, config.PROCESSED_ROOT, config.FINALISED_ROOT)
 
         log_action("finalise", filename, user, f"finalised to {final_dir}")
         flash("Artwork finalised", "success")
@@ -543,27 +728,38 @@ def finalise_artwork(aspect, filename):
         if final_dir.exists() and not processed_dir.exists():
             shutil.move(str(final_dir), str(processed_dir))
             flash("Attempted to roll back the move.", "info")
-
+    
     return redirect(url_for("artwork.finalised_gallery"))
 
+
+# --- [ 11b: finalised_gallery | artwork-routes-py-11b ] ---
 @bp.route("/finalised")
 def finalised_gallery():
+    """Displays all finalised artworks in a gallery view."""
     artworks = [a for a in utils.get_all_artworks() if a['status'] == 'finalised']
     return render_template("finalised.html", artworks=artworks, menu=utils.get_menu())
 
+
+# --- [ 11c: locked_gallery | artwork-routes-py-11c ] ---
 @bp.route("/locked")
 def locked_gallery():
+    """Displays all locked artworks from the vault."""
     locked_items = [a for a in utils.get_all_artworks() if a.get('locked')]
     return render_template("locked.html", artworks=locked_items, menu=utils.get_menu())
 
-# ===========================================================================
-# 12. Listing State Management (Lock, Unlock, Delete)
-# ===========================================================================
+
+# === [ Section 12: Listing State Management (Lock, Unlock, Delete) | artwork-routes-py-12 ] ===
+# Routes for managing the lifecycle of a finalised artwork: locking (moving
+# to vault), unlocking (making editable again), and deletion.
+# ---------------------------------------------------------------------------------
+
+# --- [ 12a: delete_finalised | artwork-routes-py-12a ] ---
 @bp.post("/finalise/delete/<aspect>/<filename>")
 def delete_finalised(aspect, filename):
+    """Deletes a finalised or locked artwork and all its files."""
     try:
-        _, folder, listing_file, _ = resolve_listing_paths(aspect, filename)
-        info = utils.load_json_file_safe(listing_file)
+        _, folder, listing_file, _ = resolve_listing_paths(aspect, filename, allow_locked=True)
+        info = load_json_file_safe(listing_file)
         if info.get("locked") and request.form.get("confirm") != "DELETE":
             flash("Type DELETE to confirm deletion of a locked item.", "warning")
             return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
@@ -577,8 +773,11 @@ def delete_finalised(aspect, filename):
         flash(f"Delete failed: {e}", "danger")
     return redirect(url_for("artwork.finalised_gallery"))
 
+
+# --- [ 12b: lock_listing | artwork-routes-py-12b ] ---
 @bp.post("/lock/<aspect>/<filename>")
 def lock_listing(aspect, filename):
+    """Locks an artwork by moving it to the 'artwork-vault' directory."""
     try:
         seo, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
         if not finalised:
@@ -604,8 +803,11 @@ def lock_listing(aspect, filename):
         flash(f"Failed to lock: {exc}", "danger")
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
+
+# --- [ 12c: unlock_listing | artwork-routes-py-12c ] ---
 @bp.post("/unlock/<aspect>/<filename>")
 def unlock_listing(aspect, filename):
+    """Unlocks an artwork, making it editable again but keeping files in the vault."""
     if request.form.get("confirm_unlock") != "UNLOCK":
         flash("Incorrect confirmation text. Please type UNLOCK to proceed.", "warning")
         return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
@@ -635,16 +837,20 @@ def unlock_listing(aspect, filename):
         
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
-# ===========================================================================
-# 13. Asynchronous API Endpoints
-# ===========================================================================
+
+# === [ Section 13: Asynchronous API Endpoints | artwork-routes-py-13 ] ===
+# API-style endpoints called via JavaScript from the frontend to perform
+# specific, targeted actions without a full page reload.
+# ---------------------------------------------------------------------------------
+
+# --- [ 13a: update_links | artwork-routes-py-13a ] ---
 @bp.post("/update-links/<aspect>/<filename>")
 def update_links(aspect, filename):
-    """Regenerate the image URL list from disk and return as JSON."""
+    """Regenerates the image URL list from disk and returns it as JSON."""
     wants_json = "application/json" in request.headers.get("Accept", "")
     try:
         _, folder, listing_file, _ = resolve_listing_paths(aspect, filename)
-        data = utils.load_json_file_safe(listing_file)
+        data = load_json_file_safe(listing_file)
         imgs = [p for p in folder.iterdir() if p.suffix.lower() in {".jpg", ".jpeg", ".png"}]
         data["images"] = [utils.relative_to_base(p) for p in sorted(imgs)]
         with open(listing_file, "w", encoding="utf-8") as f:
@@ -658,9 +864,11 @@ def update_links(aspect, filename):
         flash(msg, "danger")
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
+
+# --- [ 13b: reset_sku | artwork-routes-py-13b ] ---
 @bp.post("/reset-sku/<aspect>/<filename>")
 def reset_sku(aspect, filename):
-    """Force reassign a new SKU for the given artwork."""
+    """Forces the assignment of a new SKU for a given artwork."""
     try:
         _, _, listing, _ = resolve_listing_paths(aspect, filename)
         utils.assign_or_get_sku(listing, config.SKU_TRACKER, force=True)
@@ -669,9 +877,11 @@ def reset_sku(aspect, filename):
         flash(f"Failed to reset SKU: {exc}", "danger")
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
+
+# --- [ 13c: delete_artwork | artwork-routes-py-13c ] ---
 @bp.post("/delete/<filename>")
 def delete_artwork(filename: str):
-    """Delete all files and registry entries for an artwork."""
+    """Deletes all files and registry entries for an artwork, regardless of state."""
     logger, user = logging.getLogger(__name__), session.get("username", "unknown")
     log_action("delete", filename, user, f"Initiating delete for '{filename}'")
     
@@ -703,9 +913,11 @@ def delete_artwork(filename: str):
     log_action("delete", filename, user, "Delete process completed.")
     return jsonify({"success": True})
 
+
+# --- [ 13d: reword_generic_text_api | artwork-routes-py-13d ] ---
 @bp.post("/api/reword-generic-text")
 def reword_generic_text_api():
-    """Handles an asynchronous request to reword the generic part of a description."""
+    """Handles an async request to reword the generic part of a description using AI."""
     logger = logging.getLogger(__name__)
     data = request.json
 
@@ -730,16 +942,22 @@ def reword_generic_text_api():
         logger.error(f"Failed to reword generic text: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
 
-# ===========================================================================
-# 14. File Processing and Utility Helpers
-# ===========================================================================
+
+# === [ Section 14: File Processing and Utility Helpers | artwork-routes-py-14 ] ===
+# Internal helper functions used by the routes in this file, primarily for
+# handling the initial processing of uploaded files.
+# ---------------------------------------------------------------------------------
+
+# --- [ 14a: preview_next_sku | artwork-routes-py-14a ] ---
 @bp.route("/next-sku")
 def preview_next_sku():
-    """Return the next available SKU without reserving it."""
+    """Returns the next available SKU without consuming it."""
     return Response(peek_next_sku(config.SKU_TRACKER), mimetype="text/plain")
 
+
+# --- [ 14b: _process_upload_file | artwork-routes-py-14b ] ---
 def _process_upload_file(file_storage, dest_folder):
-    """Validate, save, and preprocess a single uploaded file."""
+    """Validates, saves, and preprocesses a single uploaded file."""
     filename = file_storage.filename
     if not filename: return {"original": filename, "success": False, "error": "No filename"}
 
@@ -751,7 +969,7 @@ def _process_upload_file(file_storage, dest_folder):
     if len(data) > config.MAX_UPLOAD_SIZE_MB * 1024 * 1024:
         return {"original": filename, "success": False, "error": "File too large"}
 
-    safe, unique, uid = aa.slugify(Path(filename).stem), uuid.uuid4().hex[:8], uuid.uuid4().hex
+    safe, unique, uid = utils.prettify_slug(Path(filename).stem), uuid.uuid4().hex[:8], uuid.uuid4().hex
     base = f"{safe}-{unique}"
     dest_folder.mkdir(parents=True, exist_ok=True)
     orig_path = dest_folder / f"{base}.{ext}"
@@ -782,9 +1000,12 @@ def _process_upload_file(file_storage, dest_folder):
     
     return {"success": True, "base": base, "aspect": qc_data["aspect_ratio"], "uid": uid, "original": filename}
 
-# ===========================================================================
-# 15. Artwork Signing Route
-# ===========================================================================
+
+# === [ Section 15: Artwork Signing Route | artwork-routes-py-15 ] ===
+# Endpoint for applying a digital signature to an artwork.
+# ---------------------------------------------------------------------------------
+
+# --- [ 15a: sign_artwork_route | artwork-routes-py-15a ] ---
 @bp.post("/sign-artwork/<base_name>")
 def sign_artwork_route(base_name: str):
     """
