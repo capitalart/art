@@ -1,0 +1,31 @@
+# Ignore VSCode remote/server junk
+.vscode-server/*
+
+# Ignore pip and system caches
+.cache/*
+
+# Ignore Python bytecode and other generated files
+__pycache__/*
+*.py[cod]
+*$py.class
+
+# Ignore environment files
+.venv/*
+env/*
+ENV/*
+env.bak/*
+venv.bak/*
+
+# Ignore Flask-related files
+instance/*
+.webassets-cache/*
+
+# Ignore logs and temporary files
+*.log
+*.swp
+*.bak
+*.tmp
+
+# Exclude the ignore file and the backup zip itself from the archive
+.zipignore
+art_backup_*.zip
