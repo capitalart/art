@@ -706,3 +706,17 @@ sudo systemctl stop gunicorn
 [200~sudo systemctl stop gunicorn~
 sudo systemctl stop gunicorn
 sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo chown -R $(whoami):$(whoami) $HOME
+chmod 700 $HOME
+chmod +x ~/backup_art.sh
+cd art
+chmod +x ~/backup_art.sh
+ls -l ~
+chmod +x ~/backup-art.sh
+~/backup-art.sh
+cd ..
+~/backup-art.sh
+chmod +x ~/backup-art.sh
+~/backup-art.sh
+cd ..
+cd ..
