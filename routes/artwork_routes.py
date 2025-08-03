@@ -109,7 +109,6 @@ from helpers.listing_utils import (
     create_unanalysed_subfolder,
     cleanup_unanalysed_folders,
     load_json_file_safe,
-    resolve_artwork_stage,
     generate_public_image_urls,
 )
 import scripts.analyze_artwork as aa
@@ -542,8 +541,9 @@ def edit_listing(aspect, filename):
     
     data = load_json_file_safe(listing_path)
     is_locked_in_vault = config.ARTWORK_VAULT_ROOT in folder.parents
+    openai_analysis = data.get("openai_analysis")
 
-    stage, _ = resolve_artwork_stage(seo_folder)
+    stage = "vault" if (config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}").exists() else "processed"
     public_image_urls = generate_public_image_urls(seo_folder, stage)
 
     if request.method == "POST":
@@ -576,6 +576,7 @@ def edit_listing(aspect, filename):
         is_locked_in_vault=is_locked_in_vault,
         editable=not data.get("locked", False),
         public_image_urls=public_image_urls,
+        openai_analysis=openai_analysis,
         cache_ts=int(time.time()),
     )
 
@@ -697,50 +698,26 @@ def approve_composites(seo_folder):
 # ---------------------------------------------------------------------------------
 
 # --- [ 11a: finalise_artwork | artwork-routes-py-11a ] ---
-@bp.route("/finalise/<aspect>/<filename>", methods=["POST"])
-def finalise_artwork(aspect, filename):
-    """Moves a processed artwork and its assets to the 'finalised' directory."""
+@bp.route("/finalise-artwork/<seo_folder>", methods=["POST"])
+def finalise_artwork(seo_folder):
+    """Move a processed artwork directly into the locked artwork vault."""
+    processed_path = config.PROCESSED_ROOT / seo_folder
+    vault_path = config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}"
     try:
-        seo_folder, _, listing_path, finalised = resolve_listing_paths(aspect, filename)
-        if finalised:
-            flash(f"'{seo_folder}' is already finalised.", "warning")
-            return redirect(url_for("artwork.finalised_gallery"))
-    except FileNotFoundError:
-        flash(f"Artwork not found: {filename}", "danger")
-        return redirect(url_for("artwork.artworks"))
-
-    processed_dir = config.PROCESSED_ROOT / seo_folder
-    final_dir = config.FINALISED_ROOT / seo_folder
-    user = session.get("username")
-
-    try:
-        data = load_json_file_safe(listing_path)
-        if "images" not in data or not data["images"]:
-            flash("Cannot finalise: Image URLs are missing. Please click 'Update Image URLs' and then 'Save Changes' first.", "danger")
-            return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
-
-        if final_dir.exists(): shutil.rmtree(final_dir)
-        shutil.move(str(processed_dir), str(final_dir))
-
-        listing_file_in_final = final_dir / listing_path.name
-        if listing_file_in_final.exists():
-            utils.assign_or_get_sku(listing_file_in_final, config.SKU_TRACKER)
-            utils.update_listing_paths(listing_file_in_final, config.PROCESSED_ROOT, config.FINALISED_ROOT)
-            data = load_json_file_safe(listing_file_in_final)
-            data["images"] = generate_public_image_urls(seo_folder, "finalised")
-            with open(listing_file_in_final, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
-
-        log_action("finalise", filename, user, f"finalised to {final_dir}")
-        flash("Artwork finalised", "success")
+        shutil.move(str(processed_path), str(vault_path))
+        listing_file = vault_path / f"{seo_folder}-listing.json"
+        utils.update_listing_paths(listing_file, config.PROCESSED_ROOT, config.ARTWORK_VAULT_ROOT)
+        data = load_json_file_safe(listing_file)
+        data["locked"] = True
+        data["images"] = generate_public_image_urls(seo_folder, "vault")
+        with open(listing_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        log_action("finalise", seo_folder, session.get("username"), "Artwork finalised and moved to vault")
+        flash("Artwork successfully finalised!", "success")
     except Exception as e:
-        log_action("finalise", filename, user, "finalise failed", status="fail", error=str(e))
-        flash(f"Failed to finalise artwork: {e}", "danger")
-        if final_dir.exists() and not processed_dir.exists():
-            shutil.move(str(final_dir), str(processed_dir))
-            flash("Attempted to roll back the move.", "info")
-    
-    return redirect(url_for("artwork.finalised_gallery"))
+        flash(f"Error finalising artwork: {str(e)}", "danger")
+
+    return redirect(url_for("artwork.edit_listing", aspect='locked', filename=f"{seo_folder}.jpg"))
 
 
 # --- [ 11b: finalised_gallery | artwork-routes-py-11b ] ---
@@ -883,7 +860,7 @@ def update_links(aspect, filename):
     wants_json = "application/json" in request.headers.get("Accept", "")
     try:
         seo_folder, _, listing_file, _ = resolve_listing_paths(aspect, filename)
-        stage, _ = resolve_artwork_stage(seo_folder)
+        stage = "vault" if (config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}").exists() else "processed"
         data = load_json_file_safe(listing_file)
         data["images"] = generate_public_image_urls(seo_folder, stage)
         with open(listing_file, "w", encoding="utf-8") as f:
