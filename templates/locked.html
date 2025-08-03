@@ -48,8 +48,8 @@
         <form method="post" action="{{ url_for('artwork.unlock_artwork', seo_folder=art.seo_folder) }}">
           <button type="submit" class="art-btn">Unlock</button>
         </form>
-        <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=art.seo_folder) }}" class="locked-delete-form">
-          <input type="hidden" name="confirm" value="">
+        <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=art.seo_folder) }}" class="locked-delete-form" onsubmit="return confirmDelete(this);">
+          <input type="text" name="confirm" placeholder="Type DELETE" required>
           <button type="submit" class="art-btn delete">Delete</button>
         </form>
       </div>
@@ -63,4 +63,13 @@
   <span class="close-modal">&times;</span>
   <img class="modal-content" id="modal-img-content">
 </div>
+<script>
+function confirmDelete(form){
+  if(form.confirm.value !== 'DELETE'){
+    alert('Please type DELETE to confirm.');
+    return false;
+  }
+  return true;
+}
+</script>
 {% endblock %}

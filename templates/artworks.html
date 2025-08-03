@@ -55,6 +55,9 @@
           <div class="button-row">
             {# --- CORRECTED LINE --- #}
             <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.seo_folder ~ '.jpg') }}" class="btn btn-primary btn-edit">Review</a>
+            <form method="post" action="{{ url_for('artwork.finalise_artwork', seo_folder=art.seo_folder) }}" style="display:inline;">
+              <button type="submit" class="btn btn-success">Finalise</button>
+            </form>
             <button class="btn btn-secondary btn-analyze" data-provider="openai">Re-Analyze</button>
             <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=art.seo_folder) }}" style="display:inline;" onsubmit="return confirm('Delete this artwork and all files? This cannot be undone.');">
               <button type="submit" class="btn btn-danger">Delete</button>
@@ -84,6 +87,9 @@
           <div class="button-row">
             {# --- CORRECTED LINE --- #}
             <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.seo_folder ~ '.jpg') }}" class="btn btn-secondary btn-edit">Edit</a>
+            <form method="post" action="{{ url_for('artwork.lock_it_in', seo_folder=art.seo_folder) }}" style="display:inline;">
+              <button type="submit" class="btn btn-primary">Lock It In</button>
+            </form>
             <button class="btn btn-secondary btn-analyze" data-provider="openai">Re-Analyze</button>
             <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=art.seo_folder) }}" style="display:inline;" onsubmit="return confirm('Delete this artwork and all files? This cannot be undone.');">
               <button type="submit" class="btn btn-danger">Delete</button>
