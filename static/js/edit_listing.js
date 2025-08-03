@@ -147,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (rewordContainer) {
     const descriptionTextarea = document.getElementById('description-input');
     const spinner = document.getElementById('reword-spinner');
-    // FIX: Target the newly named textarea
     const genericTextInput = document.getElementById('generic-text-input');
     const buttons = rewordContainer.querySelectorAll('button');
 
@@ -169,15 +168,14 @@ document.addEventListener('DOMContentLoaded', () => {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                   provider: provider,
-                  artwork_description: currentDescription, // Main description is sent for context
-                  generic_text: genericText // The text to be reworded
+                  artwork_description: currentDescription,
+                  generic_text: genericText
               })
           });
 
           const data = await response.json();
           if (!response.ok) throw new Error(data.error || 'Failed to reword text.');
           
-          // FIX: Update the generic text field directly, instead of the main description.
           genericTextInput.value = data.reworded_text;
 
       } catch (error) {
@@ -186,6 +184,17 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
           buttons.forEach(b => b.disabled = false);
           spinner.style.display = 'none';
+      }
+    });
+  }
+
+  // === [ 5. RE-ANALYZE MODAL TRIGGER ] ===
+  const analyzeForm = document.querySelector('.analyze-form');
+  if (analyzeForm) {
+    analyzeForm.addEventListener('submit', () => {
+      // Open the modal from analysis-modal.js when the form is submitted
+      if (window.AnalysisModal) {
+        window.AnalysisModal.open();
       }
     });
   }
