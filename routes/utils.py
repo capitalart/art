@@ -205,6 +205,8 @@ def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
         "description": data.get("description", ""),
         "tags": ", ".join(data.get("tags", [])),
         "materials": ", ".join(data.get("materials", [])),
+        "dimensions": data.get("dimensions", ""),
+        "size": data.get("size", ""),
         "primary_colour": data.get("primary_colour", ""),
         "secondary_colour": data.get("secondary_colour", ""),
         "seo_filename": data.get("seo_filename", f"{seo_folder}.jpg"),
@@ -680,17 +682,28 @@ def update_listing_paths(listing_file: Path, old_root: Path, new_root: Path) -> 
     str_old_root = str(old_root)
     str_new_root = str(new_root)
 
+    old_url_rel = f"{config.STATIC_URL_PREFIX}/{old_root.relative_to(config.BASE_DIR).as_posix()}"
+    new_url_rel = f"{config.STATIC_URL_PREFIX}/{new_root.relative_to(config.BASE_DIR).as_posix()}"
+    old_url_abs = f"{config.BASE_URL}/{old_url_rel}"
+    new_url_abs = f"{config.BASE_URL}/{new_url_rel}"
+
+    def _replace_all(text: str) -> str:
+        for o, n in (
+            (str_old_root, str_new_root),
+            (old_url_rel, new_url_rel),
+            (old_url_abs, new_url_abs),
+        ):
+            text = text.replace(o, n)
+        return text
+
     # Update single-path keys
     for key in ["main_jpg_path", "thumb_jpg_path", "analyse_jpg_path", "processed_folder"]:
         if key in data and isinstance(data[key], str):
-            data[key] = data[key].replace(str_old_root, str_new_root)
+            data[key] = _replace_all(data[key])
 
     # Update list of image paths
     if "images" in data and isinstance(data["images"], list):
-        updated_images = [
-            path.replace(str_old_root, str_new_root) for path in data["images"]
-        ]
-        data["images"] = updated_images
+        data["images"] = [_replace_all(path) for path in data["images"]]
     
     with open(listing_file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
