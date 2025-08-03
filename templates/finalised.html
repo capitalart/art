@@ -20,9 +20,11 @@
   {% for art in artworks %}
   <div class="final-card">
     <div class="card-thumb">
+      {% set route = 'artwork.locked_image' if art.locked else 'artwork.finalised_image' %}
+      {% set main_path = art.seo_folder ~ '/' ~ (art.main_image or '') %}
       {% if art.main_image %}
-      <a href="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="final-img-link" data-img="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=art.main_image) }}">
-        <img src="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=art.main_image) }}" class="card-img-top" alt="{{ art.title }}">
+      <a href="{{ url_for(route, filename=main_path) }}" class="final-img-link" data-img="{{ url_for(route, filename=main_path) }}">
+        <img src="{{ url_for(route, filename=main_path) }}" class="card-img-top" alt="{{ art.title }}">
       </a>
       {% else %}
       <img src="{{ url_for('static', filename='img/no-image.svg') }}" class="card-img-top" alt="No image">
@@ -30,19 +32,20 @@
     </div>
     <div class="card-details">
       <div class="card-title">{{ art.title }}{% if art.locked %} <span class="locked-badge">Locked</span>{% endif %}</div>
-      <div class="desc-snippet" title="{{ art.description }}">
-        {{ art.description[:200] }}{% if art.description|length > 200 %}...{% endif %}
+      <div class="desc-snippet" title="{{ art.description|default('') }}">
+        {{ art.description|default('')|truncate(200) }}
       </div>
-      <div>SKU: {{ art.sku }}</div>
-      <div>Price: {{ art.price }}</div>
-      <div>Colours: {{ art.primary_colour }} / {{ art.secondary_colour }}</div>
-      <div>SEO: {{ art.seo_filename }}</div>
-      <div>Tags: {{ art.tags|join(', ') }}</div>
-      <div>Materials: {{ art.materials|join(', ') }}</div>
+      <div>SKU: {{ art.sku|default('') }}</div>
+      <div>Price: {{ art.price|default('') }}</div>
+      <div>Colours: {{ art.primary_colour|default('') }} / {{ art.secondary_colour|default('') }}</div>
+      <div>SEO: {{ art.seo_filename|default('') }}</div>
+      <div>Tags: {{ art.tags|default([])|join(', ') }}</div>
+      <div>Materials: {{ art.materials|default([])|join(', ') }}</div>
       {% if art.mockups %}
       <div class="mini-mockup-grid">
         {% for m in art.mockups %}
-        <img src="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=m.filename) }}" alt="mockup"/>
+        {% set m_path = art.seo_folder ~ '/' ~ m.filename %}
+        <img src="{{ url_for(route, filename=m_path) }}" alt="mockup"/>
         {% endfor %}
       </div>
       {% endif %}
@@ -51,9 +54,8 @@
         <summary>Image URLs</summary>
         <ul>
           {% for img in art.images %}
-          <li>
-            <a href="{{ url_for('artwork.finalised_image', seo_folder=art.seo_folder, filename=img.split('/')[-1]) }}" target="_blank">/{{ img }}</a>
-          </li>
+          {% set i_path = art.seo_folder ~ '/' ~ img.split('/')[-1] %}
+          <li><a href="{{ url_for(route, filename=i_path) }}" target="_blank">/{{ img }}</a></li>
           {% endfor %}
         </ul>
       </details>
