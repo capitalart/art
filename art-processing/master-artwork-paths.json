@@ -218,5 +218,85 @@
       }
     ],
     "upload_date": "2025-08-03T06:53:08.474828+00:00"
+  },
+  "246861a9e57a4e5a8021d5a00a5af8d5": {
+    "seo_filename": "Eucalypt Woodland Open Dry Forest Generate An Aboriginal Dot Painting Of An Australian Eucalypt Wood 1-09ba00de.jpg",
+    "base": "Eucalypt Woodland Open Dry Forest Generate An Aboriginal Dot Painting Of An Australian Eucalypt Wood 1-09ba00de",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-444fca44",
+    "assets": [
+      "Eucalypt Woodland Open Dry Forest Generate An Aboriginal Dot Painting Of An Australian Eucalypt Wood 1-09ba00de.jpg",
+      "Eucalypt Woodland Open Dry Forest Generate An Aboriginal Dot Painting Of An Australian Eucalypt Wood 1-09ba00de-thumb.jpg",
+      "Eucalypt Woodland Open Dry Forest Generate An Aboriginal Dot Painting Of An Australian Eucalypt Wood 1-09ba00de-analyse.jpg",
+      "Eucalypt Woodland Open Dry Forest Generate An Aboriginal Dot Painting Of An Australian Eucalypt Wood 1-09ba00de.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/eucalypt-woodland-open-dry-forest-generate-an-aboriginal-dot-painting-of-an-australian-eucalypt-wood-1-444fca44",
+        "timestamp": "2025-08-03T06:54:52.236029+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T06:54:52.236029+00:00"
+  },
+  "1bd3c873ee1b4e60b2d984a76f2953f2": {
+    "seo_filename": "Test-4d22fa1d.jpg",
+    "base": "Test-4d22fa1d",
+    "current_folder": "/tmp/pytest-of-art/pytest-1/test_upload_single0/unanalysed-artwork/test-25f02a77",
+    "assets": [
+      "Test-4d22fa1d.jpg",
+      "Test-4d22fa1d-thumb.jpg",
+      "Test-4d22fa1d-analyse.jpg",
+      "Test-4d22fa1d.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-1/test_upload_single0/unanalysed-artwork/test-25f02a77",
+        "timestamp": "2025-08-03T07:13:23.616643+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T07:13:23.616643+00:00"
+  },
+  "8a4087e8b6d6433aa4c68fcc1823be05": {
+    "seo_filename": "Good-0f07ad95.jpg",
+    "base": "Good-0f07ad95",
+    "current_folder": "/tmp/pytest-of-art/pytest-1/test_upload_batch0/unanalysed-artwork/good-ef6b956a",
+    "assets": [
+      "Good-0f07ad95.jpg",
+      "Good-0f07ad95-thumb.jpg",
+      "Good-0f07ad95-analyse.jpg",
+      "Good-0f07ad95.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-1/test_upload_batch0/unanalysed-artwork/good-ef6b956a",
+        "timestamp": "2025-08-03T07:13:23.662116+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T07:13:23.662116+00:00"
+  },
+  "9b69eda276254306b7b15952274157f9": {
+    "seo_filename": "Sample-7d533068.jpg",
+    "base": "Sample-7d533068",
+    "current_folder": "/tmp/pytest-of-art/pytest-1/test_upload_json_response0/unanalysed-artwork/sample-bef68a60",
+    "assets": [
+      "Sample-7d533068.jpg",
+      "Sample-7d533068-thumb.jpg",
+      "Sample-7d533068-analyse.jpg",
+      "Sample-7d533068.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-1/test_upload_json_response0/unanalysed-artwork/sample-bef68a60",
+        "timestamp": "2025-08-03T07:13:23.777019+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T07:13:23.777019+00:00"
   }
 }
