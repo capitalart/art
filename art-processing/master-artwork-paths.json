@@ -918,5 +918,125 @@
       }
     ],
     "upload_date": "2025-08-03T10:06:31.502263+00:00"
+  },
+  "266ec8c82e5a408286980ce4a0473203": {
+    "seo_filename": "Test-2fbb3c77.jpg",
+    "base": "Test-2fbb3c77",
+    "current_folder": "/tmp/pytest-of-art/pytest-11/test_upload_single0/unanalysed-artwork/test-e76f7f47",
+    "assets": [
+      "Test-2fbb3c77.jpg",
+      "Test-2fbb3c77-thumb.jpg",
+      "Test-2fbb3c77-analyse.jpg",
+      "Test-2fbb3c77.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-11/test_upload_single0/unanalysed-artwork/test-e76f7f47",
+        "timestamp": "2025-08-03T10:09:10.261555+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:09:10.261555+00:00"
+  },
+  "b159989aa38a485d8ac4d9340348e2b8": {
+    "seo_filename": "Good-152698a7.jpg",
+    "base": "Good-152698a7",
+    "current_folder": "/tmp/pytest-of-art/pytest-11/test_upload_batch0/unanalysed-artwork/good-bef12ec9",
+    "assets": [
+      "Good-152698a7.jpg",
+      "Good-152698a7-thumb.jpg",
+      "Good-152698a7-analyse.jpg",
+      "Good-152698a7.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-11/test_upload_batch0/unanalysed-artwork/good-bef12ec9",
+        "timestamp": "2025-08-03T10:09:10.310615+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:09:10.310615+00:00"
+  },
+  "a3f950eb310f41ad84d98da964acecdc": {
+    "seo_filename": "Sample-b6a83949.jpg",
+    "base": "Sample-b6a83949",
+    "current_folder": "/tmp/pytest-of-art/pytest-11/test_upload_json_response0/unanalysed-artwork/sample-04481ebd",
+    "assets": [
+      "Sample-b6a83949.jpg",
+      "Sample-b6a83949-thumb.jpg",
+      "Sample-b6a83949-analyse.jpg",
+      "Sample-b6a83949.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-11/test_upload_json_response0/unanalysed-artwork/sample-04481ebd",
+        "timestamp": "2025-08-03T10:09:10.432297+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:09:10.432297+00:00"
+  },
+  "f19509dc25b74957944bc851ef45140b": {
+    "seo_filename": "Test-5847316e.jpg",
+    "base": "Test-5847316e",
+    "current_folder": "/tmp/pytest-of-art/pytest-12/test_upload_single0/unanalysed-artwork/test-ac72d56e",
+    "assets": [
+      "Test-5847316e.jpg",
+      "Test-5847316e-thumb.jpg",
+      "Test-5847316e-analyse.jpg",
+      "Test-5847316e.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-12/test_upload_single0/unanalysed-artwork/test-ac72d56e",
+        "timestamp": "2025-08-03T10:11:46.768121+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:11:46.768121+00:00"
+  },
+  "39eb2bcc9ace417d8f9c1267f7e919c5": {
+    "seo_filename": "Good-c4f9d151.jpg",
+    "base": "Good-c4f9d151",
+    "current_folder": "/tmp/pytest-of-art/pytest-12/test_upload_batch0/unanalysed-artwork/good-79de2b50",
+    "assets": [
+      "Good-c4f9d151.jpg",
+      "Good-c4f9d151-thumb.jpg",
+      "Good-c4f9d151-analyse.jpg",
+      "Good-c4f9d151.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-12/test_upload_batch0/unanalysed-artwork/good-79de2b50",
+        "timestamp": "2025-08-03T10:11:46.810121+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:11:46.810121+00:00"
+  },
+  "31592de84e7c4101b34eae5827a4e045": {
+    "seo_filename": "Sample-52932a2f.jpg",
+    "base": "Sample-52932a2f",
+    "current_folder": "/tmp/pytest-of-art/pytest-12/test_upload_json_response0/unanalysed-artwork/sample-481a9ad3",
+    "assets": [
+      "Sample-52932a2f.jpg",
+      "Sample-52932a2f-thumb.jpg",
+      "Sample-52932a2f-analyse.jpg",
+      "Sample-52932a2f.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-12/test_upload_json_response0/unanalysed-artwork/sample-481a9ad3",
+        "timestamp": "2025-08-03T10:11:46.921355+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:11:46.921355+00:00"
   }
 }
