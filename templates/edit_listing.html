@@ -225,8 +225,8 @@
         {% endif %}
 
         {% if not finalised %}
-          <form method="post" action="{{ url_for('artwork.finalise_artwork', aspect=aspect, filename=filename) }}" class="action-form">
-            <button type="submit" class="btn btn-primary wide-btn">Finalise Listing</button>
+          <form method="post" action="{{ url_for('artwork.lock_it_in', seo_folder=seo_folder) }}" class="action-form">
+            <button type="submit" class="btn btn-primary wide-btn">🔒 Lock It In</button>
           </form>
         {% endif %}
 
@@ -245,26 +245,28 @@
         <button form="edit-form" type="submit" name="action" value="delete" class="btn btn-danger wide-btn" onclick="return confirm('Delete this artwork and all files? This cannot be undone.');" {% if not editable %}disabled{% endif %}>Delete Artwork</button>
       </div>
 
-      {# OpenAI Debug Info Table #}
-      {% if openai_analysis %}
-        <div class="openai-details">
-          <h3>OpenAI Analysis Details</h3>
-          <table class="openai-analysis-table">
-            <tbody>
-              <tr><th>Original File</th><td>{{ openai_analysis.original_file }}</td></tr>
-              <tr><th>Optimized File</th><td>{{ openai_analysis.optimized_file }}</td></tr>
-              <tr><th>Size</th><td>{{ openai_analysis.size_mb }} MB ({{ openai_analysis.size_bytes }} bytes)</td></tr>
-              <tr><th>Dimensions</th><td>{{ openai_analysis.dimensions }}</td></tr>
-              <tr><th>Time Sent</th><td>{{ openai_analysis.time_sent }}</td></tr>
-              <tr><th>Time Responded</th><td>{{ openai_analysis.time_responded }}</td></tr>
-              <tr><th>Duration</th><td>{{ openai_analysis.duration_sec }} s</td></tr>
-              <tr><th>Status</th><td>{{ openai_analysis.status }}</td></tr>
-              <tr><th>API Response</th><td>{{ openai_analysis.api_response }}</td></tr>
-            </tbody>
-          </table>
-        </div>
-      {% endif %}
     </div>
+  </div>
+
+  {# ---------------------------------------------------------
+     SECTION 3.3: SELLBRITE EXPORT DETAILS TABLE
+  --------------------------------------------------------- #}
+  <div class="export-details-table">
+    <h2>Sellbrite Export Details</h2>
+    <table class="full-width-table">
+      <tr><th>Title</th><td>{{ artwork.title }}</td></tr>
+      <tr><th>SKU</th><td>{{ artwork.sku }}</td></tr>
+      <tr><th>SEO Slug</th><td>{{ seo_folder }}</td></tr>
+      <tr><th>Dimensions</th><td>{{ artwork.dimensions }}</td></tr>
+      <tr><th>Size</th><td>{{ artwork.size }}</td></tr>
+      <tr><th>Tags</th><td>{{ artwork.tags }}</td></tr>
+      <tr><th>Materials</th><td>{{ artwork.materials }}</td></tr>
+      <tr><th>Colours</th><td>{{ artwork.primary_colour }}{% if artwork.secondary_colour %}, {{ artwork.secondary_colour }}{% endif %}</td></tr>
+      <tr>
+        <th>Public Image URLs</th>
+        <td><textarea id="public-image-urls" rows="10" readonly>{{ public_image_urls | join('\n') }}</textarea></td>
+      </tr>
+    </table>
   </div>
 
   {# -------------------------------

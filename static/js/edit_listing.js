@@ -132,7 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || 'Server error');
         
-        document.getElementById('images-input').value = data.images.join('\n');
+        const joined = data.images.join('\n');
+        document.getElementById('images-input').value = joined;
+        const publicBox = document.getElementById('public-image-urls');
+        if (publicBox) publicBox.value = joined;
       } catch (error) {
         alert(`Error updating image links: ${error.message}`);
       } finally {

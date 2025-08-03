@@ -63,6 +63,7 @@ Table of Contents (ToC)
     [artwork-routes-py-11a] finalise_artwork
     [artwork-routes-py-11b] finalised_gallery
     [artwork-routes-py-11c] locked_gallery
+    [artwork-routes-py-11d] lock_it_in
 
 [artwork-routes-py-12] Listing State Management (Lock, Unlock, Delete)
     [artwork-routes-py-12a] delete_finalised
@@ -107,7 +108,9 @@ from helpers.listing_utils import (
     resolve_listing_paths,
     create_unanalysed_subfolder,
     cleanup_unanalysed_folders,
-    load_json_file_safe
+    load_json_file_safe,
+    resolve_artwork_stage,
+    generate_public_image_urls,
 )
 import scripts.analyze_artwork as aa
 from scripts import signing_service
@@ -540,6 +543,9 @@ def edit_listing(aspect, filename):
     data = load_json_file_safe(listing_path)
     is_locked_in_vault = config.ARTWORK_VAULT_ROOT in folder.parents
 
+    stage, _ = resolve_artwork_stage(seo_folder)
+    public_image_urls = generate_public_image_urls(seo_folder, stage)
+
     if request.method == "POST":
         form_data = {
             "title": request.form.get("title", "").strip(),
@@ -555,6 +561,7 @@ def edit_listing(aspect, filename):
         return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
     artwork = utils.populate_artwork_data_from_json(data, seo_folder)
+    artwork["images"] = "\n".join(public_image_urls)
     mockups = utils.get_mockup_details_for_template(data.get("mockups", []), folder, seo_folder, aspect)
     
     return render_template(
@@ -568,7 +575,7 @@ def edit_listing(aspect, filename):
         locked=data.get("locked", False),
         is_locked_in_vault=is_locked_in_vault,
         editable=not data.get("locked", False),
-        openai_analysis=data.get("openai_analysis"),
+        public_image_urls=public_image_urls,
         cache_ts=int(time.time()),
     )
 
@@ -719,6 +726,10 @@ def finalise_artwork(aspect, filename):
         if listing_file_in_final.exists():
             utils.assign_or_get_sku(listing_file_in_final, config.SKU_TRACKER)
             utils.update_listing_paths(listing_file_in_final, config.PROCESSED_ROOT, config.FINALISED_ROOT)
+            data = load_json_file_safe(listing_file_in_final)
+            data["images"] = generate_public_image_urls(seo_folder, "finalised")
+            with open(listing_file_in_final, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
 
         log_action("finalise", filename, user, f"finalised to {final_dir}")
         flash("Artwork finalised", "success")
@@ -746,6 +757,29 @@ def locked_gallery():
     """Displays all locked artworks from the vault."""
     locked_items = [a for a in utils.get_all_artworks() if a.get('locked')]
     return render_template("locked.html", artworks=locked_items, menu=utils.get_menu())
+
+
+# --- [ 11d: lock_it_in | artwork-routes-py-11d ] ---
+@bp.post("/lock-it-in/<seo_folder>")
+def lock_it_in(seo_folder: str):
+    """Finalise a processed artwork and return to its edit page."""
+    processed_path = config.PROCESSED_ROOT / seo_folder
+    finalised_path = config.FINALISED_ROOT / seo_folder
+    try:
+        listing_file = processed_path / f"{seo_folder}-listing.json"
+        shutil.move(str(processed_path), str(finalised_path))
+        listing_file_final = finalised_path / listing_file.name
+        utils.assign_or_get_sku(listing_file_final, config.SKU_TRACKER)
+        utils.update_listing_paths(listing_file_final, config.PROCESSED_ROOT, config.FINALISED_ROOT)
+        data = load_json_file_safe(listing_file_final)
+        data["images"] = generate_public_image_urls(seo_folder, "finalised")
+        with open(listing_file_final, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        log_action("lock-it-in", seo_folder, session.get("username"), "Artwork locked in")
+        flash("Artwork successfully finalised and locked in!", "success")
+    except Exception as e:
+        flash(f"Error locking in artwork: {e}", "danger")
+    return redirect(url_for("artwork.edit_listing", aspect='finalised', filename=f"{seo_folder}.jpg"))
 
 
 # === [ Section 12: Listing State Management (Lock, Unlock, Delete) | artwork-routes-py-12 ] ===
@@ -790,13 +824,12 @@ def lock_listing(aspect, filename):
         shutil.move(str(folder), str(target))
 
         new_listing_path = target / listing_path.name
-        with open(new_listing_path, "r+", encoding="utf-8") as f:
-            data = json.load(f)
-            data["locked"] = True
-            f.seek(0)
-            json.dump(data, f, indent=2, ensure_ascii=False)
-            f.truncate()
         utils.update_listing_paths(new_listing_path, folder, target)
+        data = load_json_file_safe(new_listing_path)
+        data["locked"] = True
+        data["images"] = generate_public_image_urls(seo, "vault")
+        with open(new_listing_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
         flash("Artwork locked.", "success")
         log_action("lock", filename, session.get("username"), "locked artwork")
     except Exception as exc:
@@ -849,10 +882,10 @@ def update_links(aspect, filename):
     """Regenerates the image URL list from disk and returns it as JSON."""
     wants_json = "application/json" in request.headers.get("Accept", "")
     try:
-        _, folder, listing_file, _ = resolve_listing_paths(aspect, filename)
+        seo_folder, _, listing_file, _ = resolve_listing_paths(aspect, filename)
+        stage, _ = resolve_artwork_stage(seo_folder)
         data = load_json_file_safe(listing_file)
-        imgs = [p for p in folder.iterdir() if p.suffix.lower() in {".jpg", ".jpeg", ".png"}]
-        data["images"] = [utils.relative_to_base(p) for p in sorted(imgs)]
+        data["images"] = generate_public_image_urls(seo_folder, stage)
         with open(listing_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         msg = "Image links updated"
