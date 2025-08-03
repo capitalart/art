@@ -45,10 +45,10 @@
       </div>
       <div class="button-row">
         <a class="art-btn disabled" aria-disabled="true">Edit</a>
-        <form method="post" action="{{ url_for('artwork.unlock_listing', aspect=art.aspect, filename=art.filename) }}">
+        <form method="post" action="{{ url_for('artwork.unlock_artwork', seo_folder=art.seo_folder) }}">
           <button type="submit" class="art-btn">Unlock</button>
         </form>
-        <form method="post" action="{{ url_for('artwork.delete_finalised', aspect=art.aspect, filename=art.filename) }}" class="locked-delete-form">
+        <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=art.seo_folder) }}" class="locked-delete-form">
           <input type="hidden" name="confirm" value="">
           <button type="submit" class="art-btn delete">Delete</button>
         </form>
