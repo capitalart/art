@@ -117,6 +117,55 @@ def resolve_artwork_stage(seo_folder: str) -> tuple[str, Path]:
     raise FileNotFoundError(f"Artwork '{seo_folder}' not found in any stage")
 
 
+def generate_public_image_urls(seo_folder: str, stage: str) -> list[str]:
+    """Return absolute, public URLs for all images of an artwork.
+
+    The URLs are constructed using ``config.BASE_URL`` combined with the
+    appropriate static path for the supplied stage.  The function searches the
+    corresponding artwork directory and returns all ``*.jpg`` files sorted
+    alphabetically.
+
+    Args:
+        seo_folder: Folder name used as the SEO slug for an artwork.
+        stage: One of ``"unanalysed"``, ``"processed"``, ``"finalised"`` or
+            ``"vault"`` representing the artwork's current workflow stage.
+
+    Returns:
+        A list of absolute URL strings ready for Sellbrite export.
+    """
+
+    stage_root_map = {
+        "unanalysed": config.UNANALYSED_ROOT,
+        "processed": config.PROCESSED_ROOT,
+        "finalised": config.FINALISED_ROOT,
+        "vault": config.ARTWORK_VAULT_ROOT,
+    }
+
+    stage_url_map = {
+        "unanalysed": config.UNANALYSED_IMG_URL_PREFIX,
+        "processed": config.PROCESSED_URL_PATH,
+        "finalised": config.FINALISED_URL_PATH,
+        "vault": config.LOCKED_URL_PATH,
+    }
+
+    root = stage_root_map.get(stage)
+    url_prefix = stage_url_map.get(stage)
+    if not root or not url_prefix:
+        return []
+
+    folder_path = root / seo_folder
+    if stage == "vault" and not folder_path.exists():
+        folder_path = root / f"LOCKED-{seo_folder}"
+    if not folder_path.exists():
+        return []
+
+    relative_prefix = f"{url_prefix}/{folder_path.name}"
+    return [
+        f"{config.BASE_URL}/{relative_prefix}/{img.name}"
+        for img in sorted(folder_path.glob("*.jpg"))
+    ]
+
+
 def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
     """
     Return the best matching SEO folder name for a given artwork filename.
