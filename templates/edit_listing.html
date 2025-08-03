@@ -158,10 +158,10 @@
         </div>
 
         <label for="tags-input">Tags (comma-separated):</label>
-        <textarea name="tags" id="tags-input" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.tags|e }}</textarea>
+        <textarea name="tags" id="tags-input" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.tags_str|e }}</textarea>
 
         <label for="materials-input">Materials (comma-separated):</label>
-        <textarea name="materials" id="materials-input" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.materials|e }}</textarea>
+        <textarea name="materials" id="materials-input" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.materials_str|e }}</textarea>
 
         {# Colour Selectors #}
         <div class="row-inline">
@@ -261,41 +261,20 @@
     <table class="full-width-table">
       <tr><th>Title</th><td>{{ artwork.title }}</td></tr>
       <tr><th>SKU</th><td>{{ artwork.sku }}</td></tr>
-      <tr><th>SEO Slug</th><td>{{ seo_folder }}</td></tr>
+      <tr><th>SEO Slug</th><td>{{ artwork.seo_slug }}</td></tr>
       <tr><th>Dimensions</th><td>{{ artwork.dimensions }}</td></tr>
       <tr><th>Size</th><td>{{ artwork.size }}</td></tr>
-      <tr><th>Tags</th><td>{{ artwork.tags }}</td></tr>
-      <tr><th>Materials</th><td>{{ artwork.materials }}</td></tr>
-      <tr><th>Colours</th><td>{{ artwork.primary_colour }}{% if artwork.secondary_colour %}, {{ artwork.secondary_colour }}{% endif %}</td></tr>
+      <tr><th>Tags</th><td>{{ artwork.tags | join(', ') }}</td></tr>
+      <tr><th>Materials</th><td>{{ artwork.materials | join(', ') }}</td></tr>
+      <tr><th>Colours</th><td>{{ artwork.primary_colour }}, {{ artwork.secondary_colour }}</td></tr>
       <tr>
         <th>Public Image URLs</th>
-        <td><textarea id="public-image-urls" rows="10" readonly>{{ public_image_urls | join('\n') }}</textarea></td>
+        <td>
+          <textarea rows="10" readonly>{{ public_image_urls | join('\n') }}</textarea>
+        </td>
       </tr>
     </table>
   </div>
-
-  {# ---------------------------------------------------------
-     SECTION 3.4: OPENAI ANALYSIS DETAILS
-  --------------------------------------------------------- #}
-  {% if openai_analysis %}
-  <div class="openai-analysis-full-preview">
-    <h3>OpenAI Analysis Complete Preview</h3>
-    <p><strong>Title:</strong> {{ openai_analysis.title }}</p>
-    <p><strong>Description:</strong></p>
-    <p>{{ openai_analysis.description }}</p>
-
-    <p><strong>Generic Description (GDWS):</strong></p>
-    <p>{{ openai_analysis.generic_description }}</p>
-
-    <p><strong>Additional Details:</strong></p>
-    <ul>
-      <li><strong>SEO Filename:</strong> {{ artwork.seo_filename }}</li>
-      <li><strong>Tags:</strong> {{ artwork.tags | join(', ') }}</li>
-      <li><strong>Materials:</strong> {{ artwork.materials | join(', ') }}</li>
-      <li><strong>Colours:</strong> {{ artwork.primary_colour }}, {{ artwork.secondary_colour }}</li>
-    </ul>
-  </div>
-  {% endif %}
 
   {# -------------------------------
      SECTION 4: MODAL - MOCKUP CAROUSEL

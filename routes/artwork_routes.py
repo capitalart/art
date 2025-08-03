@@ -69,6 +69,7 @@ Table of Contents (ToC)
     [artwork-routes-py-12a] delete_finalised
     [artwork-routes-py-12b] lock_listing
     [artwork-routes-py-12c] unlock_listing
+    [artwork-routes-py-12d] unlock_artwork
 
 [artwork-routes-py-13] Asynchronous API Endpoints
     [artwork-routes-py-13a] update_links
@@ -111,6 +112,8 @@ from helpers.listing_utils import (
     load_json_file_safe,
     generate_public_image_urls,
     remove_artwork_from_registry,
+    delete_artwork as delete_artwork_files,
+    update_artwork_registry,
 )
 import scripts.analyze_artwork as aa
 from scripts import signing_service
@@ -542,7 +545,6 @@ def edit_listing(aspect, filename):
     
     data = load_json_file_safe(listing_path)
     is_locked_in_vault = config.ARTWORK_VAULT_ROOT in folder.parents
-    openai_analysis = data.get("openai_analysis")
 
     stage = "vault" if (config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}").exists() else "processed"
     public_image_urls = generate_public_image_urls(seo_folder, stage)
@@ -577,7 +579,6 @@ def edit_listing(aspect, filename):
         is_locked_in_vault=is_locked_in_vault,
         editable=not data.get("locked", False),
         public_image_urls=public_image_urls,
-        openai_analysis=openai_analysis,
         cache_ts=int(time.time()),
     )
 
@@ -701,10 +702,12 @@ def approve_composites(seo_folder):
 # --- [ 11a: finalise_artwork | artwork-routes-py-11a ] ---
 @bp.route("/finalise-artwork/<seo_folder>", methods=["POST"])
 def finalise_artwork(seo_folder):
-    """Move a processed artwork directly into the locked artwork vault."""
+    """Move a processed artwork into the locked vault and refresh its paths."""
     processed_path = config.PROCESSED_ROOT / seo_folder
     vault_path = config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}"
     try:
+        if not processed_path.exists():
+            raise FileNotFoundError(f"Processed artwork '{seo_folder}' not found.")
         shutil.move(str(processed_path), str(vault_path))
         listing_file = vault_path / f"{seo_folder}-listing.json"
         utils.update_listing_paths(listing_file, config.PROCESSED_ROOT, config.ARTWORK_VAULT_ROOT)
@@ -713,12 +716,13 @@ def finalise_artwork(seo_folder):
         data["images"] = generate_public_image_urls(seo_folder, "vault")
         with open(listing_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
+        update_artwork_registry(seo_folder, vault_path, "locked")
         log_action("finalise", seo_folder, session.get("username"), "Artwork finalised and moved to vault")
-        flash("Artwork successfully finalised!", "success")
-    except Exception as e:
-        flash(f"Error finalising artwork: {str(e)}", "danger")
+        flash(f"Artwork '{seo_folder}' successfully finalised!", "success")
+    except Exception as exc:
+        flash(f"Error during finalisation: {exc}", "danger")
 
-    return redirect(url_for("artwork.edit_listing", aspect='locked', filename=f"{seo_folder}.jpg"))
+    return redirect(url_for("artwork.locked_gallery"))
 
 
 # --- [ 11b: finalised_gallery | artwork-routes-py-11b ] ---
@@ -740,24 +744,22 @@ def locked_gallery():
 # --- [ 11d: lock_it_in | artwork-routes-py-11d ] ---
 @bp.post("/lock-it-in/<seo_folder>")
 def lock_it_in(seo_folder: str):
-    """Finalise a processed artwork and return to its edit page."""
+    """Mark a processed artwork as ready while keeping it in place."""
     processed_path = config.PROCESSED_ROOT / seo_folder
-    finalised_path = config.FINALISED_ROOT / seo_folder
+    listing_file = processed_path / f"{seo_folder}-listing.json"
     try:
-        listing_file = processed_path / f"{seo_folder}-listing.json"
-        shutil.move(str(processed_path), str(finalised_path))
-        listing_file_final = finalised_path / listing_file.name
-        utils.assign_or_get_sku(listing_file_final, config.SKU_TRACKER)
-        utils.update_listing_paths(listing_file_final, config.PROCESSED_ROOT, config.FINALISED_ROOT)
-        data = load_json_file_safe(listing_file_final)
-        data["images"] = generate_public_image_urls(seo_folder, "finalised")
-        with open(listing_file_final, "w", encoding="utf-8") as f:
+        utils.assign_or_get_sku(listing_file, config.SKU_TRACKER)
+        data = load_json_file_safe(listing_file)
+        data["locked"] = True
+        data["images"] = generate_public_image_urls(seo_folder, "processed")
+        with open(listing_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
+        update_artwork_registry(seo_folder, processed_path, "processed")
         log_action("lock-it-in", seo_folder, session.get("username"), "Artwork locked in")
-        flash("Artwork successfully finalised and locked in!", "success")
+        flash("Artwork details locked. Ready for finalisation.", "success")
     except Exception as e:
         flash(f"Error locking in artwork: {e}", "danger")
-    return redirect(url_for("artwork.edit_listing", aspect='finalised', filename=f"{seo_folder}.jpg"))
+    return redirect(url_for("artwork.edit_listing", aspect='processed', filename=f"{seo_folder}.jpg"))
 
 
 # === [ Section 12: Listing State Management (Lock, Unlock, Delete) | artwork-routes-py-12 ] ===
@@ -849,6 +851,28 @@ def unlock_listing(aspect, filename):
     return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
 
 
+# --- [ 12d: unlock_artwork | artwork-routes-py-12d ] ---
+@bp.route("/unlock-artwork/<seo_folder>", methods=["POST"])
+def unlock_artwork(seo_folder: str):
+    """Move a locked artwork from the vault back to processed state."""
+    locked_path = config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}"
+    processed_path = config.PROCESSED_ROOT / seo_folder
+    try:
+        shutil.move(str(locked_path), str(processed_path))
+        listing_file = processed_path / f"{seo_folder}-listing.json"
+        utils.update_listing_paths(listing_file, config.ARTWORK_VAULT_ROOT, config.PROCESSED_ROOT)
+        data = load_json_file_safe(listing_file)
+        data["locked"] = False
+        data["images"] = generate_public_image_urls(seo_folder, "processed")
+        with open(listing_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        update_artwork_registry(seo_folder, processed_path, "processed")
+        flash("Artwork successfully unlocked.", "success")
+    except Exception as exc:
+        flash(f"Error during unlocking: {exc}", "danger")
+    return redirect(url_for("artwork.artworks"))
+
+
 # === [ Section 13: Asynchronous API Endpoints | artwork-routes-py-13 ] ===
 # API-style endpoints called via JavaScript from the frontend to perform
 # specific, targeted actions without a full page reload.
@@ -892,54 +916,19 @@ def reset_sku(aspect, filename):
 # --- [ 13c: delete_artwork | artwork-routes-py-13c ] ---
 @bp.route("/delete-artwork/<seo_folder>", methods=["POST"])
 def delete_artwork(seo_folder: str):
-    """Remove an artwork folder across all stages and clean the registry."""
-    logger = logging.getLogger(__name__)
+    """Completely remove an artwork folder and registry entry."""
     user = session.get("username", "unknown")
     log_action("delete", seo_folder, user, f"Initiating delete for '{seo_folder}'")
     try:
-        stage_dirs = [
-            config.UNANALYSED_ROOT,
-            config.PROCESSED_ROOT,
-            config.FINALISED_ROOT,
-            config.ARTWORK_VAULT_ROOT,
-        ]
-        found = False
-        for stage_dir in stage_dirs:
-            potential = stage_dir / seo_folder
-            locked = stage_dir / f"LOCKED-{seo_folder}"
-            if potential.exists():
-                shutil.rmtree(potential)
-                found = True
-                break
-            if locked.exists():
-                shutil.rmtree(locked)
-                found = True
-                break
-
-        if not found:
-            registry = load_json_file_safe(config.OUTPUT_JSON)
-            for entry in registry.values():
-                if entry.get("base") == seo_folder:
-                    folder = Path(entry.get("current_folder", ""))
-                    if folder.exists():
-                        shutil.rmtree(folder)
-                        found = True
-                    break
-
-        if not found:
-            raise FileNotFoundError(
-                f"Artwork folder '{seo_folder}' not found in known locations."
-            )
-
-        remove_artwork_from_registry(seo_folder)
-        logger.info("Artwork %s deleted successfully.", seo_folder)
-        log_action("delete", seo_folder, user, "Delete process completed.")
-        flash(f"Artwork '{seo_folder}' deleted successfully.", "success")
+        if delete_artwork_files(seo_folder):
+            flash(f"Artwork '{seo_folder}' deleted successfully.", "success")
+            log_action("delete", seo_folder, user, "Delete process completed.")
+        else:
+            flash(f"Failed to delete artwork '{seo_folder}'.", "danger")
+            log_action("delete", seo_folder, user, "Delete failed", status="fail")
     except Exception as exc:
-        logger.error("Failed to delete artwork '%s': %s", seo_folder, exc)
-        log_action("delete", seo_folder, user, str(exc), status="fail")
         flash(f"An error occurred during deletion: {exc}", "danger")
-
+        log_action("delete", seo_folder, user, str(exc), status="fail")
     return redirect(url_for("artwork.artworks"))
 
 

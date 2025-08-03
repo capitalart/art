@@ -16,6 +16,7 @@ Table of Contents (ToC)
 [utils-py-2] Path & URL Utilities
     [utils-py-2a] relative_to_base
     [utils-py-2b] is_finalised_image
+    [utils-py-2c] resolve_image_url
 
 [utils-py-3] Template & UI Helpers
     [utils-py-3a] get_menu
@@ -156,6 +157,21 @@ def is_finalised_image(path: str | Path) -> bool:
             return False
 
 
+# --- [ 2c: resolve_image_url | utils-py-2c ] ---
+def resolve_image_url(path: Path) -> str:
+    """Convert a filesystem path to an absolute public URL.
+
+    Args:
+        path: Absolute :class:`Path` to an image on disk.
+
+    Returns:
+        Fully-qualified URL pointing to the image using the configured
+        ``BASE_URL`` and project ``BASE_DIR``.
+    """
+    relative_path = path.relative_to(config.BASE_DIR).as_posix()
+    return f"{config.BASE_URL}/{relative_path}"
+
+
 # === [ Section 3: Template & UI Helpers | utils-py-3 ] ===
 # Functions that provide data and context specifically for rendering Jinja2 templates.
 # ---------------------------------------------------------------------------------
@@ -200,16 +216,21 @@ def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
     Returns:
         A dictionary formatted for easy use in the Jinja2 template.
     """
+    tags_list = data.get("tags", [])
+    materials_list = data.get("materials", [])
     artwork = {
         "title": data.get("title", prettify_slug(seo_folder)),
         "description": data.get("description", ""),
-        "tags": ", ".join(data.get("tags", [])),
-        "materials": ", ".join(data.get("materials", [])),
+        "tags": tags_list,
+        "tags_str": ", ".join(tags_list),
+        "materials": materials_list,
+        "materials_str": ", ".join(materials_list),
         "dimensions": data.get("dimensions", ""),
         "size": data.get("size", ""),
         "primary_colour": data.get("primary_colour", ""),
         "secondary_colour": data.get("secondary_colour", ""),
         "seo_filename": data.get("seo_filename", f"{seo_folder}.jpg"),
+        "seo_slug": seo_folder,
         "price": data.get("price", "18.27"),
         "sku": data.get("sku", ""),
         "images": "\n".join(data.get("images", [])),
