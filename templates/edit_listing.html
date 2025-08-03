@@ -245,7 +245,9 @@
           <button type="submit" class="btn btn-secondary wide-btn" {% if locked %}disabled{% endif %}>Reset SKU</button>
         </form>
 
-        <button form="edit-form" type="submit" name="action" value="delete" class="btn btn-danger wide-btn" onclick="return confirm('Delete this artwork and all files? This cannot be undone.');" {% if not editable %}disabled{% endif %}>Delete Artwork</button>
+        <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=seo_folder) }}" class="action-form" onsubmit="return confirm('Delete this artwork and all files? This cannot be undone.');">
+          <button type="submit" class="btn btn-danger wide-btn" {% if not editable %}disabled{% endif %}>Delete Artwork</button>
+        </form>
       </div>
 
     </div>

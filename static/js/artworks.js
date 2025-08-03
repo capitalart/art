@@ -21,31 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- Event Listener for all "Delete" buttons ---
-  document.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', ev => {
-      ev.preventDefault();
-      const card = btn.closest('.gallery-card');
-      if (!card) return;
-      const filename = card.dataset.filename;
-      if (!filename) return;
-      if (!confirm(`Are you sure you want to delete "${filename}"?`)) return;
-
-      showOverlay(card, 'Deleting…');
-      fetch(`/delete/${encodeURIComponent(filename)}`, { method: 'POST' })
-        .then(r => r.json())
-        .then(d => {
-          if (d.success) {
-            card.remove();
-          } else {
-            hideOverlay(card);
-            alert(d.error || 'Delete failed');
-          }
-        })
-        .catch(() => { hideOverlay(card); alert('An error occurred during deletion.'); });
-    });
-  });
-
   // --- Event Listener for all "Sign Artwork" buttons ---
   document.querySelectorAll('.btn-sign').forEach(btn => {
     btn.addEventListener('click', ev => {
