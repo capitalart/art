@@ -158,5 +158,65 @@
       }
     ],
     "upload_date": "2025-08-03T04:14:32.812586+00:00"
+  },
+  "980829a25b11486fa489af71feb6cce2": {
+    "seo_filename": "Test-2aafe244.jpg",
+    "base": "Test-2aafe244",
+    "current_folder": "/tmp/pytest-of-art/pytest-0/test_upload_single0/unanalysed-artwork/test-d0b6eae0",
+    "assets": [
+      "Test-2aafe244.jpg",
+      "Test-2aafe244-thumb.jpg",
+      "Test-2aafe244-analyse.jpg",
+      "Test-2aafe244.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-0/test_upload_single0/unanalysed-artwork/test-d0b6eae0",
+        "timestamp": "2025-08-03T06:53:08.266116+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T06:53:08.266116+00:00"
+  },
+  "a9cf7b3a8cf84baab73f4c60ed5eb0b5": {
+    "seo_filename": "Good-8c65fa0e.jpg",
+    "base": "Good-8c65fa0e",
+    "current_folder": "/tmp/pytest-of-art/pytest-0/test_upload_batch0/unanalysed-artwork/good-5d8e980b",
+    "assets": [
+      "Good-8c65fa0e.jpg",
+      "Good-8c65fa0e-thumb.jpg",
+      "Good-8c65fa0e-analyse.jpg",
+      "Good-8c65fa0e.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-0/test_upload_batch0/unanalysed-artwork/good-5d8e980b",
+        "timestamp": "2025-08-03T06:53:08.353184+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T06:53:08.353184+00:00"
+  },
+  "15030643d160400cb3b384992f0d7c54": {
+    "seo_filename": "Sample-ff2c3edf.jpg",
+    "base": "Sample-ff2c3edf",
+    "current_folder": "/tmp/pytest-of-art/pytest-0/test_upload_json_response0/unanalysed-artwork/sample-a69437dd",
+    "assets": [
+      "Sample-ff2c3edf.jpg",
+      "Sample-ff2c3edf-thumb.jpg",
+      "Sample-ff2c3edf-analyse.jpg",
+      "Sample-ff2c3edf.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-0/test_upload_json_response0/unanalysed-artwork/sample-a69437dd",
+        "timestamp": "2025-08-03T06:53:08.474828+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T06:53:08.474828+00:00"
   }
 }
