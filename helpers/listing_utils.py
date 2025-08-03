@@ -222,16 +222,22 @@ def remove_artwork_from_registry(seo_folder: str, registry_path: Path | None = N
             return False
 
 def delete_artwork(seo_folder: str) -> bool:
-    """Delete an artwork's directory and registry entry, if present."""
-    logger.info(f"Initiating deletion for artwork: '{seo_folder}'")
-    stage_info = resolve_artwork_stage(seo_folder)
+    """Delete an artwork's directory and registry entry, if present.
+
+    ``seo_folder`` may optionally include the ``LOCKED-`` prefix used for
+    vault items. This function normalises the value to ensure both the
+    filesystem and the registry are updated correctly.
+    """
+    slug = seo_folder.replace("LOCKED-", "")
+    logger.info(f"Initiating deletion for artwork: '{slug}'")
+    stage_info = resolve_artwork_stage(slug)
 
     if stage_info:
         _stage, folder_path = stage_info
     else:
         import config
         registry = load_json_file_safe(config.OUTPUT_JSON)
-        entry = next((v for v in registry.values() if v.get("base") == seo_folder), None)
+        entry = next((v for v in registry.values() if v.get("base") == slug), None)
         folder_path = Path(entry.get("current_folder", "")) if entry else None
 
     if folder_path and folder_path.exists():
@@ -239,18 +245,18 @@ def delete_artwork(seo_folder: str) -> bool:
             shutil.rmtree(folder_path)
             logger.info(f"Successfully deleted directory: {folder_path}")
         except OSError as e:
-            logger.error(f"Failed to delete directory for '{seo_folder}': {e}")
+            logger.error(f"Failed to delete directory for '{slug}': {e}")
             return False
     else:
-        logger.warning(f"Could not find folder for '{seo_folder}'. It may have been already deleted.")
+        logger.warning(f"Could not find folder for '{slug}'. It may have been already deleted.")
 
-    if not remove_artwork_from_registry(seo_folder):
+    if not remove_artwork_from_registry(slug):
         logger.error(
-            f"Deleted folder (or it was already gone) for '{seo_folder}' but FAILED to update master JSON."
+            f"Deleted folder (or it was already gone) for '{slug}' but FAILED to update master JSON."
         )
         return False
 
-    logger.info(f"Successfully completed deletion for artwork: '{seo_folder}'")
+    logger.info(f"Successfully completed deletion for artwork: '{slug}'")
     return True
 
 

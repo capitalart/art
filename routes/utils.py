@@ -97,6 +97,7 @@ except ImportError:
 import numpy as np
 
 import config
+from config import BASE_URL, BASE_DIR
 from utils.sku_assigner import get_next_sku
 # FIX: Import helpers from the correct module to break the circular dependency
 from helpers.listing_utils import resolve_listing_paths, load_json_file_safe
@@ -168,8 +169,8 @@ def resolve_image_url(path: Path) -> str:
         Fully-qualified URL pointing to the image using the configured
         ``BASE_URL`` and project ``BASE_DIR``.
     """
-    relative_path = path.relative_to(config.BASE_DIR).as_posix()
-    return f"{config.BASE_URL}/{relative_path}"
+    rel = path.relative_to(BASE_DIR).as_posix()
+    return f"{BASE_URL}/{rel}"
 
 
 # === [ Section 3: Template & UI Helpers | utils-py-3 ] ===
@@ -218,9 +219,11 @@ def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
     """
     tags_list = data.get("tags", [])
     materials_list = data.get("materials", [])
+    generic_desc = data.get("generic_description") or read_generic_text(data.get("aspect_ratio", ""))
     artwork = {
         "title": data.get("title", prettify_slug(seo_folder)),
         "description": data.get("description", ""),
+        "generic_description": generic_desc,
         "tags": tags_list,
         "tags_str": ", ".join(tags_list),
         "materials": materials_list,
@@ -234,7 +237,6 @@ def populate_artwork_data_from_json(data: dict, seo_folder: str) -> dict:
         "price": data.get("price", "18.27"),
         "sku": data.get("sku", ""),
         "images": "\n".join(data.get("images", [])),
-        "generic_text": read_generic_text(data.get("aspect_ratio", ""))
     }
     return artwork
 

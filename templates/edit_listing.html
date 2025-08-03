@@ -225,11 +225,12 @@
         {% endif %}
 
         {% if not finalised %}
-          <form method="post" action="{{ url_for('artwork.lock_it_in', seo_folder=seo_folder) }}" class="action-form">
-            <button type="submit" class="btn btn-primary wide-btn">🔒 Lock It In</button>
-          </form>
           <form method="post" action="{{ url_for('artwork.finalise_artwork', seo_folder=seo_folder) }}" class="action-form">
             <button type="submit" class="btn btn-success wide-btn">✅ Finalise Artwork</button>
+          </form>
+        {% elif finalised and not locked %}
+          <form method="post" action="{{ url_for('artwork.lock_it_in', seo_folder=seo_folder) }}" class="action-form">
+            <button type="submit" class="btn btn-primary wide-btn">🔒 Lock It In</button>
           </form>
         {% endif %}
 
@@ -254,26 +255,28 @@
   </div>
 
   {# ---------------------------------------------------------
-     SECTION 3.3: SELLBRITE EXPORT DETAILS TABLE
+     SECTION 3.3: SELLBRITE EXPORT PREVIEW
   --------------------------------------------------------- #}
-  <div class="export-details-table">
+  <div class="sellbrite-preview">
     <h2>Sellbrite Export Details</h2>
-    <table class="full-width-table">
-      <tr><th>Title</th><td>{{ artwork.title }}</td></tr>
-      <tr><th>SKU</th><td>{{ artwork.sku }}</td></tr>
-      <tr><th>SEO Slug</th><td>{{ artwork.seo_slug }}</td></tr>
-      <tr><th>Dimensions</th><td>{{ artwork.dimensions }}</td></tr>
-      <tr><th>Size</th><td>{{ artwork.size }}</td></tr>
-      <tr><th>Tags</th><td>{{ artwork.tags | join(', ') }}</td></tr>
-      <tr><th>Materials</th><td>{{ artwork.materials | join(', ') }}</td></tr>
-      <tr><th>Colours</th><td>{{ artwork.primary_colour }}, {{ artwork.secondary_colour }}</td></tr>
-      <tr>
-        <th>Public Image URLs</th>
-        <td>
-          <textarea rows="10" readonly>{{ public_image_urls | join('\n') }}</textarea>
-        </td>
-      </tr>
-    </table>
+    <div class="two-column-layout">
+      <div class="column">
+        <strong>Title:</strong> {{ artwork.title }}<br>
+        <strong>SKU:</strong> {{ artwork.sku }}<br>
+        <strong>SEO Slug:</strong> {{ artwork.seo_slug }}<br>
+        <strong>Description:</strong><br>{{ artwork.description }}<br>
+        <strong>Generic Text:</strong><br>{{ artwork.generic_description }}
+      </div>
+      <div class="column">
+        <strong>Tags:</strong> {{ artwork.tags | join(', ') }}<br>
+        <strong>Materials:</strong> {{ artwork.materials | join(', ') }}<br>
+        <strong>Colours:</strong> {{ artwork.primary_colour }}, {{ artwork.secondary_colour }}<br>
+        <strong>Dimensions:</strong> {{ artwork.dimensions }}<br>
+        <strong>Size:</strong> {{ artwork.size }}<br><br>
+        <strong>Public Image URLs:</strong><br>
+        <textarea class="full-width" rows="8" readonly>{{ public_image_urls | join('\n') }}</textarea>
+      </div>
+    </div>
   </div>
 
   {# -------------------------------
