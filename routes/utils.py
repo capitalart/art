@@ -682,10 +682,10 @@ def update_listing_paths(listing_file: Path, old_root: Path, new_root: Path) -> 
     str_old_root = str(old_root)
     str_new_root = str(new_root)
 
-    old_url_rel = f"{config.STATIC_URL_PREFIX}/{old_root.relative_to(config.BASE_DIR).as_posix()}"
-    new_url_rel = f"{config.STATIC_URL_PREFIX}/{new_root.relative_to(config.BASE_DIR).as_posix()}"
-    old_url_abs = f"{config.BASE_URL}/{old_url_rel}"
-    new_url_abs = f"{config.BASE_URL}/{new_url_rel}"
+    old_url_rel = old_root.relative_to(config.BASE_DIR).as_posix()
+    new_url_rel = new_root.relative_to(config.BASE_DIR).as_posix()
+    old_url_abs = config.resolve_image_url(old_root)
+    new_url_abs = config.resolve_image_url(new_root)
 
     def _replace_all(text: str) -> str:
         for o, n in (

@@ -89,16 +89,13 @@ def generate_public_image_urls(seo_folder: str, stage: str) -> list[str]:
     """Return absolute, public URLs for all images of an artwork."""
     import config
     stage_root_map = {
-        "unanalysed": config.UNANALYSED_ROOT, "processed": config.PROCESSED_ROOT,
-        "finalised": config.FINALISED_ROOT, "vault": config.ARTWORK_VAULT_ROOT,
-    }
-    stage_url_map = {
-        "unanalysed": config.UNANALYSED_IMG_URL_PREFIX, "processed": config.PROCESSED_URL_PATH,
-        "finalised": config.FINALISED_URL_PATH, "vault": config.LOCKED_URL_PATH,
+        "unanalysed": config.UNANALYSED_ROOT,
+        "processed": config.PROCESSED_ROOT,
+        "finalised": config.FINALISED_ROOT,
+        "vault": config.ARTWORK_VAULT_ROOT,
     }
     root = stage_root_map.get(stage)
-    url_prefix = stage_url_map.get(stage)
-    if not root or not url_prefix:
+    if not root:
         return []
 
     folder_path = root / seo_folder
@@ -107,11 +104,7 @@ def generate_public_image_urls(seo_folder: str, stage: str) -> list[str]:
     if not folder_path.exists():
         return []
 
-    relative_prefix = f"{url_prefix}/{folder_path.name}"
-    return [
-        f"{config.BASE_URL}/{relative_prefix}/{img.name}"
-        for img in sorted(folder_path.glob("*.jpg"))
-    ]
+    return [config.resolve_image_url(img) for img in sorted(folder_path.glob("*.jpg"))]
 
 def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
     """Return the best matching SEO folder name for a given artwork filename."""

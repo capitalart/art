@@ -228,6 +228,9 @@
           <form method="post" action="{{ url_for('artwork.lock_it_in', seo_folder=seo_folder) }}" class="action-form">
             <button type="submit" class="btn btn-primary wide-btn">🔒 Lock It In</button>
           </form>
+          <form method="post" action="{{ url_for('artwork.finalise_artwork', seo_folder=seo_folder) }}" class="action-form">
+            <button type="submit" class="btn btn-success wide-btn">✅ Finalise Artwork</button>
+          </form>
         {% endif %}
 
         <form method="POST" action="{{ url_for('artwork.analyze_artwork', aspect=aspect, filename=filename) }}" class="action-form analyze-form">
@@ -268,6 +271,29 @@
       </tr>
     </table>
   </div>
+
+  {# ---------------------------------------------------------
+     SECTION 3.4: OPENAI ANALYSIS DETAILS
+  --------------------------------------------------------- #}
+  {% if openai_analysis %}
+  <div class="openai-analysis-full-preview">
+    <h3>OpenAI Analysis Complete Preview</h3>
+    <p><strong>Title:</strong> {{ openai_analysis.title }}</p>
+    <p><strong>Description:</strong></p>
+    <p>{{ openai_analysis.description }}</p>
+
+    <p><strong>Generic Description (GDWS):</strong></p>
+    <p>{{ openai_analysis.generic_description }}</p>
+
+    <p><strong>Additional Details:</strong></p>
+    <ul>
+      <li><strong>SEO Filename:</strong> {{ artwork.seo_filename }}</li>
+      <li><strong>Tags:</strong> {{ artwork.tags | join(', ') }}</li>
+      <li><strong>Materials:</strong> {{ artwork.materials | join(', ') }}</li>
+      <li><strong>Colours:</strong> {{ artwork.primary_colour }}, {{ artwork.secondary_colour }}</li>
+    </ul>
+  </div>
+  {% endif %}
 
   {# -------------------------------
      SECTION 4: MODAL - MOCKUP CAROUSEL

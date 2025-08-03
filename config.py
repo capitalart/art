@@ -238,8 +238,9 @@ MOCKUP_CATEGORIES = get_mockup_categories()
 
 
 def resolve_image_url(path: Path) -> str:
-    """Convert absolute path to a project-relative URL."""
-    return str(path).replace(str(BASE_DIR), "").lstrip("/")
+    """Convert filesystem path to a proper public URL."""
+    relative_path = path.relative_to(BASE_DIR).as_posix()
+    return f"{BASE_URL}/{relative_path}"
 
 # =============================================================================
 # 9. FOLDER AUTO-CREATION

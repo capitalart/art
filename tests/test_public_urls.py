@@ -28,7 +28,7 @@ def test_generate_public_image_urls_processed(tmp_path, monkeypatch):
     folder.mkdir()
     (folder / "test-art-1.jpg").write_bytes(b"a")
     urls = generate_public_image_urls("test-art", "processed")
-    expected = f"http://example.com/static/{processed.relative_to(config.BASE_DIR).as_posix()}/test-art/test-art-1.jpg"
+    expected = f"http://example.com/{processed.relative_to(config.BASE_DIR).as_posix()}/test-art/test-art-1.jpg"
     assert urls == [expected]
 
 def test_generate_public_image_urls_vault(tmp_path, monkeypatch):
@@ -37,5 +37,5 @@ def test_generate_public_image_urls_vault(tmp_path, monkeypatch):
     folder.mkdir()
     (folder / "LOCKED-test-art.jpg").write_bytes(b"a")
     urls = generate_public_image_urls("test-art", "vault")
-    expected = f"http://example.com/static/{vault.relative_to(config.BASE_DIR).as_posix()}/LOCKED-test-art/LOCKED-test-art.jpg"
+    expected = f"http://example.com/{vault.relative_to(config.BASE_DIR).as_posix()}/LOCKED-test-art/LOCKED-test-art.jpg"
     assert urls == [expected]
