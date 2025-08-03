@@ -173,43 +173,55 @@ def cleanup_unanalysed_folders():
             except OSError as e:
                 logger.warning(f"Could not remove empty folder {item.name}: {e}")
 
-def remove_artwork_from_master_json(seo_folder: str) -> bool:
-    """Safely removes an artwork's entry from the master JSON path file."""
+def remove_artwork_from_registry(seo_folder: str, registry_path: Path | None = None) -> bool:
+    """Remove any entry referencing ``seo_folder`` from the master registry JSON."""
     import config
-    master_path_file = config.ARTWORK_DATA_DIR / "master-artwork-paths.json"
-    if not master_path_file.exists():
+    registry = Path(registry_path or config.OUTPUT_JSON)
+    if not registry.exists():
         return True
     with master_json_lock:
         try:
-            master_paths = load_json_file_safe(master_path_file)
-            clean_seo_folder = seo_folder.replace("LOCKED-", "")
-            if clean_seo_folder in master_paths:
-                del master_paths[clean_seo_folder]
-                master_path_file.write_text(json.dumps(master_paths, indent=2), encoding="utf-8")
-                logger.info(f"Removed '{clean_seo_folder}' from {master_path_file.name}")
+            data = load_json_file_safe(registry)
+            key_to_delete = next(
+                (k for k, v in data.items() if v.get("base") == seo_folder),
+                None,
+            )
+            if key_to_delete:
+                del data[key_to_delete]
+                registry.write_text(json.dumps(data, indent=2), encoding="utf-8")
+                logger.info(f"Removed '{seo_folder}' from {registry.name}")
             return True
         except (IOError, json.JSONDecodeError) as e:
-            logger.error(f"Error updating master JSON file: {e}")
+            logger.error(f"Error updating registry JSON file: {e}")
             return False
 
 def delete_artwork(seo_folder: str) -> bool:
-    """Completely deletes an artwork's folder and its master JSON entry."""
+    """Delete an artwork's directory and registry entry, if present."""
     logger.info(f"Initiating deletion for artwork: '{seo_folder}'")
     stage_info = resolve_artwork_stage(seo_folder)
-    
-    if not stage_info:
-        logger.warning(f"Could not find folder for '{seo_folder}'. It may have been already deleted.")
-    else:
+
+    if stage_info:
         _stage, folder_path = stage_info
+    else:
+        import config
+        registry = load_json_file_safe(config.OUTPUT_JSON)
+        entry = next((v for v in registry.values() if v.get("base") == seo_folder), None)
+        folder_path = Path(entry.get("current_folder", "")) if entry else None
+
+    if folder_path and folder_path.exists():
         try:
             shutil.rmtree(folder_path)
             logger.info(f"Successfully deleted directory: {folder_path}")
         except OSError as e:
             logger.error(f"Failed to delete directory for '{seo_folder}': {e}")
             return False
-            
-    if not remove_artwork_from_master_json(seo_folder):
-        logger.error(f"Deleted folder (or it was already gone) for '{seo_folder}' but FAILED to update master JSON.")
+    else:
+        logger.warning(f"Could not find folder for '{seo_folder}'. It may have been already deleted.")
+
+    if not remove_artwork_from_registry(seo_folder):
+        logger.error(
+            f"Deleted folder (or it was already gone) for '{seo_folder}' but FAILED to update master JSON."
+        )
         return False
 
     logger.info(f"Successfully completed deletion for artwork: '{seo_folder}'")
