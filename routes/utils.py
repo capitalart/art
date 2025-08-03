@@ -105,6 +105,12 @@ from helpers.listing_utils import resolve_listing_paths, load_json_file_safe
 Image.MAX_IMAGE_PIXELS = None
 logger = logging.getLogger(__name__)
 
+# Expose a LOGS_DIR constant so tests and other modules can monkeypatch or
+# reference the application's log directory without importing ``config``
+# directly.  Falling back to a temporary path keeps this module safe during
+# isolated unit tests where ``config.LOGS_DIR`` may not exist.
+LOGS_DIR = getattr(config, "LOGS_DIR", Path("/tmp/logs"))
+
 ALLOWED_COLOURS = sorted(config.ETSY_COLOURS.keys())
 ALLOWED_COLOURS_LOWER = {c.lower(): c for c in ALLOWED_COLOURS}
 

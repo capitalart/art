@@ -33,34 +33,89 @@ logger = logging.getLogger(__name__)
 # ===========================================================================
 
 def load_json_file_safe(path: Path) -> dict:
-    """
-    Return JSON from ``path``, handling file-not-found and decoding errors gracefully.
-    If the file doesn't exist or is empty/invalid, it creates a new empty JSON file.
+    """Return JSON data from ``path`` with defensive error handling.
+
+    The function guarantees that a valid JSON dictionary is returned. If the
+    target file is missing, empty, or contains invalid JSON it will be
+    overwritten with ``{}`` and an informative log entry will be emitted.
+
+    Args:
+        path: Location of the JSON file to read.
+
+    Returns:
+        A ``dict`` representing the JSON content, or an empty dictionary on
+        any failure.
     """
     path = Path(path)
+
+    # Missing file – create a new empty JSON file.
     if not path.exists():
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text("{}", encoding="utf-8")
             logger.warning(f"Created new empty JSON file at {path}")
-        except OSError as e:
+        except OSError as e:  # pragma: no cover - logged for diagnostics
             logger.error(f"Failed to create directory or file at {path}: {e}")
-            return {}
         return {}
 
     text = path.read_text(encoding="utf-8").strip()
+
+    # Empty file – reset to an empty JSON structure.
     if not text:
+        path.write_text("{}", encoding="utf-8")
+        logger.warning(f"File at {path} was empty; reset to {{}}")
         return {}
+
     try:
         return json.loads(text)
     except json.JSONDecodeError as e:
-        logger.error(f"Invalid JSON in {path}, returning empty dict. Error: {e}")
+        # Invalid JSON – overwrite with empty dict so callers always get a
+        # clean object.
+        path.write_text("{}", encoding="utf-8")
+        logger.error(f"Invalid JSON in {path}, reset to {{}}. Error: {e}")
         return {}
 
 
 # ===========================================================================
 # 3. Path Resolution & Folder Management
 # ===========================================================================
+
+def resolve_artwork_stage(seo_folder: str) -> tuple[str, Path]:
+    """Determine the current workflow stage for ``seo_folder``.
+
+    The function searches the four primary artwork directories – unanalysed,
+    processed, finalised, and the locked vault – returning the matching stage
+    label and absolute ``Path``. This centralises path discovery so that other
+    components can update URLs or move files without hard‑coding directory
+    knowledge.
+
+    Args:
+        seo_folder: Folder name used as the SEO slug for an artwork.
+
+    Returns:
+        A tuple of ``(stage, path)`` where ``stage`` is one of ``"unanalysed"``,
+        ``"processed"``, ``"finalised"`` or ``"vault"`` and ``path`` is the
+        resolved directory path.
+
+    Raises:
+        FileNotFoundError: If the folder cannot be located in any known stage.
+    """
+    search_paths = {
+        "unanalysed": config.UNANALYSED_ROOT,
+        "processed": config.PROCESSED_ROOT,
+        "finalised": config.FINALISED_ROOT,
+        "vault": config.ARTWORK_VAULT_ROOT,
+    }
+
+    for stage, root in search_paths.items():
+        candidate = root / seo_folder
+        if stage == "vault" and not candidate.exists():
+            candidate = root / f"LOCKED-{seo_folder}"
+        if candidate.exists():
+            return stage, candidate
+
+    raise FileNotFoundError(f"Artwork '{seo_folder}' not found in any stage")
+
 
 def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
     """

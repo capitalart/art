@@ -2,10 +2,16 @@ import json
 import logging
 from pathlib import Path
 import sys
+import pytest
+import os
+
+os.environ.setdefault("OPENAI_API_KEY", "test")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import config
 
 from routes.utils import load_json_file_safe
+from helpers.listing_utils import resolve_artwork_stage
 
 
 def test_load_json_file_safe_missing(tmp_path, caplog):
@@ -15,7 +21,7 @@ def test_load_json_file_safe_missing(tmp_path, caplog):
     assert data == {}
     assert test_file.exists()
     assert test_file.read_text() == '{}'
-    assert 'created new empty file' in caplog.text
+    assert 'Created new empty JSON file' in caplog.text
 
 
 def test_load_json_file_safe_empty(tmp_path, caplog):
@@ -44,3 +50,34 @@ def test_load_json_file_safe_valid(tmp_path):
     test_file.write_text(json.dumps(content))
     data = load_json_file_safe(test_file)
     assert data == content
+
+
+def test_resolve_artwork_stage(tmp_path, monkeypatch):
+    """Ensure artwork stage is correctly detected across all directories."""
+    # Create staging directories
+    un = tmp_path / 'unanalysed-artwork'
+    proc = tmp_path / 'processed-artwork'
+    fin = tmp_path / 'finalised-artwork'
+    vault = tmp_path / 'artwork-vault'
+    for d in (un, proc, fin, vault):
+        d.mkdir()
+
+    # Monkeypatch config roots
+    monkeypatch.setattr(config, 'UNANALYSED_ROOT', un)
+    monkeypatch.setattr(config, 'PROCESSED_ROOT', proc)
+    monkeypatch.setattr(config, 'FINALISED_ROOT', fin)
+    monkeypatch.setattr(config, 'ARTWORK_VAULT_ROOT', vault)
+
+    # Create folders representing each stage
+    (un / 'a1').mkdir()
+    (proc / 'a2').mkdir()
+    (fin / 'a3').mkdir()
+    (vault / 'LOCKED-a4').mkdir()
+
+    assert resolve_artwork_stage('a1')[0] == 'unanalysed'
+    assert resolve_artwork_stage('a2')[0] == 'processed'
+    assert resolve_artwork_stage('a3')[0] == 'finalised'
+    assert resolve_artwork_stage('a4')[0] == 'vault'
+
+    with pytest.raises(FileNotFoundError):
+        resolve_artwork_stage('missing')
