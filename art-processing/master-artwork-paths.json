@@ -818,5 +818,105 @@
       }
     ],
     "upload_date": "2025-08-03T09:44:44.976539+00:00"
+  },
+  "fd399bc2fbe6413d81e7b0a4ef532557": {
+    "seo_filename": "Forest Reflection Fire Beneath Water Blue Trees Mirrored In Glowing Floodwaters Fire Sky Above Spiri 2-c6b2de10.jpg",
+    "base": "Forest Reflection Fire Beneath Water Blue Trees Mirrored In Glowing Floodwaters Fire Sky Above Spiri 2-c6b2de10",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-2-7bd971aa",
+    "assets": [
+      "Forest Reflection Fire Beneath Water Blue Trees Mirrored In Glowing Floodwaters Fire Sky Above Spiri 2-c6b2de10.jpg",
+      "Forest Reflection Fire Beneath Water Blue Trees Mirrored In Glowing Floodwaters Fire Sky Above Spiri 2-c6b2de10-thumb.jpg",
+      "Forest Reflection Fire Beneath Water Blue Trees Mirrored In Glowing Floodwaters Fire Sky Above Spiri 2-c6b2de10-analyse.jpg",
+      "Forest Reflection Fire Beneath Water Blue Trees Mirrored In Glowing Floodwaters Fire Sky Above Spiri 2-c6b2de10.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-2-7bd971aa",
+        "timestamp": "2025-08-03T09:53:38.646750+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T09:53:38.646750+00:00"
+  },
+  "36f3b2012f10459c969f3a40a047c5b1": {
+    "seo_filename": "Native Hibiscus Alyogyne Huegelii Generate An Aboriginal Dot Painting Of A Native Hibiscus Alyogyne 2-e3e8405c.jpg",
+    "base": "Native Hibiscus Alyogyne Huegelii Generate An Aboriginal Dot Painting Of A Native Hibiscus Alyogyne 2-e3e8405c",
+    "current_folder": "/home/art/art-processing/unanalysed-artwork/native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-2-bbcbd3d3",
+    "assets": [
+      "Native Hibiscus Alyogyne Huegelii Generate An Aboriginal Dot Painting Of A Native Hibiscus Alyogyne 2-e3e8405c.jpg",
+      "Native Hibiscus Alyogyne Huegelii Generate An Aboriginal Dot Painting Of A Native Hibiscus Alyogyne 2-e3e8405c-thumb.jpg",
+      "Native Hibiscus Alyogyne Huegelii Generate An Aboriginal Dot Painting Of A Native Hibiscus Alyogyne 2-e3e8405c-analyse.jpg",
+      "Native Hibiscus Alyogyne Huegelii Generate An Aboriginal Dot Painting Of A Native Hibiscus Alyogyne 2-e3e8405c.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/home/art/art-processing/unanalysed-artwork/native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-2-bbcbd3d3",
+        "timestamp": "2025-08-03T09:55:33.179153+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T09:55:33.179153+00:00"
+  },
+  "d2eb9679663246ba8789274bde782838": {
+    "seo_filename": "Test-4a5e86f7.jpg",
+    "base": "Test-4a5e86f7",
+    "current_folder": "/tmp/pytest-of-art/pytest-10/test_upload_single0/unanalysed-artwork/test-6ec70020",
+    "assets": [
+      "Test-4a5e86f7.jpg",
+      "Test-4a5e86f7-thumb.jpg",
+      "Test-4a5e86f7-analyse.jpg",
+      "Test-4a5e86f7.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-10/test_upload_single0/unanalysed-artwork/test-6ec70020",
+        "timestamp": "2025-08-03T10:06:31.339195+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:06:31.339195+00:00"
+  },
+  "c0beeb5c5a6347a185df8c8db7e593d6": {
+    "seo_filename": "Good-b75cb991.jpg",
+    "base": "Good-b75cb991",
+    "current_folder": "/tmp/pytest-of-art/pytest-10/test_upload_batch0/unanalysed-artwork/good-f87e52af",
+    "assets": [
+      "Good-b75cb991.jpg",
+      "Good-b75cb991-thumb.jpg",
+      "Good-b75cb991-analyse.jpg",
+      "Good-b75cb991.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-10/test_upload_batch0/unanalysed-artwork/good-f87e52af",
+        "timestamp": "2025-08-03T10:06:31.385357+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:06:31.385357+00:00"
+  },
+  "81f60f8918724bb19a18b9eedc16d1cc": {
+    "seo_filename": "Sample-971da6e1.jpg",
+    "base": "Sample-971da6e1",
+    "current_folder": "/tmp/pytest-of-art/pytest-10/test_upload_json_response0/unanalysed-artwork/sample-f5dc6d45",
+    "assets": [
+      "Sample-971da6e1.jpg",
+      "Sample-971da6e1-thumb.jpg",
+      "Sample-971da6e1-analyse.jpg",
+      "Sample-971da6e1.qc.json"
+    ],
+    "status": "unanalysed",
+    "history": [
+      {
+        "status": "unanalysed",
+        "folder": "/tmp/pytest-of-art/pytest-10/test_upload_json_response0/unanalysed-artwork/sample-f5dc6d45",
+        "timestamp": "2025-08-03T10:06:31.502263+00:00"
+      }
+    ],
+    "upload_date": "2025-08-03T10:06:31.502263+00:00"
   }
 }
