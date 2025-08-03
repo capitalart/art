@@ -110,6 +110,7 @@ from helpers.listing_utils import (
     cleanup_unanalysed_folders,
     load_json_file_safe,
     generate_public_image_urls,
+    remove_artwork_from_registry,
 )
 import scripts.analyze_artwork as aa
 from scripts import signing_service
@@ -889,39 +890,57 @@ def reset_sku(aspect, filename):
 
 
 # --- [ 13c: delete_artwork | artwork-routes-py-13c ] ---
-@bp.post("/delete/<filename>")
-def delete_artwork(filename: str):
-    """Deletes all files and registry entries for an artwork, regardless of state."""
-    logger, user = logging.getLogger(__name__), session.get("username", "unknown")
-    log_action("delete", filename, user, f"Initiating delete for '{filename}'")
-    
-    base_stem = Path(filename).stem
-
+@bp.route("/delete-artwork/<seo_folder>", methods=["POST"])
+def delete_artwork(seo_folder: str):
+    """Remove an artwork folder across all stages and clean the registry."""
+    logger = logging.getLogger(__name__)
+    user = session.get("username", "unknown")
+    log_action("delete", seo_folder, user, f"Initiating delete for '{seo_folder}'")
     try:
-        seo_folder = utils.find_seo_folder_from_filename("", filename)
-        if seo_folder:
-            shutil.rmtree(config.PROCESSED_ROOT / seo_folder, ignore_errors=True)
-            shutil.rmtree(config.FINALISED_ROOT / seo_folder, ignore_errors=True)
-            shutil.rmtree(config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}", ignore_errors=True)
-            logger.info(f"Deleted processed/finalised/locked folders for {seo_folder}")
-    except FileNotFoundError:
-        logger.info(f"No processed folder found for '{filename}', proceeding to clean unanalysed files.")
-        pass
+        stage_dirs = [
+            config.UNANALYSED_ROOT,
+            config.PROCESSED_ROOT,
+            config.FINALISED_ROOT,
+            config.ARTWORK_VAULT_ROOT,
+        ]
+        found = False
+        for stage_dir in stage_dirs:
+            potential = stage_dir / seo_folder
+            locked = stage_dir / f"LOCKED-{seo_folder}"
+            if potential.exists():
+                shutil.rmtree(potential)
+                found = True
+                break
+            if locked.exists():
+                shutil.rmtree(locked)
+                found = True
+                break
 
-    found_files = list(config.UNANALYSED_ROOT.rglob(f"{base_stem}*"))
-    if found_files:
-        parent_dir = found_files[0].parent
-        if parent_dir != config.UNANALYSED_ROOT:
-             shutil.rmtree(parent_dir, ignore_errors=True)
-             logger.info(f"Deleted unanalysed folder: {parent_dir}")
-    
-    uid, _ = utils.get_record_by_base(base_stem)
-    if uid:
-        utils.remove_record_from_registry(uid)
-        logger.info(f"Removed registry record {uid}")
-    
-    log_action("delete", filename, user, "Delete process completed.")
-    return jsonify({"success": True})
+        if not found:
+            registry = load_json_file_safe(config.OUTPUT_JSON)
+            for entry in registry.values():
+                if entry.get("base") == seo_folder:
+                    folder = Path(entry.get("current_folder", ""))
+                    if folder.exists():
+                        shutil.rmtree(folder)
+                        found = True
+                    break
+
+        if not found:
+            raise FileNotFoundError(
+                f"Artwork folder '{seo_folder}' not found in known locations."
+            )
+
+        remove_artwork_from_registry(seo_folder)
+        logger.info("Artwork %s deleted successfully.", seo_folder)
+        log_action("delete", seo_folder, user, "Delete process completed.")
+        flash(f"Artwork '{seo_folder}' deleted successfully.", "success")
+    except Exception as exc:
+        logger.error("Failed to delete artwork '%s': %s", seo_folder, exc)
+        log_action("delete", seo_folder, user, str(exc), status="fail")
+        flash(f"An error occurred during deletion: {exc}", "danger")
+
+    return redirect(url_for("artwork.artworks"))
 
 
 # --- [ 13d: reword_generic_text_api | artwork-routes-py-13d ] ---
