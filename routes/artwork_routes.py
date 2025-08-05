@@ -365,7 +365,7 @@ def artworks():
 # ---------------------------------------------------------------------------------
 
 # --- [ 6a: select | artwork-routes-py-6a ] ---
-@bp.route("/select", methods=["GET", "POST"])
+@bp.route("/select", methods=["GET", "POST"], endpoint="select")
 def select():
     """(DEPRECATED) Displays the old mockup selection interface."""
     if "slots" not in session or request.args.get("reset") == "1":
@@ -377,7 +377,7 @@ def select():
 
 
 # --- [ 6b: regenerate | artwork-routes-py-6b ] ---
-@bp.route("/regenerate", methods=["POST"])
+@bp.route("/regenerate", methods=["POST"], endpoint="regenerate")
 def regenerate():
     """(DEPRECATED) Regenerates a random mockup for a specific slot."""
     slot_idx = int(request.form["slot"])
@@ -390,7 +390,7 @@ def regenerate():
 
 
 # --- [ 6c: swap | artwork-routes-py-6c ] ---
-@bp.route("/swap", methods=["POST"])
+@bp.route("/swap", methods=["POST"], endpoint="swap")
 def swap():
     """(DEPRECATED) Swaps a mockup slot to a new category."""
     slot_idx = int(request.form["slot"])
@@ -404,7 +404,7 @@ def swap():
 
 
 # --- [ 6d: proceed | artwork-routes-py-6d ] ---
-@bp.route("/proceed", methods=["POST"])
+@bp.route("/proceed", methods=["POST"], endpoint="proceed")
 def proceed():
     """(DEPRECATED) Finalises mockup selections and triggers composite generation."""
     flash("Composite generation process initiated!", "success")
@@ -534,7 +534,7 @@ def analyze_upload(base):
 # ---------------------------------------------------------------------------------
 
 # --- [ 8a: edit_listing | artwork-routes-py-8a ] ---
-@bp.route("/edit-listing/<aspect>/<filename>", methods=["GET", "POST"])
+@bp.route("/edit-listing/<aspect>/<filename>", methods=["GET", "POST"], endpoint="edit_listing")
 def edit_listing(aspect, filename):
     """Displays and updates a processed or finalised artwork listing."""
     try:
@@ -643,7 +643,7 @@ def composite_img(folder, filename):
 
 
 # --- [ 9g: mockup_img | artwork-routes-py-9g ] ---
-@bp.route("/mockup-img/<category>/<filename>")
+@bp.route("/mockup-img/<category>/<filename>", endpoint="mockup_img")
 def mockup_img(category, filename):
     """Serves a mockup template image from the central inputs directory."""
     return send_from_directory(config.MOCKUPS_INPUT_DIR / category, filename)
@@ -654,7 +654,7 @@ def mockup_img(category, filename):
 # ---------------------------------------------------------------------------------
 
 # --- [ 10a: composites_preview | artwork-routes-py-10a ] ---
-@bp.route("/composites")
+@bp.route("/composites", endpoint="composites_preview")
 def composites_preview():
     """Redirects to the latest composite folder or the main artworks page."""
     latest = utils.latest_composite_folder()
@@ -665,7 +665,7 @@ def composites_preview():
 
 
 # --- [ 10b: composites_specific | artwork-routes-py-10b ] ---
-@bp.route("/composites/<seo_folder>")
+@bp.route("/composites/<seo_folder>", endpoint="composites_specific")
 def composites_specific(seo_folder):
     """Displays the composite images for a specific artwork."""
     folder = config.PROCESSED_ROOT / seo_folder
@@ -685,7 +685,7 @@ def composites_specific(seo_folder):
 
 
 # --- [ 10c: approve_composites | artwork-routes-py-10c ] ---
-@bp.route("/approve_composites/<seo_folder>", methods=["POST"])
+@bp.route("/approve_composites/<seo_folder>", methods=["POST"], endpoint="approve_composites")
 def approve_composites(seo_folder):
     """Approves composites and redirects to the edit/review page."""
     listing_path = next((config.PROCESSED_ROOT / seo_folder).glob("*-listing.json"), None)
@@ -798,7 +798,7 @@ def delete_finalised(aspect, filename):
 
 
 # --- [ 12b: lock_listing | artwork-routes-py-12b ] ---
-@bp.post("/lock/<aspect>/<filename>")
+@bp.post("/lock/<aspect>/<filename>", endpoint="lock_listing")
 def lock_listing(aspect, filename):
     """Locks an artwork by moving it to the 'artwork-vault' directory."""
     try:
@@ -827,7 +827,7 @@ def lock_listing(aspect, filename):
 
 
 # --- [ 12c: unlock_listing | artwork-routes-py-12c ] ---
-@bp.post("/unlock/<aspect>/<filename>")
+@bp.post("/unlock/<aspect>/<filename>", endpoint="unlock_listing")
 def unlock_listing(aspect, filename):
     """Unlocks an artwork, making it editable again but keeping files in the vault."""
     if request.form.get("confirm_unlock") != "UNLOCK":
@@ -911,7 +911,7 @@ def update_links(aspect, filename):
 
 
 # --- [ 13b: reset_sku | artwork-routes-py-13b ] ---
-@bp.post("/reset-sku/<aspect>/<filename>")
+@bp.post("/reset-sku/<aspect>/<filename>", endpoint="reset_sku")
 def reset_sku(aspect, filename):
     """Forces the assignment of a new SKU for a given artwork."""
     try:
