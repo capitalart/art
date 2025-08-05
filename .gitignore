@@ -2,18 +2,18 @@
 # ArtNarrator - .gitignore File
 # ===========================================
 
-# Ignore VSCode remote/server junk
-.vscode-server/
-
-# Ignore pip and system caches
-.cache/
-
-# Ignore Python bytecode and other generated files
+# === [ 1. Python + Flask System Files ] ===
 __pycache__/
 *.py[cod]
 *$py.class
+instance/
+.webassets-cache
+*.log
+*.swp
+*.bak
+*.tmp
 
-# Ignore environment files
+# === [ 2. Virtual Environments ] ===
 .venv/
 env/
 ENV/
@@ -21,64 +21,44 @@ env.bak/
 venv.bak/
 venv/
 
-# Ignore Flask-related files
-instance/
-.webassets-cache
+# === [ 3. VSCode & IDE Settings ] ===
+.vscode/
+.vscode-server/
+.idea/
+.config/
 
-# Ignore logs and temporary files
-*.log
-*.swp
-*.bak
-*.tmp
+# === [ 4. Build & Distribution Files ] ===
+dist/
+build/
+*.egg-info/
 
-# Ignore compressed files
-*.tar.gz
-*.tgz
-*.zip
-
-# Ignore uploads and processed artwork folders
+# === [ 5. Uploads, Outputs, and Processed Assets ] ===
 inputs/
-backups/
-reports/
 outputs/
+reports/
+backups/
 
-# --- Art Processing Folder (keep structure, ignore files) ---
+# === [ 6. Git Structure Enforcement ] ===
 art-processing/*
 !art-processing/
 !art-processing/**/
 !art-processing/**/.gitkeep
 
-# Ignore sensitive files such as .env and config
+# === [ 7. Secrets, Configs, and DBs ] ===
 .env
 *.json
-
-# Ignore database files
 *.db
 *.sqlite3
 
-# Ignore all system-specific files
+# === [ 8. Compressed Files ] ===
+*.tar.gz
+*.tgz
+*.zip
+
+# === [ 9. OS-Specific Junk ] ===
 .DS_Store
 Thumbs.db
-
-# Ignore IDE and editor-specific files
-.vscode/
-.idea/
-
-# Ignore packaging and distribution files
-dist/
-build/
-*.egg-info/
-
-# Ignore Nginx and server-related configurations
-nginx.conf
-
-# Or ignore the entire .config directory
-.config/
 
 # ===========================================
 # End of .gitignore
 # ===========================================
-.env
-.env
-.env
-__pycache__/
