@@ -79,3 +79,4 @@ nginx.conf
 # End of .gitignore
 # ===========================================
 .env
+.env

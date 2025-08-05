@@ -23,7 +23,7 @@
   --font-primary: 'Urbanist', sans-serif;
   --color-background: #cccccc;
   --color-text: #111111;
-  --color-card-bg: hsl(0, 0%, 81%);
+  --color-card-bg: #b3b3b3;
   --color-header-border: #eeeeee;
   --color-footer-bg: #cccccc;
   --color-footer-text: #111111;
@@ -35,29 +35,63 @@
   --dark-color-footer-text: #FFFFFF;
   --color-hover: #ffa52a;
   --color-danger: #c8252d;
+  --upload-dz-background-color: #f5f5f5;
   --color-hover-other: #000000;
   --color-accent: #e76a25;
   --color-accent-hover: #ff9933;
   --card-border: #c8c7c7;
   --workflow-icon-size: 2.1em;
   --dark-color-background: #333333;
-  --dark-color-text: #636363;
+  --dark-color-text: #8c8c8c;
   --dark-color-card-bg: #727272;
   --dark-card-border: #727272;
   --light-card-border: #727272;
+
+  /* NEW: Centralised variables for consistent styling */
+  --color-border-subtle: #e0e0e0;
+  --color-shadow-light: rgba(0, 0, 0, 0.06);
+  --color-shadow-medium: rgba(0, 0, 0, 0.12);
+  --color-badge-finalised-text: #d40000;
+  --color-badge-locked-text: #0066aa;
+  --color-badge-locked-border: #0066aa;
+  --color-muted-text: #535353;
+  --color-info-card-bg: #dbdbdb;
+  --color-preview-bg: #f0f0f0;
+  --color-preview-text: #333333;
+  --color-textarea-readonly-bg: #f9f9f9;
+  --color-dropzone-border: #bbbbbb;
+  --color-dropzone-text: #666666;
+  --color-dropzone-bg-hover: #f9f9f9;
 }
 
 /* Dark theme variables applied when `.theme-dark` class is present on `html` or `body` */
 .theme-dark {
   --color-background: var(--dark-color-background);
   --color-text: var(--dark-color-text);
-  --color-card-bg: #cccccc;
+  --color-card-bg: #b3b3b3;
   --card-border: var(--dark-card-border);
   --color-footer-bg: var(--dark-color-footer-bg);
   --color-footer-text: var(--dark-color-footer-text);
+  --upload-dz-background-color: #212121;
   --header-bg: #111111;
   --table-row-bg: #222222;
   --table-row-alt-bg: #333333;
+
+  /* NEW: Dark theme equivalents */
+  --color-border-subtle: #444444;
+  --color-shadow-light: rgba(0, 0, 0, 0.15);
+  --color-shadow-medium: rgba(0, 0, 0, 0.25);
+  --color-badge-finalised-text: #ff6b6b;
+  --color-badge-locked-text: #6cb6ff;
+  --color-badge-locked-border: #6cb6ff;
+  --color-muted-text: #737373;
+  --color-info-card-bg: #2a2a2a;
+  --color-preview-bg: #4f4f4f;
+  --color-preview-text: #bbbbbb;
+  --color-textarea-readonly-bg: #2c2c2c;
+  --color-dropzone-border: #555555;
+  --color-dropzone-text: #aaaaaa;
+  --color-dropzone-bg-hover: #3a3a3a;
 }
 
 /* === [ 3. UNIVERSAL BASE & RESET ] === */

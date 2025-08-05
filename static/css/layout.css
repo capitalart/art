@@ -198,14 +198,15 @@
    [ Upload Dropzone ]
    =============================== */
 .upload-dropzone {
-  border: 2px dashed #bbb;
+  border: 2px dashed var(--color-dropzone-border);
+  background-color: var(--upload-dz-background-color);
   max-width: 800px;;
   width: 100%;
   margin: 20px auto;
   padding: 40px;
   text-align: center;
   cursor: pointer;
-  color: #666;
+  color: var(--color-dropzone-text);
   transition: background 0.2s, border-color 0.2s;
 }
 
@@ -215,8 +216,8 @@
 }
 
 .upload-dropzone.dragover {
-  border-color: #333;
-  background: #f9f9f9;
+  border-color: var(--color-text);
+  background: var(--color-dropzone-bg-hover);
 }
 
 .upload-list {
@@ -261,7 +262,7 @@
 .long-field {
   width: 100%;
   box-sizing: border-box;
-  background-color: #dbdbdb !important;
+  background-color: var(--color-info-card-bg) !important;
   font-size: 1.05em;
   padding: 0.6em;
   margin-bottom: 1em;
@@ -294,7 +295,6 @@
   padding: 1em 0;
   border-radius: 0 !important;   /* FORCE SQUARE */
 }
-
 
 .status-line {margin-top:0px}
 

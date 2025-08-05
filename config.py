@@ -166,7 +166,7 @@ DEFAULT_MOCKUP_IMAGE = STATIC_DIR / "img" / "default-mockup.jpg"
 
 # --- ADDED FOR THE SIGNING SCRIPT ---
 ARTWORKS_INPUT_DIR = UNANALYSED_ROOT  # Pointing to the unanalysed artwork folder
-SIGNATURE_SIZE_PERCENTAGE = 0.10     # Signature will be 10% of the image's long edge
+SIGNATURE_SIZE_PERCENTAGE = 0.08     # Signature will be 10% of the image's long edge
 SIGNATURE_MARGIN_PERCENTAGE = 0.05   # 5% margin from the edges
 SIGNED_OUTPUT_DIR = SIGNED_DIR       # Alias for the script to find the correct folder
 

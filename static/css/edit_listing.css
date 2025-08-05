@@ -54,26 +54,22 @@
   padding: 0.4em 0.6em;
   font-size: 0.9em;
   border: 1px solid var(--card-border);
-  background-color: var(--color-card-bg);
+  background-color: #edebeb;
   color: var(--color-text);
   border-radius: 0;
 }
 
 .thumb-note {
   font-size: 0.85em; /* Adjusted for better fit */
-  color: rgba(0, 0, 0, 0.65); /* Muted dark color for light mode */
+  color: var(--color-muted-text);
   margin-top: 0.5rem;
   text-align: center;
-}
-
-.theme-dark .thumb-note {
-  color: rgba(255, 255, 255, 0.65); /* Muted light color for dark mode */
 }
 
 /* --- OpenAI Analysis Details Table --- */
 .openai-details {
   margin-top: 2rem;
-  background-color:#dbdbdb;
+  background-color: var(--color-info-card-bg);
   padding: .7rem;
   border-top: 1px solid var(--card-border);
 }
@@ -123,4 +119,45 @@
 
 .theme-dark .openai-analysis-table tbody tr:nth-of-type(even) {
   background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* --- NEW: Sellbrite Preview Section --- */
+.sellbrite-preview {
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 100%;
+    color: var(--color-preview-text);
+    background-color: var(--color-preview-bg);
+    border: 1px solid var(--card-border);
+}
+
+.sellbrite-preview h2 {
+    margin-top: 0;
+}
+
+.sellbrite-preview .two-column-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.sellbrite-preview .column p {
+    margin: 0 0 1rem 0;
+}
+
+.sellbrite-preview textarea {
+    background-color: var(--color-textarea-readonly-bg);
+    border: 1px solid var(--card-border);
+    color: var(--color-text);
+    white-space: pre-line;
+    font-family: monospace;
+}
+
+/* Responsive layout for the preview */
+@media (max-width: 900px) {
+    .sellbrite-preview .two-column-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
 }

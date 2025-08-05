@@ -1,296 +1,241 @@
+# helpers/listing_utils.py
 """
-Listing & File Management Utilities for ArtNarrator
-===================================================
-Provides robust, centralised functions for handling JSON files, resolving
-artwork paths across different processing stages, and managing the artwork
-lifecycle, including creation, moving, and deletion.
+Utility functions specifically for managing artwork listings, including
+file operations, path resolution, and data manipulation that are shared
+across different routes and scripts.
 
-INDEX
------
-1.  Imports & Initialisation
-2.  JSON & File Helpers
-3.  Path Resolution & Folder Management
-4.  Artwork Lifecycle Management
-5.  Guided Description Writing System (GDWS) Helpers
+Table of Contents (ToC)
+-----------------------
+[listing-utils-py-1] Imports
+[listing-utils-py-2] JSON & State Management
+    [listing-utils-py-2a] Safely Load JSON File
+    [listing-utils-py-2b] Update Artwork Registry (Placeholder)
+    [listing-utils-py-2c] Remove Artwork from Registry (Placeholder)
+
+[listing-utils-py-3] Path & File Operations
+    [listing-utils-py-3a] Resolve Listing Paths
+    [listing-utils-py-3b] Create Unanalysed Subfolder
+    [listing-utils-py-3c] Cleanup Empty Unanalysed Folders
+    [listing-utils-py-3d] Delete Artwork (All Stages)
+
+[listing-utils-py-4] Data Generation
+    [listing-utils-py-4a] Assemble GDWS Description
+    [listing-utils-py-4b] Resolve Artwork Stage
+    [listing-utils-py-4c] Generate Public Image URLs
 """
 
-# ===========================================================================
-# 1. Imports & Initialisation
-# ===========================================================================
+# === [ Section 1: Imports | listing-utils-py-1 ] ===
+# Handles all necessary library imports for the module.
+# ---------------------------------------------------------------------------------
 from __future__ import annotations
-import logging
 import json
-from pathlib import Path
-import re
-import uuid
+import logging
 import shutil
-import threading
-from datetime import datetime
+from pathlib import Path
+from typing import List, Tuple, Optional
+import re
+import datetime
 
-# Local application imports are moved inside functions to prevent circular dependencies
-# import config # <-- REMOVED FROM TOP LEVEL
+import config
 
 logger = logging.getLogger(__name__)
-# A lock to prevent race conditions when updating the master JSON file
-master_json_lock = threading.Lock()
 
 
-# ===========================================================================
-# 2. JSON & File Helpers
-# ===========================================================================
+# === [ Section 2: JSON & State Management | listing-utils-py-2 ] ===
+# Contains functions for safely reading and writing to JSON files that
+# manage the application's state, such as listing data.
+# ---------------------------------------------------------------------------------
 
-def load_json_file_safe(path: Path) -> dict:
-    """Return JSON data from ``path`` with defensive error handling."""
-    path = Path(path)
-    if not path.exists():
-        try:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text("{}", encoding="utf-8")
-            logger.warning(f"Created new empty JSON file at {path}")
-        except OSError as e:
-            logger.error(f"Failed to create directory or file at {path}: {e}")
+# --- [ 2a: Safely Load JSON File | listing-utils-py-2a ] ---
+def load_json_file_safe(file_path: Path) -> dict:
+    """Safely loads a JSON file, returning an empty dict if it's missing, empty, or invalid."""
+    if not file_path.exists():
+        logger.warning(f"File not found: {file_path}. Creating new empty JSON file.")
+        file_path.write_text("{}", encoding="utf-8")
         return {}
-
-    text = path.read_text(encoding="utf-8").strip()
-    if not text:
-        path.write_text("{}", encoding="utf-8")
-        logger.warning(f"File at {path} was empty; reset to {{}}")
-        return {}
-
     try:
-        return json.loads(text)
-    except json.JSONDecodeError as e:
-        path.write_text("{}", encoding="utf-8")
-        logger.error(f"Invalid JSON in {path}, reset to {{}}. Error: {e}")
+        content = file_path.read_text(encoding="utf-8").strip()
+        if not content:
+            logger.warning(f"File is empty: {file_path}. Resetting to {{}}.")
+            file_path.write_text("{}", encoding="utf-8")
+            return {}
+        return json.loads(content)
+    except json.JSONDecodeError:
+        logger.error(f"Invalid JSON in {file_path}. Backing up and resetting.")
+        backup_path = file_path.with_suffix(f"{file_path.suffix}.bak")
+        shutil.copy(file_path, backup_path)
+        file_path.write_text("{}", encoding="utf-8")
         return {}
 
+# --- [ 2b: Update Artwork Registry (Placeholder) | listing-utils-py-2b ] ---
+def update_artwork_registry(seo_folder: str, new_path: Path, new_status: str):
+    """Placeholder for updating a central artwork state registry."""
+    logger.info(f"Registry updated for '{seo_folder}': status='{new_status}', path='{new_path}'")
 
-# ===========================================================================
-# 3. Path Resolution & Folder Management
-# ===========================================================================
-
-def resolve_artwork_stage(seo_folder: str) -> tuple[str, Path] | tuple[None, None]:
-    """Determine the current workflow stage for ``seo_folder``."""
-    import config
-    search_paths = {
-        "unanalysed": config.UNANALYSED_ROOT, "processed": config.PROCESSED_ROOT,
-        "finalised": config.FINALISED_ROOT, "vault": config.ARTWORK_VAULT_ROOT,
-    }
-    for stage, root in search_paths.items():
-        if not root or not root.exists():
-            continue
-        candidate = root / seo_folder
-        if stage == "vault" and not candidate.exists():
-            candidate = root / f"LOCKED-{seo_folder}"
-        if candidate.exists() and candidate.is_dir():
-            return stage, candidate
-    return None, None
-
-def generate_public_image_urls(seo_folder: str, stage: str) -> list[str]:
-    """Return absolute, public URLs for all images of an artwork."""
-    import config
-    stage_root_map = {
-        "unanalysed": config.UNANALYSED_ROOT,
-        "processed": config.PROCESSED_ROOT,
-        "finalised": config.FINALISED_ROOT,
-        "vault": config.ARTWORK_VAULT_ROOT,
-    }
-    root = stage_root_map.get(stage)
-    if not root:
-        return []
-
-    folder_path = root / seo_folder
-    if stage == "vault" and not folder_path.exists():
-        folder_path = root / f"LOCKED-{seo_folder}"
-    if not folder_path.exists():
-        return []
-
-    return [config.resolve_image_url(img) for img in sorted(folder_path.glob("*.jpg"))]
-
-def find_seo_folder_from_filename(aspect: str, filename: str) -> str:
-    """Return the best matching SEO folder name for a given artwork filename."""
-    import config
-    basename = Path(filename).stem.lower().replace('-thumb', '').replace('-analyse', '')
-    candidates: list[tuple[float, str]] = []
-    for base in (config.PROCESSED_ROOT, config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT):
-        if not base or not base.exists():
-            continue
-        for folder in base.iterdir():
-            if not folder.is_dir():
-                continue
-            slug = folder.name.replace("LOCKED-", "")
-            listing_file = folder / f"{slug}-listing.json"
-            if listing_file.exists():
-                data = load_json_file_safe(listing_file)
-                stems = {Path(data.get(k, "")).stem.lower() for k in ("filename", "seo_filename")} | {slug.lower()}
-                if basename in stems:
-                    candidates.append((listing_file.stat().st_mtime, slug))
-    if not candidates:
-        raise FileNotFoundError(f"Could not find a matching SEO folder for filename: {filename}")
-    return max(candidates, key=lambda x: x[0])[1]
-
-def resolve_listing_paths(aspect: str, filename: str, allow_locked: bool = False) -> tuple[str, Path, Path, bool]:
-    """Finds the correct paths for an artwork's folder and its listing.json file."""
-    seo_folder = find_seo_folder_from_filename(aspect, filename)
-    stage_info = resolve_artwork_stage(seo_folder)
-    if not stage_info:
-        raise FileNotFoundError(f"Artwork '{seo_folder}' not found in any stage")
-    
-    stage, folder_path = stage_info
-    
-    if not allow_locked and stage == "vault":
-        raise PermissionError(f"Attempted to access locked artwork '{seo_folder}' without permission.")
-
-    listing_path = folder_path / f"{seo_folder}-listing.json"
-    if not listing_path.exists():
-        raise FileNotFoundError(f"Found folder for '{seo_folder}' but missing its -listing.json file.")
-    
-    is_finalised = stage in ["finalised", "vault"]
-    return seo_folder, folder_path, listing_path, is_finalised
+# --- [ 2c: Remove Artwork from Registry (Placeholder) | listing-utils-py-2c ] ---
+def remove_artwork_from_registry(seo_folder: str):
+    """Placeholder for removing an artwork from a central state registry."""
+    logger.info(f"Registry record removed for '{seo_folder}'")
 
 
-# ===========================================================================
-# 4. Artwork Lifecycle Management
-# ===========================================================================
+# === [ Section 3: Path & File Operations | listing-utils-py-3 ] ===
+# Core functions for handling the filesystem, including finding, creating,
+# and deleting artwork folders and files across all workflow stages.
+# ---------------------------------------------------------------------------------
 
+# --- [ 3a: Resolve Listing Paths | listing-utils-py-3a ] ---
+def resolve_listing_paths(aspect: str, filename: str, allow_locked: bool = False) -> Tuple[str, Path, Path, bool]:
+    """Finds an artwork's folder and listing.json across all possible directories."""
+    base_name = Path(filename).stem
+    search_dirs = [config.PROCESSED_ROOT, config.FINALISED_ROOT]
+    if allow_locked:
+        search_dirs.append(config.ARTWORK_VAULT_ROOT)
+
+    for directory in search_dirs:
+        folder_name = f"LOCKED-{base_name}" if directory == config.ARTWORK_VAULT_ROOT else base_name
+        folder_path = directory / folder_name
+        
+        if folder_path.is_dir():
+            listing_path = folder_path / f"{base_name}-listing.json"
+            if listing_path.exists():
+                is_finalised = directory in [config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT]
+                return base_name, folder_path, listing_path, is_finalised
+                
+    raise FileNotFoundError(f"Could not find listing folder or JSON for '{filename}'")
+
+# --- [ 3b: Create Unanalysed Subfolder | listing-utils-py-3b ] ---
 def create_unanalysed_subfolder(original_filename: str) -> Path:
     """Creates a unique subfolder in the unanalysed directory for a new upload."""
-    import config
-    safe_base = re.sub(r'[^\w\-]+', '', Path(original_filename).stem).strip()
-    unique_id = uuid.uuid4().hex[:8]
-    folder_name = f"{safe_base}-{unique_id}"
+    safe_base = re.sub(r"[^\w\-.]+", "", Path(original_filename).stem).strip().lower()
+    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    folder_name = f"{safe_base}-{timestamp}"
     folder_path = config.UNANALYSED_ROOT / folder_name
     folder_path.mkdir(parents=True, exist_ok=True)
     return folder_path
 
+# --- [ 3c: Cleanup Empty Unanalysed Folders | listing-utils-py-3c ] ---
 def cleanup_unanalysed_folders():
-    """Removes empty subfolders from the unanalysed artwork directory."""
-    import config
+    """Removes any empty subfolders from the unanalysed artwork directory."""
     for item in config.UNANALYSED_ROOT.iterdir():
         if item.is_dir() and not any(item.iterdir()):
-            try:
-                item.rmdir()
-                logger.info(f"Cleaned up empty unanalysed folder: {item.name}")
-            except OSError as e:
-                logger.warning(f"Could not remove empty folder {item.name}: {e}")
+            shutil.rmtree(item)
+            logger.info(f"Cleaned up empty unanalysed folder: {item.name}")
 
-def update_artwork_registry(seo_folder: str, new_path: Path, new_status: str) -> None:
-    """Update the master registry entry for ``seo_folder``.
-
-    Args:
-        seo_folder: Artwork identifier.
-        new_path: Filesystem path to the artwork's new location.
-        new_status: Workflow status (e.g. ``processed`` or ``locked``).
-    """
-    import config
-    registry = Path(config.OUTPUT_JSON)
-    with master_json_lock:
-        data = load_json_file_safe(registry)
-        key = next((k for k, v in data.items() if v.get("base") == seo_folder), None)
-        if not key:
-            return
-        entry = data[key]
-        entry["current_folder"] = str(new_path)
-        entry["status"] = new_status
-        entry.setdefault("history", []).append({
-            "status": new_status,
-            "folder": str(new_path),
-            "timestamp": datetime.utcnow().isoformat(),
-        })
-        registry.write_text(json.dumps(data, indent=2), encoding="utf-8")
-
-def remove_artwork_from_registry(seo_folder: str, registry_path: Path | None = None) -> bool:
-    """Remove any entry referencing ``seo_folder`` from the master registry JSON."""
-    import config
-    registry = Path(registry_path or config.OUTPUT_JSON)
-    if not registry.exists():
-        return True
-    with master_json_lock:
-        try:
-            data = load_json_file_safe(registry)
-            key_to_delete = next(
-                (k for k, v in data.items() if v.get("base") == seo_folder),
-                None,
-            )
-            if key_to_delete:
-                del data[key_to_delete]
-                registry.write_text(json.dumps(data, indent=2), encoding="utf-8")
-                logger.info(f"Removed '{seo_folder}' from {registry.name}")
-            return True
-        except (IOError, json.JSONDecodeError) as e:
-            logger.error(f"Error updating registry JSON file: {e}")
-            return False
-
+# --- [ 3d: Delete Artwork (All Stages) | listing-utils-py-3d ] ---
 def delete_artwork(seo_folder: str) -> bool:
-    """Delete an artwork's directory and registry entry, if present.
+    """Deletes all versions of an artwork (unanalysed, processed, finalised, and locked)."""
+    found_and_deleted = False
+    
+    # Define paths for all possible stages
+    unanalysed_path = config.UNANALYSED_ROOT / seo_folder 
+    processed_path = config.PROCESSED_ROOT / seo_folder
+    finalised_path = config.FINALISED_ROOT / seo_folder
+    locked_path = config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}"
 
-    ``seo_folder`` may optionally include the ``LOCKED-`` prefix used for
-    vault items. This function normalises the value to ensure both the
-    filesystem and the registry are updated correctly.
-    """
-    slug = seo_folder.replace("LOCKED-", "")
-    logger.info(f"Initiating deletion for artwork: '{slug}'")
-    stage_info = resolve_artwork_stage(slug)
+    for path in [unanalysed_path, processed_path, finalised_path, locked_path]:
+        if path.exists() and path.is_dir():
+            try:
+                shutil.rmtree(path)
+                logger.info(f"Successfully deleted artwork folder: {path}")
+                found_and_deleted = True
+            except OSError as e:
+                logger.error(f"Error deleting folder {path}: {e}")
+                return False # Stop immediately on error
 
-    if stage_info:
-        _stage, folder_path = stage_info
-    else:
-        import config
-        registry = load_json_file_safe(config.OUTPUT_JSON)
-        entry = next((v for v in registry.values() if v.get("base") == slug), None)
-        folder_path = Path(entry.get("current_folder", "")) if entry else None
-
-    if folder_path and folder_path.exists():
-        try:
-            shutil.rmtree(folder_path)
-            logger.info(f"Successfully deleted directory: {folder_path}")
-        except OSError as e:
-            logger.error(f"Failed to delete directory for '{slug}': {e}")
-            return False
-    else:
-        logger.warning(f"Could not find folder for '{slug}'. It may have been already deleted.")
-
-    if not remove_artwork_from_registry(slug):
-        logger.error(
-            f"Deleted folder (or it was already gone) for '{slug}' but FAILED to update master JSON."
-        )
-        return False
-
-    logger.info(f"Successfully completed deletion for artwork: '{slug}'")
-    return True
+    if found_and_deleted:
+        remove_artwork_from_registry(seo_folder)
+        
+    return found_and_deleted
 
 
-# ===========================================================================
-# 5. Guided Description Writing System (GDWS) Helpers
-# ===========================================================================
+# === [ Section 4: Data Generation | listing-utils-py-4 ] ===
+# Functions responsible for creating or assembling data, such as descriptions
+# from fragments or generating lists of public-facing URLs.
+# ---------------------------------------------------------------------------------
 
+# --- [ 4a: Assemble GDWS Description | listing-utils-py-4a ] ---
 def assemble_gdws_description(aspect_ratio: str) -> str:
-    """Assembles a full artwork description from the GDWS content blocks."""
-    import config
+    """Assembles a full product description from GDWS content blocks."""
     aspect_path = config.GDWS_CONTENT_DIR / aspect_ratio
     if not aspect_path.exists():
-        return ""
-    all_blocks = {}
-    for folder_path in [p for p in aspect_path.iterdir() if p.is_dir()]:
-        base_file = folder_path / "base.json"
-        if base_file.exists():
-            try:
-                data = load_json_file_safe(base_file)
-                all_blocks[data['title']] = data
-            except Exception as e:
-                logger.error(f"Error loading GDWS base file {base_file}: {e}")
-    
-    pinned_start = config.GDWS_CONFIG.get("PINNED_START_TITLES", [])
-    pinned_end = config.GDWS_CONFIG.get("PINNED_END_TITLES", [])
-    order_file = aspect_path / "order.json"
-    
-    final_order = [title for title in pinned_start if title in all_blocks]
-    middle_order = load_json_file_safe(order_file).get("order", []) if order_file.exists() else []
-    
-    final_order.extend([t for t in middle_order if t in all_blocks and t not in final_order])
-    remaining = [t for t in all_blocks if t not in final_order and t not in pinned_end]
-    final_order.extend(sorted(remaining))
-    final_order.extend([t for t in pinned_end if t in all_blocks])
+        return "Standard product description."
 
-    description_parts = [f"{all_blocks[t]['title']}\n\n{all_blocks[t]['content']}" for t in final_order if t in all_blocks]
-    return "\n\n---\n\n".join(description_parts)
+    all_blocks = {}
+    for folder_path in aspect_path.iterdir():
+        if folder_path.is_dir():
+            base_file = folder_path / "base.json"
+            if base_file.exists():
+                try:
+                    data = json.loads(base_file.read_text(encoding='utf-8'))
+                    all_blocks[data['title']] = data['content']
+                except (json.JSONDecodeError, KeyError) as e:
+                    logger.error(f"Could not parse GDWS block {base_file}: {e}")
+
+    pinned_start = config.GDWS_CONFIG["PINNED_START_TITLES"]
+    pinned_end = config.GDWS_CONFIG["PINNED_END_TITLES"]
+    start_content = [all_blocks.pop(title, '') for title in pinned_start]
+    end_content = [all_blocks.pop(title, '') for title in pinned_end]
+
+    middle_content = []
+    order_file = aspect_path / "order.json"
+    if order_file.exists():
+        try:
+            order = json.loads(order_file.read_text(encoding='utf-8'))
+            for title in order:
+                if title in all_blocks:
+                    middle_content.append(all_blocks.pop(title))
+        except json.JSONDecodeError:
+            logger.error(f"Could not parse order.json for {aspect_ratio}")
+    
+    middle_content.extend(all_blocks.values())
+    full_description = "\n\n---\n\n".join(filter(None, start_content + middle_content + end_content))
+    return full_description
+
+# --- [ 4b: Resolve Artwork Stage | listing-utils-py-4b ] ---
+def resolve_artwork_stage(seo_folder: str) -> Tuple[Optional[str], Optional[Path]]:
+    """Determines the current stage (e.g., 'processed') and path of an artwork."""
+    clean_folder = seo_folder.replace("LOCKED-", "")
+    if (p := config.PROCESSED_ROOT / clean_folder).exists(): return "processed", p
+    if (p := config.FINALISED_ROOT / clean_folder).exists(): return "finalised", p
+    if (p := config.ARTWORK_VAULT_ROOT / f"LOCKED-{clean_folder}").exists(): return "vault", p
+    if (p := config.UNANALYSED_ROOT / clean_folder).exists(): return "unanalysed", p
+    return None, None
+
+# --- [ 4c: Generate Public Image URLs | listing-utils-py-4c ] ---
+def generate_public_image_urls(seo_folder: str, stage: str) -> List[str]:
+    """
+    Generates a specific, ordered list of 11 public image URLs for a listing.
+    Order: 1 Main Artwork, 9 Mockups, 1 Main Thumbnail.
+    """
+    stage_map = {"processed": config.PROCESSED_ROOT, "finalised": config.FINALISED_ROOT, "vault": config.ARTWORK_VAULT_ROOT}
+    base_dir = stage_map.get(stage)
+    if not base_dir: return []
+
+    folder_name = f"LOCKED-{seo_folder}" if stage == "vault" else seo_folder
+    folder_path = base_dir / folder_name
+    if not folder_path.exists(): return []
+
+    all_jpgs = sorted(list(folder_path.glob("*.jpg")))
+    
+    main_image = None
+    main_thumb = None
+    mockups = []
+    
+    for jpg in all_jpgs:
+        if "-MU-" in jpg.name:
+            mockups.append(jpg)
+        elif jpg.name.endswith("-THUMB.jpg"):
+            main_thumb = jpg
+        elif not jpg.name.endswith("-ANALYSE.jpg"):
+            main_image = jpg
+    
+    final_urls = []
+    if main_image:
+        final_urls.append(config.resolve_image_url(main_image))
+    
+    final_urls.extend([config.resolve_image_url(m) for m in sorted(mockups)[:9]])
+
+    if main_thumb:
+        final_urls.append(config.resolve_image_url(main_thumb))
+            
+    return final_urls

@@ -720,3 +720,70 @@ chmod +x ~/backup-art.sh
 ~/backup-art.sh
 cd ..
 cd ..
+~/backup-art.sh
+./backup-art.sh
+chmod +x ~/backup-art.sh
+~/backup-art.sh
+git add .
+git commit
+git reflog
+git add .
+git commit
+git status
+git commit -m "Add backup script and related files"
+git pull origin main
+git pull origin main --rebase
+git push origin main
+git log --stat
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+bash /home/art/project-toolkit.sh
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn 
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+sudo systemctl cat gunicorn
+grep -r "Flask(" .
+grep -r "Flask(" . --exclude-dir=venv --exclude-dir=__pycache__ --exclude=*.log --exclude=*.json --exclude=*.zip --exclude=*.pyc
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+git push origin main
+./code-stacker.sh
+./project-toolkit.sh
+2
+./project-toolkit.sh
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+git pull
+./project-toolkit.sh
+source /home/art/venv/bin/activate
+find . -type f -name "*.py" -not -path "./venv/*" -not -path "./.vscode-server/*" -exec grep -H "Flask(" {} \;
+ExecStart=/home/art/venv/bin/gunicorn --config /home/art/gunicorn.conf.py app:app
+find . -type f -name "*.py" -not -path "./venv/*" -not -path "./.vscode-server/*" -exec grep -H "Flask(" {} \;
+cat /home/art/gunicorn.conf.py
+BASE_URL = os.getenv("BASE_URL", "https://artnarrator.com")
+grep -r "127.0.0.1" templates/ static/
+./code-stacker.sh
+sudo systemctl restart gunicorn
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+./code-stacker.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+v
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+./project-toolkit.sh
+./code-stacker.sh
+./project-toolkit.sh
+./code-stacker.sh
+source /home/art/venv/bin/activate
+sudo systemctl stop gunicorn && sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f
+source /home/art/venv/bin/activate
+source /home/art/venv/bin/activate
+sudo systemctl restart gunicorn && sudo journalctl -u gunicorn -f

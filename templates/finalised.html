@@ -1,94 +1,129 @@
+{# templates/finalised.html #}
 {# Gallery of all finalised artworks with edit and export actions. #}
 {% extends "main.html" %}
 {% block title %}Finalised Artworks{% endblock %}
+
 {% block content %}
 <div class="container">
-<div class="page-title-row">
-  <img src="{{ url_for('static', filename='icons/svg/light/number-circle-four-light.svg') }}" class="hero-step-icon" alt="Step 4: Finalised" />
-  <h1>Finalised Artworks</h1>
-</div>
-<p class="help-tip">Finalised artworks are ready for publishing or exporting to Sellbrite. You can still edit or delete them here.</p>
-<div class="view-toggle">
-  <button id="grid-view-btn" class="btn-small">Grid</button>
-  <button id="list-view-btn" class="btn-small">List</button>
-</div>
-
-{% if not artworks %}
-  <p>No artworks have been finalised yet. Come back after you approve some beautiful pieces!</p>
-{% else %}
-<div class="finalised-grid" data-view-key="view">
-  {% for art in artworks %}
-  <div class="final-card">
-    <div class="card-thumb">
-      {% set route = 'artwork.locked_image' if art.locked else 'artwork.finalised_image' %}
-      {% set main_path = art.seo_folder ~ '/' ~ (art.main_image or '') %}
-      {% if art.main_image %}
-      <a href="{{ url_for(route, filename=main_path) }}" class="final-img-link" data-img="{{ url_for(route, filename=main_path) }}">
-        <img src="{{ url_for(route, filename=main_path) }}" class="card-img-top" alt="{{ art.title }}">
-      </a>
-      {% else %}
-      <img src="{{ url_for('static', filename='img/no-image.svg') }}" class="card-img-top" alt="No image">
-      {% endif %}
+    <div class="page-title-row">
+      <img src="{{ url_for('static', filename='icons/svg/light/number-circle-four-light.svg') }}" class="hero-step-icon" alt="Step 4: Finalised" />
+      <h1>Finalised Artworks</h1>
     </div>
-    <div class="card-details">
-      <div class="card-title">{{ art.title }}{% if art.locked %} <span class="locked-badge">Locked</span>{% endif %}</div>
-      <div class="desc-snippet" title="{{ art.description|default('') }}">
-        {{ art.description|default('')|truncate(200) }}
+    <p class="help-tip">Finalised artworks have been reviewed and are ready for publishing. You can lock them in for export or make final edits.</p>
+    <div class="view-toggle">
+      <button id="grid-view-btn" class="btn btn-sm btn-secondary">Grid View</button>
+      <button id="list-view-btn" class="btn btn-sm btn-secondary">List View</button>
+    </div>
+
+    {% if not artworks %}
+      <div class="empty-state" style="text-align: center; margin-top: 4rem;">
+          <p>No artworks have been finalised yet.</p>
+          <a href="{{ url_for('artwork.artworks') }}" class="btn btn-primary" style="max-width: 250px;">Go to Artwork Gallery</a>
       </div>
-      <div>SKU: {{ art.sku|default('') }}</div>
-      <div>Price: {{ art.price|default('') }}</div>
-      <div>Colours: {{ art.primary_colour|default('') }} / {{ art.secondary_colour|default('') }}</div>
-      <div>SEO: {{ art.seo_filename|default('') }}</div>
-      <div>Tags: {{ art.tags|default([])|join(', ') }}</div>
-      <div>Materials: {{ art.materials|default([])|join(', ') }}</div>
-      {% if art.mockups %}
-      <div class="mini-mockup-grid">
-        {% for m in art.mockups %}
-        {% set m_path = art.seo_folder ~ '/' ~ m.filename %}
-        <img src="{{ url_for(route, filename=m_path) }}" alt="mockup"/>
+    {% else %}
+      <div class="finalised-grid" data-view-key="finalisedView">
+        {% for art in artworks %}
+          <div class="final-card">
+            <div class="card-thumb">
+                {% set main_thumb_path = art.seo_folder ~ '/' ~ (art.thumb or '') %}
+                {% if art.thumb %}
+                    <a href="#" class="final-img-link" data-img="{{ url_for('artwork.finalised_image', filename=art.seo_folder ~ '/' ~ (art.main_image or '')) }}">
+                        <img src="{{ url_for('artwork.finalised_image', filename=main_thumb_path) }}" class="card-img-top" alt="{{ art.title }}">
+                    </a>
+                {% else %}
+                    <img src="{{ url_for('static', filename='img/no-image.svg') }}" class="card-img-top" alt="No image available">
+                {% endif %}
+            </div>
+            
+            <div class="card-content-wrapper">
+                <div class="card-details">
+                    <div class="card-title">{{ art.title }}</div>
+
+                    {# NEW (2025-08-04): Full description, tags, and materials for verification #}
+                    <div class="card-description-full" tabindex="0" aria-label="Full Artwork Description">
+                      <p>{{ art.description }}</p>
+                    </div>
+
+                    <div class="card-pills-section">
+                        <h5>Tags</h5>
+                        <div class="pill-list">
+                            {% for tag in art.tags %}<span class="pill-item">{{ tag }}</span>{% endfor %}
+                        </div>
+                        <h5>Materials</h5>
+                        <div class="pill-list">
+                            {% for mat in art.materials %}<span class="pill-item">{{ mat }}</span>{% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="card-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">SKU</span>
+                            <span class="meta-value">
+                                {{ art.sku or 'N/A' }}
+                                {% if art.sellbrite_status == 'Synced' %}
+                                    <span class="status-badge synced">Synced</span>
+                                {% elif art.sellbrite_status == 'Not Found' %}
+                                    <span class="status-badge not-found">Not Synced</span>
+                                {% else %}
+                                    <span class="status-badge offline">{{ art.sellbrite_status }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Price</span>
+                            <span class="meta-value">${{ "%.2f"|format(art.price|float) }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Colours</span>
+                            <span class="meta-value">{{ art.primary_colour }} / {{ art.secondary_colour }}</span>
+                        </div>
+                        <div class="meta-item-separator"></div>
+                        <div class="meta-item">
+                            <span class="meta-label">Category</span>
+                            <span class="meta-value">{{ art.sellbrite_category }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Condition</span>
+                            <span class="meta-value">{{ art.sellbrite_condition }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Quantity</span>
+                            <span class="meta-value">{{ art.sellbrite_quantity }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if art.mockups %}
+                    <div class="mini-mockup-grid">
+                        {% for m in art.mockups %}
+                            {# FIX (2025-08-04): Use the direct finalised_image route for mockup thumbs #}
+                            {% set m_thumb_path = art.seo_folder ~ '/THUMBS/' ~ m.thumbnail %}
+                            <img src="{{ url_for('artwork.finalised_image', filename=m_thumb_path) }}" alt="Mockup thumbnail for {{ art.title }}"/>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="final-actions">
+                  <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.seo_folder ~ '.jpg') }}" class="btn btn-secondary">Edit</a>
+                  <form method="post" action="{{ url_for('artwork.lock_it_in', seo_folder=art.seo_folder) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-primary">Lock</button>
+                  </form>
+                  <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=art.seo_folder) }}" onsubmit="return confirm('Delete this artwork permanently?');">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </div>
+            </div>
+          </div>
         {% endfor %}
       </div>
-      {% endif %}
-      {% if art.images %}
-      <details class="img-urls">
-        <summary>Image URLs</summary>
-        <ul>
-          {% for img in art.images %}
-          {% set i_path = art.seo_folder ~ '/' ~ img.split('/')[-1] %}
-          <li><a href="{{ url_for(route, filename=i_path) }}" target="_blank">/{{ img }}</a></li>
-          {% endfor %}
-        </ul>
-      </details>
-      {% endif %}
-    </div>
-  <div class="button-row">
-    {% if art.locked %}
-      <a class="art-btn disabled" aria-disabled="true">Edit</a>
-      <form method="post" action="{{ url_for('artwork.unlock_listing', aspect=art.aspect, filename=art.filename) }}">
-        <button type="submit" class="art-btn">Unlock</button>
-      </form>
-      <form method="post" action="{{ url_for('artwork.delete_finalised', aspect=art.aspect, filename=art.filename) }}" class="locked-delete-form">
-        <input type="hidden" name="confirm" value="">
-        <button type="submit" class="art-btn delete">Delete</button>
-      </form>
-    {% else %}
-      <a href="{{ url_for('artwork.edit_listing', aspect=art.aspect, filename=art.seo_folder ~ '.jpg') }}" class="art-btn">Edit</a>
-      <form method="post" action="{{ url_for('artwork.lock_listing', aspect=art.aspect, filename=art.filename) }}">
-        <button type="submit" class="art-btn">Lock</button>
-      </form>
-      <form method="post" action="{{ url_for('artwork.delete_finalised', aspect=art.aspect, filename=art.filename) }}" onsubmit="return confirm('Delete this artwork?');">
-        <button type="submit" class="art-btn delete">Delete</button>
-      </form>
     {% endif %}
-  </div>
-  </div>
-  {% endfor %}
+
+    {# Modal for viewing full-size images #}
+    <div id="final-modal-bg" class="modal-bg">
+      <button id="final-modal-close" class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-img"><img id="final-modal-img" src="" alt="Full size artwork image"/></div>
+    </div>
 </div>
-{% endif %}
-<div id="final-modal-bg" class="modal-bg">
-  <button id="final-modal-close" class="modal-close" aria-label="Close modal">&times;</button>
-  <div class="modal-img"><img id="final-modal-img" src="" alt="Full image"/></div>
-</div>
+
 <script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
-</div>
 {% endblock %}

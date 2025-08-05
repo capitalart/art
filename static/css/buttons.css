@@ -38,7 +38,7 @@
 }
 
 .theme-dark {
-  --btn-primary-bg: #ffffff;
+  --btn-primary-bg: #e7e7e7;
   --btn-primary-text: #111111;
   --btn-primary-hover-bg: #111111;
   --btn-primary-hover-text: #ffffff;
@@ -249,11 +249,36 @@ button:disabled,
 /* ========================================================
    Art Actions/Rows
    ======================================================== */
-.button-row, .final-actions, .edit-actions {
-  display: flex; justify-content: center; align-items: center;
-  gap: 10px; margin-top: 20px; flex-wrap: wrap;
+
+/* FIX (2025-08-04): Changed .button-row to a vertical column for gallery cards */
+.button-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Makes child elements (forms, buttons) fill the width */
+  gap: 8px; /* A slightly smaller gap for vertical stacking */
+  margin-top: auto; /* Pushes the button group to the bottom of the card */
+  padding-top: 15px;
+  width: 100%;
 }
-.button-row form, .final-actions form, .edit-actions form { margin: 0; }
+
+/* Ensure forms inside the button row don't add extra margins and are flexible */
+.button-row form {
+  margin: 0;
+  display: flex;
+}
+
+/* This rule is for other pages where buttons should be in a row */
+.final-actions, .edit-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.final-actions form, .edit-actions form { margin: 0; }
+
 .art-btn {
   font-weight: 500; height: var(--button-height, 48px); min-width: 100px;
   border-radius: 0;

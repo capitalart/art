@@ -53,6 +53,7 @@
             <div class="nav-column">
                 <h3>Artwork &amp; Gallery</h3>
                 <ul>
+                    {# FIX (2025-08-05): Corrected all url_for calls to use 'blueprint.function' format #}
                     <li><a href="{{ url_for('artwork.upload_artwork') }}">Upload Artwork</a></li>
                     <li><a href="{{ url_for('artwork.artworks') }}">All Artworks</a></li>
                     <li><a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a></li>
@@ -62,10 +63,8 @@
             <div class="nav-column">
                 <h3>Workflow &amp; Tools</h3>
                 <ul>
-                    <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
                     <li><a href="{{ url_for('mockup_admin.dashboard') }}">Mockup Admin</a></li>
                     <li><a href="{{ url_for('coordinate_admin.dashboard') }}">Coordinate Generator</a></li>
-                    <li><a href="{{ url_for('artwork.select') }}">Mockup Selector</a></li>
                 </ul>
             </div>
             <div class="nav-column">
@@ -82,16 +81,7 @@
     </div>
 
     <main>
-        <div class="container">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="flash">
-                        {% for m in messages %}{{ m }}{% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-            {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
     </main>
 
     <div id="gemini-modal" class="modal-bg">
@@ -106,21 +96,21 @@
     </div>
 
     <div id="analysis-modal" class="modal-bg" role="dialog" aria-modal="true">
-    <div class="modal-box" tabindex="-1">
-        <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
-        <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Processing...">
-        <h3>Analyzing Artwork...</h3>
-        <div class="modal-timer" id="analysis-timer">0s</div>
-        <div id="analysis-status" class="modal-status" aria-live="polite">Starting...</div>
-        <div class="modal-progress" aria-label="Analysis progress bar container">
-        <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0" aria-label="Analysis progress"></div>
+        <div class="modal-box" tabindex="-1">
+            <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
+            <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Processing...">
+            <h3>Analyzing Artwork...</h3>
+            <div class="modal-timer" id="analysis-timer">0s</div>
+            <div id="analysis-status" class="modal-status" aria-live="polite">Starting...</div>
+            <div class="modal-progress" aria-label="Analysis progress bar container">
+            <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0" aria-label="Analysis progress"></div>
+            </div>
+            <div class="modal-friendly-text">
+            Grab a coffee while AI works its magic!<br>
+            It usually only takes a minute or two!
+            </div>
+            <img src="{{ url_for('static', filename='icons/svg/light/coffee-light.svg') }}" class="coffee-icon icon" alt="Coffee break">
         </div>
-        <div class="modal-friendly-text">
-        Grab a coffee while AI works its magic!<br>
-        It usually only takes a minute or two!
-        </div>
-        <img src="{{ url_for('static', filename='icons/svg/light/coffee-light.svg') }}" class="coffee-icon icon" alt="Coffee break">
-    </div>
     </div>
 
     <footer class="site-footer">
@@ -135,6 +125,7 @@
             <div class="footer-column">
                 <h4>Artwork &amp; Gallery</h4>
                 <ul>
+                    {# FIX (2025-08-05): Corrected all url_for calls to use 'blueprint.function' format #}
                     <li><a href="{{ url_for('artwork.upload_artwork') }}">Upload Artwork</a></li>
                     <li><a href="{{ url_for('artwork.artworks') }}">Artworks</a></li>
                     <li><a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a></li>
@@ -144,8 +135,8 @@
             <div class="footer-column">
                 <h4>Workflow &amp; Tools</h4>
                 <ul>
-                    <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
-                    <li><a href="{{ url_for('artwork.select') }}">Mockups</a></li>
+                    <li><a href="{{ url_for('mockup_admin.dashboard') }}">Mockup Admin</a></li>
+                    <li><a href="{{ url_for('coordinate_admin.dashboard') }}">Coordinate Generator</a></li>
                 </ul>
             </div>
             <div class="footer-column">
@@ -156,7 +147,6 @@
                     <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
                     <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
                 </ul>
-                {# Removed broken menu link: Admin Users (no such route exists) #}
             </div>
         </div>
         <div class="copyright-bar">

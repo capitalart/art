@@ -31,6 +31,8 @@ from werkzeug.routing import BuildError
 import config
 import db
 from utils import security, session_tracker
+# FIX (2025-08-05): Import from the new app_utils file to break circular dependency.
+import app_utils
 
 # --- [ 1.2: Route (Blueprint) Imports ] ---
 from routes.artwork_routes import bp as artwork_bp
@@ -52,18 +54,17 @@ from routes.edit_listing_routes import bp as edit_listing_bp
 
 # --- [ 2.1: Initialise App and Database ] ---
 app = Flask(__name__)
+app.config.from_object(config)
 app.secret_key = config.FLASK_SECRET_KEY
 app.config["MAX_CONTENT_LENGTH"] = config.MAX_UPLOAD_SIZE_MB * 1024 * 1024
 db.init_db()
 
 # --- [ 2.2: Setup Logging ] ---
-# Ensure logs directory and session registry file exist before logging
 config.LOGS_DIR.mkdir(parents=True, exist_ok=True)
 session_registry_file = config.LOGS_DIR / "session_registry.json"
 if not session_registry_file.exists():
     session_registry_file.write_text("{}", encoding="utf-8")
 
-# Note: This basic logging will be replaced by the centralized logging utility.
 logging.basicConfig(
     filename=config.LOGS_DIR / "composites-workflow.log",
     level=logging.INFO,
@@ -83,13 +84,14 @@ if not app.config["OPENAI_CONFIGURED"]:
 if not app.config["GOOGLE_CONFIGURED"]:
     logging.warning("GOOGLE_API_KEY not configured in environment/.env")
 
-# --- [ 3.2: Inject API Status into Templates ] ---
+# --- [ 3.2: Inject API Status and Helpers into Templates ] ---
 @app.context_processor
-def inject_api_status():
-    """Makes API configuration status available to all templates."""
+def inject_template_helpers():
+    """Makes API status and custom functions available to all templates."""
     return dict(
         openai_configured=app.config.get("OPENAI_CONFIGURED", False),
         google_configured=app.config.get("GOOGLE_CONFIGURED", False),
+        get_artwork_image_url=app_utils.get_artwork_image_url,
     )
 
 
@@ -109,7 +111,6 @@ def require_login() -> None:
     if not session.get("logged_in") and security.login_required_enabled():
         return redirect(url_for("auth.login", next=request.path))
 
-    # Validate session for logged-in users
     username = session.get("username")
     sid = session.get("session_id")
     if username and sid and not session_tracker.touch_session(username, sid):
