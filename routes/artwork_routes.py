@@ -126,6 +126,26 @@ def artworks():
     ready = utils.list_ready_to_analyze(processed_names)
     finalised = utils.list_finalised_artworks()
     return render_template("artworks.html", ready_artworks=ready, processed_artworks=processed, finalised_artworks=finalised, menu=utils.get_menu())
+<<<<<<< ours
+=======
+    
+
+# === [ Section 6: Mockup Selection Workflow Routes | artwork-routes-py-6 ] ===
+# DEPRECATED: These routes were part of an older, manual mockup selection flow.
+# They are kept for reference but are no longer active in the main UI.
+# ---------------------------------------------------------------------------------
+
+# --- [ 6a: select | artwork-routes-py-6a ] ---
+@bp.route("/select", methods=["GET", "POST"], endpoint="select")
+def select():
+    """(DEPRECATED) Displays the old mockup selection interface."""
+    if "slots" not in session or request.args.get("reset") == "1":
+        utils.init_slots()
+    slots = session["slots"]
+    options = utils.compute_options(slots)
+    zipped = list(zip(slots, options))
+    return render_template("mockup_selector.html", zipped=zipped, menu=utils.get_menu())
+>>>>>>> theirs
 
 @bp.route("/finalised")
 def finalised_gallery():
@@ -146,10 +166,50 @@ def finalised_gallery():
             art['sellbrite_status'] = 'API Offline'
     return render_template("finalised.html", artworks=artworks_list, menu=utils.get_menu())
 
+<<<<<<< ours
 @bp.route("/locked")
 def locked_gallery():
     locked_items = [a for a in utils.get_all_artworks() if a.get('locked')]
     return render_template("locked.html", artworks=locked_items, menu=utils.get_menu())
+=======
+# --- [ 6b: regenerate | artwork-routes-py-6b ] ---
+@bp.route("/regenerate", methods=["POST"], endpoint="regenerate")
+def regenerate():
+    """(DEPRECATED) Regenerates a random mockup for a specific slot."""
+    slot_idx = int(request.form["slot"])
+    slots = session.get("slots", [])
+    if 0 <= slot_idx < len(slots):
+        cat = slots[slot_idx]["category"]
+        slots[slot_idx]["image"] = utils.random_image(cat, "4x5")
+        session["slots"] = slots
+    return redirect(url_for("artwork.select"))
+
+
+# --- [ 6c: swap | artwork-routes-py-6c ] ---
+@bp.route("/swap", methods=["POST"], endpoint="swap")
+def swap():
+    """(DEPRECATED) Swaps a mockup slot to a new category."""
+    slot_idx = int(request.form["slot"])
+    new_cat = request.form["new_category"]
+    slots = session.get("slots", [])
+    if 0 <= slot_idx < len(slots):
+        slots[slot_idx]["category"] = new_cat
+        slots[slot_idx]["image"] = utils.random_image(new_cat, "4x5")
+        session["slots"] = slots
+    return redirect(url_for("artwork.select"))
+
+
+# --- [ 6d: proceed | artwork-routes-py-6d ] ---
+@bp.route("/proceed", methods=["POST"], endpoint="proceed")
+def proceed():
+    """(DEPRECATED) Finalises mockup selections and triggers composite generation."""
+    flash("Composite generation process initiated!", "success")
+    latest = utils.latest_composite_folder()
+    if latest:
+        return redirect(url_for("artwork.composites_specific", seo_folder=latest))
+    return redirect(url_for("artwork.composites_preview"))
+
+>>>>>>> theirs
 
 
 # ===========================================================================
@@ -180,8 +240,191 @@ def analyze_artwork(aspect, filename):
         flash(f"❌ Error running analysis: {exc}", "danger")
         return redirect(url_for("artwork.artworks"))
     redirect_filename = f"{seo_folder}.jpg"
+<<<<<<< ours
     return redirect(url_for("edit_listing.edit_listing", aspect=aspect, filename=redirect_filename))
 
+=======
+    return redirect(url_for("artwork.edit_listing", aspect=qc.get("aspect_ratio", ""), filename=redirect_filename))
+
+
+# === [ Section 8: Artwork Editing and Listing Management | artwork-routes-py-8 ] ===
+# The main route for editing an artwork's listing details, handling both
+# displaying the form (GET) and saving changes (POST).
+# ---------------------------------------------------------------------------------
+
+# --- [ 8a: edit_listing | artwork-routes-py-8a ] ---
+@bp.route("/edit-listing/<aspect>/<filename>", methods=["GET", "POST"], endpoint="edit_listing")
+def edit_listing(aspect, filename):
+    """Displays and updates a processed or finalised artwork listing."""
+    try:
+        seo_folder, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
+    except FileNotFoundError:
+        flash(f"Artwork not found: {filename}", "danger")
+        return redirect(url_for("artwork.artworks"))
+    
+    data = load_json_file_safe(listing_path)
+    is_locked_in_vault = config.ARTWORK_VAULT_ROOT in folder.parents
+
+    if (config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}").exists():
+        stage = "vault"
+    elif (config.FINALISED_ROOT / seo_folder).exists():
+        stage = "finalised"
+    else:
+        stage = "processed"
+    public_image_urls = generate_public_image_urls(seo_folder, stage)
+
+    if request.method == "POST":
+        form_data = {
+            "title": request.form.get("title", "").strip(),
+            "description": request.form.get("description", "").strip(),
+            "tags": [t.strip() for t in request.form.get("tags", "").split(',') if t.strip()],
+            "materials": [m.strip() for m in request.form.get("materials", "").split(',') if m.strip()],
+            "images": [i.strip() for i in request.form.get("images", "").splitlines() if i.strip()],
+        }
+        data.update(form_data)
+        with open(listing_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        flash("Listing updated", "success")
+        return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+    artwork = utils.populate_artwork_data_from_json(data, seo_folder)
+    artwork["images"] = "\n".join(public_image_urls)
+    mockups = utils.get_mockup_details_for_template(data.get("mockups", []), folder, seo_folder, aspect)
+    
+    return render_template(
+        "edit_listing.html",
+        artwork=artwork,
+        aspect=aspect,
+        filename=filename,
+        seo_folder=seo_folder,
+        mockups=mockups,
+        finalised=finalised,
+        locked=data.get("locked", False),
+        is_locked_in_vault=is_locked_in_vault,
+        editable=not data.get("locked", False),
+        public_image_urls=public_image_urls,
+        cache_ts=int(time.time()),
+    )
+
+
+# === [ Section 9: Static File and Image Serving Routes | artwork-routes-py-9 ] ===
+# These routes serve images from various processing directories. They are essential
+# for displaying thumbnails and full-size images throughout the application.
+# ---------------------------------------------------------------------------------
+
+# --- [ 9a: processed_image | artwork-routes-py-9a ] ---
+@bp.route(f"/{config.PROCESSED_URL_PATH}/<path:filename>")
+def processed_image(filename):
+    """Serves images from the 'processed-artwork' directory."""
+    return send_from_directory(config.PROCESSED_ROOT, filename)
+
+
+# --- [ 9b: finalised_image | artwork-routes-py-9b ] ---
+@bp.route(f"/{config.FINALISED_URL_PATH}/<path:filename>")
+def finalised_image(filename):
+    """Serves images from the 'finalised-artwork' directory."""
+    return send_from_directory(config.FINALISED_ROOT, filename)
+
+
+# --- [ 9c: locked_image | artwork-routes-py-9c ] ---
+@bp.route(f"/{config.LOCKED_URL_PATH}/<path:filename>")
+def locked_image(filename):
+    """Serves images from the 'artwork-vault' (locked) directory."""
+    return send_from_directory(config.ARTWORK_VAULT_ROOT, filename)
+
+
+# --- [ 9d: serve_mockup_thumb | artwork-routes-py-9d ] ---
+@bp.route(f"/{config.MOCKUP_THUMB_URL_PREFIX}/<path:filepath>")
+def serve_mockup_thumb(filepath: str):
+    """Serves mockup thumbnail images from any potential artwork directory."""
+    for base_dir in [config.PROCESSED_ROOT, config.FINALISED_ROOT, config.ARTWORK_VAULT_ROOT]:
+        full_path = base_dir / filepath
+        if full_path.is_file():
+            return send_from_directory(full_path.parent, full_path.name)
+    abort(404)
+
+
+# --- [ 9e: unanalysed_image | artwork-routes-py-9e ] ---
+@bp.route(f"/{config.UNANALYSED_IMG_URL_PREFIX}/<filename>")
+def unanalysed_image(filename: str):
+    """Serves images from the 'unanalysed-artwork' directory."""
+    path = next((p for p in config.UNANALYSED_ROOT.rglob(filename) if p.is_file()), None)
+    if path:
+        return send_from_directory(path.parent, path.name)
+    abort(404)
+
+
+# --- [ 9f: composite_img | artwork-routes-py-9f ] ---
+@bp.route(f"/{config.COMPOSITE_IMG_URL_PREFIX}/<folder>/<filename>")
+def composite_img(folder, filename):
+    """(DEPRECATED) Serves a specific composite image."""
+    return send_from_directory(config.PROCESSED_ROOT / folder, filename)
+
+
+# --- [ 9g: mockup_img | artwork-routes-py-9g ] ---
+@bp.route("/mockup-img/<category>/<filename>", endpoint="mockup_img")
+def mockup_img(category, filename):
+    """Serves a mockup template image from the central inputs directory."""
+    return send_from_directory(config.MOCKUPS_INPUT_DIR / category, filename)
+
+
+# === [ Section 10: Composite Image Preview Routes | artwork-routes-py-10 ] ===
+# Routes for the composite/mockup preview page.
+# ---------------------------------------------------------------------------------
+
+# --- [ 10a: composites_preview | artwork-routes-py-10a ] ---
+@bp.route("/composites", endpoint="composites_preview")
+def composites_preview():
+    """Redirects to the latest composite folder or the main artworks page."""
+    latest = utils.latest_composite_folder()
+    if latest:
+        return redirect(url_for("artwork.composites_specific", seo_folder=latest))
+    flash("No composites found", "warning")
+    return redirect(url_for("artwork.artworks"))
+
+
+# --- [ 10b: composites_specific | artwork-routes-py-10b ] ---
+@bp.route("/composites/<seo_folder>", endpoint="composites_specific")
+def composites_specific(seo_folder):
+    """Displays the composite images for a specific artwork."""
+    folder = config.PROCESSED_ROOT / seo_folder
+    json_path = folder / f"{seo_folder}-listing.json"
+    images = []
+    if json_path.exists():
+        listing = load_json_file_safe(json_path)
+        images = utils.get_mockup_details_for_template(
+            listing.get("mockups", []), folder, seo_folder, listing.get("aspect_ratio", "")
+        )
+    return render_template(
+        "composites_preview.html",
+        images=images,
+        folder=seo_folder,
+        menu=utils.get_menu(),
+    )
+
+
+# --- [ 10c: approve_composites | artwork-routes-py-10c ] ---
+@bp.route("/approve_composites/<seo_folder>", methods=["POST"], endpoint="approve_composites")
+def approve_composites(seo_folder):
+    """Approves composites and redirects to the edit/review page."""
+    listing_path = next((config.PROCESSED_ROOT / seo_folder).glob("*-listing.json"), None)
+    if listing_path:
+        data = load_json_file_safe(listing_path)
+        aspect = data.get("aspect_ratio", "4x5")
+        filename = data.get("seo_filename", f"{seo_folder}.jpg")
+        flash("Composites approved. Please review and finalise.", "success")
+        return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+    flash("Could not find listing data.", "danger")
+    return redirect(url_for("artwork.artworks"))
+
+
+# === [ Section 11: Artwork Finalisation and Gallery Routes | artwork-routes-py-11 ] ===
+# Routes for the final step of the workflow: moving an artwork to the
+# 'finalised' directory, and viewing the finalised/locked galleries.
+# ---------------------------------------------------------------------------------
+
+# --- [ 11a: finalise_artwork | artwork-routes-py-11a ] ---
+>>>>>>> theirs
 @bp.route("/finalise-artwork/<seo_folder>", methods=["POST"])
 def finalise_artwork(seo_folder):
     src = config.PROCESSED_ROOT / seo_folder
@@ -220,6 +463,100 @@ def lock_it_in(seo_folder: str):
         flash(f"Error locking in artwork: {e}", "danger")
     return redirect(url_for("artwork.locked_gallery"))
 
+<<<<<<< ours
+=======
+
+# === [ Section 12: Listing State Management (Lock, Unlock, Delete) | artwork-routes-py-12 ] ===
+# Routes for managing the lifecycle of a finalised artwork: locking (moving
+# to vault), unlocking (making editable again), and deletion.
+# ---------------------------------------------------------------------------------
+
+# --- [ 12a: delete_finalised | artwork-routes-py-12a ] ---
+@bp.post("/finalise/delete/<aspect>/<filename>")
+def delete_finalised(aspect, filename):
+    """Deletes a finalised or locked artwork and all its files."""
+    try:
+        _, folder, listing_file, _ = resolve_listing_paths(aspect, filename, allow_locked=True)
+        info = load_json_file_safe(listing_file)
+        if info.get("locked") and request.form.get("confirm") != "DELETE":
+            flash("Type DELETE to confirm deletion of a locked item.", "warning")
+            return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+        
+        shutil.rmtree(folder)
+        flash("Artwork deleted successfully.", "success")
+        log_action("delete", filename, session.get("username"), f"Deleted folder {folder}")
+    except FileNotFoundError:
+        flash("Artwork not found.", "danger")
+    except Exception as e:
+        flash(f"Delete failed: {e}", "danger")
+    return redirect(url_for("artwork.finalised_gallery"))
+
+
+# --- [ 12b: lock_listing | artwork-routes-py-12b ] ---
+@bp.post("/lock/<aspect>/<filename>", endpoint="lock_listing")
+def lock_listing(aspect, filename):
+    """Locks an artwork by moving it to the 'artwork-vault' directory."""
+    try:
+        seo, folder, listing_path, finalised = resolve_listing_paths(aspect, filename)
+        if not finalised:
+            flash("Artwork must be finalised before locking.", "danger")
+            return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+        
+        target = config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo}"
+        config.ARTWORK_VAULT_ROOT.mkdir(parents=True, exist_ok=True)
+        if target.exists(): shutil.rmtree(target)
+        shutil.move(str(folder), str(target))
+
+        new_listing_path = target / listing_path.name
+        utils.update_listing_paths(new_listing_path, folder, target)
+        data = load_json_file_safe(new_listing_path)
+        data["locked"] = True
+        data["images"] = generate_public_image_urls(seo, "vault")
+        with open(new_listing_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        flash("Artwork locked.", "success")
+        log_action("lock", filename, session.get("username"), "locked artwork")
+    except Exception as exc:
+        flash(f"Failed to lock: {exc}", "danger")
+    return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+
+# --- [ 12c: unlock_listing | artwork-routes-py-12c ] ---
+@bp.post("/unlock/<aspect>/<filename>", endpoint="unlock_listing")
+def unlock_listing(aspect, filename):
+    """Unlocks an artwork, making it editable again but keeping files in the vault."""
+    if request.form.get("confirm_unlock") != "UNLOCK":
+        flash("Incorrect confirmation text. Please type UNLOCK to proceed.", "warning")
+        return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+    try:
+        _, _, listing_path, _ = resolve_listing_paths(aspect, filename, allow_locked=True)
+        if config.ARTWORK_VAULT_ROOT not in listing_path.parents:
+            flash("Cannot unlock an item that is not in the vault.", "danger")
+            return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+        with open(listing_path, "r+", encoding="utf-8") as f:
+            data = json.load(f)
+            data["locked"] = False
+            f.seek(0)
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.truncate()
+        
+        log_action("unlock", filename, session.get("username"), "unlocked artwork")
+        flash("Artwork unlocked and is now editable. File paths remain unchanged.", "success")
+    
+    except FileNotFoundError:
+        flash("Locked artwork not found.", "danger")
+        return redirect(url_for("artwork.artworks"))
+    except Exception as exc:
+        log_action("unlock", filename, session.get("username"), "unlock failed", status="fail", error=str(exc))
+        flash(f"Failed to unlock: {exc}", "danger")
+        
+    return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+
+# --- [ 12d: unlock_artwork | artwork-routes-py-12d ] ---
+>>>>>>> theirs
 @bp.route("/unlock-artwork/<seo_folder>", methods=["POST"])
 def unlock_artwork(seo_folder: str):
     clean = seo_folder.replace("LOCKED-", "")
@@ -239,6 +576,51 @@ def unlock_artwork(seo_folder: str):
         flash(f"Error during unlocking: {exc}", "danger")
     return redirect(url_for("artwork.finalised_gallery"))
 
+<<<<<<< ours
+=======
+
+# === [ Section 13: Asynchronous API Endpoints | artwork-routes-py-13 ] ===
+# API-style endpoints called via JavaScript from the frontend to perform
+# specific, targeted actions without a full page reload.
+# ---------------------------------------------------------------------------------
+
+# --- [ 13a: update_links | artwork-routes-py-13a ] ---
+@bp.post("/update-links/<aspect>/<filename>")
+def update_links(aspect, filename):
+    """Regenerates the image URL list from disk and returns it as JSON."""
+    wants_json = "application/json" in request.headers.get("Accept", "")
+    try:
+        seo_folder, _, listing_file, _ = resolve_listing_paths(aspect, filename)
+        stage = "vault" if (config.ARTWORK_VAULT_ROOT / f"LOCKED-{seo_folder}").exists() else "processed"
+        data = load_json_file_safe(listing_file)
+        data["images"] = generate_public_image_urls(seo_folder, stage)
+        with open(listing_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        msg = "Image links updated"
+        if wants_json: return jsonify({"success": True, "message": msg, "images": data["images"]})
+        flash(msg, "success")
+    except Exception as e:
+        msg = f"Failed to update links: {e}"
+        if wants_json: return jsonify({"success": False, "message": msg, "images": []}), 500
+        flash(msg, "danger")
+    return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+
+# --- [ 13b: reset_sku | artwork-routes-py-13b ] ---
+@bp.post("/reset-sku/<aspect>/<filename>", endpoint="reset_sku")
+def reset_sku(aspect, filename):
+    """Forces the assignment of a new SKU for a given artwork."""
+    try:
+        _, _, listing, _ = resolve_listing_paths(aspect, filename)
+        utils.assign_or_get_sku(listing, config.SKU_TRACKER, force=True)
+        flash("SKU has been reset.", "success")
+    except Exception as exc:
+        flash(f"Failed to reset SKU: {exc}", "danger")
+    return redirect(url_for("artwork.edit_listing", aspect=aspect, filename=filename))
+
+
+# --- [ 13c: delete_artwork | artwork-routes-py-13c ] ---
+>>>>>>> theirs
 @bp.route("/delete-artwork/<seo_folder>", methods=["POST"])
 def delete_artwork(seo_folder: str):
     user = session.get("username", "unknown")
